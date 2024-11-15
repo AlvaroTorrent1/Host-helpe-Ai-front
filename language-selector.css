@@ -1,0 +1,120 @@
+/* language-selector.css */
+.language-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.language-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    text-align: center;
+    transform: translateY(20px);
+    animation: slideUp 0.8s ease forwards;
+}
+
+.language-options {
+    display: flex;
+    gap: 4rem;
+    justify-content: center;
+}
+
+.language-option {
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.language-option:hover {
+    transform: scale(1.1);
+}
+
+.flag-container {
+    width: 128px;
+    height: 80px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.flag-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Hide overlay animation */
+.language-overlay.hiding {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+.language-overlay.hiding .language-container {
+    animation: slideDown 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideDown {
+    from { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to { 
+        transform: translateY(20px);
+        opacity: 0;
+    }
+}
+
+/* Hide the overlay after animation */
+.language-overlay.hidden {
+    display: none;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 480px) {
+    .language-options {
+        gap: 2rem;
+    }
+    
+    .flag-container {
+        width: 100px;
+        height: 62.5px;
+    }
+    
+    .language-container {
+        padding: 2rem;
+    }
+}

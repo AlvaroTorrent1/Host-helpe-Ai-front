@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Helper AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="language-selector.css">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- Language Chooser -->
+    <div class="language-overlay" id="languageOverlay">
+        <div class="language-container">
+            <div class="language-options">
+                <button class="language-option" onclick="selectLanguage('en')">
+                    <div class="flag-container">
+                        <img src="assets/icons/americaflag.jpg" alt="English Flag">
+                    </div>
+                </button>
+                
+                <button class="language-option" onclick="selectLanguage('es')">
+                    <div class="flag-container">
+                        <img src="assets/icons/spainflag.jpg" alt="Spanish Flag">
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function selectLanguage(lang) {
+        const overlay = document.getElementById('languageOverlay');
+        overlay.classList.add('hiding');
+        
+        // Switch language using your existing function
+        if (window.switchLanguage) {
+            window.switchLanguage(lang);
+        }
+        
+        // Hide overlay after animation completes
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 500);
+    }
+    
+    // Ensure overlay is visible when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('languageOverlay');
+        overlay.style.opacity = '1';
+    });
+    </script>
+
+    <!-- Keep your existing background shapes -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+
+    <!-- Header -->
+    <div class="header-wrapper">
+        <header id="header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI Logo" />
+                </div>
+                
+                <nav>
+                    <a href="#brands" class="nav-link" data-en="Our brands" data-es="Nuestras marcas">Our brands</a>
+                    <a href="#join" class="nav-link" data-en="Join our collective" data-es="Únete a nuestro colectivo">Join our collective</a>
+                    <a href="#impact" class="nav-link" data-en="Our impact" data-es="Nuestro impacto">Our impact</a>
+                    <a href="#pricing" class="nav-link" data-en="Pricing" data-es="Precios">Pricing</a>
+                </nav>
+
+                <div class="auth-buttons">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-user"></i>
+                        <span>Login</span>
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <span>Register</span>
+                    </button>
+                </div>
+
+                <button class="mobile-menu-button" onclick="toggleMobileMenu()">
+                    <span class="menu-icon"></span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <nav>
+            <a href="#brands" class="nav-link">Our brands</a>
+            <a href="#join" class="nav-link">Join our collective</a>
+            <a href="#impact" class="nav-link">Our impact</a>
+            <a href="#pricing" class="nav-link">Pricing</a>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <i class="fas fa-user"></i>
+                <span>Login</span>
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                <span>Register</span>
+            </button>
+        </div>
+        <div class="language-switcher">
+            <button onclick="switchLanguage('en')">EN</button>
+            <button onclick="switchLanguage('es')">ES</button>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content" data-aos="fade-up">
+                <div class="icon-container">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h1>Host Helper AI</h1>
+                <p>AI-powered assistance for Airbnb hosts</p>
+                <button class="cta-button">Get Started</button>
+            </div>
+        </section>
+    
+
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-container">
+                <h2 data-aos="fade-up">Smart Hosting Solutions</h2>
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <i class="fas fa-comments"></i>
+                        <h3>24/7 Support</h3>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fas fa-home"></i>
+                        <h3>Home Guide</h3>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fas fa-star"></i>
+                        <h3>Local Tips</h3>
+                    </div>
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                        <i class="fas fa-robot"></i>
+                        <h3>AI Concierge</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="section-container">
+                <h2 data-aos="fade-up">Hosting Transformed</h2>
+                <div class="stats-grid">
+                    <div class="stat-card" data-aos="fade-up">
+                        <div class="stat-value">95%</div>
+                        <p class="stat-label">Satisfaction</p>
+                    </div>
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="stat-value">24/7</div>
+                        <p class="stat-label">Availability</p>
+                    </div>
+                    <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-value">50%</div>
+                        <p class="stat-label">Time Saved</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="section-container">
+        <h2 data-aos="fade-up">Ready to Elevate?</h2>
+        <button class="cta-button" data-aos="fade-up" data-aos-delay="100">
+            Start Free Trial
+        </button>
+    </div>
+</section>
+
+<!-- AI Chat Demo Section -->
+<section class="chat-demo-section">
+    <div class="chat-demo-header">
+        <h2 data-aos="fade-in">WhatsApp Showcase</h2>
+        <p data-aos="fade-in" data-aos-delay="100">
+            Experience an interactive preview of our AI assistant. Our actual product offers enhanced features, 
+            advanced AI capabilities, and seamless integration with your hosting platform.
+        </p>
+    </div>
+    <div class="iphone-frame" data-aos="fade-up" data-aos-delay="200">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="whatsapp-header">
+                <div class="profile-pic">AI</div>
+                <div>
+                    <h2>AI Assistant</h2>
+                </div>
+            </div>
+            <div class="chat-container" id="chatContainer">
+                <div class="message received">
+                    Hello! I'm your Airbnb AI Assistant. How can I help you today? 👋
+                </div>
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            <button class="toggle-prompts" id="togglePrompts">Toggle Quick Replies</button>
+            <div class="quick-replies" id="quickReplies">
+                <button class="quick-reply-btn">Where are the towels?</button>
+                <button class="quick-reply-btn">What's the Wi-Fi password?</button>
+                <button class="quick-reply-btn">What's my address?</button>
+            </div>
+            <div class="input-area">
+                <input type="text" class="message-input" placeholder="Type a message..." id="messageInput">
+                <button class="send-button" id="sendButton">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+            </section>
+        <div id="react-main-content"></div>
+
+        <section id="brands">
+            <h2>Our brands</h2>
+            <p>Discover our portfolio of innovative brands.</p>
+        </section>
+        
+<!-- Photo Gallery Section -->
+<div class="gallery-container">
+    <div class="gallery-header">
+        <h2>Our Portfolio</h2>
+    </div>
+    
+    <div class="gallery-grid">
+        <div class="gallery-item">
+            <img src="assets/images/pic1.png" alt="Property 1" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Luxury Villa</h3>
+                <p class="gallery-item-description">Elegant beachfront villa with panoramic ocean views.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item">
+            <img src="assets/images/pic2.png" alt="Property 2" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Urban Loft</h3>
+                <p class="gallery-item-description">Modern city living in the heart of downtown.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item">
+            <img src="assets/images/pic3.png" alt="Property 3" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Mountain Retreat</h3>
+                <p class="gallery-item-description">Cozy cabin with stunning mountain views.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item">
+            <img src="assets/images/pic4.png" alt="Property 4" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Seaside Cottage</h3>
+                <p class="gallery-item-description">Charming beachside getaway perfect for families.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item">
+            <img src="assets/images/pic5.png" alt="Property 5" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Desert Oasis</h3>
+                <p class="gallery-item-description">Modern desert home with private pool.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item">
+            <img src="assets/images/pic6.png" alt="Property 6" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title">Forest Hideaway</h3>
+                <p class="gallery-item-description">Secluded forest retreat with luxury amenities.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="lightbox">
+    <span class="lightbox-close">&times;</span>
+    <button class="lightbox-arrow lightbox-prev">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <img src="" alt="Lightbox image" width="800" height="600">
+    <button class="lightbox-arrow lightbox-next">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
+</div>
+
+        <section id="join">
+            <h2>Join our collective</h2>
+            <p>Be part of our growing community of visionaries.</p>
+        </section>
+        <section id="impact">
+            <h2>Our impact</h2>
+            <p>See how we're making a difference in the world.</p>
+        </section>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Welcome Back</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" class="auth-form">
+                        <div class="form-group mb-3">
+                            <label for="loginEmail" class="form-label">Email address</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Sign In</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Create Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" class="auth-form">
+                        <div class="form-group mb-3">
+                            <label for="registerUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="registerUsername" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="registerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="registerPassword" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Create Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <div class="section-header text-center mb-5" data-aos="fade-up">
+                    <h2 class="section-title">Simple Pricing</h2>
+                    <p class="section-subtitle">Choose the perfect plan for your needs</p>
+                </div>
+
+                <div class="pricing-cards">
+
+                    <!-- Enterprise Plan -->
+                    <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="pricing-header">
+                            <span class="plan-badge">Custom</span>
+                            <div class="price">
+                                <span class="currency">€</span>
+                                <span class="amount">30</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <p class="text-muted">For large-scale operations</p>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Custom AI training</li>
+                                <li><i class="fas fa-check"></i> Unlimited properties</li>
+                                <li><i class="fas fa-check"></i> 24/7 premium support</li>
+                                <li><i class="fas fa-check"></i> Enterprise analytics</li>
+                                <li><i class="fas fa-check"></i> Smart pricing</li>
+                                <li><i class="fas fa-check"></i> Custom training</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-action">
+                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="enterprise">Contact Sales</button>
+                        </div>
+                    </div>
+
+                
+                    <!-- Professional Plan -->
+                    <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="pricing-header">
+                            <span class="plan-badge">Pro</span>
+                            <div class="price">
+                                <span class="currency">€</span>
+                                <span class="amount">20</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <p class="text-muted">Best for growing businesses</p>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Advanced AI responses</li>
+                                <li><i class="fas fa-check"></i> Up to 5 properties</li>
+                                <li><i class="fas fa-check"></i> Priority support</li>
+                                <li><i class="fas fa-check"></i> Advanced analytics</li>
+                                <li><i class="fas fa-check"></i> Smart pricing</li>
+                                <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-action">
+                            <button class="btn btn-primary btn-lg w-100 buy-button" data-plan="professional">Get Started</button>
+                            <p class="text-center mt-3 mb-0"><small>14-day money-back guarantee</small></p>
+                        </div>
+                    </div>
+                
+
+                    <!-- Starter Plan -->
+                    <div class="pricing-card" data-aos="fade-up">
+                        <div class="pricing-header">
+                            <span class="plan-badge">Basic</span>
+                            <div class="price">
+                                <span class="currency">€</span>
+                                <span class="amount">5</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <p class="text-muted">Perfect for individual hosts</p>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Basic AI responses</li>
+                                <li><i class="fas fa-check"></i> 1 property</li>
+                                <li><i class="fas fa-check"></i> Email support</li>
+                                <li><i class="fas fa-check"></i> Basic analytics</li>
+                                <li class="disabled"><i class="fas fa-times"></i> Smart pricing</li>
+                                <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-action">
+                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="starter">Get Started</button>
+                        </div>
+                    </div>
+
+<!-- Contact Form Section -->
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+        <h1>Get in Touch</h1>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" placeholder="Enter subject" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Enter your message here..." required></textarea>
+            </div>
+            
+            <button type="submit">Send Message</button>
+        </form>
+        <div class="success-message" id="successMessage">
+            Thank you! Your message has been sent successfully.
+        </div>
+    </div>
+</section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const section = document.querySelector('.chat-demo-section');
+          const phone = document.querySelector('.iphone-frame');
+        
+          const checkScroll = () => {
+            const sectionTop = section.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+        
+            if (sectionTop < windowHeight * 0.75) {
+              section.classList.add('animate');
+              phone.classList.add('animate');
+              window.removeEventListener('scroll', checkScroll);
+            }
+          };
+        
+          window.addEventListener('scroll', checkScroll);
+          checkScroll(); // Check initial position
+        });
+        </script>
+
+
+    <script>
+        const header = document.getElementById('header');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let currentLang = 'en';
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                header.style.top = '-80px';
+            } else {
+                header.style.top = '0';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+            if (scrollTop > 20) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            navLinks.forEach(link => {
+                link.textContent = link.getAttribute(`data-${lang}`);
+            });
+        }
+
+        function toggleMobileMenu() {
+            document.body.classList.toggle('mobile-menu-open');
+        }
+
+                // Add this new script for password toggle
+                document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.closest('.input-group').querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js"></script>
+    <script src="animations/header.js"></script>
+    <script src="animations/landing-page.js"></script>
+    <script src="animations/gallery.js"></script> 
+    <script src="animations/phone.js"></script> 
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+    </script>
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let isValid = true;
+        const inputs = this.querySelectorAll('input, textarea');
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add('error');
+                isValid = false;
+            } else {
+                input.classList.remove('error');
+            }
+        });
+        
+        const email = document.getElementById('email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+            email.classList.add('error');
+            isValid = false;
+        }
+        
+        if (isValid) {
+            submitButton.classList.add('loading');
+            submitButton.textContent = '';
+            
+            // Simulate sending data
+            setTimeout(() => {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                
+                this.reset();
+                submitButton.classList.remove('loading');
+                submitButton.textContent = 'Send Message';
+                
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }, 1500);
+        }
+    });
+    
+    document.querySelectorAll('#contactForm input, #contactForm textarea').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('error');
+        });
+    });
+    </script>
+
+<script>
+    // Gallery Lightbox
+    document.addEventListener('DOMContentLoaded', () => {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const lightboxClose = document.querySelector('.lightbox-close');
+    
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').src;
+                const imgAlt = item.querySelector('img').alt;
+                lightboxImg.src = imgSrc;
+                lightboxImg.alt = imgAlt;
+                lightbox.classList.add('active');
+            });
+        });
+    
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+    
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+    
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+            }
+        });
+    });
+    </script>
+
+<script>
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const quickReplies = document.querySelectorAll('.quick-reply-btn');
+    const togglePrompts = document.getElementById('togglePrompts');
+    const quickRepliesContainer = document.getElementById('quickReplies');
+    
+    const responses = {
+        "Where are the towels?": "The towels are located in the bathroom under the sink. You'll find both bath towels and hand towels there. 🛁",
+        "What's the Wi-Fi password?": "The Wi-Fi password is: AirBnB2024#Secure! \nNetwork name: CasaMalaga_5G 📶",
+        "What's my address?": "Your address is: Calle Granada 42, Apartment 3B\nMálaga, Spain 29015 📍",
+        "help": "I can help you with:\n- Location of items\n- Wi-Fi details\n- Address information\n- Check-in/out times\n- Local recommendations\n- House rules\n\nJust ask me anything! 😊"
+    };
+    
+    togglePrompts.addEventListener('click', () => {
+        quickRepliesContainer.classList.toggle('hidden');
+        togglePrompts.textContent = quickRepliesContainer.classList.contains('hidden') ? 
+            'Show Quick Replies' : 'Hide Quick Replies';
+    });
+    
+    function addMessage(message, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        messageDiv.textContent = message;
+        chatContainer.insertBefore(messageDiv, typingIndicator);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function showTypingIndicator() {
+        typingIndicator.classList.add('typing-active');
+    }
+    
+    function hideTypingIndicator() {
+        typingIndicator.classList.remove('typing-active');
+    }
+    
+    function handleResponse(message) {
+        addMessage(message, 'sent');
+        
+        showTypingIndicator();
+        setTimeout(() => {
+            hideTypingIndicator();
+            const response = responses[message] || "I'm not sure about that. Type 'help' to see what I can assist you with! 😊";
+            addMessage(response, 'received');
+        }, 1500);
+    }
+    
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        if (message) {
+            handleResponse(message);
+            messageInput.value = '';
+        }
+    }
+    
+    quickReplies.forEach(button => {
+        button.addEventListener('click', () => {
+            handleResponse(button.textContent);
+        });
+    });
+    
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    </script>
+
+</body>
+</html>
