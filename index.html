@@ -245,7 +245,7 @@
                     <div class="typing-dot"></div>
                 </div>
             </div>
-            <button class="toggle-prompts" id="togglePrompts">Toggle Quick Replies</button>
+            <button class="toggle-prompts" id="togglePrompts">↕</button>
             <div class="quick-replies" id="quickReplies">
                 <button class="quick-reply-btn">Where are the towels?</button>
                 <button class="quick-reply-btn">What's the Wi-Fi password?</button>
@@ -797,7 +797,7 @@
     togglePrompts.addEventListener('click', () => {
         quickRepliesContainer.classList.toggle('hidden');
         togglePrompts.textContent = quickRepliesContainer.classList.contains('hidden') ? 
-            'Show Quick Replies' : 'Hide Quick Replies';
+            '▲' : '▼';
     });
     
     function addMessage(message, type) {

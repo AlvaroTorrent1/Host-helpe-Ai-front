@@ -1607,6 +1607,7 @@ main {
     transform: scale(1.02);
 }
 
+/* Toggle Button Styles */
 .toggle-prompts {
     position: absolute;
     bottom: 70px;
@@ -1614,21 +1615,28 @@ main {
     background: rgba(7, 94, 84, 0.9);
     color: white;
     border: none;
-    padding: 4px 8px;
-    border-radius: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 11px;
     z-index: 3;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
-    height: 24px;
-    line-height: 1;
+    pointer-events: auto;
 }
 
 .toggle-prompts:hover {
-    transform: scale(1.05);
     background: rgba(7, 94, 84, 1);
 }
 
+.toggle-prompts svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
 /* WhatsApp Showcase Responsive Fixes */
 @media (min-width: 1400px) {
     .chat-demo-section {
