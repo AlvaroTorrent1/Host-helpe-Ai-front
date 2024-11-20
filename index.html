@@ -24,11 +24,20 @@
     
 
     <title>Host Helper AI</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/assets/favicon/site.webmanifest">
-    <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
+    <!-- Favicon Tags -->
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="Host Helper AI">
+    <meta name="application-name" content="Host Helper AI">
+    <meta name="theme-color" content="#FF9933">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="assets/favicon/web-app-manifest-512x512.json">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
@@ -115,35 +124,25 @@
                     </button>
                 </div>
 
-                <button class="mobile-menu-button" onclick="toggleMobileMenu()">
+                <button class="mobile-menu-button">
                     <span class="menu-icon"></span>
+                    <span class="sr-only">Menu</span>
                 </button>
+
+                
             </div>
         </header>
     </div>
 
-    <!-- Mobile Menu -->
     <div class="mobile-menu">
         <nav>
-            <a href="#brands" class="nav-link">Our brands</a>
+            <a href="#brands" class="nav-link">Statistics</a>
             <a href="#join" class="nav-link">Join our collective</a>
             <a href="#impact" class="nav-link">Our impact</a>
             <a href="#pricing" class="nav-link">Pricing</a>
         </nav>
-        <div class="auth-buttons">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                <i class="fas fa-user"></i>
-                <span>Login</span>
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
-                <span>Register</span>
-            </button>
-        </div>
-        <div class="language-switcher">
-            <button onclick="switchLanguage('en')">EN</button>
-            <button onclick="switchLanguage('es')">ES</button>
-        </div>
     </div>
+
 
     <main>
         <!-- Hero Section -->
@@ -423,19 +422,19 @@
                     <p class="section-subtitle">Choose the perfect plan for your needs</p>
                 </div>
 
-                <div class="pricing-cards">
-
-                    <!-- Enterprise Plan -->
-                    <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="pricing-header">
-                            <span class="plan-badge">Custom</span>
-                            <div class="price">
-                                <span class="currency">€</span>
-                                <span class="amount">30</span>
-                                <span class="period">/month</span>
-                            </div>
-                            <p class="text-muted">For large-scale operations</p>
-                        </div>
+        <!-- Updated Pricing Cards -->
+        <div class="pricing-cards">
+            <!-- Enterprise Plan -->
+            <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="pricing-header">
+                    <span class="plan-badge">Custom</span>
+                    <div class="price">
+                        <span class="currency"></span>
+                        <span class="amount">∞</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <p class="text-muted">For large-scale operations</p>
+                </div>
                         <div class="pricing-features">
                             <ul>
                                 <li><i class="fas fa-check"></i> Custom AI training</li>
@@ -452,18 +451,18 @@
                     </div>
 
                 
-                    <!-- Professional Plan -->
-                    <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
-                        <div class="popular-badge">Most Popular</div>
-                        <div class="pricing-header">
-                            <span class="plan-badge">Pro</span>
-                            <div class="price">
-                                <span class="currency">€</span>
-                                <span class="amount">20</span>
-                                <span class="period">/month</span>
-                            </div>
-                            <p class="text-muted">Best for growing businesses</p>
+                <!-- Professional Plan -->
+                <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <span class="plan-badge">Pro</span>
+                        <div class="price">
+                            <span class="currency">€</span>
+                            <span class="amount">20</span>
+                            <span class="period">/month</span>
                         </div>
+                        <p class="text-muted">Best for growing businesses</p>
+                    </div>
                         <div class="pricing-features">
                             <ul>
                                 <li><i class="fas fa-check"></i> Advanced AI responses</li>
@@ -480,30 +479,34 @@
                         </div>
                     </div>
                 
-                        <!-- Free trial -->
-                        <div class="pricing-card" data-aos="fade-up">
-                            <div class="pricing-header">
-                                <span class="plan-badge">Free Trial</span>
-                                <div class="price">
-                                    <span class="amount">1</span>
-                                    <span class="period">/month</span>
-                                </div>
-                                <p class="text-muted">Perfect for trying out our service</p>
+                    <!-- Basic Plan with Free Trial -->
+                    <div class="pricing-card trial-card" data-aos="fade-up">
+                        <div class="pricing-header">
+                            <span class="plan-badge">Basic</span>
+                            <div class="price">
+                                <span class="currency">€</span>
+                                <span class="amount">10</span>
+                                <span class="period">/month</span>
                             </div>
-                            <div class="pricing-features">
-                                <ul>
-                                    <li><i class="fas fa-check"></i> Basic AI responses</li>
-                                    <li><i class="fas fa-check"></i> 1 property</li>
-                                    <li><i class="fas fa-check"></i> Email support</li>
-                                    <li><i class="fas fa-check"></i> Basic analytics</li>
-                                    <li class="disabled"><i class="fas fa-times"></i> Smart pricing</li>
-                                    <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
-                                </ul>
-                            </div>
-                            <div class="pricing-action">
-                                <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="free-trial">Start Free Trial</button>
-                            </div>
+                            <p class="text-muted">Perfect for getting started</p>
                         </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Basic AI responses</li>
+                                <li><i class="fas fa-check"></i> 1 property</li>
+                                <li><i class="fas fa-check"></i> Email support</li>
+                                <li><i class="fas fa-check"></i> Basic analytics</li>
+                                <li class="disabled"><i class="fas fa-times"></i> Smart pricing</li>
+                                <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-action">
+                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="free-trial">Start Free Trial</button>
+                        </div>
+                        <div class="trial-footer">
+                            Try free for 2 weeks - No credit card required
+                        </div>
+                    </div>
                     </section>
 
 <!-- Pricing Section End -->
@@ -566,14 +569,14 @@
             <!-- Social Links -->
             <div class="col-lg-3 col-md-6">
                 <div class="social-links">
-                    <a href="https://linkedin.com" target="_blank" class="social-link" aria-label="LinkedIn">
+                    <a href="https://www.linkedin.com/company/host-helper-ai/posts/?feedView=all" target="_blank" class="social-link" aria-label="LinkedIn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                             <rect x="2" y="9" width="4" height="12"></rect>
                             <circle cx="4" cy="4" r="2"></circle>
                         </svg>
                     </a>
-                    <a href="https://youtube.com" target="_blank" class="social-link" aria-label="YouTube">
+                    <a href="https://www.youtube.com/@HostHelperAi" target="_blank" class="social-link" aria-label="YouTube">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
                             <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
@@ -648,10 +651,10 @@
                 link.textContent = link.getAttribute(`data-${lang}`);
             });
         }
-
-        function toggleMobileMenu() {
-            document.body.classList.toggle('mobile-menu-open');
-        }
+function toggleMobileMenu() {
+    const mobileMenu = document.querySelector('.mobile-menu');
+    mobileMenu.classList.toggle('active');
+}
 
                 // Add this new script for password toggle
                 document.querySelectorAll('.toggle-password').forEach(button => {
@@ -816,17 +819,40 @@
         typingIndicator.classList.remove('typing-active');
     }
     
-    function handleResponse(message) {
-        addMessage(message, 'sent');
-        
-        showTypingIndicator();
-        setTimeout(() => {
-            hideTypingIndicator();
-            const response = responses[message] || "I'm not sure about that. Type 'help' to see what I can assist you with! 😊";
-            addMessage(response, 'received');
-        }, 1500);
+       function handleResponse(message) {
+       addMessage(message, 'sent');
+       
+       showTypingIndicator();
+       setTimeout(() => {
+           hideTypingIndicator();
+           const response = responses[message] || "I'm not sure about that. Type 'help' to see what I can assist you with! 😊";
+           addMessage(response, 'received');
+       }, 1500);
     }
     
+    function showTypingIndicator() {
+    typingIndicator.classList.add('typing-active');
+}
+
+function hideTypingIndicator() {
+    typingIndicator.classList.remove('typing-active');
+}
+
+    // Mobile Menu Toggle
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('active');
+    document.body.classList.toggle('mobile-menu-open');
+}
+
+    // Close mobile menu when clicking a link
+document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        document.body.classList.remove('mobile-menu-open');
+        document.getElementById('mobileMenu').classList.remove('active');
+    });
+});
+
     function sendMessage() {
         const message = messageInput.value.trim();
         if (message) {
@@ -848,6 +874,25 @@
         }
     });
     </script>
+
+
+<!-- Updated JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (menuButton && mobileMenu) {
+        menuButton.addEventListener('click', function() {
+            mobileMenu.style.display = 'block';
+            setTimeout(() => {
+                mobileMenu.classList.toggle('active');
+            }, 10);
+        });
+    }
+});
+</script>
+
 
 </body>
 </html>

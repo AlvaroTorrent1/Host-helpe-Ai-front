@@ -298,27 +298,6 @@ nav a:hover::after {
     transform: translateX(-50%);
 }
 
-/* Mobile Menu Button */
-.mobile-menu-button {
-    display: none;
-    background: none;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-.menu-icon,
-.menu-icon::before,
-.menu-icon::after {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: #333;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-    position: relative;
-}
-
 .menu-icon::before,
 .menu-icon::after {
     content: '';
@@ -328,48 +307,6 @@ nav a:hover::after {
 .menu-icon::before { top: -6px; }
 .menu-icon::after { bottom: -6px; }
 
-/* Mobile Menu */
-.mobile-menu {
-    position: fixed;
-    top: 100px;
-    left: 10px;
-    right: 10px;
-    background: white;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 16px;
-    transform: translateY(-10px);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    z-index: 999;
-}
-
-
-.mobile-menu-open .mobile-menu {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
-}
-
-.mobile-menu nav {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.mobile-menu .nav-link {
-    font-size: 15px;
-    padding: 12px;
-    text-align: center;
-    color: #333;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
 
 .mobile-menu .nav-link:hover {
     background: rgba(255, 153, 51, 0.1);
@@ -430,27 +367,7 @@ nav a:hover::after {
         display: none;
     }
 
-    .mobile-menu-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 35px;
-        height: 35px;
-        padding: 6px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        margin-left: auto;
-        z-index: 1000;
-    }
 
-    .menu-icon {
-        position: relative;
-        width: 24px;
-        height: 2px;
-        background-color: #333;
-        transition: all 0.3s ease;
-    }
 
     .header-content {
         display: flex;
@@ -470,18 +387,7 @@ nav a:hover::after {
         width: auto;
     }
 
-    .menu-icon::before,
-    .menu-icon::after {
-        content: '';
-        position: absolute;
-        width: 20px;
-        height: 2px;
-        background-color: #333;
-        transition: all 0.3s ease;
-    }
 
-    .menu-icon::before { top: -5px; }
-    .menu-icon::after { bottom: -5px; }
 }
 
 
@@ -1381,14 +1287,18 @@ main {
 
 /* Chat Demo Section Core Styles */
 .chat-demo-section {
+    width: 100%;
+    padding: clamp(1rem, 5vw, 4rem);
     min-height: 100vh;
     background: #FFE8CC;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 4rem 2rem;
     perspective: 1000px;
+    gap: 2rem;
+    padding: 4rem;
+    align-items: center;
 }
 
 .chat-demo-header {
@@ -1419,8 +1329,9 @@ main {
 
 /* iPhone Frame Core Styles */
 .iphone-frame {
-    width: 375px;
-    height: 812px;
+    width: clamp(280px, 90vw, 375px);
+    height: auto;
+    aspect-ratio: 375/812;
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
     border-radius: 50px;
     position: relative;
@@ -1428,7 +1339,12 @@ main {
     transform-style: preserve-3d;
     animation: phoneIntro 1.5s ease-out forwards;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
+    flex: 1;
+    max-width: 375px;
+    margin-left: auto;
+    }
+
+
 
 .notch {
     position: absolute;
@@ -1490,30 +1406,26 @@ main {
     object-fit: contain;
 }
 
+/* WhatsApp Showcase Fixes */
 .chat-container {
-    margin: 0;
-    border: none;       
-    background: #E5DDD5;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-    height: calc(100% - 60px);
+    height: calc(100% - 120px);
+    overflow-y: auto;
     padding: 20px;
     padding-bottom: 120px;
-    overflow-y: auto;
+    background: #E5DDD5;
+    position: relative;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 /* Message Styles */
 .message {
     max-width: 70%;
-    padding: 10px 15px;
-    border-radius: 15px;
+    padding: 12px 15px;
     margin-bottom: 15px;
     position: relative;
-    animation: messageSlide 0.5s ease-out;
-    font-size: 14px;
+    word-wrap: break-word;
+    animation: messageSlide 0.3s ease-out forwards;
 }
-
 .message.received {
     background: white;
     margin-right: auto;
@@ -1525,6 +1437,41 @@ main {
     margin-left: auto;
     border-radius: 15px 0 15px 15px;
 }
+
+/* Typing Indicator */
+.typing-indicator {
+    display: none;
+    padding: 12px 15px;
+    background: white;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    width: fit-content;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.typing-indicator.typing-active {
+    display: flex;
+    opacity: 1;
+    gap: 4px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background: #90a4ae;
+    border-radius: 50%;
+    animation: typingAnimation 1.4s infinite;
+    display: inline-block;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingAnimation {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-4px); }
+}
+
 
 /* Input Area */
 .input-area {
@@ -1637,43 +1584,46 @@ main {
     height: 16px;
     transition: transform 0.3s ease;
 }
-/* WhatsApp Showcase Responsive Fixes */
-@media (min-width: 1400px) {
+/* WhatsApp showcase layout */
+@media (min-width: 1200px) {
     .chat-demo-section {
         flex-direction: row;
-        gap: 4rem;
-        padding: 4rem;
+        justify-content: center;
+        gap: 2px;
+        padding: 6rem;
     }
 
+    
     .chat-demo-header {
-        text-align: left;
-        max-width: 600px;
-        margin-bottom: 0;
+        text-align: center;
+        flex: 1;
+        max-width: 500px;
+        margin-right: 1rem;
+        margin-top: 1rem,
     }
+
 
     .iphone-frame {
-        transform: perspective(1000px) rotateY(-10deg);
+        flex: none;
+        margin: 0;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1199px) {
     .chat-demo-section {
-        padding: 2rem 1rem;
-        min-height: auto;
-    }
-
-    .iphone-frame {
-        width: 100%;
-        max-width: 320px;
-        height: auto;
-        aspect-ratio: 375/812;
-        transform: none !important;
-        margin: 0 auto;
+        flex-direction: column;
+        text-align: center;
+        padding: 3rem 1.5rem;
     }
 
     .chat-demo-header {
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
     }
+
+    .iphone-frame {
+        margin: 0 auto;
+    }
+
 
     .chat-demo-header h2 {
         font-size: 1.75rem;
@@ -1855,13 +1805,60 @@ main {
 }
 
 .pricing-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
     background: #fff;
     border-radius: 20px;
-    padding: 2rem;
     transition: all 0.3s ease;
     position: relative;
     text-align: center;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    padding-bottom: 50px; /* Space for trial footer */
+}   
+
+/* Pricing Section Updates */
+.pricing-card.trial-card {
+    position: relative;
+    padding-bottom: 60px; /* Adjusted to accommodate button and footer */
+}
+
+.trial-footer {
+    background: #FFF5E6;
+    color: #FF9933;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 15;
+    border-radius: 0 0 20px 20px;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 -4px 12px rgba(255, 153, 51, 0.1);
+}
+
+.pricing-action {
+    margin-top: auto;
+    padding-bottom: 20px;
+}
+
+/* Ensure buttons are consistent */
+.pricing-card .btn-outline-primary {
+    background: transparent;
+    border: 2px solid #FF9933;
+    color: #FF9933;
+    transition: all 0.3s ease;
+
+ 
+}
+
+.pricing-card .btn-outline-primary:hover {
+    background: #FF9933;
+    color: white;
+    transform: translateY(-2px);
 }
 
 .pricing-card:hover {
@@ -1920,8 +1917,7 @@ main {
 
 /* Pricing Features */
 .pricing-features {
-    text-align: left;
-    margin: 2rem 0;
+    flex-grow: 1;
 }
 
 .pricing-features ul {
@@ -2005,10 +2001,6 @@ main {
 @media (max-width: 768px) {
     nav, .language-switcher {
         display: none;
-    }
-
-    .mobile-menu-button {
-        display: block;
     }
 
     .pricing-section {
@@ -2178,5 +2170,112 @@ header {
     .stat-card,
     .pricing-card {
         break-inside: avoid;
+    }
+}
+
+/* Mobile Menu Styles */
+.mobile-menu-button {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: none;
+    z-index: 1001;
+}
+
+.menu-icon {
+    width: 24px;
+    height: 2px;
+    background-color: #333;
+    position: relative;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+.menu-icon::before {
+    top: -6px;
+}
+
+.menu-icon::after {
+    bottom: -6px;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-button {
+        display: block;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        z-index: 999;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+    }
+
+    .mobile-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .mobile-menu nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mobile-menu .nav-link {
+        font-size: 1.2rem;
+        padding: 15px;
+        color: #333 !important;
+        text-decoration: none;
+        border-radius: 8px;
+        margin: 5px 0;
+        transition: all 0.3s ease;
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    .mobile-menu .nav-link:hover {
+        background: rgba(255, 153, 51, 0.1);
+        color: #FF9933 !important;
+    }
+
+    /* Animate menu icon */
+    .mobile-menu-button.active .menu-icon {
+        background: transparent;
+    }
+
+    .mobile-menu-button.active .menu-icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .mobile-menu-button.active .menu-icon::after {
+        bottom: 0;
+        transform: rotate(-45deg);
     }
 }
