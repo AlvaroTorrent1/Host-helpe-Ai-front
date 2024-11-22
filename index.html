@@ -44,52 +44,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <!-- React and Babel dependencies -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<!-- Your language manager component -->
+<script type="text/babel" src="/functions/languageManager.js"></script>
+<script src="/functions/chat.js" defer></script>
+
     <link rel="stylesheet" href="language-selector.css">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <!-- Language Chooser -->
-    <div class="language-overlay" id="languageOverlay">
-        <div class="language-container">
-            <div class="language-options">
-                <button class="language-option" onclick="selectLanguage('en')">
-                    <div class="flag-container">
-                        <img src="assets/icons/americaflag.jpg" alt="English Flag">
-                    </div>
-                </button>
-                
-                <button class="language-option" onclick="selectLanguage('es')">
-                    <div class="flag-container">
-                        <img src="assets/icons/spainflag.jpg" alt="Spanish Flag">
-                    </div>
-                </button>
-            </div>
+<!-- Language Chooser -->
+<div class="language-overlay" id="languageOverlay">
+    <div class="language-container">
+        <div class="language-options">
+            <button class="language-option" onclick="window.selectLanguage('en')">
+                <div class="flag-container">
+                    <img src="assets/icons/americaflag.jpg" alt="English Flag">
+                </div>
+            </button>
+            
+            <button class="language-option" onclick="window.selectLanguage('es')">
+                <div class="flag-container">
+                    <img src="assets/icons/spainflag.jpg" alt="Spanish Flag">
+                </div>
+            </button>
         </div>
     </div>
+</div>
     
-    <script>
-    function selectLanguage(lang) {
-        const overlay = document.getElementById('languageOverlay');
-        overlay.classList.add('hiding');
-        
-        // Switch language using your existing function
-        if (window.switchLanguage) {
-            window.switchLanguage(lang);
-        }
-        
-        // Hide overlay after animation completes
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-        }, 500);
-    }
-    
-    // Ensure overlay is visible when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        const overlay = document.getElementById('languageOverlay');
-        overlay.style.opacity = '1';
-    });
-    </script>
 
     <!-- Keep your existing background shapes -->
     <div class="background-shapes">
@@ -97,6 +83,7 @@
         <div class="shape shape-2"></div>
         <div class="shape shape-3"></div>
     </div>
+    
 
 
     <!-- Header -->
@@ -104,89 +91,92 @@
         <header id="header">
             <div class="header-content">
                 <div class="logo">
-                    <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI Logo" />
+                    <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="footer-logo" width="100" data-translate="logoAlt">
                 </div>
                 
+                <!-- Navigation -->
                 <nav>
-                    <a href="#brands" class="nav-link" data-en="Summary" data-es="Resumen">Summary</a>
-                    <a href="#join" class="nav-link" data-en="Join us" data-es="Únete">Join us</a>
-                    <a href="#impact" class="nav-link" data-en="Our impact" data-es="Nuestro impacto">Our impact</a>
-                    <a href="#pricing" class="nav-link" data-en="Prices" data-es="Precios">Prices</a>
+                    <a href="#brands" class="nav-link" data-translate="summary">Summary</a>
+                    <a href="#join" class="nav-link" data-translate="joinUs">Join us</a>
+                    <a href="#impact" class="nav-link" data-translate="ourImpact">Our impact</a>
+                    <a href="#pricing" class="nav-link" data-translate="prices">Prices</a>
                 </nav>
+
 
                 
             </div>
         </header>
     </div>
 
-    <div class="mobile-menu">
-        <nav>
-            <a href="#brands" class="nav-link">Statistics</a>
-            <a href="#join" class="nav-link">Join us</a>
-            <a href="#impact" class="nav-link">Our impact</a>
-            <a href="#pricing" class="nav-link">Pricing</a>
-        </nav>
-    </div>
 
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-content" data-aos="fade-up">
-                <div class="icon-container">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <h1>Host Helper Ai</h1>
-                <p>Ai-powered assistance for Airbnb hosts</p>
-                <a href="#contactForm" class="cta-button" data-aos="fade-up" data-aos-delay="100">
-                    Get Started
-                </a>
-            </div>
-        </section>
-    
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content" data-aos="fade-up">
+        <div class="icon-container">
+            <i class="fas fa-robot"></i>
+        </div>
+        <h1 data-translate="heroTitle">Host Helper AI</h1>
+        <p data-translate="heroSubtitle">AI-powered assistance for Airbnb hosts</p>
+        <a href="#contactForm" class="cta-button" data-translate="getStarted">Get Started</a>
+    </div>
+</section>
 
 
-        <!-- Features Section -->
-        <section class="features-section">
-            <div class="section-container">
-                <h2 data-aos="fade-up">Smart Hosting Solutions</h2>
-                <div class="features-grid">
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                        <i class="fas fa-comments"></i>
-                        <h3>24/7 Support</h3>
-                    </div>
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                        <i class="fas fa-home"></i>
-                        <h3>Home Guide</h3>
-                    </div>
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                        <i class="fas fa-star"></i>
-                        <h3>Local Tips</h3>
-                    </div>
-                    <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-                        <i class="fas fa-robot"></i>
-                        <h3>AI Concierge</h3>
-                    </div>
-                </div>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-container">
+        <h2 data-translate="smartHostingSolutions" data-aos="fade-up">Smart Hosting Solutions</h2>
+        <div class="features-grid">
+            <!-- Feature Card 1 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <i class="fas fa-comments"></i>
+                <h3 data-translate="support">24/7 Support</h3>
+                <p data-translate="supportDesc">Instant assistance around the clock for your guests and property management needs</p>
             </div>
-        </section>
+
+            <!-- Feature Card 2 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <i class="fas fa-home"></i>
+                <h3 data-translate="homeGuide">Home Guide</h3>
+                <p data-translate="homeGuideDesc">Comprehensive digital guides for every aspect of your property</p>
+            </div>
+
+            <!-- Feature Card 3 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <i class="fas fa-star"></i>
+                <h3 data-translate="localTips">Local Tips</h3>
+                <p data-translate="localTipsDesc">Curated recommendations for the best local experiences</p>
+            </div>
+
+            <!-- Feature Card 4 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <i class="fas fa-robot"></i>
+                <h3 data-translate="aiConcierge">AI Concierge</h3>
+                <p data-translate="aiConciergeDesc">Smart assistance powered by advanced AI technology</p>
+            </div>
+        </div>
+    </div>
+</section>
     
         <!-- Stats Section -->
         <section class="stats-section">
             <div class="section-container">
-                <h2 data-aos="fade-up">Key Metrics</h2>
+                <h2 data-aos="fade-up" data-translate="keyMetrics">Key Metrics</h2>
                 <div class="stats-grid">
                     <div class="stat-card" data-aos="fade-up">
                         <div class="stat-value">23</div>
-                        <p class="stat-label">Active users</p>
+                        <p class="stat-label" data-translate="activeUsers">Active users</p>
                     </div>
                     <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
                         <div class="stat-value">80%</div>
-                        <p class="stat-label">Average positive evaluation (%)</p>
+                        <p class="stat-label" data-translate="averageEvaluation">Average positive evaluation (%)</p>
                     </div>
                     <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
                         <div class="stat-value">35</div>
-                        <p class="stat-label">Average number of responded messages</p>
+                        <p class="stat-label" data-translate="averageMessages">Average number of responded messages</p>
                     </div>
                 </div>
             </div>
@@ -194,8 +184,8 @@
 
         <section class="cta-section">
             <div class="section-container">
-                <h2 data-aos="fade-up">Ready to Elevate?</h2>
-                <a href="#pricing" class="cta-button" data-aos="fade-up" data-aos-delay="100">
+                <h2 data-aos="fade-up" data-translate="readyToElevate">Ready to Elevate?</h2>
+                <a href="#pricing" class="cta-button" data-aos="fade-up" data-aos-delay="100" data-translate="startFreeTrial">
                     Start Free Trial
                 </a>
             </div>
@@ -203,12 +193,12 @@
 
 <!-- AI Chat Demo Section -->
 <section class="chat-demo-section">
-    <div class="chat-demo-header">
-        <h2 data-aos="fade-in">WhatsApp Showcase</h2>
-        <p data-aos="fade-in" data-aos-delay="100">
-            Experience an interactive preview of our AI assistant. Our actual product offers enhanced features, 
-            advanced AI capabilities, and seamless integration with your hosting platform.
-        </p>
+<div class="chat-demo-header">
+    <h2 data-aos="fade-in" data-translate="whatsappShowcase">WhatsApp Showcase</h2>
+    <p data-aos="fade-in" data-aos-delay="100" data-translate="whatsappDesc">
+        Experience an interactive preview of our AI assistant...
+    </p>
+</div>
     </div>
     <div class="iphone-frame" data-aos="fade-up" data-aos-delay="200">
         <div class="notch"></div>
@@ -218,11 +208,11 @@
                     <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="profile-image">
                 </div>
                 <div>
-                    <h2>Host Helper Ai</h2>
+                    <h2 data-translate="hostHelperAi">Host Helper Ai</h2>
                 </div>
             </div>
             <div class="chat-container" id="chatContainer">
-                <div class="message received">
+                <div class="message received" data-translate="initialGreeting">
                     Hello! I'm your Airbnb AI Assistant. How can I help you today? 👋
                 </div>
                 <div class="typing-indicator" id="typingIndicator">
@@ -232,13 +222,14 @@
                 </div>
             </div>
             <button class="toggle-prompts" id="togglePrompts">↕</button>
+            <!-- Quick Reply Buttons -->
             <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn">Where are the towels?</button>
-                <button class="quick-reply-btn">What's the Wi-Fi password?</button>
-                <button class="quick-reply-btn">What's my address?</button>
+                <button class="quick-reply-btn" data-translate="whereAreTowels">Where are the towels?</button>
+                <button class="quick-reply-btn" data-translate="wifiPassword">What's the Wi-Fi password?</button>
+                <button class="quick-reply-btn" data-translate="whatAddress">What's my address?</button>
             </div>
             <div class="input-area">
-                <input type="text" class="message-input" placeholder="Type a message..." id="messageInput">
+                <input type="text" class="message-input" placeholder="Type a message..." id="messageInput" data-translate="typeMessage">
                 <button class="send-button" id="sendButton">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white"/>
@@ -255,55 +246,55 @@
 <!-- Photo Gallery Section -->
 <div class="gallery-container">
     <div class="gallery-header">
-        <h2>Our Clients</h2>
+        <h2 data-translate="ourClients">Our Clients</h2>
     </div>
     
     <div class="gallery-grid">
         <div class="gallery-item">
             <img src="assets/images/pic1.png" alt="Property 1" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Luxury Villa</h3>
-                <p class="gallery-item-description">Elegant beachfront villa with panoramic ocean views.</p>
+                <h3 class="gallery-item-title" data-translate="luxuryVilla">Luxury Villa</h3>
+                <p class="gallery-item-description" data-translate="luxuryVillaDesc">Elegant beachfront villa with panoramic ocean views.</p>
             </div>
         </div>
         
         <div class="gallery-item">
             <img src="assets/images/pic2.png" alt="Property 2" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Urban Loft</h3>
-                <p class="gallery-item-description">Modern city living in the heart of downtown.</p>
+                <h3 class="gallery-item-title" data-translate="mountainRetreat">Mountain Retreat</h3>
+                <p class="gallery-item-description" data-translate="mountainRetreatDesc">Cozy cabin with stunning mountain views.</p>
             </div>
         </div>
         
         <div class="gallery-item">
             <img src="assets/images/pic3.png" alt="Property 3" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Mountain Retreat</h3>
-                <p class="gallery-item-description">Cozy cabin with stunning mountain views.</p>
+                <h3 class="gallery-item-title" data-translate="urbanLoft">Urban Loft</h3>
+                <p class="gallery-item-description" data-translate="urbanLoftDesc">Modern city living in the heart of downtown.</p>
             </div>
         </div>
         
         <div class="gallery-item">
             <img src="assets/images/pic4.png" alt="Property 4" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Seaside Cottage</h3>
-                <p class="gallery-item-description">Charming beachside getaway perfect for families.</p>
+                <h3 class="gallery-item-title" data-translate="seasideCottage">Seaside Cottage</h3>
+                <p class="gallery-item-description" data-translate="seasideCottageDesc">Charming beachside getaway perfect for families.</p>
             </div>
         </div>
         
         <div class="gallery-item">
             <img src="assets/images/pic5.png" alt="Property 5" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Desert Oasis</h3>
-                <p class="gallery-item-description">Modern desert home with private pool.</p>
+                <h3 class="gallery-item-title" data-translate="mountainRetreat">Desert Oasis</h3>
+                <p class="gallery-item-description" data-translate="mountainRetreatDesc">Modern desert home with private pool.</p>
             </div>
         </div>
         
         <div class="gallery-item">
             <img src="assets/images/pic6.png" alt="Property 6" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title">Forest Hideaway</h3>
-                <p class="gallery-item-description">Secluded forest retreat with luxury amenities.</p>
+                <h3 class="gallery-item-title" data-translate="forestHideaway">Forest Hideaway</h3>
+                <p class="gallery-item-description" data-translate="forestHideawayDesc">Secluded forest retreat with luxury amenities.</p>
             </div>
         </div>
     </div>
@@ -329,13 +320,13 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Welcome Back</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="loginModalLabel" data-translate="welcomeBack">Welcome Back</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-translate="close">Close</button>
                 </div>
                 <div class="modal-body">
                     <form id="loginForm" class="auth-form">
                         <div class="form-group mb-3">
-                            <label for="loginEmail" class="form-label">Email address</label>
+                            <label for="loginEmail" class="form-label" data-translate="emailAddress">Email address</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-envelope"></i>
@@ -344,7 +335,7 @@
                             </div>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="loginPassword" class="form-label">Password</label>
+                            <label for="loginPassword" class="form-label" data-translate="password">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-lock"></i>
@@ -356,7 +347,8 @@
                             </div>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Sign In</button>
+                            <button type="submit" class="btn btn-primary" data-translate="signIn">Sign In</button>
+                    
                         </div>
                     </form>
                 </div>
@@ -364,104 +356,68 @@
         </div>
     </div>
 
-    <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Create Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="registerForm" class="auth-form">
-                        <div class="form-group mb-3">
-                            <label for="registerUsername" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="registerUsername" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="registerEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="registerEmail" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="registerPassword" class="form-label">Password</label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="registerPassword" required>
-                                <button class="btn btn-outline-secondary toggle-password" type="button">
-                                    <i class="far fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Create Account</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-        
 
         <!-- Pricing Section -->
         <section id="pricing" class="pricing-section">
             <div class="container">
                 <div class="section-header text-center mb-5" data-aos="fade-up">
-                    <h2 class="section-title">Simple Pricing</h2>
-                    <p class="section-subtitle">Choose the perfect plan for your needs</p>
+                <!-- Pricing section -->
+                <h2 class="section-title" data-translate="simplePricing">Simple Pricing</h2>
+                <p class="section-subtitle" data-translate="choosePlan">Choose the perfect plan for your needs</p>
                 </div>
-
         <!-- Updated Pricing Cards -->
         <div class="pricing-cards">
             <!-- Enterprise Plan -->
             <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="pricing-header">
-                    <span class="plan-badge">Custom</span>
+                    <span class="plan-badge" data-translate="custom">Custom</span>
                     <div class="price">
-                        <span class="currency"></span>
+                        <span class="currency" data-translate="currency"></span>
                         <span class="amount">∞</span>
-                        <span class="period">/month</span>
+                        <span class="period" data-translate="perMonth">/month</span>
                     </div>
-                    <p class="text-muted">For large-scale operations</p>
+                    <p class="text-muted" data-translate="largeScale">For large-scale operations</p>
                 </div>
                         <div class="pricing-features">
                             <ul>
-                                <li><i class="fas fa-check"></i> Custom AI training</li>
-                                <li><i class="fas fa-check"></i> Unlimited properties</li>
-                                <li><i class="fas fa-check"></i> 24/7 premium support</li>
-                                <li><i class="fas fa-check"></i> Enterprise analytics</li>
-                                <li><i class="fas fa-check"></i> Voice Chatbots</li>
-                                <li><i class="fas fa-check"></i> Custom training</li>
+                                <!-- Features list -->
+                                <li><i class="fas fa-check"></i> <span data-translate="customAiTraining">Custom AI training</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="unlimitedProperties">Unlimited properties</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="premiumSupport">24/7 premium support</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="enterpriseAnalytics">Enterprise analytics</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="voiceChatbots">Voice Chatbots</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="customTraining">Custom training</span></li>
                             </ul>
                         </div>
                         <div class="pricing-action">
-                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="enterprise">Contact Sales</button>
+                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-translate="contactSales">Contact Sales</button>
                         </div>
                     </div>
 
                 
-                <!-- Professional Plan -->
-                <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="100">
-                    <div class="popular-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <span class="plan-badge">Pro</span>
-                        <div class="price">
-                            <span class="currency">€</span>
-                            <span class="amount">20</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p class="text-muted">Best for growing businesses</p>
-                    </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="fas fa-check"></i> Advanced AI responses</li>
-                            
-                                <li><i class="fas fa-check"></i> Priority support</li>
-                                <li><i class="fas fa-check"></i> Advanced analytics</li>
-                                <li><i class="fas fa-check"></i> Voice Chatbots</li>
-                                <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
-                            </ul>
-                        </div>
+<!-- Professional Plan -->
+<div class="pricing-card featured">
+    <div class="popular-badge" data-translate="mostPopular">Most Popular</div>
+    <div class="pricing-header">
+        <span class="plan-badge" data-translate="pro">Pro</span>
+        <div class="price">
+            <span class="currency">€</span>
+            <span class="amount">20</span>
+            <span class="period" data-translate="perMonth">/month</span>
+        </div>
+        <p class="text-muted" data-translate="bestGrowing">Best for growing businesses</p>
+    </div>
+    <div class="pricing-features">
+        <ul>
+            <li><i class="fas fa-check"></i> <span data-translate="advancedAi">Advanced AI responses</span></li>
+            <li><i class="fas fa-check"></i> <span data-translate="prioritySupport">Priority support</span></li>
+            <li><i class="fas fa-check"></i> <span data-translate="advancedAnalytics">Advanced analytics</span></li>
+            <li><i class="fas fa-check"></i> <span data-translate="voiceChatbots">Voice Chatbots</span></li>
+            <li class="disabled"><i class="fas fa-times"></i> <span data-translate="customTraining">Custom training</span></li>
+        </ul>
+    </div>
                         <div class="pricing-action">
-                            <button class="btn btn-primary btn-lg w-100 buy-button" data-plan="professional">Get Started</button>
+                            <button class="btn btn-primary btn-lg w-100 buy-button" data-translate="getStartedPro">Get Started</button>
                             
                         </div>
                     </div>
@@ -469,28 +425,28 @@
                     <!-- Basic Plan with Free Trial -->
                     <div class="pricing-card trial-card" data-aos="fade-up">
                         <div class="pricing-header">
-                            <span class="plan-badge">Basic</span>
+                            <span class="plan-badge" data-translate="basic">Basic</span>
                             <div class="price">
                                 <span class="currency">€</span>
                                 <span class="amount">10</span>
-                                <span class="period">/month</span>
+                                <span class="period" data-translate="perMonth">/month</span>
                             </div>
-                            <p class="text-muted">Perfect for getting started</p>
+                            <p class="text-muted" data-translate="perfectStart">Perfect for getting started</p>
                         </div>
                         <div class="pricing-features">
                             <ul>
-                                <li><i class="fas fa-check"></i> Basic AI responses</li>
-                                <li><i class="fas fa-check"></i> 1 property</li>
-                                <li><i class="fas fa-check"></i> Email support</li>
-                                <li><i class="fas fa-check"></i> Basic analytics</li>
-                                <li class="disabled"><i class="fas fa-times"></i> Smart pricing</li>
-                                <li class="disabled"><i class="fas fa-times"></i> Custom training</li>
+                                <li><i class="fas fa-check"></i> <span data-translate="basicAi">Basic AI responses</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="oneProperty">1 property</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="emailSupport">Email support</span></li>
+                                <li><i class="fas fa-check"></i> <span data-translate="basicAnalytics">Basic analytics</span></li>
+                                <li class="disabled"><i class="fas fa-times"></i> <span data-translate="smartPricing">Smart pricing</span></li>
+                                <li class="disabled"><i class="fas fa-times"></i> <span data-translate="customTraining">Custom training</span></li>
                             </ul>
                         </div>
                         <div class="pricing-action">
-                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-plan="free-trial">Start Free Trial</button>
+                            <button class="btn btn-outline-primary btn-lg w-100 buy-button" data-translate="startTrial">Start Free Trial</button>
                         </div>
-                        <div class="trial-footer">
+                        <div class="trial-footer" data-translate="trialText">
                             Try free for 2 weeks - No credit card required
                         </div>
                     </div>
@@ -503,21 +459,21 @@
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
         <div class="contact-container">
-            <h1>Get in Touch</h1>
+            <h1 data-translate="getInTouch">Get in Touch</h1>
             <form id="contactForm">
                 <div class="form-group">
-                    <input type="text" placeholder="Full Name" required>
+                    <input type="text" data-translate="fullName" placeholder="Full Name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="Email Address" required>
+                    <input type="email" data-translate="emailAddress" placeholder="Email Address" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder="Subject">
+                    <input type="text" data-translate="subject" placeholder="Subject">
                 </div>
                 <div class="form-group">
-                    <textarea placeholder="Your Message" required></textarea>
+                    <textarea data-translate="yourMessage" placeholder="Your Message" required></textarea>
                 </div>
-                <button type="submit">Send Message</button>
+                <button type="submit" data-translate="sendMessage">Send Message</button>
             </form>
         </div>
     </section>
@@ -530,7 +486,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="footer-about">
                     <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="footer-logo" width="100">
-                    <p class="text-muted mb-0">Empowering Airbnb hosts with AI-driven solutions</p>
+                    <p class="text-muted mb-0" data-translate="empowering">Empowering Airbnb hosts with AI-driven solutions</p>
                 </div>
             </div>
 
@@ -542,13 +498,13 @@
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
-                        <span>hosthelperai.services@gmail.com</span>
+                        <span data-translate="contactEmail">hosthelperai.services@gmail.com</span>
                     </div>
                     <div class="contact-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                         </svg>
-                        <span>+34 687 472 327</span>
+                        <span data-translate="contactPhone">+34 687 472 327</span>
                     </div>
                 </div>
             </div>
@@ -582,7 +538,7 @@
 
         <!-- Footer Bottom - Copyright -->
         <div class="footer-bottom">
-            <p class="copyright">© 2024 Host Helper AI</p>
+            <p class="copyright" data-translate="copyright">© 2024 Host Helper AI</p>
         </div>
     </div>
 </footer>
@@ -771,99 +727,6 @@ function toggleMobileMenu() {
     });
     </script>
 
-<script>
-    const chatContainer = document.getElementById('chatContainer');
-    const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const typingIndicator = document.getElementById('typingIndicator');
-    const quickReplies = document.querySelectorAll('.quick-reply-btn');
-    const togglePrompts = document.getElementById('togglePrompts');
-    const quickRepliesContainer = document.getElementById('quickReplies');
-    
-    const responses = {
-        "Where are the towels?": "The towels are located in the bathroom under the sink. You'll find both bath towels and hand towels there. 🛁",
-        "What's the Wi-Fi password?": "The Wi-Fi password is: AirBnB2024#Secure! \nNetwork name: CasaMalaga_5G 📶",
-        "What's my address?": "Your address is: Calle Granada 42, Apartment 3B\nMálaga, Spain 29015 📍",
-        "help": "I can help you with:\n- Location of items\n- Wi-Fi details\n- Address information\n- Check-in/out times\n- Local recommendations\n- House rules\n\nJust ask me anything! 😊"
-    };
-    
-    togglePrompts.addEventListener('click', () => {
-        quickRepliesContainer.classList.toggle('hidden');
-        togglePrompts.textContent = quickRepliesContainer.classList.contains('hidden') ? 
-            '▲' : '▼';
-    });
-    
-    function addMessage(message, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', type);
-        messageDiv.textContent = message;
-        chatContainer.insertBefore(messageDiv, typingIndicator);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-    
-    function showTypingIndicator() {
-        typingIndicator.classList.add('typing-active');
-    }
-    
-    function hideTypingIndicator() {
-        typingIndicator.classList.remove('typing-active');
-    }
-    
-       function handleResponse(message) {
-       addMessage(message, 'sent');
-       
-       showTypingIndicator();
-       setTimeout(() => {
-           hideTypingIndicator();
-           const response = responses[message] || "I'm not sure about that. Type 'help' to see what I can assist you with! 😊";
-           addMessage(response, 'received');
-       }, 1500);
-    }
-    
-    function showTypingIndicator() {
-    typingIndicator.classList.add('typing-active');
-}
-
-function hideTypingIndicator() {
-    typingIndicator.classList.remove('typing-active');
-}
-
-    // Mobile Menu Toggle
-function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileMenu.classList.toggle('active');
-    document.body.classList.toggle('mobile-menu-open');
-}
-
-    // Close mobile menu when clicking a link
-document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        document.body.classList.remove('mobile-menu-open');
-        document.getElementById('mobileMenu').classList.remove('active');
-    });
-});
-
-    function sendMessage() {
-        const message = messageInput.value.trim();
-        if (message) {
-            handleResponse(message);
-            messageInput.value = '';
-        }
-    }
-    
-    quickReplies.forEach(button => {
-        button.addEventListener('click', () => {
-            handleResponse(button.textContent);
-        });
-    });
-    
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-    </script>
 
 
 <!-- Updated JavaScript -->
@@ -883,6 +746,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.section');
+    const dots = document.querySelectorAll('.nav-dot');
+    const container = document.querySelector('.section-container');
+    let currentSection = 0;
+    let isScrolling = false;
+
+    function switchToSection(index) {
+        if (index < 0 || index >= sections.length) return;
+        
+        sections.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        
+        sections[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSection = index;
+    }
+
+    function handleWheel(e) {
+        if (isScrolling) return;
+        isScrolling = true;
+        
+        if (e.deltaY > 0 && currentSection < sections.length - 1) {
+            switchToSection(currentSection + 1);
+        } else if (e.deltaY < 0 && currentSection > 0) {
+            switchToSection(currentSection - 1);
+        }
+        
+        setTimeout(() => {
+            isScrolling = false;
+        }, 1000);
+    }
+
+    // Handle wheel events
+    container.addEventListener('wheel', handleWheel);
+
+    // Handle dot clicks
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => switchToSection(index));
+    });
+
+    // Initialize first section
+    switchToSection(0);
+});
+
+</script>
+
+
+<script type="text/babel">
+    ReactDOM.render(
+        <LanguageManager />,
+        document.getElementById('react-main-content')
+    );
+</script>
 
 </body>
 </html>
