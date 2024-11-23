@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-link');
     const authButtons = document.querySelector('.auth-buttons');
     const headerContent = document.querySelector('.header-content');
+    const logo = document.querySelector('.logo');
     let lastScrollTop = 0;
     let ticking = false;
 
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateHeaderState(scrollTop) {
-        const scrollDistance = 150; // Reduced distance for faster transition
+        const scrollDistance = 150;
         const scrollPercentage = Math.min(scrollTop / scrollDistance, 1);
         
         // Calculate blur and transparency based on scroll
@@ -40,22 +41,25 @@ document.addEventListener('DOMContentLoaded', () => {
         header.style.webkitBackdropFilter = `blur(${blurValue}px)`;
         header.style.backgroundColor = `rgba(250, 244, 235, ${transparency})`;
         
+        // Handle logo fade out
+        if (logo) {
+            logo.style.opacity = 1 - (scrollPercentage * 2); // Faster fade out
+            logo.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
+        }
+        
         // Handle auth buttons fade out
         if (authButtons) {
-            authButtons.style.opacity = 1 - (scrollPercentage * 2); // Faster fade out
+            authButtons.style.opacity = 1 - (scrollPercentage * 2);
             authButtons.style.transform = `translateY(${scrollPercentage * -20}px)`;
             authButtons.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
-            // Adjust header height when auth buttons are hidden
-            headerContent.style.height = `${48 - (scrollPercentage * 8)}px`; // Smoothly reduce height
+            headerContent.style.height = `${48 - (scrollPercentage * 8)}px`;
         }
         
         if (scrollTop <= 0) {
-            // At the very top
             header.classList.remove('header-floating');
             header.classList.add('header-initial');
             header.style.setProperty('--scroll-progress', '0');
         } else {
-            // Any scroll position
             header.classList.remove('header-initial');
             header.classList.add('header-floating');
             header.style.setProperty('--scroll-progress', scrollPercentage.toString());
@@ -64,10 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Smooth transition for width
         if (window.innerWidth > 768) {
             const baseWidth = 90;
-            const minWidth = scrollPercentage * 45; // Increased reduction for smaller header
+            const minWidth = scrollPercentage * 45;
             header.style.width = `${baseWidth - minWidth}%`;
             
-            // Additional padding reduction
             const basePadding = 24;
             const minPadding = scrollPercentage * 12;
             header.style.padding = `${basePadding - minPadding}px ${basePadding - minPadding}px`;
@@ -79,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             link.style.transform = `scale(${scale})`;
         });
     }
+
+
 
     
     // Language switcher
