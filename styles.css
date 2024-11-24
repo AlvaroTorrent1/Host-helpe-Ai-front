@@ -110,7 +110,6 @@ chat-demo-section {
     right: 0;
     padding: 20px;
     z-index: 1000;
-    pointer-events: none;
     transition: padding 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
@@ -125,7 +124,6 @@ header {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     box-sizing: border-box;
     padding: 16px 24px;
-    pointer-events: auto;
 }
 
 .header-floating {
@@ -147,6 +145,132 @@ header {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     position: relative;
 }
+
+/* Language Switcher */
+.language-switcher {
+    display: flex;
+    gap: 10px;
+}
+
+.lang-btn {
+    background: none;
+    border: 1px solid #FF9933;
+    color: #FF9933;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+    background: #FF9933;
+    color: white;
+}
+
+/* Mobile Header Styles */
+@media (max-width: 768px) {
+    .header-wrapper {
+        padding: 10px;
+    }
+
+    header {
+        width: 100% !important;
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+    }
+
+    .desktop-nav, .language-switcher:not(.mobile) {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: white;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Create space between the items */
+        padding-top: 50px; /* To avoid overlap with language buttons */
+    }
+
+    .mobile-menu.active {
+        display: block;
+    }
+
+    .mobile-menu nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mobile-menu .nav-link {
+        font-size: 18px;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Position Language Switcher at the top corner */
+    .language-switcher.mobile {
+        position: absolute;
+        top: 20px; /* Distance from the top */
+        right: 20px; /* Distance from the right edge */
+        display: flex;
+        gap: 10px;
+        z-index: 1001; /* Ensure it's above other elements */
+    }
+
+    .lang-btn {
+        background: none;
+        border: 1px solid #FF9933;
+        color: #FF9933;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.1rem; /* Slightly larger for better visibility */
+    }
+
+    .lang-btn:hover {
+        background: #FF9933;
+        color: white;
+    }
+}
+
+
+
+/* Logo fade out */
+.header-floating .logo {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Language switcher fade out */
+.header-floating .language-switcher {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+
 
 .header-floating .header-content {
     height: 40px;
@@ -344,54 +468,82 @@ nav a:hover::after {
     }
 }
 
+
+
 /* Mobile Header Styles */
 @media (max-width: 768px) {
     .header-wrapper {
         padding: 8px;
-        width: 100%;
-        background: rgba(250, 244, 235, 0.95);
     }
+
     header {
         width: 100% !important;
         margin: 0;
-        padding: 8px 12px;  
+        padding: 8px 12px;
         border-radius: 12px;
-        background: transparent;
+        background: rgba(250, 244, 235, 0.95);
     }
 
-    .header-floating {
-        width: 100%;
-        border-radius: 12px;
-    }
-
-    nav, 
-    .auth-buttons,
-    .language-switcher {
+    .desktop-nav {
         display: none;
     }
 
-
-
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: auto;
-        gap: 15px;
+    .mobile-menu-button {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
     }
 
-    .logo {
-        position: relative;
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 80px;
         left: 0;
-        transform: none;
-    }
-    .logo img {
-        height: 35px;
-        width: auto;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: white;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        overflow-y: auto;
     }
 
+    .mobile-menu.active {
+        display: block;
+    }
 
+    .mobile-menu nav {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .mobile-menu .nav-link {
+        font-size: 18px;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
 }
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .mobile-menu-button,
+    .mobile-menu {
+        display: none;
+    }
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+
+
+
+
 
 
 /* Main Content */
@@ -1767,6 +1919,7 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
+    overflow-y: auto; /* Ensure body scroll is always enabled */
 }
 
 main {
@@ -2224,7 +2377,7 @@ header {
 
     .mobile-menu {
         position: fixed;
-        top: 80px;
+        top: 60px;
         left: 0;
         width: 100%;
         background: white;
@@ -2235,12 +2388,17 @@ header {
         z-index: 999;
         transform: translateY(-20px);
         transition: all 0.3s ease;
+        height: auto; /* Allow the menu to grow based on the content height */
+        max-height: 80vh; /* Optional: prevent it from getting too tall */
+        overflow-y: auto; /* Allow scrolling if the content overflows */
+        border-radius: 0 0 15px 15px; /* Add rounded bottom corners */
     }
 
     .mobile-menu.active {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
+        height: auto; /* Ensures the height is auto when the menu is active */
     }
 
     .mobile-menu nav {
@@ -2283,3 +2441,297 @@ header {
     }
 }
 
+
+
+/* Add these new styles to your existing CSS */
+
+/* Smooth scroll lock */
+body.scroll-lock {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+/* Story Section Styles */
+.story-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #FFE8CC;
+    z-index: 1;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.story-section.active {
+    z-index: 50;
+}
+
+/* Background Elements */
+.bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size: 40px 40px;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.animated-gradient {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background: linear-gradient(45deg, 
+        rgba(255,153,51,0.1),
+        rgba(255,153,51,0.05),
+        rgba(255,153,51,0));
+    animation: gradientMove 15s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Navigation Dots */
+.story-navigation {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,153,51,0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+.story-section.active .nav-dot {
+    opacity: 1;
+}
+
+.nav-dot:hover {
+    background: rgba(255,153,51,0.5);
+    transform: scale(1.1);
+}
+
+.nav-dot.active {
+    background: #FF9933;
+    transform: scale(1.2);
+}
+
+/* Progress Bar */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 153, 51, 0.2);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.story-section.active .progress-bar {
+    opacity: 1;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #FF9933;
+    transform-origin: left;
+    transform: scaleX(var(--progress, 0));
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+/* Story Container and Cards */
+.story-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.story-section-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    padding: 20px;
+}
+
+.story-section-card.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) translateZ(0);
+}
+
+/* Card Content */
+.card-content {
+    max-width: 800px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.story-section-card .card-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Typography */
+.story-section-card .card-content h1,
+.story-section-card .card-content h2 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: #333;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.story-section-card .card-content p {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: #666;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Floating Icons */
+.floating-icon {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    animation: float 6s ease-in-out infinite;
+    z-index: 2;
+}
+
+/* Story Section Animations */
+.story-section-card.enter-from-bottom {
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.story-section-card.enter-from-top {
+    animation: slideInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.story-section-card.exit-to-top {
+    animation: slideOutUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.story-section-card.exit-to-bottom {
+    animation: slideOutDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Prevent text selection during transitions */
+.story-section * {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Story Section Responsive Styles */
+@media (max-width: 768px) {
+    .story-navigation {
+        right: 20px;
+    }
+
+    .nav-dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    .story-section-card .card-content {
+        padding: 40px 20px;
+        width: 95%;
+    }
+
+    .floating-icon {
+        width: 60px;
+        height: 60px;
+        top: -20px;
+        right: -20px;
+    }
+
+    .story-section-card .card-content h1,
+    .story-section-card .card-content h2 {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+    }
+
+    .story-section-card .card-content p {
+        font-size: clamp(1rem, 1.5vw, 1.2rem);
+    }
+}
+
+/* High Resolution Screens */
+@media (min-width: 1600px) {
+    .story-section-card .card-content {
+        max-width: 1000px;
+    }
+
+    .story-navigation {
+        right: 60px;
+    }
+
+    .nav-dot {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Story Section Scroll Lock */
+body.story-active {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}

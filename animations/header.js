@@ -1,17 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('header');
     const navLinks = document.querySelectorAll('.nav-link');
-    const authButtons = document.querySelector('.auth-buttons');
-    const headerContent = document.querySelector('.header-content');
     const logo = document.querySelector('.logo');
+    const languageSwitcher = document.querySelector('.language-switcher:not(.mobile)');
     let lastScrollTop = 0;
     let ticking = false;
 
     // Add transitions for smooth effects
     header.style.transition = 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    if (authButtons) {
-        authButtons.style.transition = 'all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)';
-    }
 
     // Initial state
     updateHeaderState(0);
@@ -29,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateHeaderState(scrollTop) {
+        if (document.body.classList.contains('menu-open')) return;
+
         const scrollDistance = 150;
         const scrollPercentage = Math.min(scrollTop / scrollDistance, 1);
         
@@ -41,28 +39,23 @@ document.addEventListener('DOMContentLoaded', () => {
         header.style.webkitBackdropFilter = `blur(${blurValue}px)`;
         header.style.backgroundColor = `rgba(250, 244, 235, ${transparency})`;
         
-        // Handle logo fade out
+        // Handle logo and language switcher fade out
         if (logo) {
-            logo.style.opacity = 1 - (scrollPercentage * 2); // Faster fade out
+            logo.style.opacity = 1 - (scrollPercentage * 2);
             logo.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
         }
         
-        // Handle auth buttons fade out
-        if (authButtons) {
-            authButtons.style.opacity = 1 - (scrollPercentage * 2);
-            authButtons.style.transform = `translateY(${scrollPercentage * -20}px)`;
-            authButtons.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
-            headerContent.style.height = `${48 - (scrollPercentage * 8)}px`;
+        if (languageSwitcher) {
+            languageSwitcher.style.opacity = 1 - (scrollPercentage * 2);
+            languageSwitcher.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
         }
         
         if (scrollTop <= 0) {
             header.classList.remove('header-floating');
             header.classList.add('header-initial');
-            header.style.setProperty('--scroll-progress', '0');
         } else {
             header.classList.remove('header-initial');
             header.classList.add('header-floating');
-            header.style.setProperty('--scroll-progress', scrollPercentage.toString());
         }
     
         // Smooth transition for width
@@ -82,79 +75,5 @@ document.addEventListener('DOMContentLoaded', () => {
             link.style.transform = `scale(${scale})`;
         });
     }
-
-
-
-    
-    // Language switcher
-    window.switchLanguage = function(lang) {
-        navLinks.forEach(link => {
-            link.textContent = link.getAttribute(`data-${lang}`);
-        });
-    }
-
-    // Mobile menu toggle
-    window.toggleMobileMenu = function() {
-        document.body.classList.toggle('mobile-menu-open');
-    }
-
-    // Password visibility toggle
-    document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', function() {
-            const input = this.closest('.input-group').querySelector('input');
-            const icon = this.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        });
-    });
-
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const mobileMenuButton = document.querySelector('.mobile-menu-button');
-        
-        if (document.body.classList.contains('mobile-menu-open') &&
-            !mobileMenu?.contains(e.target) &&
-            !mobileMenuButton?.contains(e.target)) {
-            toggleMobileMenu();
-        }
-    });
-
-    // Handle ESC key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.body.classList.contains('mobile-menu-open')) {
-            toggleMobileMenu();
-        }
-    });
-
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            updateHeaderState(lastScrollTop);
-        }, 100);
-    });
 });
+

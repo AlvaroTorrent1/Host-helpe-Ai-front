@@ -7,6 +7,9 @@ const translations = {
       heroTitle: "Host Helper AI",
       heroSubtitle: "AI-powered assistance for Airbnb hosts",
       getStarted: "Get Started",
+
+      // Story Section
+
       
       // Navigation
       summary: "Summary",
@@ -126,6 +129,9 @@ const translations = {
       heroTitle: "Host Helper AI",
       heroSubtitle: "Asistencia con AI para anfitriones de Airbnb",
       getStarted: "Comenzar",
+
+      // Story Section
+      
       
       // Navigation
       summary: "Resumen",
