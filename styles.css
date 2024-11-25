@@ -15,18 +15,9 @@ chat-demo-section {
     animation-play-state: paused;
     visibility: hidden;
   }
+
   
-  .chat-demo-section.animate {
-    visibility: visible;
-    animation-play-state: running;
-  }
-  
-  .iphone-frame {
-    animation: slideUp 1.2s ease-out forwards;
-    animation-delay: 3.2s;
-    animation-play-state: paused;
-    visibility: hidden;
-  }
+
   
   .iphone-frame.animate {
     visibility: visible;
@@ -227,6 +218,7 @@ header {
         border-bottom: 1px solid #eee;
     }
 
+
     /* Position Language Switcher at the top corner */
     .language-switcher.mobile {
         position: absolute;
@@ -289,9 +281,10 @@ header {
 }
 
 .logo img {
-    height: 55px;
+    height: 35px;
     width: auto;
     object-fit: contain;
+    margin: auto;   
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }    
 
@@ -791,19 +784,20 @@ section {
     margin-bottom: 2.5rem;
 }
 
+/* Button Styles */
 .cta-button {
+    display: inline-block;
     background: var(--primary);
     color: white;
-    padding: 1.2rem 2.5rem;
+    padding: 1rem 2.5rem;
     border-radius: 50px;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-block;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
 }
+
 
 /* Animation states */
 .loaded .hero-content {
@@ -831,6 +825,8 @@ section {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
 }
+
+
 
 /* Animations */
 @keyframes float {
@@ -1442,24 +1438,158 @@ main {
 
 /* Chat Demo Section Core Styles */
 .chat-demo-section {
-    width: 100%;
-    padding: clamp(1rem, 5vw, 4rem);
     min-height: 100vh;
+    padding: 6rem 2rem;
     background: #FFE8CC;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    perspective: 1000px;
-    gap: 2rem;
-    padding: 4rem;
-    align-items: center;
+    gap: 4rem;
 }
 
-.chat-demo-header {
+.content-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
     text-align: center;
-    margin-bottom: 3rem;
 }
+
+.top-content,
+.showcase-content {
+    grid-column: 1;
+    grid-row: 1;
+    transition: opacity 0.3s ease;
+}
+
+
+.top-content {
+    margin-bottom: 2rem;
+}
+
+/* WhatsApp showcase section */
+.showcase-content {
+    margin-top: 2rem;
+}
+
+
+
+
+/* Main title styles */
+.top-content h1 {
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+/* Subtitle styles */
+.top-content p {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+
+
+/* Showcase Styles */
+/* Add margin to the showcase title */
+
+.showcase-content h2 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.showcase-content p {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}
+
+/* Add title section */
+.chat-demo-title {
+  max-width: 800px;
+  margin-bottom: 4rem;
+}
+
+.chat-demo-title h1 {
+    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .chat-demo-title p {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  
+  .chat-demo-title .cta-button {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .chat-demo-title .cta-button:hover {
+    background: #ff8c1a;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
+  }
+
+  
+  .showcase-section {
+    width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+  }
+  
+  .showcase-section h2 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .showcase-section p {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+  
+
+/* Main content wrapper */
+.chat-demo-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+    width: 100%;
+  }
+  
+  .chat-demo-header {
+    flex: 1;
+    max-width: 500px;
+  }
+  
 
 .chat-demo-header h2 {
     font-size: 2.5rem;
@@ -1483,24 +1613,59 @@ main {
 }   
 
 /* iPhone Frame Core Styles */
-.iphone-frame {
-    width: clamp(280px, 90vw, 375px);
-    height: auto;
-    aspect-ratio: 375/812;
-    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-    border-radius: 50px;
-    position: relative;
-    padding: 15px;
-    transform-style: preserve-3d;
-    animation: phoneIntro 1.5s ease-out forwards;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    flex: 1;
-    max-width: 375px;
-    margin-left: auto;
+
+
+/* Phone Container */
+
+.iphone-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+    /* Keep your working iPhone frame styles */
+    .iphone-frame {
+        width: 375px;
+        height: 812px;
+        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+        border-radius: 50px;
+        padding: 15px;
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform-style: preserve-3d;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /* Scale down for smaller screens */
+        transform: scale(0.85); /* This will make the phone slightly smaller */
     }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-demo-section {
+        padding: 4rem 1rem;
+    }
 
+    .content-stack {
+        gap: 2rem;
+    }
 
+    .iphone-frame {
+        width: 320px;  /* Slightly smaller on mobile */
+        height: 692px;  /* Maintain aspect ratio */
+    }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+    .iphone-frame {
+        width: 280px;
+        height: 606px;
+    }
+}
+    
 .notch {
     position: absolute;
     top: 0;
@@ -1520,9 +1685,9 @@ main {
     border-radius: 40px;
     overflow: hidden;
     position: relative;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-    animation: screenGlow 2s infinite alternate;
-}
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}   
 /* WhatsApp UI Styles */
 .whatsapp-header {
     background: #075E54;
@@ -1537,11 +1702,29 @@ main {
 }
 
 .whatsapp-header h2 {
-    font-size: 16px !important;
+    font-size: 18px !important;
     color: white !important;
     margin: 0 !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     line-height: 1.2;
+}
+
+/* Add text shadow to improve contrast */
+.message, .quick-reply-btn, .message-input {
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Media query for your specific resolution */
+@media (max-width: 1366px) {
+    .iphone-frame {
+        transform: scale(0.75); /* Scale down even more for your resolution */
+    }
+    
+    .message,
+    .message-input,
+    .quick-reply-btn {
+        font-size: 18px; /* Even larger text for smaller screens */
+    }
 }
 
 .profile-pic {
@@ -1573,13 +1756,16 @@ main {
 }
 
 /* Message Styles */
+/* Increase text size in WhatsApp messages */
 .message {
     max-width: 70%;
-    padding: 12px 15px;
+    padding: 15px 20px; /* Increased padding */
     margin-bottom: 15px;
     position: relative;
     word-wrap: break-word;
     animation: messageSlide 0.3s ease-out forwards;
+    font-size: 16px; /* Increased font size */
+    font-weight: 530; /* Makes text slightly bolder */
 }
 .message.received {
     background: white;
@@ -1642,13 +1828,14 @@ main {
     border-top: 1px solid #E5DDD5;
 }
 
+/* Make input text larger */
 .message-input {
     flex: 1;
-    padding: 12px;
+    padding: 15px; /* Increased padding */
     border: none;
     border-radius: 20px;
     background: #f0f0f0;
-    font-size: 14px;
+    font-size: 16px; /* Increased font size */
 }
 
 .message-input:focus {
@@ -1699,8 +1886,9 @@ main {
     background: rgba(255, 255, 255, 0.9);
     color: #075E54;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px; /* Increased font size */
     transition: all 0.3s ease;
+    font-weight: 600;
 }
 
 .quick-reply-btn:hover {
@@ -2329,51 +2517,66 @@ header {
     }
 }
 
-/* Mobile Menu Styles */
-.mobile-menu-button {
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    right: 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    display: none;
-    z-index: 1001;
-}
-
-.menu-icon {
-    width: 24px;
-    height: 2px;
-    background-color: #333;
-    position: relative;
-    display: block;
-    transition: all 0.3s ease;
-}
-
-.menu-icon::before,
-.menu-icon::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 2px;
-    background-color: #333;
-    transition: all 0.3s ease;
-}
-
-.menu-icon::before {
-    top: -6px;
-}
-
-.menu-icon::after {
-    bottom: -6px;
-}
-
 @media (max-width: 768px) {
     .mobile-menu-button {
         display: block;
     }
+
+
+/* Mobile Menu Styles */
+.mobile-menu-button {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    position: relative;
+    right: 10px;
+}
+
+.menu-icon {
+    display: block;
+    position: relative;
+    width: 24px;
+    height: 18px;
+}
+
+.line {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #333;
+    border-radius: 2px;
+    transition: transform 0.2s ease-out;
+}
+
+.line-1 {
+    top: 0;
+}
+
+.line-2 {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.line-3 {
+    bottom: 0;
+}
+
+/* Optional: Animation for menu open state */
+.mobile-menu-button.active .line-1 {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.mobile-menu-button.active .line-2 {
+    opacity: 0;
+}
+
+.mobile-menu-button.active .line-3 {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
 
     .mobile-menu {
         position: fixed;
@@ -2439,7 +2642,8 @@ header {
         bottom: 0;
         transform: rotate(-45deg);
     }
-}
+}   
+
 
 
 

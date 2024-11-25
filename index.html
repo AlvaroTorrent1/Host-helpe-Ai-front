@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#FF9933">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,20 +10,20 @@
     <meta name="description" content="AI-powered assistance for Airbnb hosts - 24/7 support, home guides, and local tips">
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Host Helper AI">
+    <meta property="og:title" content="Host Helper Ai">
     <meta property="og:description" content="AI-powered assistance for Airbnb hosts - 24/7 support, home guides, and local tips">
-    <meta property="og:image" content="https://hosthelperai.com/assets/icons/LogoCLEAR.png">
+    <meta property="og:image" content="https://hosthelperai.com/assets/icons/logo.png">
     <meta property="og:url" content="https://hosthelperai.com">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Host Helper AI">
+    <meta name="twitter:title" content="Host Helper Ai">
     <meta name="twitter:description" content="AI-powered assistance for Airbnb hosts - 24/7 support, home guides, and local tips">
-    <meta name="twitter:image" content="https://hosthelperai.com/assets/icons/LogoCLEAR.png">
+    <meta name="twitter:image" content="https://hosthelperai.com/assets/icons/logo.png">
     
 
-    <title>Host Helper AI</title>
+    <title>Host Helper Ai</title>
     <!-- Favicon Tags -->
     <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
@@ -31,8 +31,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
     <link rel="shortcut icon" href="assets/favicon/favicon.ico">
     <link rel="manifest" href="assets/favicon/site.webmanifest">
-    <meta name="apple-mobile-web-app-title" content="Host Helper AI">
-    <meta name="application-name" content="Host Helper AI">
+    <meta name="apple-mobile-web-app-title" content="Host Helper Ai">
+    <meta name="application-name" content="Host Helper Ai">
     <meta name="theme-color" content="#FF9933">
     
     <!-- Web App Manifest -->
@@ -56,6 +56,7 @@
 <!-- Scripts -->
 <script src="animations/story.js" defer></script>
 <script src="animations/mobileheader.js" defer></script>
+<script src="animations/ipdynamic.js" defer></script>
 
     <link rel="stylesheet" href="language-selector.css">
     <link rel="stylesheet" href="./styles.css">
@@ -77,7 +78,7 @@
     <header id="header">
         <div class="header-content">
             <div class="logo">
-                <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="footer-logo" width="100" data-translate="logoAlt">
+                <img src="assets/icons/logo.png" alt="Host Helper Ai" class="footer-logo" width="100" data-translate="logoAlt">
             </div>
             
             <!-- Desktop Navigation -->
@@ -94,11 +95,14 @@
                 <button class="lang-btn" onclick="selectLanguage('es')">ES</button>
             </div>
 
-            <!-- Mobile Menu Button -->
-            <button class="mobile-menu-button" aria-label="Toggle menu">
-                <span class="menu-icon"></span>
-            </button>
-        </div>
+<!-- Menu button -->
+<button class="mobile-menu-button" aria-label="Toggle menu">
+    <span class="menu-icon">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+        <span class="line line-3"></span>
+    </span>
+</button>
 
         <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobileMenu">
@@ -117,23 +121,65 @@
     </header>
 </div>
 
-
-
-
-
-
     <main>
+
 <!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-content" data-aos="fade-up">
-        <div class="icon-container">
-            <i class="fas fa-robot"></i>
+<section class="chat-demo-section">
+    <div class="content-stack">
+        <div class="top-content">
+            <h1>Host Helper Ai</h1>
+            <p>Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings.</p>
         </div>
-        <h1 data-translate="heroTitle">Host Helper AI</h1>
-        <p data-translate="heroSubtitle">AI-powered assistance for Airbnb hosts</p>
-        <a href="#contactForm" class="cta-button" data-translate="getStarted">Get Started</a>
+        
+        <div class="showcase-content">
+            <h2>WhatsApp Showcase</h2>
+            <p>Experience an interactive preview of our AI assistant...</p>
+            <a href="#contactForm" class="cta-button">Get Started</a>
+        </div>
     </div>
-</section>
+
+    <!-- Phone Section -->
+    <div class="iphone-container">
+        <div class="iphone-frame" data-aos="fade-up" data-aos-delay="200">
+            <div class="notch"></div>
+            <div class="screen">
+                <div class="whatsapp-header">
+                    <div class="profile-pic">
+                        <img src="assets/icons/logo.png" alt="Host Helper Ai" class="profile-image">
+                    </div>
+                    <div>
+                        <h2 data-translate="hostHelperAi">Host Helper Ai</h2>
+                    </div>
+                </div>
+                <div class="chat-container" id="chatContainer">
+                    <div class="message received" data-translate="initialGreeting">
+                        Hello! I'm your Airbnb AI Assistant. How can I help you today? 👋
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+                <button class="toggle-prompts" id="togglePrompts">↕</button>
+                <!-- Quick Reply Buttons -->
+                <div class="quick-replies" id="quickReplies">
+                    <button class="quick-reply-btn" data-translate="whereAreTowels">Where are the towels?</button>
+                    <button class="quick-reply-btn" data-translate="wifiPassword">What's the Wi-Fi password?</button>
+                    <button class="quick-reply-btn" data-translate="whatAddress">What's my address?</button>
+                </div>
+                <div class="input-area">
+                    <input type="text" class="message-input" placeholder="Type a message..." id="messageInput" data-translate="typeMessage">
+                    <button class="send-button" id="sendButton">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 <div class="story-section-spacer"></div>
 <div class="progress-bar"></div>
@@ -268,54 +314,6 @@
             </div>
         </section>
 
-<!-- AI Chat Demo Section -->
-<section class="chat-demo-section">
-<div class="chat-demo-header">
-    <h2 data-aos="fade-in" data-translate="whatsappShowcase">WhatsApp Showcase</h2>
-    <p data-aos="fade-in" data-aos-delay="100" data-translate="whatsappDesc">
-        Experience an interactive preview of our AI assistant...
-    </p>
-</div>
-    </div>
-    <div class="iphone-frame" data-aos="fade-up" data-aos-delay="200">
-        <div class="notch"></div>
-        <div class="screen">
-            <div class="whatsapp-header">
-                <div class="profile-pic">
-                    <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="profile-image">
-                </div>
-                <div>
-                    <h2 data-translate="hostHelperAi">Host Helper Ai</h2>
-                </div>
-            </div>
-            <div class="chat-container" id="chatContainer">
-                <div class="message received" data-translate="initialGreeting">
-                    Hello! I'm your Airbnb AI Assistant. How can I help you today? 👋
-                </div>
-                <div class="typing-indicator" id="typingIndicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            </div>
-            <button class="toggle-prompts" id="togglePrompts">↕</button>
-            <!-- Quick Reply Buttons -->
-            <div class="quick-replies" id="quickReplies">
-                <button class="quick-reply-btn" data-translate="whereAreTowels">Where are the towels?</button>
-                <button class="quick-reply-btn" data-translate="wifiPassword">What's the Wi-Fi password?</button>
-                <button class="quick-reply-btn" data-translate="whatAddress">What's my address?</button>
-            </div>
-            <div class="input-area">
-                <input type="text" class="message-input" placeholder="Type a message..." id="messageInput" data-translate="typeMessage">
-                <button class="send-button" id="sendButton">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
 
             </section>
         <div id="react-main-content"></div>
@@ -562,7 +560,7 @@
             <!-- Company Info -->
             <div class="col-lg-4 col-md-6">
                 <div class="footer-about">
-                    <img src="assets/icons/LogoCLEAR.png" alt="Host Helper AI" class="footer-logo" width="100">
+                    <img src="assets/icons/logo.png" alt="Host Helper Ai" class="footer-logo" width="100">
                     <p class="text-muted mb-0" data-translate="empowering">Empowering Airbnb hosts with AI-driven solutions</p>
                 </div>
             </div>
@@ -615,7 +613,7 @@
 
         <!-- Footer Bottom - Copyright -->
         <div class="footer-bottom">
-            <p class="copyright" data-translate="copyright">© 2024 Host Helper AI</p>
+            <p class="copyright" data-translate="copyright">© 2024 Host Helper Ai</p>
         </div>
     </div>
 </footer>
