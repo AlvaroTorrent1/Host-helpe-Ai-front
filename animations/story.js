@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isStoryActive = false;
     let isExiting = false;
     let canReactivate = true;
+    let isNavigatingToSection = false;
 
     const ANIMATION_DURATION = 600;
     const SCROLL_COOLDOWN = 100;
@@ -18,6 +19,28 @@ document.addEventListener('DOMContentLoaded', () => {
         cards[0].classList.add('active');
         dots[0].classList.add('active');
         updateProgress();
+
+        // Check if there's a hash in the URL
+        if (window.location.hash) {
+            isNavigatingToSection = true;
+            setTimeout(() => {
+                isNavigatingToSection = false;
+            }, 1000);
+        }
+    }
+
+    function handleNavigationClick(e) {
+        if (e.target.matches('a[href^="#"]') || e.target.closest('a[href^="#"]')) {
+            isNavigatingToSection = true;
+            // If story is active, deactivate it
+            if (isStoryActive) {
+                deactivateStoryMode('down');
+            }
+            // Reset after navigation is complete
+            setTimeout(() => {
+                isNavigatingToSection = false;
+            }, 1000);
+        }
     }
 
     function updateProgress() {
@@ -50,18 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function activateStoryMode(fromBottom = false) {
-        if (!isStoryActive && !isExiting && canReactivate) {
+        if (!isStoryActive && !isExiting && canReactivate && !isNavigatingToSection) {
             const targetScroll = storySection.offsetTop - (window.innerHeight - storySection.offsetHeight) / 2;
             
-            // Pre-calculate current position relative to target
             const currentScroll = window.scrollY;
             const distance = Math.abs(currentScroll - targetScroll);
             const animationTime = Math.min(800, Math.max(400, distance * 0.5));
 
-            // First, ensure smooth scroll behavior
             document.documentElement.style.scrollBehavior = 'smooth';
 
-            // Start with visual changes
             requestAnimationFrame(() => {
                 isStoryActive = true;
                 storySection.classList.add('active');
@@ -69,13 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressBar.style.opacity = '1';
                 updateProgress();
 
-                // Then scroll to position
                 window.scrollTo({
                     top: targetScroll,
                     behavior: 'smooth'
                 });
 
-                // Lock scroll after a small delay
                 setTimeout(() => {
                     document.body.style.overflow = 'hidden';
                     isScrolling = false;
@@ -84,8 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // Add this modified deactivateStoryMode function for better exit
     function deactivateStoryMode(direction) {
         if (!isStoryActive || isExiting) return;
 
@@ -146,9 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let lastWheelTime = Date.now();
+    let lastScrollY = window.scrollY;
+    let isScrolling = false;
+    let scrollTimeout;
 
     function handleWheel(e) {
-        if (!isStoryActive || isExiting) return;
+        if (!isStoryActive || isExiting || isNavigatingToSection) return;
 
         const now = Date.now();
         if (now - lastWheelTime < SCROLL_COOLDOWN) {
@@ -184,12 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const TOUCH_THRESHOLD = 40;
 
     function handleTouchStart(e) {
-        if (isExiting) return;
+        if (isExiting || isNavigatingToSection) return;
         touchStartY = e.touches[0].clientY;
     }
 
     function handleTouchMove(e) {
-        if (!touchStartY || !isStoryActive || isAnimating || isExiting) return;
+        if (!touchStartY || !isStoryActive || isAnimating || isExiting || isNavigatingToSection) return;
         e.preventDefault();
 
         const touchY = e.touches[0].clientY;
@@ -213,12 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    let scrollTimeout;
-    let lastScrollY = window.scrollY;
-    let isScrolling = false;
-
     function handleScroll() {
-        if (scrollTimeout) return;
+        if (scrollTimeout || isNavigatingToSection) return;
 
         const currentScrollY = window.scrollY;
         const scrollSpeed = Math.abs(currentScrollY - lastScrollY);
@@ -227,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!isScrolling) {
             scrollTimeout = setTimeout(() => {
-                if (!isStoryActive && !isExiting) {
+                if (!isStoryActive && !isExiting && !isNavigatingToSection) {
                     if (isInCenter() || (scrollSpeed > 50 && isNearCenter())) {
                         isScrolling = true;
                         activateStoryMode(scrollingUp);
@@ -238,12 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // Event listeners
+    // Event Listeners
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('wheel', handleWheel, { passive: false });
+    document.addEventListener('click', handleNavigationClick);
+
     window.addEventListener('keydown', (e) => {
-        if (!isStoryActive || isAnimating || isExiting) return;
+        if (!isStoryActive || isAnimating || isExiting || isNavigatingToSection) return;
 
         switch (e.key) {
             case 'ArrowDown':
@@ -270,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
-            if (isStoryActive && !isAnimating && !isExiting && index !== currentIndex) {
+            if (isStoryActive && !isAnimating && !isExiting && !isNavigatingToSection && index !== currentIndex) {
                 const direction = index > currentIndex ? 'next' : 'prev';
                 switchToCard(index, direction);
             }

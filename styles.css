@@ -176,6 +176,153 @@ header {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     position: relative;
 }
+
+/* Force light mode regardless of system preferences */
+@media (prefers-color-scheme: dark) {
+    html {
+        color-scheme: light !important;
+    }
+
+    /* Force background colors */
+    body {
+        background: #FFE8CC !important;
+        color: #333 !important;
+    }
+
+    /* Force chat colors */
+    .message.received {
+        background: white !important;
+        color: #333 !important;
+    }
+
+    .message.sent {
+        background: #DCF8C6 !important;
+        color: #333 !important;
+    }
+
+    /* Force input area colors */
+    .input-area {
+        background: white !important;
+    }
+
+    .message-input {
+        background: #f0f0f0 !important;
+        color: #333 !important;
+    }
+
+    /* Force quick replies colors */
+    .quick-replies {
+        background: rgba(255, 255, 255, 0.98) !important;
+    }
+
+    .quick-reply-btn {
+        background: #f8f9fa !important;
+        color: #075E54 !important;
+    }
+
+    /* Force header colors */
+    .whatsapp-header {
+        background: #075E54 !important;
+        color: white !important;
+    }
+
+    .whatsapp-header h2 {
+        color: white !important;
+    }
+
+    /* Force chat container background */
+    .chat-container {
+        background: #E5DDD5 !important;
+    }
+
+    /* Force screen background */
+    .screen {
+        background: white !important;
+    }
+
+    /* Force section backgrounds */
+    .hero-section,
+    .features-section,
+    .stats-section,
+    .cta-section,
+    .contact-section {
+        background: inherit !important;
+    }
+
+    /* Force text colors */
+    h1, h2, h3, h4, h5, h6 {
+        color: #333 !important;
+    }
+
+    p {
+        color: #666 !important;
+    }
+
+    /* Force iPhone frame colors */
+    .iphone-frame {
+        background: linear-gradient(145deg, #2a2a2a, #1a1a1a) !important;
+    }
+
+    /* Force footer colors */
+    .footer {
+        background: #FFF5E6 !important;
+    }
+
+    /* Force all links to maintain color */
+    a {
+        color: inherit !important;
+    }
+
+    /* Ensure buttons maintain their colors */
+    .btn-primary,
+    .cta-button,
+    .send-button {
+        background: var(--primary) !important;
+        color: white !important;
+    }
+
+    /* Force feature cards to maintain colors */
+    .feature-card {
+        background: #FFE8CC !important;
+    }
+
+    /* Force stat cards to maintain colors */
+    .stat-card {
+        background: white !important;
+    }
+
+    /* Force form elements to maintain colors */
+    input, 
+    textarea, 
+    select {
+        background: white !important;
+        color: #333 !important;
+    }
+
+    /* Force modal colors */
+    .modal-content {
+        background: white !important;
+    }
+}
+
+/* Additional fix for Firefox */
+@-moz-document url-prefix() {
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: #FFE8CC !important;
+        }
+    }
+}
+
+/* Additional fix for Safari */
+@media not all and (min-resolution:.001dpcm) { 
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: #FFE8CC !important;
+        }
+    }
+}
+
 /* Language Switcher */
 .language-switcher {
     display: flex;
@@ -1693,6 +1840,7 @@ main {
     animation: phoneAppear 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
+
 /* Hover effect */
 .iphone-frame:hover {
     transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
@@ -1718,9 +1866,142 @@ main {
     }
 }
 
+/* Android Phones Base Case */
+@media screen and (max-width: 500px) {
+    .iphone-frame {
+        height: min(700px, 70vh) !important;
+        width: min(360px, 95vw) !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.57) translateY(-5px);
+    }
+}
+
+/* Tall Android phones (like Galaxy S21 Ultra) */
+@media screen and (min-width: 360px) and (min-height: 800px) and (max-width: 500px) {
+    .iphone-frame {
+        height: min(640px, 65vh) !important;
+        width: min(360px, 95vw) !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.52);
+    }
+}
+
+/* Very narrow Android phones */
+@media screen and (max-width: 360px) {
+    .iphone-frame {
+        height: min(600px, 70vh) !important;
+        width: 92vw !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
+    }
+}
+
+/* Landscape mode */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    .iphone-frame {
+        height: min(500px, 75vh) !important;
+        width: min(300px, 40vw) !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
+    }
+}
+
+/* Fix for input area on Android */
+@media screen and (max-width: 500px) {
+    .input-area {
+        padding: 10px;
+        min-height: 50px;
+        max-height: 100px;
+    }
+
+    .message-input {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .send-button {
+        width: 36px;
+        height: 36px;
+    }
+
+    .quick-replies {
+        bottom: 65px;
+        right: 10px;
+        width: auto;
+        min-width: 160px;
+        max-width: 250px;
+    }
+}
+
+/* Specific fix for larger Android phones */
+@media screen and (min-width: 381px) and (max-width: 420px) {
+    .quick-replies {
+        min-width: 180px;
+        max-width: 240px;
+    }
+
+    .quick-reply-btn {
+        padding: 8px 10px 8px 34px;
+        font-size: 12.5px;
+        min-height: 36px;
+    }
+}
+
+/* iPhone-specific adjustments */
+@supports (-webkit-touch-callout: none) {
+    .quick-reply-btn {
+        padding: 9px 10px 9px 35px;
+        line-height: 1.3;
+    }
+}
+
+/* Fix for devices with smaller heights */
+@media screen and (max-height: 700px) {
+    .quick-replies {
+        bottom: 65px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
+
+/* Additional fix for very narrow screens */
+@media screen and (max-width: 380px) {
+    .iphone-frame {
+        width: 95vw !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.52);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.54) translateY(-5px);
+    }
+}
+
 @media (max-width: 1200px) {
     .iphone-frame {
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
+    }
+}
+
+/* Add these specific fixes for Galaxy S21 Ultra and similar tall phones */
+@media screen and (min-width: 360px) and (max-width: 520px) and (min-height: 800px) {
+    .iphone-frame {
+        height: min(700px, 70vh) !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.57) translateY(-5px);
+    }
+}
+
+
+/* Ensure proper scaling in landscape */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    .iphone-frame {
+        height: min(var(--iphone-base-height), 85vh) !important;
+        width: auto !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
     }
 }
 
@@ -1760,7 +2041,6 @@ main {
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
     }
 }
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .chat-demo-section {
@@ -1777,11 +2057,58 @@ main {
     }
 }
 
-/* For very small screens */
-@media (max-width: 360px) {
+
+/* Add this new media query for keyboard handling */
+@media screen and (max-height: 600px) {
     .iphone-frame {
-        width: 280px;
-        height: 606px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+    }
+    
+    .chat-container {
+        padding-bottom: 60px;
+    }
+    
+    .quick-replies {
+        bottom: 65px;
+    }
+}
+
+/* Add support for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .input-area {
+        padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+    
+    .chat-container {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+}
+
+
+/* Update your existing media queries for smaller screens */
+@media screen and (max-width: 360px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+        width: 95vw;
+    }
+    
+    .input-area {
+        padding: 8px;
+    }
+    
+    .message-input {
+        padding: 8px 12px;
+    }
+    
+    .send-button {
+        width: 36px;
+        height: 36px;
+    }
+
+    .quick-replies {
+        min-width: 160px;
+        max-width: 220px;
+        right: 8px;
     }
 }
     
@@ -1797,7 +2124,7 @@ main {
     z-index: 2;
 }
 
-/* Screen styles with enhanced depth */
+/* Fix input area overlapping */
 .screen {
     width: 100%;
     height: 100%;
@@ -1805,9 +2132,12 @@ main {
     border-radius: 40px;
     overflow: hidden;
     position: relative;
-    transform: translateZ(2px); /* Subtle depth effect */
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(2px);
     backface-visibility: hidden;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    isolation: isolate; /* Creates a new stacking context */
 }
 
 /* Add subtle screen glow animation */
@@ -1840,6 +2170,7 @@ main {
     font-weight: 600 !important;
     line-height: 1.2;
 }
+
 
 /* Add text shadow to improve contrast */
 .message, .quick-reply-btn, .message-input {
@@ -1877,17 +2208,20 @@ main {
 }
 
 /* WhatsApp Showcase Fixes */
-/* Chat Container with Hidden Scrollbar */
 .chat-container {
-    height: calc(100% - 120px);
+    flex: 1;
+    height: auto;
+    max-height: calc(100% - 120px);
     overflow-y: scroll;
     padding: 20px;
-    padding-bottom: 120px;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
     background: #E5DDD5;
     position: relative;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1;
+    margin-bottom: 60px; /* Add space for input area */
 }
 
 /* Improve visibility of system messages */
@@ -1968,7 +2302,7 @@ main {
 }
 
 
-/* Input Area */
+/* Update your existing .input-area class */
 .input-area {
     position: absolute;
     bottom: 0;
@@ -1980,16 +2314,29 @@ main {
     align-items: center;
     gap: 10px;
     border-top: 1px solid #E5DDD5;
+    min-height: 60px;
+    max-height: 120px;
+    z-index: 10;
+    isolation: isolate;
+    transform: translateZ(0);
+    border-radius: 0 0 40px 40px;
 }
-
-/* Make input text larger */
+/* Update your existing .message-input class */
 .message-input {
     flex: 1;
-    padding: 15px; /* Increased padding */
+    min-width: 0;
+    padding: 12px 15px;
+    margin-right: 8px;
     border: none;
     border-radius: 20px;
     background: #f0f0f0;
-    font-size: 16px; /* Increased font size */
+    font-size: 16px;
+    line-height: 20px;
+    max-height: 100px;
+    overflow-y: auto;
+    transform: translateZ(0);
+    position: relative;
+    z-index: 1;
 }
 
 .message-input:focus {
@@ -2009,23 +2356,21 @@ main {
     justify-content: center;
 }
 
-/* Quick Replies Adaptive Design */
-/* Quick Replies Adaptive Design */
+/* Base quick reply styles - update your existing ones */
 .quick-replies {
     display: flex;
     flex-direction: column;
-    gap: 4px; /* Reduced gap */
+    gap: 4px;
     padding: 6px;
     background: rgba(255, 255, 255, 0.98);
     position: absolute;
     bottom: 70px;
     right: 10px;
     width: auto;
-    min-width: 180px; /* Reduced minimum width */
-    max-width: 250px; /* Reduced maximum width */
+    min-width: 180px;
+    max-width: 250px;
     border-radius: 12px;
-    z-index: 2;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 11;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -2034,24 +2379,26 @@ main {
 
 .quick-reply-btn {
     position: relative;
-    padding: 6px 10px 6px 35px; /* Reduced padding */
+    padding: 8px 10px 8px 35px; /* Increased padding */
     border: none;
     border-radius: 8px;
     background: #f8f9fa;
     color: #075E54;
     cursor: pointer;
-    font-size: 12px; /* Smaller font size */
-    font-weight: 530;
+    font-size: 13px; /* Slightly larger font */
+    font-weight: 500;
     text-align: left;
     display: flex;
     align-items: center;
     transition: all 0.2s ease;
     width: 100%;
-    min-height: 32px; /* Reduced height */
-    line-height: 1.3;
+    min-height: 36px; /* Increased minimum height */
+    line-height: 1.4;
     white-space: normal;
     word-break: break-word;
+    overflow-wrap: break-word;
 }
+
 
 /* Hidden state */
 .quick-replies.hidden {
@@ -2123,18 +2470,21 @@ main {
 .quick-reply-btn::before {
     content: attr(data-number);
     position: absolute;
-    left: 6px;
-    width: 16px; /* Smaller size */
-    height: 16px;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px; /* Slightly larger */
+    height: 20px;
     background: #075E54;
     color: white;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 
 
 /* Hover effects */
@@ -2158,8 +2508,7 @@ main {
 }
 
 
-
-/* Toggle button redesign */
+/* Toggle button styles */
 .toggle-prompts {
     position: absolute;
     bottom: 70px;
@@ -2171,13 +2520,14 @@ main {
     height: 34px;
     border-radius: 12px;
     cursor: pointer;
-    z-index: 3;
+    z-index: 12; /* Higher than quick replies to ensure visibility */
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 2px 10px rgba(7, 94, 84, 0.2);
 }
+
 
 .toggle-prompts:hover {
     transform: scale(1.05);
@@ -2188,6 +2538,16 @@ main {
     height: 18px;
     transition: transform 0.3s ease;
 }
+
+/* Add these new media queries after your existing ones */
+@supports (-webkit-touch-callout: none) {
+    .chat-demo-section {
+        min-height: -webkit-fill-available;
+        height: -webkit-fill-available;
+    }
+}
+
+
 
 /* WhatsApp showcase layout */
 @media (min-width: 1200px) {
@@ -2667,6 +3027,29 @@ main {
         width: 32px;
         height: 32px;
         border-radius: 10px;
+    }
+}
+
+
+/* Device-specific adjustments */
+@media screen and (max-width: 380px) {
+    .quick-replies {
+        min-width: 160px;
+        max-width: 220px;
+        right: 8px;
+    }
+
+    .quick-reply-btn {
+        font-size: 12px;
+        padding: 8px 8px 8px 32px;
+        min-height: 34px;
+    }
+
+    .quick-reply-btn::before {
+        width: 18px;
+        height: 18px;
+        left: 7px;
+        font-size: 10px;
     }
 }
 
