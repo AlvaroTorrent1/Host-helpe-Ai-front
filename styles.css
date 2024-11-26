@@ -4,11 +4,47 @@
     --header-height: 80px;
     --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     --container-padding: clamp(1rem, 5vw, 2rem);
-}
+    --scrollbar-background: #FFE8CC;
+    --scrollbar-width: 12px;
+    --scrollbar-thumb-gradient-start: #FF9933;
+    --scrollbar-thumb-gradient-end: #FF8000;
+    --scrollbar-thumb-hover: #FF7F00;
+  }
+  
+  /* Webkit browsers (Chrome, Safari, newer versions of Edge) */
+  html::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+  }
+  
+  html::-webkit-scrollbar-track {
+    background: var(--scrollbar-background);
+  }
+  
+  html::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, 
+      var(--scrollbar-thumb-gradient-start),
+      var(--scrollbar-thumb-gradient-end));
+    border-radius: 6px;
+    border: 3px solid var(--scrollbar-background);
+    transition: background-color 0.3s ease;
+  }
+  
+  html::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+  
+  /* Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-gradient-start) var(--scrollbar-background);
+  }
+  
+  /* For other browsers and to ensure content isn't obscured */
+  html {
+    overflow-y: scroll;
+  }
+  
 
-html {
-    scroll-behavior: smooth;
-}
 chat-demo-section {
     position: relative;
     animation: fadeInUp 3.5s ease-out forwards;
@@ -99,35 +135,39 @@ chat-demo-section {
     top: 0;
     left: 0;
     right: 0;
-    padding: 20px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
     z-index: 1000;
-    transition: padding 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 header {
-    width: 90%;
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 24px;
     background-color: rgba(250, 244, 235, 1);
     backdrop-filter: blur(0);
     -webkit-backdrop-filter: blur(0);
     border-radius: 0;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     box-sizing: border-box;
-    padding: 16px 24px;
 }
 
+
 .header-floating {
-    width: min(85%, 1200px);
+    width: 100%; /* Changed to full width */
+    margin: 0 auto; /* Added to help with centering */
     background-color: rgba(250, 244, 235, 0.52);
     backdrop-filter: blur(2rem);
     -webkit-backdrop-filter: blur(2rem);
-    border-radius: 16px;
-    padding: 8px 20px;
+    border-radius: 0; /* Removed border radius for full-width appearance */
+    padding: 8px 24px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .header-content {
+    max-width: min(85%, 1200px); /* Added max-width constraint */
+    margin: 0 auto; /* Center the content */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,7 +176,6 @@ header {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     position: relative;
 }
-
 /* Language Switcher */
 .language-switcher {
     display: flex;
@@ -161,15 +200,16 @@ header {
 /* Mobile Header Styles */
 @media (max-width: 768px) {
     .header-wrapper {
-        padding: 10px;
+        padding: 0;
     }
 
     header {
         width: 100% !important;
         margin: 0;
-        padding: 10px;
+        padding: 8px 16px;
         border-radius: 0;
     }
+
 
     .desktop-nav, .language-switcher:not(.mobile) {
         display: none;
@@ -906,6 +946,14 @@ section {
         padding: 1rem 2rem;
         font-size: 1.1rem;
     }
+
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-5deg) rotateX(2deg) scale(0.65);
+    }
+    
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-3deg) rotateX(1deg) scale(0.67) translateY(-3px);
+    }
 }
 
 /* Smooth Scroll Behavior */
@@ -1612,35 +1660,106 @@ main {
     line-height: 1.6;
 }   
 
-/* iPhone Frame Core Styles */
-
-
-/* Phone Container */
-
+/* iPhone Frame and Container Base Styles */
 .iphone-container {
     width: 100%;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
+    overflow: hidden;
 }
-  
-    /* Keep your working iPhone frame styles */
-    .iphone-frame {
-        width: 375px;
-        height: 812px;
-        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-        border-radius: 50px;
-        padding: 15px;
-        position: relative;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        transform-style: preserve-3d;
-        will-change: transform;
-        backface-visibility: hidden;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        /* Scale down for smaller screens */
-        transform: scale(0.85); /* This will make the phone slightly smaller */
+
+.iphone-frame {
+    --iphone-aspect-ratio: 0.462; /* iPhone aspect ratio (width/height) */
+    --iphone-base-height: 812px;
+    --iphone-base-width: 375px;
+    
+    height: min(var(--iphone-base-height), 95vh);
+    width: calc(min(var(--iphone-base-height), 95vh) * var(--iphone-aspect-ratio));
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 50px;
+    padding: 15px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(1.5);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    animation: phoneAppear 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Hover effect */
+.iphone-frame:hover {
+    transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+}
+
+/* Add animation keyframes */
+@keyframes phoneAppear {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) rotateY(-30deg) rotateX(10deg) translateZ(-100px) scale(0.8);
     }
+    100% {
+        opacity: 1;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
+    }
+}
+
+/* Responsive scaling */
+@media (max-width: 1400px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.75);
+    }
+}
+
+@media (max-width: 1200px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
+    }
+}
+
+@media (max-width: 992px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+    }
+}
+
+@media (max-width: 768px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+}
+
+@media (max-width: 576px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
+    }
+}
+
+/* Height-based media queries */
+@media (max-height: 900px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+    }
+}
+
+@media (max-height: 800px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+}
+
+@media (max-height: 700px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
+    }
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -1678,6 +1797,7 @@ main {
     z-index: 2;
 }
 
+/* Screen styles with enhanced depth */
 .screen {
     width: 100%;
     height: 100%;
@@ -1685,9 +1805,21 @@ main {
     border-radius: 40px;
     overflow: hidden;
     position: relative;
-    transform: translateZ(0);
+    transform: translateZ(2px); /* Subtle depth effect */
     backface-visibility: hidden;
-}   
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Add subtle screen glow animation */
+@keyframes screenGlow {
+    0%, 100% {
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.15);
+    }
+}
+
 /* WhatsApp UI Styles */
 .whatsapp-header {
     background: #075E54;
@@ -1745,38 +1877,60 @@ main {
 }
 
 /* WhatsApp Showcase Fixes */
+/* Chat Container with Hidden Scrollbar */
 .chat-container {
     height: calc(100% - 120px);
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 20px;
     padding-bottom: 120px;
     background: #E5DDD5;
     position: relative;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
-/* Message Styles */
-/* Increase text size in WhatsApp messages */
+/* Improve visibility of system messages */
+.message.system {
+    font-size: 12px;
+    color: #666;
+    max-width: 90%;
+    text-align: center;
+    margin: 8px auto;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.chat-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Message Styles with Improved Visibility */
 .message {
     max-width: 70%;
-    padding: 15px 20px; /* Increased padding */
-    margin-bottom: 15px;
+    padding: 12px 16px; /* Slightly reduced padding */
+    margin-bottom: 12px;
     position: relative;
     word-wrap: break-word;
     animation: messageSlide 0.3s ease-out forwards;
-    font-size: 16px; /* Increased font size */
-    font-weight: 530; /* Makes text slightly bolder */
+    font-size: 14px; /* Reduced font size */
+    font-weight: 530;
+    white-space: normal;
+    word-break: break-word;
 }
+
 .message.received {
     background: white;
     margin-right: auto;
     border-radius: 0 15px 15px 15px;
+    max-width: 65%; /* Slightly reduced to prevent overlap with quick replies */
 }
 
 .message.sent {
     background: #DCF8C6;
     margin-left: auto;
     border-radius: 15px 0 15px 15px;
+    max-width: 65%;
 }
 
 /* Typing Indicator */
@@ -1855,78 +2009,186 @@ main {
     justify-content: center;
 }
 
-/* Quick Replies */
+/* Quick Replies Adaptive Design */
+/* Quick Replies Adaptive Design */
 .quick-replies {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    position: absolute;
-    bottom: 60px;
-    left: 0;
-    right: 0;
-    border-top: 1px solid rgba(7, 94, 84, 0.1);
-    z-index: 2;
-    transition: all 0.3s ease;
-    visibility: visible;
-    opacity: 1;
-}
-
-.quick-replies.hidden {
-    transform: translateY(100%);
-    visibility: hidden;
-    opacity: 0;
-}
-
-.quick-reply-btn {
-    padding: 8px 15px;
-    border: 2px dotted #075E54;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    color: #075E54;
-    cursor: pointer;
-    font-size: 16px; /* Increased font size */
-    transition: all 0.3s ease;
-    font-weight: 600;
-}
-
-.quick-reply-btn:hover {
-    background: #075E54;
-    color: white;
-    transform: scale(1.02);
-}
-
-/* Toggle Button Styles */
-.toggle-prompts {
+    flex-direction: column;
+    gap: 4px; /* Reduced gap */
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.98);
     position: absolute;
     bottom: 70px;
     right: 10px;
-    background: rgba(7, 94, 84, 0.9);
+    width: auto;
+    min-width: 180px; /* Reduced minimum width */
+    max-width: 250px; /* Reduced maximum width */
+    border-radius: 12px;
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(7, 94, 84, 0.1);
+}
+
+.quick-reply-btn {
+    position: relative;
+    padding: 6px 10px 6px 35px; /* Reduced padding */
+    border: none;
+    border-radius: 8px;
+    background: #f8f9fa;
+    color: #075E54;
+    cursor: pointer;
+    font-size: 12px; /* Smaller font size */
+    font-weight: 530;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    width: 100%;
+    min-height: 32px; /* Reduced height */
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Hidden state */
+.quick-replies.hidden {
+    transform: translateX(10px) scale(0.95);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Quick replies container */
+.quick-replies-container {
+    max-height: 250px; /* Increased height to show more content */
+    overflow-y: auto;
+    scrollbar-width: none; /* Hide Firefox scrollbar */
+    -ms-overflow-style: none; /* Hide IE scrollbar */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.quick-replies-container::-webkit-scrollbar {
+    display: none;
+}
+
+
+.quick-replies-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.quick-replies-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.quick-replies-container::-webkit-scrollbar-thumb {
+    background-color: #075E54;
+    border-radius: 4px;
+}
+
+/* Optional: Message indicator for new suggestions */
+.quick-reply-btn.new::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #25D366;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50%) scale(1.5);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+
+
+/* Number indicator adjustment */
+.quick-reply-btn::before {
+    content: attr(data-number);
+    position: absolute;
+    left: 6px;
+    width: 16px; /* Smaller size */
+    height: 16px;
+    background: #075E54;
+    color: white;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Hover effects */
+.quick-reply-btn:hover {
+    background: #075E54;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(7, 94, 84, 0.2);
+}
+
+
+.quick-reply-btn:hover::before {
+    background: white;
+    color: #075E54;
+}
+
+/* Active state */
+.quick-reply-btn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+
+
+/* Toggle button redesign */
+.toggle-prompts {
+    position: absolute;
+    bottom: 70px;
+    right: 15px;
+    background: #075E54;
     color: white;
     border: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
     cursor: pointer;
     z-index: 3;
-    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    pointer-events: auto;
+    box-shadow: 0 2px 10px rgba(7, 94, 84, 0.2);
 }
 
 .toggle-prompts:hover {
-    background: rgba(7, 94, 84, 1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(7, 94, 84, 0.3);
 }
-
 .toggle-prompts svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     transition: transform 0.3s ease;
 }
+
 /* WhatsApp showcase layout */
 @media (min-width: 1200px) {
     .chat-demo-section {
@@ -1990,9 +2252,15 @@ main {
 /* Fix for tall mobile screens */
 @media (max-height: 800px) and (max-width: 768px) {
     .iphone-frame {
-        max-height: 70vh;
-        width: auto;
+        transform: perspective(1000px) rotateY(-10deg) rotateX(3deg) scale(0.75);
     }
+    
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-8deg) rotateX(2deg) scale(0.77) translateY(-5px);
+    }
+
+
+
 }
 
 /* Landscape mode fixes */
@@ -2057,6 +2325,7 @@ main {
     }
 }
 
+/* Animation for new messages */
 @keyframes messageSlide {
     from {
         opacity: 0;
@@ -2067,7 +2336,6 @@ main {
         transform: translateY(0);
     }
 }
-
 /* Generic Section Styles */
 section {
     min-height: 100vh;
@@ -2359,6 +2627,7 @@ main {
         margin-bottom: 1rem;
     }
 
+
     .section-title {
         font-size: 2rem;
     }
@@ -2374,7 +2643,41 @@ main {
     section p {
         font-size: 18px;
     }
+
+    .quick-replies {
+        min-width: 180px;
+        max-width: 260px; /* Slightly smaller on mobile but still readable */
+        right: 8px;
+    }
+
+    .quick-reply-btn {
+        font-size: 12px;
+        padding: 7px 10px 7px 32px;
+        min-height: 34px;
+    }
+
+    .quick-reply-btn::before {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+        left: 7px;
+    }
+
+    .toggle-prompts {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+    }
 }
+
+/* For very small screens */
+@media (max-width: 320px) {
+    .quick-replies {
+        min-width: 160px;
+        max-width: 220px;
+    }
+}
+
 
 /* Modal Styles */
 .modal {
@@ -2532,6 +2835,9 @@ header {
     padding: 8px;
     position: relative;
     right: 10px;
+    margin-left: auto;
+    
+    
 }
 
 .menu-icon {
@@ -2550,19 +2856,10 @@ header {
     border-radius: 2px;
     transition: transform 0.2s ease-out;
 }
+.line-1 { top: 0; }
+.line-2 { top: 8px; }
+.line-3 { bottom: 0; }
 
-.line-1 {
-    top: 0;
-}
-
-.line-2 {
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.line-3 {
-    bottom: 0;
-}
 
 /* Optional: Animation for menu open state */
 .mobile-menu-button.active .line-1 {

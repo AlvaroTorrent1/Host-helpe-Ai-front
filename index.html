@@ -58,6 +58,7 @@
 <script src="animations/mobileheader.js" defer></script>
 <script src="animations/ipdynamic.js" defer></script>
 
+
     <link rel="stylesheet" href="language-selector.css">
     <link rel="stylesheet" href="./styles.css">
 </head>
@@ -164,9 +165,9 @@
                 <button class="toggle-prompts" id="togglePrompts">↕</button>
                 <!-- Quick Reply Buttons -->
                 <div class="quick-replies" id="quickReplies">
-                    <button class="quick-reply-btn" data-translate="whereAreTowels">Where are the towels?</button>
-                    <button class="quick-reply-btn" data-translate="wifiPassword">What's the Wi-Fi password?</button>
-                    <button class="quick-reply-btn" data-translate="whatAddress">What's my address?</button>
+                    <button class="quick-reply-btn" data-translate="whereAreTowels" data-number="1">Where are the towels?</button>
+                    <button class="quick-reply-btn" data-translate="wifiPassword" data-number="2">What's the Wi-Fi password?</button>
+                    <button class="quick-reply-btn" data-translate="whatAddress" data-number="3">What's my address?</button>
                 </div>
                 <div class="input-area">
                     <input type="text" class="message-input" placeholder="Type a message..." id="messageInput" data-translate="typeMessage">
@@ -767,40 +768,40 @@ function toggleMobileMenu() {
     });
     </script>
 
-<script>
-    // Gallery Lightbox
-    document.addEventListener('DOMContentLoaded', () => {
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        const lightbox = document.querySelector('.lightbox');
-        const lightboxImg = lightbox.querySelector('img');
-        const lightboxClose = document.querySelector('.lightbox-close');
-    
-        galleryItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const imgSrc = item.querySelector('img').src;
-                const imgAlt = item.querySelector('img').alt;
-                lightboxImg.src = imgSrc;
-                lightboxImg.alt = imgAlt;
-                lightbox.classList.add('active');
+    <script>
+        // Gallery Lightbox
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const lightbox = document.querySelector('.lightbox');
+            const lightboxImg = lightbox.querySelector('img');
+            const lightboxClose = document.querySelector('.lightbox-close');
+        
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const imgSrc = item.querySelector('img').src;
+                    const imgAlt = item.querySelector('img').alt;
+                    lightboxImg.src = imgSrc;
+                    lightboxImg.alt = imgAlt;
+                    lightbox.classList.add('active');
+                });
+            });
+        
+            lightboxClose.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
+        
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+        
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    lightbox.classList.remove('active');
+                }
             });
         });
-    
-        lightboxClose.addEventListener('click', () => {
-            lightbox.classList.remove('active');
-        });
-    
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                lightbox.classList.remove('active');
-            }
-        });
-    
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                lightbox.classList.remove('active');
-            }
-        });
-    });
     </script>
 
 

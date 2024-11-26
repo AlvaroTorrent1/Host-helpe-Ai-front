@@ -50,24 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             languageSwitcher.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
         }
         
-        if (scrollTop <= 0) {
-            header.classList.remove('header-floating');
-            header.classList.add('header-initial');
-        } else {
-            header.classList.remove('header-initial');
-            header.classList.add('header-floating');
-        }
-    
-        // Smooth transition for width
-        if (window.innerWidth > 768) {
-            const baseWidth = 90;
-            const minWidth = scrollPercentage * 45;
-            header.style.width = `${baseWidth - minWidth}%`;
-            
-            const basePadding = 24;
-            const minPadding = scrollPercentage * 12;
-            header.style.padding = `${basePadding - minPadding}px ${basePadding - minPadding}px`;
-        }
+
+
 
         // Scale down nav items
         navLinks.forEach(link => {
