@@ -627,7 +627,6 @@ body.menu-open {
 
 /* Main Content */
 main {
-    padding-top: 100px;
     width: 100%;
     max-width: 100%;
 
@@ -1908,12 +1907,12 @@ main {
 
 
 .top-content {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 /* WhatsApp showcase section */
 .showcase-content {
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 
@@ -2058,7 +2057,7 @@ main {
 /* iPhone Frame and Container Base Styles */
 .iphone-container {
     width: 100%;
-    height: 100vh;
+    height: 1vh;
     display: flex;
     justify-content: center;
     align-items: center;
