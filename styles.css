@@ -1833,6 +1833,52 @@ main {
     gap: clamp(1rem, 2vw, 2rem);
     padding: 1rem;
 }
+/* Default Light Mode Styles (for when dark mode is NOT enabled) */
+body {
+    background-color: #FFE8CC; /* Light background color */
+    color: #333; /* Dark text for light mode */
+}
+
+/* Input fields, textareas, and button styles for light mode */
+.contact-container input,
+.contact-container textarea,
+.contact-container button {
+    background-color: white; /* White background for input fields and buttons */
+    color: #333; /* Dark text color for input fields */
+    border: 2px solid #eee; /* Light border for input fields */
+}
+
+.contact-container button {
+    background: #ff8c1a; /* Button color in light mode */
+    color: white; /* Text color on the button */
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+    /* Body background and text color for dark mode */
+    body {
+        background-color: #333; /* Dark background color */
+        color: #FFF; /* Light text color for dark mode */
+    }
+
+    /* Input fields, textareas, and buttons for dark mode */
+    .contact-container input,
+    .contact-container textarea {
+        background-color: #444; /* Dark background for input fields */
+        color: #fff; /* Light text for inputs */
+        border: 2px solid #666; /* Darker border for inputs */
+    }
+
+    .contact-container button {
+        background: #ff6600; /* Darker button color in dark mode */
+        color: white; /* Keep the text white on the button */
+    }
+
+    /* Optional: Change hover effects in dark mode */
+    .contact-container button:hover {
+        background: #ff7f00; /* Lighter button color when hovered */
+    }
+}
 
 .gallery-item {
     position: relative;
