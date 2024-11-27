@@ -1276,10 +1276,33 @@ html {
     margin-right: -50vw;
     border-top: 1px solid rgba(255, 153, 51, 0.1);
 }
+.logo-text-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* This will move the logo and text to the left */
+    margin-top: 20px; /* Keeps the margin you had for vertical centering */
+}
+
+.logo-text {
+    margin-left: 30px; /* Adjusts the space between the logo and the text */
+}
+
+.social-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-right: 1rem;
+}
+
+.social-link svg {
+    width: 16px;
+    height: 16px;
+    stroke: #FF9933;
+}
 
 .footer-logo {
     height: auto;
-    width: 100px;
+    width: 70px;
     margin-bottom: 0.75rem;
 }
 
@@ -2902,7 +2925,7 @@ main {
     text-align: center;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
     padding: 2rem;
-    padding-bottom: 50px; /* Space for trial footer */
+    padding-bottom: 60px; /* Space for trial footer */
 }   
 
 /* Pricing Section Updates */
