@@ -86,7 +86,6 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', Arial, sans-serif;
-    background: linear-gradient(135deg, #FFE8CC, #FFE8CC);
     color: #333;
 }
 
@@ -178,7 +177,6 @@ header {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     position: relative;
 }
-
 
 
 /* Language Switcher */
