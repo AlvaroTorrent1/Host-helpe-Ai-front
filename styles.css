@@ -1631,16 +1631,18 @@ main {
     }
 }
 
-/* Chat Demo Section Core Styles */
+/* Base container size adjustments */
 .chat-demo-section {
+    position: relative;
     min-height: 100vh;
-    padding: 6rem 2rem;
-    background: #FFE8CC;
+    width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4rem;
+    justify-content: center;
+    padding: 6rem 2rem;
+    overflow: hidden;
 }
+
 
 .content-stack {
     display: flex;
@@ -1906,6 +1908,24 @@ main {
     }
 }
 
+/* Landscape mode adjustments */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .chat-demo-section {
+        padding: 1rem;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.6);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.62);
+    }
+}
+
+
 /* Fix for input area on Android */
 @media screen and (max-width: 500px) {
     .input-area {
@@ -2011,9 +2031,19 @@ main {
     }
 }
 
-@media (max-width: 768px) {
+/* iPhone-specific media queries */
+@media screen and (max-width: 768px) {
+    .chat-demo-section {
+        padding: 2rem 1rem;
+        min-height: calc(100vh - var(--header-height));
+    }
+
     .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87);
     }
 }
 
@@ -2022,6 +2052,39 @@ main {
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
     }
 }
+
+/* iPhone SE, iPhone 8 and similar smaller devices */
+@media screen and (max-width: 375px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.75);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.77);
+    }
+}
+
+/* iPhone 12, 13, 14 sizes */
+@media screen and (min-width: 376px) and (max-width: 428px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.8);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.82);
+    }
+}
+/* Taller iPhones (12 Pro Max, 13 Pro Max, 14 Pro Max) */
+@media screen and (min-width: 428px) and (max-height: 926px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87);
+    }
+}
+
 
 /* Height-based media queries */
 @media (max-height: 900px) {
@@ -2070,6 +2133,57 @@ main {
     
     .quick-replies {
         bottom: 65px;
+    }
+}
+
+/* Fix for tall mobile screens */
+@media screen and (min-height: 800px) and (max-width: 428px) {
+    .chat-demo-section {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.82);
+    }
+
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.84);
+    }
+}
+
+/* Additional height-based adjustments */
+@media screen and (max-height: 700px) {
+    .chat-demo-section {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
+    }
+}
+
+/* Ensure proper display when keyboard is open on mobile */
+@media screen and (max-height: 600px) {
+    .chat-demo-section {
+        min-height: 100vh;
+        height: auto;
+    }
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .chat-demo-section {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Fix for devices with notches */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .chat-demo-section {
+        padding-top: calc(2rem + env(safe-area-inset-top));
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
     }
 }
 
