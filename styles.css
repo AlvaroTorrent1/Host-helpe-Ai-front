@@ -1822,7 +1822,7 @@ main {
     --iphone-aspect-ratio: 0.462; /* iPhone aspect ratio (width/height) */
     --iphone-base-height: 812px;
     --iphone-base-width: 375px;
-    
+    z-index: 500;
     height: min(var(--iphone-base-height), 95vh);
     width: calc(min(var(--iphone-base-height), 95vh) * var(--iphone-aspect-ratio));
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
