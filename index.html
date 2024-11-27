@@ -44,16 +44,16 @@
     <meta name="application-name" content="Host Helper">
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
     <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/android-chrome-96x96.png">
-        
+
     <!-- Force smaller icon for home screen -->
     <meta name="msapplication-TileImage" content="assets/favicon/android-chrome-96x96.png">
     <meta name="msapplication-TileColor" content="#FF9933">
     <meta name="theme-color" content="#FF9933">
-        
+
     <!-- Force home screen icon size -->
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png" data-purpose="homescreen">
     <link rel="shortcut icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
-        
+
     <!-- Hide larger icons from home screen selection -->
     <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png" media="(prefers-color-scheme: light)">
     <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png" media="(prefers-color-scheme: light)">
@@ -236,15 +236,15 @@
         <div class="nav-dot" data-index="3"></div>
     </div>
 
-    <div class="story-container">
-        <div class="story-section-card active">
-            <div class="card-content">
-                <svg class="floating-icon" viewBox="0 0 60 60">
+    <div class="story-container" >
+        <div class="story-section-card active" >
+            <div class="card-content"  >
+                <svg class="floating-icon" viewBox="0 0 60 60" id="brands">
                     <circle cx="30" cy="30" r="25" fill="#FF9933" opacity="0.15"/>
                     <circle cx="30" cy="30" r="18" fill="#FF9933" opacity="0.1"/>
                     <circle cx="30" cy="30" r="12" fill="#FF9933" opacity="0.05"/>
                 </svg>
-                <h1 data-translate="storyTitle1">Meet HostHelper AI</h1>
+                <h1 data-translate="storyTitle1" >Meet HostHelper AI</h1>
                 <p data-translate="storyDesc1">Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings with cutting-edge AI technology.</p>
             </div>
         </div>
@@ -327,7 +327,7 @@
         <!-- Stats Section -->
         <section class="stats-section">
             <div class="section-container">
-                <h2 data-aos="fade-up" data-translate="keyMetrics">Key Metrics</h2>
+                <h2 data-aos="fade-up" data-translate="keyMetrics" id="impact">Key Metrics</h2>
                 <div class="stats-grid">
                     <div class="stat-card" data-aos="fade-up">
                         <div class="stat-value">23</div>
@@ -573,8 +573,8 @@
 </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="contact-container">
+    <section id="contact"  class="contact-section">
+        <div class="contact-container" id="join">
             <h1 data-translate="getInTouch">Get in Touch</h1>
             <form id="contactForm">
                 <div class="form-group">
@@ -706,6 +706,7 @@
 function toggleMobileMenu() {
     const mobileMenu = document.querySelector('.mobile-menu');
     mobileMenu.classList.toggle('active');
+
 }
 
                 // Add this new script for password toggle

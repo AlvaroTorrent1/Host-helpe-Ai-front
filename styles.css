@@ -81,13 +81,15 @@ chat-demo-section {
       transform: translateY(0);
     }
   }
-  body, html {
+/* Base styles */
+body, html {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', Arial, sans-serif;
     background: linear-gradient(135deg, #FFE8CC, #FFE8CC);
     color: #333;
 }
+
 
 /* Background Shapes */
 .background-shapes {
@@ -177,151 +179,7 @@ header {
     position: relative;
 }
 
-/* Force light mode regardless of system preferences */
-@media (prefers-color-scheme: dark) {
-    html {
-        color-scheme: light !important;
-    }
 
-    /* Force background colors */
-    body {
-        background: #FFE8CC !important;
-        color: #333 !important;
-    }
-
-    /* Force chat colors */
-    .message.received {
-        background: white !important;
-        color: #333 !important;
-    }
-
-    .message.sent {
-        background: #DCF8C6 !important;
-        color: #333 !important;
-    }
-
-    /* Force input area colors */
-    .input-area {
-        background: white !important;
-    }
-
-    .message-input {
-        background: #f0f0f0 !important;
-        color: #333 !important;
-    }
-
-    /* Force quick replies colors */
-    .quick-replies {
-        background: rgba(255, 255, 255, 0.98) !important;
-    }
-
-    .quick-reply-btn {
-        background: #f8f9fa !important;
-        color: #075E54 !important;
-    }
-
-    /* Force header colors */
-    .whatsapp-header {
-        background: #075E54 !important;
-        color: white !important;
-    }
-
-    .whatsapp-header h2 {
-        color: white !important;
-    }
-
-    /* Force chat container background */
-    .chat-container {
-        background: #E5DDD5 !important;
-    }
-
-    /* Force screen background */
-    .screen {
-        background: white !important;
-    }
-
-    /* Force section backgrounds */
-    .hero-section,
-    .features-section,
-    .stats-section,
-    .cta-section,
-    .contact-section {
-        background: inherit !important;
-    }
-
-    /* Force text colors */
-    h1, h2, h3, h4, h5, h6 {
-        color: #333 !important;
-    }
-
-    p {
-        color: #666 !important;
-    }
-
-    /* Force iPhone frame colors */
-    .iphone-frame {
-        background: linear-gradient(145deg, #2a2a2a, #1a1a1a) !important;
-    }
-
-    /* Force footer colors */
-    .footer {
-        background: #FFF5E6 !important;
-    }
-
-    /* Force all links to maintain color */
-    a {
-        color: inherit !important;
-    }
-
-    /* Ensure buttons maintain their colors */
-    .btn-primary,
-    .cta-button,
-    .send-button {
-        background: var(--primary) !important;
-        color: white !important;
-    }
-
-    /* Force feature cards to maintain colors */
-    .feature-card {
-        background: #FFE8CC !important;
-    }
-
-    /* Force stat cards to maintain colors */
-    .stat-card {
-        background: white !important;
-    }
-
-    /* Force form elements to maintain colors */
-    input, 
-    textarea, 
-    select {
-        background: white !important;
-        color: #333 !important;
-    }
-
-    /* Force modal colors */
-    .modal-content {
-        background: white !important;
-    }
-}
-
-/* Additional fix for Firefox */
-@-moz-document url-prefix() {
-    @media (prefers-color-scheme: dark) {
-        body {
-            background: #FFE8CC !important;
-        }
-    }
-}
-
-/* Additional fix for Safari */
-@media not all and (min-resolution:.001dpcm) { 
-    @media (prefers-color-scheme: dark) {
-        body {
-            background: #FFE8CC !important;
-        }
-    }
-}
 
 /* Language Switcher */
 .language-switcher {
