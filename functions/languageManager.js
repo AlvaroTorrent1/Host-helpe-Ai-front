@@ -7,7 +7,10 @@ const translations = {
       heroTitle: "Host Helper AI",
       heroSubtitle: "AI-powered assistance for Airbnb hosts",
       getStarted: "Get Started",
-
+      text1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings.",
+      text2: "WhatsApp Showcase",
+      text3: "Experience an interactive preview of our AI assistant...",
+      start: "Get Started",
       // Story Section
       storyTitle1: "Meet HostHelper AI",
       storyDesc1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings with cutting-edge AI technology.",
@@ -135,7 +138,10 @@ const translations = {
       heroTitle: "Host Helper AI",
       heroSubtitle: "Asistencia con AI para anfitriones de Airbnb",
       getStarted: "Comenzar",
-
+      text1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb.",
+      text2: "Escaparate de WhatsApp",
+      text3: "Experimente un avance interactivo de nuestro asistente AI...",
+      start: "Comenzar",
       // Story Section
       storyTitle1: "Conozca HostHelper AI",
       storyDesc1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb con tecnología de IA de vanguardia.",
