@@ -1640,9 +1640,6 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 4rem;
-    position: relative;
-    z-index: 10;
-    isolation: isolate;
 }
 
 .content-stack {
@@ -1652,9 +1649,6 @@ main {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    position: relative;
-    z-index: 25;
-    margin: 0 auto;
 }
 
 .top-content,
@@ -1662,23 +1656,16 @@ main {
     grid-column: 1;
     grid-row: 1;
     transition: opacity 0.3s ease;
-    
 }
 
 
 .top-content {
     margin-bottom: 2rem;
-    position: relative;
-    z-index: 30;
-    width: 100%;
 }
 
 /* WhatsApp showcase section */
 .showcase-content {
-    position: relative;
-    z-index: 15;
     margin-top: 2rem;
-    width: 100%;
 }
 
 
@@ -1691,8 +1678,6 @@ main {
     color: #333;
     margin-bottom: 1.5rem;
     line-height: 1.2;
-    position: relative;
-    z-index: 31;
 }
 
 /* Subtitle styles */
@@ -1701,8 +1686,6 @@ main {
     color: #666;
     margin-bottom: 2rem;
     line-height: 1.6;
-    position: relative;
-    z-index: 31;
 }
 
 
@@ -1833,9 +1816,6 @@ main {
     align-items: center;
     padding: 2rem;
     overflow: hidden;
-    position: relative;
-    z-index: 20;
-    margin-bottom: 2rem;
 }
 
 .iphone-frame {
@@ -2718,8 +2698,6 @@ main {
 }
 /* Generic Section Styles */
 section {
-    position: relative;
-    z-index: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -3361,8 +3339,6 @@ body.scroll-lock {
 /* Story Section Styles */
 .story-section {
     position: relative;
-    z-index: 5;
-    margin-top: 2rem;
     width: 100%;
     min-height: 100vh;
     background-color: #FFE8CC;
@@ -3642,4 +3618,85 @@ body.story-active {
     overflow: hidden;
     position: fixed;
     width: 100%;
+}
+
+/* Z-index and positioning fixes */
+.chat-demo-section {
+    position: relative;
+    z-index: 50;
+    isolation: isolate;
+    margin-bottom: 0;
+}
+
+.chat-demo-content {
+    position: relative;
+    z-index: 51;
+    width: 100%;
+}
+
+.iphone-container {
+    position: relative;
+    z-index: 52;
+}
+
+/* Story section fix */
+.story-section {
+    position: relative;
+    z-index: 49;
+    margin-top: 0;
+}
+
+/* Screen fixes for iPhone */
+@supports (-webkit-touch-callout: none) {
+    .chat-demo-section {
+        min-height: -webkit-fill-available;
+        padding-bottom: 4rem;
+    }
+
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
+        position: relative;
+        z-index: 52;
+    }
+
+    .screen {
+        height: calc(100% - 30px);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Force proper stacking on iOS */
+    .whatsapp-header {
+        position: relative;
+        z-index: 3;
+    }
+
+    .chat-container {
+        position: relative;
+        z-index: 2;
+        height: calc(100% - 120px);
+        margin-bottom: 60px;
+    }
+
+    .input-area {
+        position: absolute;
+        bottom: 0;
+        z-index: 4;
+    }
+}
+
+/* iPhone specific media queries */
+@media screen and (max-width: 428px) {
+    @supports (-webkit-touch-callout: none) {
+        .chat-demo-section {
+            min-height: 100vh;
+            height: auto;
+            padding-bottom: 2rem;
+        }
+
+        .iphone-frame {
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+            margin-bottom: 2rem;
+        }
+    }
 }
