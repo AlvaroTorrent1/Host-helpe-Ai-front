@@ -1631,16 +1631,15 @@ main {
     }
 }
 
-/* Base container size adjustments */
+/* Chat Demo Section Core Styles */
 .chat-demo-section {
-    position: relative;
     min-height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 6rem 2rem;
-    overflow: hidden;
+    background: #FFE8CC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
 }
 
 .content-stack {
@@ -3619,4 +3618,98 @@ body.story-active {
     overflow: hidden;
     position: fixed;
     width: 100%;
+}
+
+/* Standard Screen Sizes */
+@media screen and (max-width: 1200px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.75);
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+    }
+}
+
+/* Tablet Adjustments */
+@media screen and (max-width: 768px) {
+    .iphone-container {
+        padding: 1rem;
+    }
+    
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.6);
+    }
+}
+
+/* Mobile Adjustments */
+@media screen and (max-width: 576px) {
+    .iphone-container {
+        padding: 0.5rem;
+    }
+
+    .iphone-frame {
+        width: 320px;
+        height: 692px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+}
+
+/* iPhone SE, iPhone 8 and similar smaller devices */
+@media screen and (max-width: 375px) {
+    .iphone-frame {
+        width: 300px;
+        height: 650px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
+    }
+}
+
+/* Height-based media queries */
+@media screen and (max-height: 800px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
+    }
+}
+
+@media screen and (max-height: 700px) {
+    .iphone-frame {
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
+    }
+}
+
+/* Landscape mode */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    .iphone-container {
+        padding: 0;
+    }
+    
+    .iphone-frame {
+        width: 300px;
+        height: 650px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
+    }
+}
+
+/* Hover effects - preserved but adjusted for mobile */
+@media (hover: hover) {
+    .iphone-frame:hover {
+        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
+    }
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-touch-callout: none) {
+    .iphone-container {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Fix for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+    .iphone-container {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 }
