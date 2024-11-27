@@ -2508,8 +2508,7 @@ main {
 }
 
 
-
-/* Toggle button redesign */
+/* Toggle button styles */
 .toggle-prompts {
     position: absolute;
     bottom: 70px;
@@ -2521,7 +2520,7 @@ main {
     height: 34px;
     border-radius: 12px;
     cursor: pointer;
-    z-index: 3;
+    z-index: 12; /* Higher than quick replies to ensure visibility */
     display: flex;
     align-items: center;
     justify-content: center;
