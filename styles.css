@@ -3173,6 +3173,22 @@ main {
     }
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-demo-section {
+        padding: 4rem 1rem;
+    }
+
+    .content-stack {
+        gap: 2rem;
+    }
+
+    .iphone-frame {
+        width: 320px;  /* Slightly smaller on mobile */
+        height: 692px;  /* Maintain aspect ratio */
+    }
+}
+
 /* Print Styles */
 @media print {
     .chat-demo-section {
@@ -3184,6 +3200,8 @@ main {
         margin: 2rem auto;
     }
 }
+
+
 
 /* Pricing Cards */
 .pricing-cards {
