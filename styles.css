@@ -1640,6 +1640,9 @@ main {
     flex-direction: column;
     align-items: center;
     gap: 4rem;
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
 }
 
 .content-stack {
@@ -1649,6 +1652,9 @@ main {
     width: 100%;
     max-width: 800px;
     text-align: center;
+    position: relative;
+    z-index: 25;
+    margin: 0 auto;
 }
 
 .top-content,
@@ -1656,16 +1662,23 @@ main {
     grid-column: 1;
     grid-row: 1;
     transition: opacity 0.3s ease;
+    
 }
 
 
 .top-content {
     margin-bottom: 2rem;
+    position: relative;
+    z-index: 30;
+    width: 100%;
 }
 
 /* WhatsApp showcase section */
 .showcase-content {
+    position: relative;
+    z-index: 15;
     margin-top: 2rem;
+    width: 100%;
 }
 
 
@@ -1678,6 +1691,8 @@ main {
     color: #333;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+    position: relative;
+    z-index: 31;
 }
 
 /* Subtitle styles */
@@ -1686,6 +1701,8 @@ main {
     color: #666;
     margin-bottom: 2rem;
     line-height: 1.6;
+    position: relative;
+    z-index: 31;
 }
 
 
@@ -1816,6 +1833,9 @@ main {
     align-items: center;
     padding: 2rem;
     overflow: hidden;
+    position: relative;
+    z-index: 20;
+    margin-bottom: 2rem;
 }
 
 .iphone-frame {
@@ -2698,6 +2718,8 @@ main {
 }
 /* Generic Section Styles */
 section {
+    position: relative;
+    z-index: 1;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -3339,6 +3361,8 @@ body.scroll-lock {
 /* Story Section Styles */
 .story-section {
     position: relative;
+    z-index: 5;
+    margin-top: 2rem;
     width: 100%;
     min-height: 100vh;
     background-color: #FFE8CC;
@@ -3618,98 +3642,4 @@ body.story-active {
     overflow: hidden;
     position: fixed;
     width: 100%;
-}
-
-/* Standard Screen Sizes */
-@media screen and (max-width: 1200px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.75);
-    }
-}
-
-@media screen and (max-width: 992px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
-    }
-}
-
-/* Tablet Adjustments */
-@media screen and (max-width: 768px) {
-    .iphone-container {
-        padding: 1rem;
-    }
-    
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.6);
-    }
-}
-
-/* Mobile Adjustments */
-@media screen and (max-width: 576px) {
-    .iphone-container {
-        padding: 0.5rem;
-    }
-
-    .iphone-frame {
-        width: 320px;
-        height: 692px;
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
-    }
-}
-
-/* iPhone SE, iPhone 8 and similar smaller devices */
-@media screen and (max-width: 375px) {
-    .iphone-frame {
-        width: 300px;
-        height: 650px;
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
-    }
-}
-
-/* Height-based media queries */
-@media screen and (max-height: 800px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
-    }
-}
-
-@media screen and (max-height: 700px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
-    }
-}
-
-/* Landscape mode */
-@media screen and (orientation: landscape) and (max-height: 500px) {
-    .iphone-container {
-        padding: 0;
-    }
-    
-    .iphone-frame {
-        width: 300px;
-        height: 650px;
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
-    }
-}
-
-/* Hover effects - preserved but adjusted for mobile */
-@media (hover: hover) {
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
-    }
-}
-
-/* Safari-specific fixes */
-@supports (-webkit-touch-callout: none) {
-    .iphone-container {
-        min-height: -webkit-fill-available;
-    }
-}
-
-/* Fix for notched devices */
-@supports (padding: env(safe-area-inset-top)) {
-    .iphone-container {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-    }
 }
