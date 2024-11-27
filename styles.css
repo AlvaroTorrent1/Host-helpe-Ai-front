@@ -1263,41 +1263,127 @@ html {
     border-radius: 12px;
     display: none;
 }
+/* Mobile-specific styles for Contact Section */
+@media (max-width: 768px) {
+    /* Get in Touch topic - ensure it stays on one line and centered */
+    .contact-container h1 {
+        font-size: 2rem; /* Adjust font size for mobile */
+        text-align: center; /* Center-align the header */
+        white-space: nowrap; /* Ensure "Get in Touch" stays on one line */
+    }
 
-/* Streamlined Footer Styles */
+    .contact-container .form-group {
+        margin-bottom: 20px; /* Reduce bottom margin between form fields */
+    }
+
+    /* Make Full Name, Email Address, and Subject inputs longer */
+    .contact-container input[type="text"],
+    .contact-container input[type="email"],
+    .contact-container input[type="subject"] {
+        width: 90%; /* Increase width to 90% for longer inputs */
+        margin: 0 auto; /* Center-align the inputs */
+    }
+
+    /* Make input and textarea larger and more user-friendly on mobile */
+    .contact-container input,
+    .contact-container textarea {
+        padding: 20px; /* Increase padding for better usability */
+        font-size: 1.1rem; /* Slightly larger text inside input */
+        border-radius: 12px; /* Keep rounded corners */
+    }
+
+    /* Make textarea bigger and easier to type in on mobile */
+    .contact-container textarea {
+        min-height: 250px; /* Make the textarea larger on mobile */
+    }
+
+    /* Make the button larger and more accessible */
+    .contact-container button {
+        font-size: 1.1rem; /* Slightly increase font size for button */
+        padding: 18px; /* Increase padding for easier interaction */
+    }
+
+    /* Optional: Align form inputs better */
+    .contact-container {
+        padding: 30px; /* Slightly reduce padding on mobile to give more space */
+    }
+}
+/* Footer Styles */
 .footer {
     background: #FFF5E6;
-    padding: 40px 0 20px;
-    position: relative;
-    width: 100vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    padding: 20px 0 10px;
+    width: 100%;
     border-top: 1px solid rgba(255, 153, 51, 0.1);
 }
 
-.footer-logo {
-    height: auto;
-    width: 100px;
-    margin-bottom: 0.75rem;
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
-.footer-about p {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0;
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.logo-text-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-logo {
+    width: 30px;
+    height: auto;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+.small {
+    font-size: 0.875em;
+}
+
+.smaller {
+    font-size: 0.75em;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.gap-2 {
+    gap: 0.5rem;
 }
 
 .social-links {
     display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .social-link {
-    color: #FF9933;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1306,47 +1392,222 @@ html {
     border-radius: 50%;
     background: white;
     box-shadow: 0 2px 8px rgba(255, 153, 51, 0.1);
+    transition: all 0.3s ease;
 }
 
 .social-link:hover {
     transform: translateY(-2px);
-    color: #FF8000;
     box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
 }
 
-.footer-contact {
+.me-3 {
+    margin-right: 1rem;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .footer .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align logo and text to the left */
+    }
+
+    .logo-text-container {
+        flex-direction: column; /* Stack logo and text vertically */
+        align-items: flex-start; /* Align everything to the left */
+        gap: 5px; /* Reduce gap between logo and text */
+        margin-bottom: 10px; /* Add space below the text */
+    }
+
+    .social-links {
+        align-self: flex-end; /* Keep icons on the right */
+        gap: 10px; /* Slightly increase spacing between icons */
+    }
+
+    .social-link {
+        width: 28px; /* Increase icon size */
+        height: 28px; /* Ensure icons are square */
+    }
+
+    .copyright {
+        order: 4; /* Move copyright text to the bottom */
+        text-align: center; /* Center-align the copyright text */
+        width: 100%; /* Take full width */
+        margin-top: 15px; /* Add space above the copyright text */
+        font-size: 0.875rem; /* Adjust font size if necessary */
+    }
+}
+/* Phone footer */
+.footer {
+    background: #FFF5E6;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-text-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-logo {
+    width: 30px;
+    height: auto;
+}
+
+.text-content {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
+}
+
+.company-text {
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 5px 0;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    font-size: 10px;
     color: #666;
-    font-size: 0.9rem;
+    text-decoration: none;
+    gap: 5px;
 }
 
-.contact-item svg {
-    color: #FF9933;
-    flex-shrink: 0;
+.contact-icon {
+    width: 12px;
+    height: 12px;
 }
 
-.footer-bottom {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 153, 51, 0.1);
-    text-align: center;
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-link img {
+    width: 28px;
+    height: 28px;
 }
 
 .copyright {
+    font-size: 10px;
     color: #666;
-    font-size: 0.85rem;
-    margin: 0;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .footer-content {
+        align-items: flex-start;
+    }
+
+    .company-text {
+        font-size: 14px;
+    }
+
+    .contact-item {
+        font-size: 12px;
+    }
+
+    .contact-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .social-link img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .copyright {
+        font-size: 12px;
+    }
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .logo-text-container {
+        flex-direction: row;
+    }
+
+    .text-content {
+        margin-left: 15px;
+    }
+
+    .company-text {
+        font-size: 14px;
+    }
+
+    .contact-item {
+        font-size: 12px;
+    }
+
+    .social-link img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .copyright {
+        font-size: 12px;
+    }
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .logo-text-container {
+        flex-direction: row;
+        text-align: left;
+        margin-bottom: 0;
+    }
+
+    .logo-text {
+        align-items: flex-start;
+        margin-left: 15px;
+    }
+
+    .social-links {
+        margin-top: 0;
+    }
+}
 /* Fix for the extra scroll space */
 html, body {
     overflow-x: hidden;
