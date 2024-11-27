@@ -1276,33 +1276,10 @@ html {
     margin-right: -50vw;
     border-top: 1px solid rgba(255, 153, 51, 0.1);
 }
-.logo-text-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* This will move the logo and text to the left */
-    margin-top: 20px; /* Keeps the margin you had for vertical centering */
-}
-
-.logo-text {
-    margin-left: 30px; /* Adjusts the space between the logo and the text */
-}
-
-.social-links {
-    display: flex;
-    gap: 0.5rem;
-    margin-right: 1rem;
-}
-
-.social-link svg {
-    width: 16px;
-    height: 16px;
-    stroke: #FF9933;
-}
 
 .footer-logo {
     height: auto;
-    width: 70px;
+    width: 100px;
     margin-bottom: 0.75rem;
 }
 
@@ -1666,7 +1643,6 @@ main {
     overflow: hidden;
 }
 
-
 .content-stack {
     display: flex;
     flex-direction: column;
@@ -1931,24 +1907,6 @@ main {
     }
 }
 
-/* Landscape mode adjustments */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-    .chat-demo-section {
-        padding: 1rem;
-        height: auto;
-        min-height: 100vh;
-    }
-
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.6);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.62);
-    }
-}
-
-
 /* Fix for input area on Android */
 @media screen and (max-width: 500px) {
     .input-area {
@@ -2054,19 +2012,9 @@ main {
     }
 }
 
-/* iPhone-specific media queries */
-@media screen and (max-width: 768px) {
-    .chat-demo-section {
-        padding: 2rem 1rem;
-        min-height: calc(100vh - var(--header-height));
-    }
-
+@media (max-width: 768px) {
     .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87);
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.55);
     }
 }
 
@@ -2075,39 +2023,6 @@ main {
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.45);
     }
 }
-
-/* iPhone SE, iPhone 8 and similar smaller devices */
-@media screen and (max-width: 375px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.75);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.77);
-    }
-}
-
-/* iPhone 12, 13, 14 sizes */
-@media screen and (min-width: 376px) and (max-width: 428px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.8);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.82);
-    }
-}
-/* Taller iPhones (12 Pro Max, 13 Pro Max, 14 Pro Max) */
-@media screen and (min-width: 428px) and (max-height: 926px) {
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87);
-    }
-}
-
 
 /* Height-based media queries */
 @media (max-height: 900px) {
@@ -2156,57 +2071,6 @@ main {
     
     .quick-replies {
         bottom: 65px;
-    }
-}
-
-/* Fix for tall mobile screens */
-@media screen and (min-height: 800px) and (max-width: 428px) {
-    .chat-demo-section {
-        align-items: center;
-        justify-content: center;
-    }
-
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.82);
-    }
-
-    .iphone-frame:hover {
-        transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.84);
-    }
-}
-
-/* Additional height-based adjustments */
-@media screen and (max-height: 700px) {
-    .chat-demo-section {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-    }
-
-    .iphone-frame {
-        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
-    }
-}
-
-/* Ensure proper display when keyboard is open on mobile */
-@media screen and (max-height: 600px) {
-    .chat-demo-section {
-        min-height: 100vh;
-        height: auto;
-    }
-}
-
-/* Safari-specific fixes */
-@supports (-webkit-touch-callout: none) {
-    .chat-demo-section {
-        min-height: -webkit-fill-available;
-    }
-}
-
-/* Fix for devices with notches */
-@supports (padding-top: env(safe-area-inset-top)) {
-    .chat-demo-section {
-        padding-top: calc(2rem + env(safe-area-inset-top));
-        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
     }
 }
 
@@ -2925,7 +2789,7 @@ main {
     text-align: center;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
     padding: 2rem;
-    padding-bottom: 60px; /* Space for trial footer */
+    padding-bottom: 50px; /* Space for trial footer */
 }   
 
 /* Pricing Section Updates */
