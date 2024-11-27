@@ -138,7 +138,7 @@ const translations = {
       heroTitle: "Host Helper AI",
       heroSubtitle: "Asistencia con AI para anfitriones de Airbnb",
       getStarted: "Comenzar",
-      text1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb.",
+      text1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus propiedades de Airbnb.",
       text2: "Escaparate de WhatsApp",
       text3: "Experimente un avance interactivo de nuestro asistente AI...",
       start: "Comenzar",
