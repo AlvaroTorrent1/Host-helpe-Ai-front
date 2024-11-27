@@ -132,6 +132,7 @@ chat-demo-section {
 /* Header Styles */
 .header-wrapper {
     position: fixed;
+    background-color: rgba(250, 244, 235, 1) !important; /* Opaque light color */
     top: 0;
     left: 0;
     right: 0;
@@ -140,6 +141,17 @@ chat-demo-section {
     margin: 0;
     z-index: 1000;
 }
+
+.hero-content p, .hero-section h1, .section p {
+    color: #333 !important; /* Dark text on light background */
+}   
+
+.contact-container input, .contact-container textarea {
+    background-color: white !important; /* Maintain white background */
+    color: #333 !important; /* Dark text */
+}
+
+
 
 header {
     width: 100%;
@@ -178,13 +190,37 @@ header {
 }
 
 @media (prefers-color-scheme: dark) {
-    html, body, .section {
-        color-scheme: normal; /* Ensure consistent light mode */
-        background: inherit; /* Maintain the same background color */
-        color: inherit; /* Use default text colors */
+    body, html {
+        background-color: #FFE8CC !important; /* Default light background */
+        color: #333 !important; /* Default dark text */
+    }
+
+    /* Ensure headers and sections keep their light-mode appearance */
+    .header-wrapper, .hero-section, .section, .contact-section {
+        background-color: #FFE8CC !important; /* Light background */
+        color: #333 !important; /* Dark text */
+    }
+
+    .contact-container input,
+    .contact-container textarea {
+        background-color: white !important; /* Keep inputs white */
+        color: #333 !important; /* Dark text */
+    }
+
+    .contact-container button {
+        background-color: #ff8c1a !important; /* Original button color */
+        color: white !important;
+    }
+
+    /* Override any dark mode backgrounds affecting sections */
+    .simple-pricing, .our-clients {
+        background-color: white !important;
     }
 }
 
+.our-clients {
+    background-color: #FFE8CC !important; /* Ensure consistent background */
+}
 
 /* Language Switcher */
 .language-switcher {
@@ -1278,52 +1314,7 @@ main {
     gap: clamp(1rem, 2vw, 2rem);
     padding: 1rem;
 }
-/* Default Light Mode Styles (for when dark mode is NOT enabled) */
-body {
-    background-color: #FFE8CC; /* Light background color */
-    color: #333; /* Dark text for light mode */
-}
 
-/* Input fields, textareas, and button styles for light mode */
-.contact-container input,
-.contact-container textarea,
-.contact-container button {
-    background-color: white; /* White background for input fields and buttons */
-    color: #333; /* Dark text color for input fields */
-    border: 2px solid #eee; /* Light border for input fields */
-}
-
-.contact-container button {
-    background: #ff8c1a; /* Button color in light mode */
-    color: white; /* Text color on the button */
-}
-
-/* Dark Mode Styles */
-@media (prefers-color-scheme: dark) {
-    /* Body background and text color for dark mode */
-    body {
-        background-color: #333; /* Dark background color */
-        color: #FFF; /* Light text color for dark mode */
-    }
-
-    /* Input fields, textareas, and buttons for dark mode */
-    .contact-container input,
-    .contact-container textarea {
-        background-color: #444; /* Dark background for input fields */
-        color: #fff; /* Light text for inputs */
-        border: 2px solid #666; /* Darker border for inputs */
-    }
-
-    .contact-container button {
-        background: #ff6600; /* Darker button color in dark mode */
-        color: white; /* Keep the text white on the button */
-    }
-
-    /* Optional: Change hover effects in dark mode */
-    .contact-container button:hover {
-        background: #ff7f00; /* Lighter button color when hovered */
-    }
-}
 
 .gallery-item {
     position: relative;
@@ -1724,9 +1715,9 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    overflow: visible;
-    z-index: 10;
+    overflow: visible; /* Ensure nothing is clipped */
     position: relative;
+    z-index: 10;
 }
 
 .iphone-frame {
@@ -1739,6 +1730,7 @@ body {
     border-radius: 50px;
     padding: 15px;
     position: relative;
+    margin: auto;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transform-style: preserve-3d;
     transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(1.5);
