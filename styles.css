@@ -1672,6 +1672,140 @@ main {
     }
 }
 
+/* Mobile-specific styles for Contact Section */
+@media (max-width: 768px) {
+    /* Get in Touch topic - ensure it stays on one line and centered */
+    .contact-container h1 {
+        font-size: 2rem; /* Adjust font size for mobile */
+        text-align: center; /* Center-align the header */
+        white-space: nowrap; /* Ensure "Get in Touch" stays on one line */
+    }
+
+    .contact-container .form-group {
+        margin-bottom: 20px; /* Reduce bottom margin between form fields */
+    }
+
+    /* Make Full Name, Email Address, and Subject inputs longer */
+    .contact-container input[type="text"],
+    .contact-container input[type="email"],
+    .contact-container input[type="subject"] {
+        width: 90%; /* Increase width to 90% for longer inputs */
+        margin: 0 auto; /* Center-align the inputs */
+        border: 2px solid #eee; /* Use the same border color as on the desktop */
+        background-color: white; /* Ensure the background color is white */
+        color: #333; /* Keep the text color consistent */
+    }
+/* Mobile-specific styles for Contact Section */
+@media (max-width: 768px) {
+    /* Compress the contact box */
+    .contact-container {
+        padding: 20px; /* Reduce padding for a more compact contact box */
+        max-width: 90%; /* Make the contact container slightly thinner */
+        margin: 0 auto; /* Keep it centered */
+    }
+
+    /* Get in Touch topic - ensure it stays on one line and centered */
+    .contact-container h1 {
+        font-size: 2rem; /* Adjust font size for mobile */
+        text-align: center; /* Center-align the header */
+        white-space: nowrap; /* Ensure "Get in Touch" stays on one line */
+    }
+
+    .contact-container .form-group {
+        margin-bottom: 15px; /* Reduce bottom margin between form fields */
+    }
+
+    /* Make Full Name, Email Address, and Subject inputs longer and thinner */
+    .contact-container input[type="text"],
+    .contact-container input[type="email"],
+    .contact-container input[type="subject"] {
+        width: 85%; /* Make inputs longer but thinner */
+        margin: 0 auto; /* Center-align the inputs */
+        padding: 15px; /* Adjust padding for better usability */
+        font-size: 1rem; /* Slightly smaller text size to fit better */
+        border: 2px solid #eee; /* Border color */
+        background-color: white; /* Background color */
+        color: #333; /* Text color */
+        border-radius: 12px; /* Rounded corners */
+    }
+
+    /* Make textarea larger and more user-friendly on mobile */
+    .contact-container textarea {
+        width: 85%; /* Make the textarea longer but thinner */
+        min-height: 250px; /* Make the textarea larger on mobile */
+        padding: 20px; /* Increase padding for better usability */
+        resize: vertical; /* Allow vertical resizing */
+        font-size: 1rem; /* Adjust font size */
+        border: 2px solid #eee; /* Border color */
+        background-color: white; /* Background color */
+        color: #333; /* Text color */
+        border-radius: 12px; /* Rounded corners */
+        margin: 0 auto; /* Center the textarea */
+    }
+
+    /* Make the button larger and more accessible */
+    .contact-container button {
+        font-size: 1.1rem; /* Slightly increase font size for button */
+        padding: 18px; /* Increase padding for easier interaction */
+        background: #ff8c1a; /* Button color */
+        color: white; /* Text color */
+        border: none; /* No border for the button */
+        border-radius: 12px; /* Rounded corners for the button */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 90%; /* Make button slightly thinner */
+        margin: 0 auto; /* Center the button */
+    }
+
+    /* Button hover effect */
+    .contact-container button:hover {
+        background: #ff9933; /* Hover effect matches the desktop version */
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 140, 26, 0.2);
+    }
+}
+
+    /* Make input and textarea larger and more user-friendly on mobile */
+    .contact-container input,
+    .contact-container textarea {
+        padding: 20px; /* Increase padding for better usability */
+        font-size: 1.1rem; /* Slightly larger text inside input */
+        border-radius: 12px; /* Keep rounded corners */
+        border: 2px solid #eee; /* Match the border color from the desktop version */
+        background-color: white; /* Ensure background is consistent */
+        color: #333; /* Text color should remain consistent */
+    }
+
+    /* Make textarea bigger and easier to type in on mobile */
+    .contact-container textarea {
+        min-height: 250px; /* Make the textarea larger on mobile */
+        resize: vertical;
+    }
+
+    /* Make the button larger and more accessible */
+    .contact-container button {
+        font-size: 1.1rem; /* Slightly increase font size for button */
+        padding: 18px; /* Increase padding for easier interaction */
+        background: #ff8c1a; /* Match the button color from the desktop version */
+        color: white; /* Keep text color white for consistency */
+        border: none; /* No border for the button */
+        border-radius: 12px; /* Keep rounded corners for the button */
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* Button hover effect */
+    .contact-container button:hover {
+        background: #ff9933; /* Hover effect matches the desktop version */
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 140, 26, 0.2);
+    }
+
+    /* Optional: Align form inputs better */
+    .contact-container {
+        padding: 30px; /* Slightly reduce padding on mobile to give more space */
+    }
+}
 
 /* Gallery Styles */
 .gallery-container {
