@@ -880,7 +880,6 @@ section {
     font-weight: 600;
     text-decoration: none;
     transition: all 0.3s ease;
-    margin-top: 1rem;
 }
 
 
@@ -1878,15 +1877,17 @@ main {
     }
 }
 
-/* Chat Demo Section Core Styles */
+/* Update the chat-demo-section layout */
 .chat-demo-section {
     min-height: 100vh;
-    padding: 6rem 2rem;
+    padding: 2rem;
     background: #FFE8CC;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4rem;
+    gap: 2rem;
+    position: relative;
+    text-align: center;
 }
 
 .content-stack {
@@ -1896,7 +1897,9 @@ main {
     width: 100%;
     max-width: 800px;
     text-align: center;
+    margin-bottom: 10rem; /* Reduced from 3rem */
 }
+
 
 .top-content,
 .showcase-content {
@@ -1912,48 +1915,63 @@ main {
 
 /* WhatsApp showcase section */
 .showcase-content {
-    margin-top: 1rem;
+    margin-top: 12rem;
 }
 
 
-
-
-/* Main title styles */
 .top-content h1 {
-    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-size: clamp(2rem, 6vw, 2rem);
     font-weight: 700;
     color: #333;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
+    margin-bottom: 0.25rem; /* Reduced from 1rem */
+    line-height: 1.1;
+    text-align: center;
+    padding: 0 20px; /* Add padding for smaller screens */
 }
 
-/* Subtitle styles */
 .top-content p {
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-size: clamp(1.1rem, 2vw, 0.8rem);
     color: #666;
-    margin-bottom: 2rem;
-    line-height: 1.6;
+    margin-bottom: 0.5rem; /* Reduced from 1.5rem */
+    line-height: 1.4;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* Responsive adjustment */
+@media (max-width: 640px) {
+    .top-content {
+        max-width: 90%; /* Make container slightly smaller on mobile */
+    }
+}
 
-
-/* Showcase Styles */
-/* Add margin to the showcase title */
+.showcase-content {
+    margin-top: 10rem; /* Reduced from 12rem */
+}
 
 .showcase-content h2 {
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-size: clamp(2rem, 4vw, 2rem);
     font-weight: 700;
     color: #333;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.25rem; /* Reduced from 1rem */
+    position: relative;
+    top: -2rem; /* Reduced from -4rem */
+    text-align: center;
 }
 
 .showcase-content p {
-    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    font-size: clamp(1.1rem, 1.8vw, 0.8rem);
     color: #666;
     max-width: 600px;
-    margin: 0 auto 3rem;
-    line-height: 1.6;
+    margin: 0 auto 0.5rem; /* Reduced bottom margin */
+    line-height: 1.4;
+    position: relative;
+    top: -2rem; /* Reduced from -4rem */
+    text-align: center;
 }
+
+
 
 /* Add title section */
 .chat-demo-title {
@@ -1962,7 +1980,7 @@ main {
 }
 
 .chat-demo-title h1 {
-    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-size: clamp(3rem, 6vw, 2rem);
     font-weight: 700;
     color: #333;
     margin-bottom: 1.5rem;
@@ -2003,7 +2021,7 @@ main {
   }
   
   .showcase-section h2 {
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-size: clamp(2.5rem, 4vw, 2rem);
     font-weight: 700;
     color: #333;
     margin-bottom: 1.5rem;
@@ -2294,6 +2312,7 @@ main {
 @media (max-width: 768px) {
     .chat-demo-section {
         padding: 4rem 1rem;
+        margin-bottom: 20rem;
     }
 
     .content-stack {
@@ -2819,6 +2838,8 @@ main {
     .iphone-frame {
         flex: none;
         margin: 0;
+        position: relative; /* or absolute */
+        top: -60px; /* Move it up by 10 pixels */
     }
 }
 
@@ -3584,6 +3605,130 @@ body.scroll-lock {
     width: 100%;
 }
 
+/* Swipe Indicators - smaller on mobile */
+.swipe-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 153, 51, 0.15);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+
+.swipe-left {
+    left: 20px;
+}
+
+.swipe-right {
+    right: 20px;
+}
+
+.swipe-left::before,
+.swipe-right::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: solid #FF9933;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+}
+
+.swipe-left::before {
+    transform: rotate(135deg);
+    margin-left: 5px;
+}
+
+.swipe-right::before {
+    transform: rotate(-45deg);
+    margin-right: 5px;
+}
+
+
+
+/* Click Indicator */
+.click-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border: 3px solid rgba(255, 153, 51, 0.5);
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    animation: clickPulse 2s infinite;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.click-indicator::after {
+    content: 'Click';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FF9933;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    width: 100px;
+    animation: fadeInOut 2s infinite;
+}
+
+/* Show indicator only when card is not interacted */
+.story-section-card:not(.interacted) .click-indicator {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Base indicator styles */
+.interaction-indicator {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Story card updates */
+.story-section-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.story-section-card:hover {
+    transform: scale(1.02);
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+    0% { 
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(-50%) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+}
+
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+
 /* Story Section Styles */
 .story-section {
     position: relative;
@@ -3789,21 +3934,65 @@ body.scroll-lock {
     z-index: 2;
 }
 
-/* Story Section Animations */
-.story-section-card.enter-from-bottom {
-    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* New card transition animations */
+.story-section-card.exit-to-left {
+    animation: slideOutLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.story-section-card.enter-from-top {
-    animation: slideInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.story-section-card.exit-to-right {
+    animation: slideOutRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.story-section-card.exit-to-top {
-    animation: slideOutUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.story-section-card.enter-from-right {
+    animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.story-section-card.exit-to-bottom {
-    animation: slideOutDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.story-section-card.enter-from-left {
+    animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Prevent text selection during transitions */
@@ -3866,4 +4055,102 @@ body.story-active {
     overflow: hidden;
     position: fixed;
     width: 100%;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .chat-demo-section {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .content-stack {
+        margin: 0; /* Increase margin on mobile */
+        position: relative; /* or absolute */
+        top: 1rem; /* Move it up by 10 pixels */
+    
+    }
+
+    .click-indicator {
+        display: none;
+    }
+
+    .swipe-indicator {
+        display: flex;
+        width: 30px; /* Smaller size */
+        height: 30px;
+        animation: swipeHint 2s infinite;
+    }
+
+    .swipe-left::before,
+    .swipe-right::before {
+        width: 12px; /* Smaller arrow */
+        height: 12px;
+        border-width: 0 2px 2px 0; /* Thinner border */
+    }
+
+    .swipe-left {
+        transform: translateX(10px);
+        left: 5px;
+    }
+
+    .swipe-right {
+        transform: translateX(-10px);
+        right: 5px;
+    }
+
+    .iphone-frame {
+        margin-top: 56rem; /* Add space above the iPhone frame */
+        position: relative; /* or absolute */
+
+    }
+
+    .story-section-card:not(.interacted) .swipe-indicator {
+        opacity: 1;
+        visibility: visible;
+        animation: swipeHint 2s infinite;
+    }
+}
+@media (min-width: 769px) {
+
+    .story-section-card:not(.interacted) .click-indicator {
+        opacity: 1;
+        visibility: visible;
+    }
+    .swipe-indicator {
+        display: none;
+    }
+}
+
+
+/* Animations */
+@keyframes clickPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes swipeHint {
+    0%, 100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50%) scale(1.1);
+        opacity: 0.7;
+    }
 }

@@ -39,17 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         header.style.webkitBackdropFilter = `blur(${blurValue}px)`;
         header.style.backgroundColor = `rgba(250, 244, 235, ${transparency})`;
         
-        // Handle logo and language switcher fade out
-        if (logo) {
-            logo.style.opacity = 1 - (scrollPercentage * 2);
-            logo.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
-        }
-        
-        if (languageSwitcher) {
-            languageSwitcher.style.opacity = 1 - (scrollPercentage * 2);
-            languageSwitcher.style.visibility = scrollPercentage >= 0.5 ? 'hidden' : 'visible';
-        }
-        
 
 
 
