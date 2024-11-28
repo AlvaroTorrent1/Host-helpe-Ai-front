@@ -132,7 +132,7 @@ chat-demo-section {
 /* Header Styles */
 .header-wrapper {
     position: fixed;
-    background-color: rgba(250, 244, 235, 1) !important; /* Opaque light color */
+    background-color: rgba(250, 244, 235, 1); /* Opaque light color */
     top: 0;
     left: 0;
     right: 0;
@@ -3635,20 +3635,23 @@ body.scroll-lock {
 }
 
 /* Swipe Indicators - smaller on mobile */
+/* Swipe Indicators - Updated for better visibility */
 .swipe-indicator {
-    position: absolute;
+    position: fixed;
     top: 50%;
     transform: translateY(-50%);
     width: 40px;
     height: 40px;
+    background: rgba(255, 153, 51, 0.2);
     border-radius: 50%;
-    background: rgba(255, 153, 51, 0.15);
-    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 1000;
     pointer-events: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease;
 }
 
 
@@ -3660,24 +3663,23 @@ body.scroll-lock {
     right: 20px;
 }
 
-.swipe-left::before,
-.swipe-right::before {
+.swipe-indicator::before {
     content: '';
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 12px;
     border: solid #FF9933;
-    border-width: 0 3px 3px 0;
+    border-width: 0 2px 2px 0;
     display: inline-block;
 }
 
 .swipe-left::before {
     transform: rotate(135deg);
-    margin-left: 5px;
+    margin-left: 4px;
 }
 
 .swipe-right::before {
     transform: rotate(-45deg);
-    margin-right: 5px;
+    margin-right: 4px;
 }
 
 
@@ -3885,6 +3887,7 @@ body.scroll-lock {
     overflow: hidden;
 }
 
+/* Story Section Card Transitions */
 .story-section-card {
     position: absolute;
     top: 0;
@@ -3896,16 +3899,18 @@ body.scroll-lock {
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateZ(0);
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
     will-change: transform, opacity;
-    padding: 20px;
+    pointer-events: none;
 }
 
 .story-section-card.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) translateZ(0);
+    pointer-events: auto;
+    transform: translateX(0);
 }
 
 /* Card Content */
@@ -3963,22 +3968,27 @@ body.scroll-lock {
     z-index: 2;
 }
 
-/* New card transition animations */
+/* Improved transition animations */
 .story-section-card.exit-to-left {
-    animation: slideOutLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform: translateX(-100%);
+    opacity: 0;
 }
 
 .story-section-card.exit-to-right {
-    animation: slideOutRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform: translateX(100%);
+    opacity: 0;
 }
 
 .story-section-card.enter-from-right {
-    animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform: translateX(100%);
+    opacity: 0;
 }
 
 .story-section-card.enter-from-left {
-    animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform: translateX(-100%);
+    opacity: 0;
 }
+
 
 @keyframes slideOutLeft {
     from {
@@ -4035,6 +4045,7 @@ body.scroll-lock {
     .story-navigation {
         right: 20px;
     }
+    
 
     .nav-dot {
         width: 10px;
@@ -4105,10 +4116,15 @@ body.story-active {
     }
 
     .swipe-indicator {
-        display: flex;
-        width: 30px; /* Smaller size */
-        height: 30px;
-        animation: swipeHint 2s infinite;
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 190, 125, 0.30);
+    }
+
+    .swipe-indicator::before {
+        width: 10px;
+        height: 10px;
+        border-width: 0 2px 2px 0;
     }
 
     .swipe-left::before,
@@ -4119,14 +4135,13 @@ body.story-active {
     }
 
     .swipe-left {
-        transform: translateX(10px);
-        left: 5px;
+        left: 10px;
     }
 
     .swipe-right {
-        transform: translateX(-10px);
-        right: 5px;
+        right: 10px;
     }
+
 
     .iphone-frame {
         margin-top: 56rem; /* Add space above the iPhone frame */
@@ -4150,7 +4165,12 @@ body.story-active {
         display: none;
     }
 }
-
+/* Hide desktop click indicators on mobile */
+@media (max-width: 768px) {
+    .click-indicator {
+        display: none;
+    }
+}
 
 /* Animations */
 @keyframes clickPulse {

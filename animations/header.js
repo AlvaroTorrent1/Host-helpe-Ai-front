@@ -38,10 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         header.style.backdropFilter = `blur(${blurValue}px)`;
         header.style.webkitBackdropFilter = `blur(${blurValue}px)`;
         header.style.backgroundColor = `rgba(250, 244, 235, ${transparency})`;
-        
-
-
-
         // Scale down nav items
         navLinks.forEach(link => {
             const scale = 1 - (scrollPercentage * 0.1);
