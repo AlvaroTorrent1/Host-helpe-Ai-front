@@ -87,6 +87,7 @@
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    
 
 <!-- Your language manager component -->
 <script type="text/babel" src="functions/languageManager.js"></script>
@@ -353,71 +354,153 @@
 
 <!-- Photo Gallery Section -->
 <div class="gallery-container">
+    <!-- Gallery Header -->
     <div class="gallery-header">
         <h2 data-translate="ourClients">Our Clients</h2>
     </div>
     
-    <div class="gallery-grid">
-        <div class="gallery-item">
+    <!-- Gallery Timeline Display -->
+    <div class="gallery-timeline">
+        <!-- Previous Image -->
+        <div class="gallery-item previous">
+            <img src="assets/images/pic6.png" alt="Property 6" width="800" height="600">
+        </div>
+
+        <!-- Current Image -->
+        <div class="gallery-item current">
             <img src="assets/images/pic1.png" alt="Property 1" width="800" height="600">
             <div class="gallery-item-overlay">
                 <h3 class="gallery-item-title" data-translate="luxuryVilla">Luxury Villa</h3>
-                <p class="gallery-item-description" data-translate="luxuryVillaDesc">Elegant beachfront villa with panoramic ocean views.</p>
+                <p class="gallery-item-description" data-translate="luxuryVillaDesc">
+                    Elegant beachfront villa with panoramic ocean views.
+                </p>
             </div>
         </div>
-        
-        <div class="gallery-item">
+
+        <!-- Next Image -->
+        <div class="gallery-item next">
+            <img src="assets/images/pic2.png" alt="Property 2" width="800" height="600">
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="gallery-controls">
+        <!-- Previous Button Container -->
+        <div class="nav-button-container">
+            <div class="nav-line"></div>
+            <button class="nav-button prev" aria-label="Previous image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="progress-dots">
+            <div class="dot active" data-index="0" aria-label="Image 1"></div>
+            <div class="dot" data-index="1" aria-label="Image 2"></div>
+            <div class="dot" data-index="2" aria-label="Image 3"></div>
+            <div class="dot" data-index="3" aria-label="Image 4"></div>
+            <div class="dot" data-index="4" aria-label="Image 5"></div>
+            <div class="dot" data-index="5" aria-label="Image 6"></div>
+        </div>
+
+        <!-- Next Button Container -->
+        <div class="nav-button-container">
+            <button class="nav-button next" aria-label="Next image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            <div class="nav-line"></div>
+        </div>
+    </div>
+
+    <!-- Hidden Gallery Data -->
+    <div class="gallery-data" style="display: none;">
+        <!-- Item 1 -->
+        <div class="gallery-item" data-index="0">
+            <img src="assets/images/pic1.png" alt="Property 1" width="800" height="600">
+            <div class="gallery-item-overlay">
+                <h3 class="gallery-item-title" data-translate="luxuryVilla">Luxury Villa</h3>
+                <p class="gallery-item-description" data-translate="luxuryVillaDesc">
+                    Elegant beachfront villa with panoramic ocean views.
+                </p>
+            </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="gallery-item" data-index="1">
             <img src="assets/images/pic2.png" alt="Property 2" width="800" height="600">
             <div class="gallery-item-overlay">
                 <h3 class="gallery-item-title" data-translate="mountainRetreat">Mountain Retreat</h3>
-                <p class="gallery-item-description" data-translate="mountainRetreatDesc">Cozy cabin with stunning mountain views.</p>
+                <p class="gallery-item-description" data-translate="mountainRetreatDesc">
+                    Cozy cabin with stunning mountain views.
+                </p>
             </div>
         </div>
-        
-        <div class="gallery-item">
+
+        <!-- Item 3 -->
+        <div class="gallery-item" data-index="2">
             <img src="assets/images/pic3.png" alt="Property 3" width="800" height="600">
             <div class="gallery-item-overlay">
                 <h3 class="gallery-item-title" data-translate="urbanLoft">Urban Loft</h3>
-                <p class="gallery-item-description" data-translate="urbanLoftDesc">Modern city living in the heart of downtown.</p>
+                <p class="gallery-item-description" data-translate="urbanLoftDesc">
+                    Modern city living in the heart of downtown.
+                </p>
             </div>
         </div>
-        
-        <div class="gallery-item">
+
+        <!-- Item 4 -->
+        <div class="gallery-item" data-index="3">
             <img src="assets/images/pic4.png" alt="Property 4" width="800" height="600">
             <div class="gallery-item-overlay">
                 <h3 class="gallery-item-title" data-translate="seasideCottage">Seaside Cottage</h3>
-                <p class="gallery-item-description" data-translate="seasideCottageDesc">Charming beachside getaway perfect for families.</p>
+                <p class="gallery-item-description" data-translate="seasideCottageDesc">
+                    Charming beachside getaway perfect for families.
+                </p>
             </div>
         </div>
-        
-        <div class="gallery-item">
+
+        <!-- Item 5 -->
+        <div class="gallery-item" data-index="4">
             <img src="assets/images/pic5.png" alt="Property 5" width="800" height="600">
             <div class="gallery-item-overlay">
-                <h3 class="gallery-item-title" data-translate="mountainRetreat">Desert Oasis</h3>
-                <p class="gallery-item-description" data-translate="mountainRetreatDesc">Modern desert home with private pool.</p>
+                <h3 class="gallery-item-title" data-translate="desertOasis">Desert Oasis</h3>
+                <p class="gallery-item-description" data-translate="desertOasisDesc">
+                    Modern desert home with private pool.
+                </p>
             </div>
         </div>
-        
-        <div class="gallery-item">
+
+        <!-- Item 6 -->
+        <div class="gallery-item" data-index="5">
             <img src="assets/images/pic6.png" alt="Property 6" width="800" height="600">
             <div class="gallery-item-overlay">
                 <h3 class="gallery-item-title" data-translate="forestHideaway">Forest Hideaway</h3>
-                <p class="gallery-item-description" data-translate="forestHideawayDesc">Secluded forest retreat with luxury amenities.</p>
+                <p class="gallery-item-description" data-translate="forestHideawayDesc">
+                    Secluded forest retreat with luxury amenities.
+                </p>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Lightbox -->
 <div class="lightbox">
-    <span class="lightbox-close">&times;</span>
-    <button class="lightbox-arrow lightbox-prev">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+    <button class="lightbox-arrow lightbox-prev" aria-label="Previous image">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
     </button>
     <img src="" alt="Lightbox image" width="800" height="600">
-    <button class="lightbox-arrow lightbox-next">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="lightbox-arrow lightbox-next" aria-label="Next image">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
     </button>
