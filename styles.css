@@ -1160,7 +1160,458 @@ html {
     border-radius: 12px;
     display: none;
 }
+/* Pricing Card Layout Fixes */
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 900px; /* Ensure consistent height */
+    position: relative;
+    padding-bottom: 800px; /* Space for button and trial text */
+  }
+  .pricing-card {
+    position: relative;
+    padding-bottom: 10px; /* Increased to accommodate larger footer area */
+}
 
+.pricing-action {
+    position: absolute;
+    bottom: 80px; /* Moved up to make room for trial text */
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+}
+
+.trial-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    background: #FFF5E6;
+    border-radius: 0 0 20px 20px;
+    min-height: 20px; /* Added minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.trial-footer, 
+.pricing-action button,
+.pricing-action a {
+    white-space: normal; /* Allow text to wrap */
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+/* Trial Card specific adjustments */
+.trial-card .pricing-action {
+    bottom:60px; /* Slightly more space for trial text */
+}
+
+/* Pricing Card Layout Fixes */
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 700px; /* Ensure consistent height */
+    position: relative;
+    padding-bottom: 120px; /* Space for button and trial text */
+}
+
+.pricing-action {
+    position: absolute;
+    bottom: 80px; /* Moved up to make room for trial text */
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+}
+
+.trial-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: #FFF5E6;
+    border-radius: 0 0 20px 20px;
+    min-height: 70px; /* Added minimum height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.trial-footer, 
+.pricing-action button,
+.pricing-action a {
+    white-space: normal; /* Allow text to wrap */
+    line-height: 1.2;
+    font-size: 0.9rem;
+}
+
+/* Trial Card specific adjustments */
+.trial-card .pricing-action {
+    bottom: 70px; /* Slightly more space for trial text */
+}
+
+/* Enterprise text alignment */
+.pricing-card h3,
+.pricing-card .price,
+.pricing-features {
+    text-align: center;
+}
+
+/* Ensure consistent button styling */
+.pricing-action button,
+.pricing-action a {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+    line-height: 1.5;
+}
+
+  /* Button Container Alignment */
+  .pricing-action {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    padding: 0 50px;
+    margin-top: auto;
+  }
+  
+  /* Button Styles */
+  .pricing-action button,
+  .pricing-action a {
+    width: 100%;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+  }
+  
+  /* Trial Card Button */
+  .trial-card .pricing-action button,
+  .trial-card .pricing-action a {
+    background: transparent;
+    border: 2px solid #FF9933;
+    color: #FF9933;
+  }
+  
+  /* Pro Card Button */
+  .featured .pricing-action button,
+  .featured .pricing-action a {
+    background: #FF9933;
+    color: white;
+    border: none;
+  }
+  
+  /* Enterprise Card Button */
+  .pricing-card:not(.trial-card):not(.featured) .pricing-action button,
+  .pricing-card:not(.trial-card):not(.featured) .pricing-action a {
+    background: white;
+    border: 2px solid #FF9933;
+    color: #FF9933;
+  }
+  
+  /* Hover Effects */
+  .pricing-action button:hover,
+  .pricing-action a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 153, 51, 0.2);
+  }
+  
+  /* Trial Text Position */
+  .trial-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    background: #FFF5E6;
+    border-radius: 0 0 20px 20px;
+  }
+
+/* Pricing Card Alignment Fixes */
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .pricing-features {
+    width: 100%;
+    padding: 0 1rem;
+  }
+  
+  .pricing-features ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+  }
+  
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem 0;
+    min-height: 40px; /* Ensure consistent height */
+  }
+  
+  .pricing-action {
+    width: 100%;
+    padding: 0 1rem;
+    margin-top: auto; /* Push to bottom */
+  }
+  
+  .pricing-action button {
+    width: 100%;
+    min-height: 48px; /* Consistent button height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Center align all pricing card content */
+.pricing-card {
+    text-align: center;
+  }
+  
+  /* Center align enterprise card specific elements */
+  .pricing-card .custom-pricing,
+  .pricing-card .enterprise-subtitle,
+  .pricing-card .pricing-features {
+    text-align:center;
+  }
+  
+  /* Ensure consistent button alignment */
+  .pricing-action {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+    text-align: center;
+  }
+  
+  /* Ensure consistent button width */
+  .pricing-action button,
+  .pricing-action a {
+    width: 100%;
+    display: inline-block;
+  }
+  /* Pricing Cards Layout */
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 700px;
+    position: relative;
+    padding-bottom: 120px;
+  }
+  
+  /* Button Container Alignment */
+  .pricing-action {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+  }
+  
+  /* Button Styles */
+  .pricing-action button,
+  .pricing-action a {
+    width: 100%;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+  }
+  
+  /* Trial Card Button */
+  .trial-card .pricing-action button,
+  .trial-card .pricing-action a {
+    background: transparent;
+    border: 2px solid #FF9933;
+    color: #FF9933;
+  }
+  
+  /* Pro Card Button */
+  .featured .pricing-action button,
+  .featured .pricing-action a {
+    background: #FF9933;
+    color: white;
+    border: none;
+  }
+  
+  /* Enterprise Card Button */
+  .pricing-card:not(.trial-card):not(.featured) .pricing-action button,
+  .pricing-card:not(.trial-card):not(.featured) .pricing-action a {
+    background: white;
+    border: 2px solid #FF9933;
+    color: #FF9933;
+  }
+  
+  /* Hover Effects */
+  .pricing-action button:hover,
+  .pricing-action a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 153, 51, 0.2);
+  }
+  
+  /* Trial Text Position */
+  .trial-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    background: #FFF5E6;
+    border-radius: 0 0 20px 20px;
+    /* Enterprise text alignment */
+.pricing-card h3,
+.pricing-card 
+.price,
+.pricing-features {
+  text-align: center;
+}
+
+/* Ensure consistent button styling */
+.pricing-action button,
+.pricing-action a {
+  width: 100%;
+  padding: 25px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+  line-height: 1.5;
+}
+  }
+/* Mobile-specific styles for Contact Box */
+@media (max-width: 768px) {
+    .contact-section {
+        padding: 0; /* Remove section padding */
+    }
+
+    .contact-container {
+        width: 98%; /* Make it wider */
+        max-width: none; /* Remove max-width constraint */
+        background: white;
+        border-radius: 24px;
+        padding: 15px; /* Reduce padding */
+        margin: 10px auto; /* Reduce margin */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transform: scale(0.95); /* Slightly scale down to fit better */
+    }
+
+    .contact-container h1 {
+        font-size: 22px;
+        text-align: center;
+        color: #ff8c1a;
+        margin-bottom: 15px; /* Reduce bottom margin */
+        font-weight: 600;
+        padding: 0; /* Remove padding */
+    }
+
+    /* More compressed form groups */
+    .form-group {
+        margin-bottom: 10px; /* Reduce space between form elements */
+        width: 100%;
+    }
+
+    /* Input fields - more compressed */
+    .contact-container input[type="text"],
+    .contact-container input[type="email"],
+    .contact-container input[type="subject"] {
+        width: 100%;
+        padding: 10px 12px; /* Reduce padding */
+        margin-bottom: 8px; /* Reduce bottom margin */
+        border: 1px solid #E5E5E5;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #FAFAFA;
+        height: 40px; /* Fixed height for consistency */
+    }
+
+    /* Textarea - more compressed */
+    .contact-container textarea {
+        width: 100%;
+        min-height: 100px; /* Reduce minimum height */
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid #E5E5E5;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #FAFAFA;
+        resize: vertical;
+    }
+
+    /* Submit button - adjusted for compressed layout */
+    @media (max-width: 768px) {
+        .contact-container button {
+            width: 95%; /* Make button wider */
+            margin: 20px auto 0; /* Center the button and add some top margin */
+            border-radius: 25px; /* More rounded corners */
+            padding: 12px; /* Adjust padding */
+            font-size: 16px; /* Adjust font size */
+            background: #FF9933; /* Keep the orange color */
+            display: block; /* Ensure it takes full width */
+        }
+    }
+
+    /* For extra small phones */
+    @media (max-width: 320px) {
+        .contact-container {
+            width: 100%;
+            margin: 5px auto;
+            padding: 12px;
+        }
+        
+        .contact-container h1 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+    }
+}
+
+/* Additional compression for shorter screens */
+@media (max-height: 700px) {
+    .contact-container {
+        transform: scale(0.9);
+        margin: 5px auto;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+
+    .contact-container textarea {
+        min-height: 80px;
+    }
+}
 /* Footer Styles */
 .footer {
     background: #FFF5E6;
