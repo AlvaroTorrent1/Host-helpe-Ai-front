@@ -1853,6 +1853,49 @@ html {
     box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
 }
 
+.social-links1 {
+    display: flex;
+
+}
+
+
+
+
+.social_links1 .social-link1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(255, 153, 51, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social_links1 .social-link1:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .social_links1 {
+        margin: 1rem 0;  /* Further reduced margin for mobile */
+        gap: 0.75rem;   /* Slightly reduced gap between icons */
+    }
+
+    .social_links1 .social-link1 {
+        width: 35px;    /* Slightly smaller icons on mobile */
+        height: 35px;
+    }
+    
+    /* Adjust spacing for showcase content */
+    .showcase-content {
+        margin-top: 1rem;  /* Reduced margin */
+    }
+}
+
 .me-3 {
     margin-right: 1rem;
 }
@@ -4937,7 +4980,7 @@ body.story-active {
     }
 
     .content-stack {
-        margin: 0; /* Increase margin on mobile */
+        margin: 50px; /* Increase margin on mobile */
         position: relative; /* or absolute */
         top: 1rem; /* Move it up by 10 pixels */
     
@@ -4976,7 +5019,7 @@ body.story-active {
 
 
     .iphone-frame {
-        margin-top: 56rem; /* Add space above the iPhone frame */
+        margin-top: 25rem; /* Add space above the iPhone frame */
         position: relative; /* or absolute */
 
     }
