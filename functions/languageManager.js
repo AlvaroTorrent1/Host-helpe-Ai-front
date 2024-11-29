@@ -9,14 +9,14 @@ const translations = {
         getStarted: "Get Started",
   
         // Story Section
-        storyTitle1: "Meet HostHelper AI",
+        storyTitle1: "Effortless Regulatory Compliance",
         storyDesc1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings with cutting-edge AI technology.",
-        storyTitle2: "Smart Property Management",
-        storyDesc2: "Experience seamless property management with our AI that monitors your properties 24/7, handling bookings, guest inquiries, and cleaning services coordination with unmatched efficiency.",
+        storyTitle2: "Hassle-Free Check-ins",
+        storyDesc2: "Automate check-ins with clear instructions, enabling guests to access properties at any time seamlessly.",
         storyTitle3: "Predictive Maintenance", 
         storyDesc3: "Stay ahead of maintenance needs with our advanced AI algorithms that predict and schedule necessary services before issues arise, ensuring your properties remain in perfect condition.",
-        storyTitle4: "Guest Experience Enhancement",
-        storyDesc4: "Elevate your hosting game with personalized guest interactions, from custom welcome messages to curated local recommendations, ensuring every stay is memorable and five-star worthy.",
+        storyTitle4: "Proactive Guest Assistance",
+        storyDesc4: "Anticipate guest needs with timely messages. From travel tips to essential reminders, Host Helper Ai ensures guests have everything they need before they ask.",
         // Navigation
         summary: "Summary",
         joinUs: "Join us",
@@ -124,14 +124,14 @@ const translations = {
         getStarted: "Comenzar",
   
         // Story Section
-        storyTitle1: "Conozca HostHelper AI",
-        storyDesc1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb con tecnología de IA de vanguardia.",
-        storyTitle2: "Gestión inteligente de la propiedad",
-        storyDesc2: "Experimente una gestión de propiedades sin problemas con nuestra IA que supervisa sus propiedades 24/7, gestionando reservas, consultas de huéspedes y coordinación de servicios de limpieza con una eficiencia inigualable.",
+        storyTitle1: "Cumplimiento normativo sin esfuerzo",
+        storyDesc1: "Simplifica la recopilación de datos de huéspedes para cumplir con la normativa de alquiler vacacional en España. Host Helper Ai automatiza el proceso, ahorrando tiempo y garantizando precisión.",
+        storyTitle2: "Facturación sin complicaciones",
+        storyDesc2: "Automatiza los check-ins con instrucciones claras, permitiendo a los huéspedes acceder a las propiedades en cualquier momento sin complicaciones.",
         storyTitle3: "Mantenimiento predictivo", 
         storyDesc3: "Adelántese a las necesidades de mantenimiento con nuestros avanzados algoritmos de IA que predicen y programan los servicios necesarios antes de que surjan problemas, garantizando que sus propiedades permanezcan en perfecto estado.",
-        storyTitle4: "Mejora de la experiencia del huésped",
-        storyDesc4: "Eleve su nivel de anfitrión con interacciones personalizadas con los huéspedes, desde mensajes de bienvenida personalizados hasta recomendaciones locales curadas, garantizando que cada estancia sea memorable y digna de cinco estrellas.",
+        storyTitle4: "Asistencia Proactiva para Huéspedes",
+        storyDesc4: "Anticipa las necesidades de los huéspedes con mensajes oportunos. Desde consejos de viaje hasta recordatorios esenciales, Host Helper Ai garantiza que tengan todo lo necesario antes de preguntar.",
         
         // Navigation
         summary: "Resumen",
@@ -197,7 +197,7 @@ const translations = {
         enterprise: "Empresa",
         mostPopular: "Más Populares",
         Ai: "Ai Respuestas",
-        oneProperty: "1 Propiedad",
+        nProperty: "N propiedades",
         emailSupport: "Asistencia por correo electrónico",
         basicAnalytics: "Análisis de la propiedad",
         voiceChatbots: "Chatbots de voz",
@@ -205,7 +205,7 @@ const translations = {
         smartPricing: "Precios inteligentes",
         startTrial: "Prueba gratuita",
         trialText: "Pruebe gratis durante 2 semanas - No necesita tarjeta de crédito",
-        bestGrowing: "Lo mejor para empresas en crecimiento",
+        bestGrowing: "Para empresas en crecimiento",
         perfectStart: "Perfecto para empezar",
         largeScale: "Para operaciones a gran escala",
         customPricing: "Precios Personalizados",
