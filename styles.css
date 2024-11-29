@@ -5035,3 +5035,59 @@ body.story-active {
         opacity: 0.7;
     }
 }
+
+.pricing-card .price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 54px; /* Ensure consistent height for price section */
+  }
+  
+  .pricing-card .currency,
+  .pricing-card .amount,
+  .pricing-card .period {
+    display: inline-flex;
+    align-items: center;
+  }
+  .pricing-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pricing-header {
+    margin-bottom: 1.5rem;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .plan-badge {
+    margin-bottom: 1rem;
+  }
+  
+  .pricing-features {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .pricing-card .price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 54px;
+  }
+
+  .pricing-features li {
+  font-weight: normal;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #333;
+}
+
