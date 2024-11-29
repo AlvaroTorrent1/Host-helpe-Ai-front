@@ -20,32 +20,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchStartY = 0;
     let isSwiping = false;
 
-    // Initialize gallery
     function updateGallery() {
         const items = Array.from(galleryData.children);
         galleryTimeline.innerHTML = '';
-
+    
+        // Ensure correct indices are calculated
         const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
         const nextIndex = (currentIndex + 1) % totalItems;
-
-        const prevClone = items[prevIndex].cloneNode(true);
-        const currentClone = items[currentIndex].cloneNode(true);
-        const nextClone = items[nextIndex].cloneNode(true);
-
+    
+        // Clone elements from the correct indices
+        const prevClone = items[prevIndex]?.cloneNode(true) || items[0].cloneNode(true);
+        const currentClone = items[currentIndex]?.cloneNode(true) || items[0].cloneNode(true);
+        const nextClone = items[nextIndex]?.cloneNode(true) || items[0].cloneNode(true);
+    
         prevClone.className = 'gallery-item previous';
         currentClone.className = 'gallery-item current';
         nextClone.className = 'gallery-item next';
-
+    
+        // Append clones in the correct order
         galleryTimeline.appendChild(prevClone);
         galleryTimeline.appendChild(currentClone);
         galleryTimeline.appendChild(nextClone);
-
+    
+        // Update styles for animation
+        resetStyles([prevClone, currentClone, nextClone]);
+    
         updateDots();
         addLightboxHandlers(currentClone);
-
-        // Reset animation styles
-        [prevClone, currentClone, nextClone].forEach(item => {
-            item.style.transition = '';
+    }
+    
+    // Reset styles for clones
+    function resetStyles(items) {
+        items.forEach(item => {
+            item.style.transition = 'none';
             item.style.transform = '';
             item.style.opacity = '';
             item.style.zIndex = '';

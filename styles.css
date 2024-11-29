@@ -2965,7 +2965,7 @@ main {
     border-radius: 50px;
     padding: 15px;
     position: relative;
-    margin: auto;
+    margin: 0 auto;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transform-style: preserve-3d;
     transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(1.5);
@@ -3709,7 +3709,7 @@ main {
         flex: none;
         margin: 0;
         position: relative; /* or absolute */
-        top: -60px; /* Move it up by 10 pixels */
+        top: -30px; /* Move it up by 10 pixels */
     }
 }
 
