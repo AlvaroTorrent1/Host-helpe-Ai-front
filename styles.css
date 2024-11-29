@@ -132,7 +132,6 @@ chat-demo-section {
 /* Header Styles */
 .header-wrapper {
     position: fixed;
-    background-color: rgba(250, 244, 235, 1); /* Opaque light color */
     top: 0;
     left: 0;
     right: 0;
@@ -1833,8 +1832,8 @@ html {
 
 .social-links {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
+    margin: 1rem 0 3rem 0;
 }
 
 .social-link {
@@ -2264,15 +2263,7 @@ main {
     }
 }
 
-/* Gallery Container */
-.gallery-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 4rem 2rem;
-    background: #FFE8CC;
-    position: relative;
-    overflow: hidden;
-}
+
 
 .gallery-header {
     text-align: center;
@@ -2291,7 +2282,7 @@ main {
     max-width: 1400px;
     margin: 0 auto;
     padding: 4rem 2rem;
-    background: #FFE8CC;
+    background: white;
 }
 
 .gallery-header {
@@ -2371,9 +2362,10 @@ main {
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(192, 139, 23, 0.8) 0%, transparent 100%);
     padding: 2rem;
-    color: white;
+    text-shadow: 1px 1px #2c2c2cc5 ;
+    color: rgb(255, 246, 228);
     transform: translateY(100%);
     transition: transform 0.3s ease;
 }
@@ -2749,15 +2741,11 @@ main {
 
 /* Update the chat-demo-section layout */
 .chat-demo-section {
-    min-height: 100vh;
-    padding: 2rem;
-    background: #FFE8CC;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2rem;
-    position: relative;
-    text-align: center;
+    justify-content: space-between;
+    padding: 4rem 2rem;
+    gap: 4rem;
 }
 
 .content-stack {
@@ -2767,21 +2755,24 @@ main {
     width: 100%;
     max-width: 800px;
     text-align: center;
-    margin-bottom: 10rem; /* Reduced from 3rem */
 }
-
 
 .top-content,
 .showcase-content {
-    grid-column: 1;
-    grid-row: 1;
-    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
 }
+
 
 
 .top-content {
     margin-bottom: 1rem;
 }
+
 
 /* WhatsApp showcase section */
 .showcase-content {
@@ -2790,7 +2781,7 @@ main {
 
 
 .top-content h1 {
-    font-size: clamp(2rem, 6vw, 2rem);
+    font-size: clamp(1.8rem, 6vw, 1.5rem);
     font-weight: 700;
     color: #333;
     margin-bottom: 0.25rem; /* Reduced from 1rem */
@@ -2800,7 +2791,7 @@ main {
 }
 
 .top-content p {
-    font-size: clamp(1.1rem, 2vw, 0.8rem);
+    font-size: clamp(1rem, 2vw, 0.7rem);
     color: #666;
     margin-bottom: 0.5rem; /* Reduced from 1.5rem */
     line-height: 1.4;
@@ -2817,11 +2808,11 @@ main {
 }
 
 .showcase-content {
-    margin-top: 10rem; /* Reduced from 12rem */
+    margin-top: 2rem; /* Reduced from 12rem */
 }
 
 .showcase-content h2 {
-    font-size: clamp(2rem, 4vw, 2rem);
+    font-size: clamp(1.8rem, 6vw, 1.5rem);
     font-weight: 700;
     color: #333;
     margin-bottom: 0.25rem; /* Reduced from 1rem */
@@ -2831,7 +2822,7 @@ main {
 }
 
 .showcase-content p {
-    font-size: clamp(1.1rem, 1.8vw, 0.8rem);
+    font-size: clamp(1rem, 2vw, 0.7rem);
     color: #666;
     max-width: 600px;
     margin: 0 auto 0.5rem; /* Reduced bottom margin */
@@ -3709,7 +3700,7 @@ main {
         flex: none;
         margin: 0;
         position: relative; /* or absolute */
-        top: -30px; /* Move it up by 10 pixels */
+        top: 0px; /* Move it up by 10 pixels */
     }
 }
 
