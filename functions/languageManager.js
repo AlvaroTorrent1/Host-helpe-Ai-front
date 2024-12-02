@@ -100,6 +100,7 @@ const translations = {
         choosePlan: "Choose the perfect plan for your needs",
         getStartedPro: "Get Started",
         contactSales: "Contact Sales",
+        oneProperty: "1 Property",
         // Contact
         getInTouch: "Get in Touch",
         fullName: "Full Name",
@@ -213,7 +214,7 @@ const translations = {
         pro: "Pro",
         enterprise: "Empresa",
         mostPopular: "Más Populares",
-        Ai: "Ai Respuestas",
+        Ai: "Respuestas IA",
         nProperty: "N propiedades",
         emailSupport: "Asistencia por correo electrónico",
         basicAnalytics: "Análisis de la propiedad",
@@ -230,6 +231,7 @@ const translations = {
         choosePlan: "Elija el plan perfecto para sus necesidades",
         getStartedPro: "Comenzar",
         contactSales: "Contacto de Ventas",
+        oneProperty: "1 Propiedad",
         // Contact
         getInTouch: "Contáctanos",
         fullName: "Nombre Completo",
