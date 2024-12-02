@@ -128,9 +128,9 @@
     <div id="loading-screen">
         <div class="loading-content">
           <div class="loading-dots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+            <div class="auk"></div>
+            <div class="auk"></div>
+            <div class="auk"></div>
           </div>
         </div>
       </div>
@@ -195,13 +195,12 @@
     <section class="chat-demo-section">
         <div class="video-background">
             <div class="video-foreground">
-                <iframe 
-                    src="https://www.youtube.com/embed/2b2dlIzvxMI?autoplay=1&controls=0&showinfo=0&rel=0&loop=1&playlist=2b2dlIzvxMI&mute=1&enablejsapi=1&playsinline=1&disablekb=1&modestbranding=1&iv_load_policy=3&origin=https://your-domain.com" 
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
-                ></iframe>
+                <div class="video-wrapper active">
+                    <iframe src="https://www.youtube.com/embed/2b2dlIzvxMI?autoplay=1&controls=0&showinfo=0&rel=0&mute=1&enablejsapi=1&playsinline=1&disablekb=1&modestbranding=1&iv_load_policy=3&end=119&playlist=2b2dlIzvxMI&loop=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </div>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/2b2dlIzvxMI?autoplay=1&controls=0&showinfo=0&rel=0&mute=1&enablejsapi=1&playsinline=1&disablekb=1&modestbranding=1&iv_load_policy=3&end=119&playlist=2b2dlIzvxMI&loop=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </div>
             </div>
         </div>
             <!-- Rest of your content -->
@@ -881,8 +880,34 @@ function toggleMobileMenu() {
 
     </script>
 
+<script>
+const loadNextVideo = (wrappers, activeIndex) => {
+    const nextIndex = (activeIndex + 1) % wrappers.length;
+    const nextWrapper = wrappers[nextIndex];
 
+    // Start loading next video 3 seconds before current one ends
+    setTimeout(() => {
+        nextWrapper.querySelector('iframe').src = nextWrapper.querySelector('iframe').src;
+        setTimeout(() => {
+            wrappers[activeIndex].classList.remove('active');
+            nextWrapper.classList.add('active');
+        }, 1000);
+    }, 115000);
+};
 
+document.addEventListener('DOMContentLoaded', () => {
+    const wrappers = document.querySelectorAll('.video-wrapper');
+    let activeIndex = 0;
+    
+    wrappers[0].classList.add('active');
+    loadNextVideo(wrappers, activeIndex);
+    
+    setInterval(() => {
+        activeIndex = (activeIndex + 1) % wrappers.length;
+        loadNextVideo(wrappers, activeIndex);
+    }, 119000);
+});
+</script>
 <script>
     document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();

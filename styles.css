@@ -138,7 +138,7 @@ chat-demo-section {
     width: 100%;
     padding: 0;
     margin: 0;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .hero-content p, .hero-section h1, .section p {
@@ -207,7 +207,7 @@ header {
     }
 
     .contact-container button {
-        background-color: #ff8c1a !important; /* Original button color */
+        background-color: #eca408 !important; /* Original button color */
         color: white !important;
     }
 
@@ -246,6 +246,7 @@ header {
 @media (max-width: 768px) {
     .header-wrapper {
         padding: 0;
+        z-index: 2000;
     }
 
     header {
@@ -552,6 +553,7 @@ nav a:hover::after {
 @media (max-width: 768px) {
     .header-wrapper {
         padding: 8px;
+        z-index: 2000px;
     }
 
     header {
@@ -839,7 +841,7 @@ section {
 .stat-value {
     font-size: 3.5rem;
     font-weight: 700;
-    color: var(--primary);
+    color: #ff8c1a;
     margin-bottom: 0.5rem;
     line-height: 1.2;
 }
@@ -904,7 +906,7 @@ section {
 }
 
 .cta-button:hover {
-    background: #ff8c1a;
+    background: #eca408;
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
 }
@@ -1075,7 +1077,7 @@ html {
 }
 
 .contact-container h1 {
-    color: #ff8c1a;
+    color: #eca408;
     font-size: 3em;
     text-align: center;
     animation: fadeIn 1s ease-out;
@@ -1091,7 +1093,7 @@ html {
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: #ff8c1a;
+    background: #eca408;
 }
 
 .contact-container .form-group {
@@ -1127,14 +1129,14 @@ html {
 .contact-container input:focus,
 .contact-container textarea:focus {
     outline: none;
-    border-color: #ff8c1a;
+    border-color: #eca408;
     box-shadow: 0 0 20px rgba(255, 140, 26, 0.15);
 }
 
 .contact-container button {
     width: 100%;
     padding: 20px;
-    background: #ff8c1a;
+    background: #eca408;
     color: white;
     border: none;
     border-radius: 12px;
@@ -1679,7 +1681,7 @@ html {
     .contact-container h1 {
         font-size: 22px;
         text-align: center;
-        color: #ff8c1a;
+        color: #eca408;
         margin-bottom: 15px; /* Reduce bottom margin */
         font-weight: 600;
         padding: 0; /* Remove padding */
@@ -1933,7 +1935,7 @@ main {
     }
 
     .social-links {
-        align-self: flex-end; /* Keep icons on the right */
+        align-self: flex; /* Keep icons on the right */
         gap: 10px; /* Slightly increase spacing between icons */
     }
 
@@ -2218,7 +2220,7 @@ main {
     .contact-container button {
         font-size: 1.1rem; /* Slightly increase font size for button */
         padding: 18px; /* Increase padding for easier interaction */
-        background: #ff8c1a; /* Button color */
+        background: #eca408; /* Button color */
         color: white; /* Text color */
         border: none; /* No border for the button */
         border-radius: 12px; /* Rounded corners for the button */
@@ -2257,7 +2259,7 @@ main {
     .contact-container button {
         font-size: 1.1rem; /* Slightly increase font size for button */
         padding: 18px; /* Increase padding for easier interaction */
-        background: #ff8c1a; /* Match the button color from the desktop version */
+        background: #eca408; /* Match the button color from the desktop version */
         color: white; /* Keep text color white for consistency */
         border: none; /* No border for the button */
         border-radius: 12px; /* Keep rounded corners for the button */
@@ -2770,6 +2772,8 @@ main {
     width: 100%;
     max-width: 800px;
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .top-content,
@@ -2796,15 +2800,22 @@ main {
 }
 
 
+@font-face {
+    font-family: 'Teko-Bold';
+    src: url('../assets/font/Teko-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-display: swap;
+}
+
 .top-content h1 {
     font-size: clamp(3rem, 6vw, 3rem);
+    font-family: 'Teko-Bold', sans-serif;
     font-weight: 700;
-    font-family: Teko-Bold;
     color: #333;
-    margin-bottom: 0.25rem; /* Reduced from 1rem */
+    margin-bottom: 0.25rem;
     line-height: 1.1;
     text-align: center;
-    padding: 0 20px; /* Add padding for smaller screens */
+    padding: 0 20px;
 }
 
 .top-content p {
@@ -2886,7 +2897,7 @@ main {
   }
   
   .chat-demo-title .cta-button:hover {
-    background: #ff8c1a;
+    background: #eca408;
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
   }
@@ -2959,7 +2970,7 @@ main {
     padding: 2rem;
     overflow: visible; /* Ensure nothing is clipped */
     position: relative;
-    z-index: 15 !important;
+    z-index: 3;
 }
 
 
@@ -5155,27 +5166,32 @@ body.story-active {
 }
 
 
-/* Video Background Styles */
 .video-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 120vh; /* Increased to extend further into next section */
-    z-index: 0;
+    height: 120vh;
+    z-index: 1;
     overflow: hidden;
     pointer-events: none;
 }
 
-.video-foreground {
+.video-wrapper {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
+    transition: opacity 2s ease;
 }
 
-.video-foreground iframe {
+.video-wrapper.active {
+    opacity: 1;
+}
+
+.video-wrapper iframe {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -5187,60 +5203,57 @@ body.story-active {
     pointer-events: none;
 }
 
-/* Longer, smoother transition gradient overlay */
+.video-foreground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .video-background::after {
     content: '';
+    z-index: 2;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50vh; /* Increased height of fade effect */
+    height: 50vh;
     background: linear-gradient(
         to bottom,
         transparent 0%,
         rgba(255, 232, 204, 0.5) 50%,
         rgba(255, 232, 204, 1) 100%
     );
-    z-index: 1;
 }
 
-/* Ensure iPhone stays on top */
-.iphone-container {
-    position: relative;
-    z-index: 1000 !important; /* Increased z-index to ensure it stays on top */
-}
-
-/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
-    .video-foreground iframe {
-        min-width: 600vw; /* Increased for better mobile coverage */
+    .video-wrapper iframe {
+        min-width: 600vw;
         min-height: 600vh;
         transform: translate(-50%, -50%) scale(2);
     }
     
     .video-background {
-        height: 150vh; /* Slightly more coverage on mobile */
+        height: 150vh;
     }
 }
 
-/* Portrait orientation phones */
 @media (max-width: 768px) and (orientation: portrait) {
-    .video-foreground iframe {
-        min-width: 800vw; /* Much wider for portrait mode */
+    .video-wrapper iframe {
+        min-width: 800vw;
         min-height: 800vh;
         transform: translate(-50%, -50%) scale(2.5);
     }
 }
 
-/* Taller phones */
 @media (max-width: 428px) and (min-height: 800px) {
-    .video-foreground iframe {
+    .video-wrapper iframe {
         min-width: 1000vw;
         min-height: 1000vh;
         transform: translate(-50%, -50%) scale(3);
     }
 }
-
 
 #loading-screen {
     position: fixed;
@@ -5264,7 +5277,7 @@ body.story-active {
     justify-content: center;
 }
 
-.dot {
+.auk {
     width: 10px;
     height: 10px;
     background-color: #000;
@@ -5273,11 +5286,11 @@ body.story-active {
     animation: bounce 0.5s infinite alternate;
 }
 
-.dot:nth-child(2) {
+.auk:nth-child(2) {
     animation-delay: 0.2s;
 }
 
-.dot:nth-child(3) {
+.auk:nth-child(3) {
     animation-delay: 0.4s;
 }
 
@@ -5309,6 +5322,7 @@ body.story-active {
     transition: opacity 0.5s ease-out 1s;
     opacity: 0;
 }
+
 
 @media (max-width: 768px) {
   .pricing-cards {

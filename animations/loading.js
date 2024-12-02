@@ -12,12 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
         debugLog('Showing content');
         if (loadingScreen && mainContent) {
             startPixelAnimation();
+            // Fade out loading screen gradually
+            loadingScreen.style.transition = 'opacity 0.8s ease-out';
+            loadingScreen.style.opacity = '0';
+            
+            // Fade in main content with a delay
             setTimeout(() => {
-                loadingScreen.style.display = 'none';
+                mainContent.style.transition = 'opacity 0.8s ease-in';
                 mainContent.style.opacity = '1';
                 document.body.classList.add('loaded');
                 debugLog('Loading screen hidden');
-            }, 1500); // Adjust this timing to match your animation duration
+                
+                // Remove loading screen after fade out
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 800);
+            }, 700);
         } else {
             console.error('Loading screen or main content elements not found');
             if (!loadingScreen) debugLog('Loading screen element missing');
@@ -27,41 +37,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function ensureElementsExist() {
         if (!loadingScreen) {
-            console.error('Loading screen element not found. Creating a default one.');
+            debugLog('Creating loading screen');
             loadingScreen = document.createElement('div');
             loadingScreen.id = 'loading-screen';
+            loadingScreen.style.opacity = '1';
             loadingScreen.innerHTML = '<div class="loading-content"><div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
             document.body.insertBefore(loadingScreen, document.body.firstChild);
         }
 
         if (!mainContent) {
-            console.error('Main content element not found. Creating a default one.');
+            debugLog('Creating main content wrapper');
             mainContent = document.createElement('main');
             mainContent.id = 'main-content';
+            mainContent.style.opacity = '0';
             document.body.appendChild(mainContent);
         }
     }
 
     function startPixelAnimation() {
-        const pixelSize = 20; // Size of each pixel
+        const pixelSize = 20;
         const rows = Math.ceil(window.innerHeight / pixelSize);
         const cols = Math.ceil(window.innerWidth / pixelSize);
 
-        loadingScreen.innerHTML = ''; // Clear existing content
+        loadingScreen.innerHTML = '';
         loadingScreen.style.display = 'grid';
         loadingScreen.style.gridTemplateColumns = `repeat(${cols}, ${pixelSize}px)`;
 
         for (let i = 0; i < rows * cols; i++) {
             const pixel = document.createElement('div');
             pixel.classList.add('pixel');
+            pixel.style.setProperty('--pixel-index', i);
             loadingScreen.appendChild(pixel);
         }
 
-        // Trigger reflow
-        loadingScreen.offsetHeight;
-
-        // Start animation
-        loadingScreen.classList.add('animate-pixels');
+        requestAnimationFrame(() => {
+            loadingScreen.classList.add('animate-pixels');
+        });
     }
 
     const windowLoaded = new Promise(resolve => {
@@ -90,13 +101,14 @@ document.addEventListener('DOMContentLoaded', function() {
     Promise.all([windowLoaded, minimumLoadingTime])
         .then(() => {
             debugLog('All promises resolved, preparing to show content');
-            setTimeout(showContent, 100);
+            showContent();
         })
         .catch(error => {
             console.error('An error occurred:', error);
             showContent();
         });
 
+    // Fallback safety timeout
     setTimeout(() => {
         if (!document.body.classList.contains('loaded')) {
             debugLog('Fallback: Force hiding loading screen after 10 seconds');
@@ -104,4 +116,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 10000);
 });
-
