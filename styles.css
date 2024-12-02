@@ -2808,6 +2808,7 @@ main {
     width: 100%;
     text-align: center;
     margin-top: 1rem;
+    z-index: 100;
 }
 
 
@@ -2975,7 +2976,6 @@ main {
     color: #666;
     line-height: 1.6;
 }   
-
 /* iPhone Frame and Container Base Styles */
 .iphone-container {
     width: 100%;
@@ -2986,8 +2986,9 @@ main {
     padding: 2rem;
     overflow: visible; /* Ensure nothing is clipped */
     position: relative;
-    z-index: 10;
+    z-index: 15 !important;
 }
+
 
 .iphone-frame {
     --iphone-aspect-ratio: 0.462; /* iPhone aspect ratio (width/height) */
@@ -3009,7 +3010,10 @@ main {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     animation: phoneAppear 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    overflow: visible;
+    z-index: 3
 }
+
 
 
 /* Hover effect */
@@ -4636,17 +4640,20 @@ body.scroll-lock {
 
 
 /* Story Section Styles */
+
 .story-section {
     position: relative;
     z-index: 5; /* Lower z-index than iphone-container */
     width: 100%;
     min-height: 100vh;
-    background-color: #FFE8CC;
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     transform: translateZ(0);
     will-change: transform;
+
+    z-index: 1; /* Lower than chat-demo-section */
 }
+
 
 .story-section.active {
     z-index: 50;
@@ -5174,3 +5181,89 @@ body.story-active {
     font-weight: 700;
 }
 
+
+/* Video Background Styles */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120vh; /* Increased to extend further into next section */
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.video-foreground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-foreground iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 200vw;
+    min-height: 200vh;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%) scale(1.2);
+    pointer-events: none;
+}
+
+/* Longer, smoother transition gradient overlay */
+.video-background::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh; /* Increased height of fade effect */
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255, 232, 204, 0.5) 50%,
+        rgba(255, 232, 204, 1) 100%
+    );
+    z-index: 1;
+}
+
+/* Ensure iPhone stays on top */
+.iphone-container {
+    position: relative;
+    z-index: 1000000 !important; /* Increased z-index to ensure it stays on top */
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .video-foreground iframe {
+        min-width: 600vw; /* Increased for better mobile coverage */
+        min-height: 600vh;
+        transform: translate(-50%, -50%) scale(2);
+    }
+    
+    .video-background {
+        height: 150vh; /* Slightly more coverage on mobile */
+    }
+}
+
+/* Portrait orientation phones */
+@media (max-width: 768px) and (orientation: portrait) {
+    .video-foreground iframe {
+        min-width: 800vw; /* Much wider for portrait mode */
+        min-height: 800vh;
+        transform: translate(-50%, -50%) scale(2.5);
+    }
+}
+
+/* Taller phones */
+@media (max-width: 428px) and (min-height: 800px) {
+    .video-foreground iframe {
+        min-width: 1000vw;
+        min-height: 1000vh;
+        transform: translate(-50%, -50%) scale(3);
+    }
+}
