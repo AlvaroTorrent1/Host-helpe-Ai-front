@@ -1195,7 +1195,7 @@ html {
     background: #fff;
     border-radius: 20px;
     transition: all 0.3s ease;
-    position: relative;
+    position: fixed;
     text-align: center;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
     padding: 2rem;
@@ -3890,7 +3890,7 @@ section h2 {
 
 section p {
     font-family: Poppins, Arial, sans-serif;
-    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
     max-width: min(600px, 90vw);
     line-height: 1.6;
     color: rgb(102, 102, 102);  
@@ -5133,4 +5133,5 @@ body.story-active {
   gap: 0.75rem;
   color: #333;
 }
+
 

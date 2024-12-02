@@ -7,7 +7,12 @@ const translations = {
         heroTitle: "Host Helper AI",
         heroSubtitle: "AI-powered assistance for Airbnb hosts",
         getStarted: "Get Started",
-  
+        //Top content
+        hostHelperAi1: "Host Helper Ai",
+        text1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings.",
+        //Whatsapp
+         showcase: "Whatsapp Showcase",
+         text2: "Experience an interactive preview of our AI assistant...",
         // Story Section
         storyTitle1: "Effortless Regulatory Compliance",
         storyDesc1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings with cutting-edge AI technology.",
@@ -91,6 +96,10 @@ const translations = {
         perfectStart: "Perfect for getting started",
         largeScale: "For large-scale operations",
         customPricing: "Custom Pricing",
+        simplePricing: "Simple Pricing",
+        choosePlan: "Choose the perfect plan for your needs",
+        getStartedPro: "Get Started",
+        contactSales: "Contact Sales",
         // Contact
         getInTouch: "Get in Touch",
         fullName: "Full Name",
@@ -122,7 +131,12 @@ const translations = {
         heroTitle: "Host Helper AI",
         heroSubtitle: "Asistencia con AI para anfitriones de Airbnb",
         getStarted: "Comenzar",
-  
+        //Top content
+        hostHelperAi1: "Host Helper Ai",
+        text1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb.",
+        //Whatsapp
+        showcase: "Escaparate de Whatsapp",
+        text2: "Experimente un avance interactivo de nuestro asistente AI...",
         // Story Section
         storyTitle1: "Cumplimiento normativo sin esfuerzo",
         storyDesc1: "Simplifica la recopilación de datos de huéspedes para cumplir con la normativa de alquiler vacacional en España. Host Helper Ai automatiza el proceso, ahorrando tiempo y garantizando precisión.",
@@ -209,6 +223,10 @@ const translations = {
         perfectStart: "Perfecto para empezar",
         largeScale: "Para operaciones a gran escala",
         customPricing: "Precios Personalizados",
+        simplePricing: "Precios Pencillos",
+        choosePlan: "Elija el plan perfecto para sus necesidades",
+        getStartedPro: "Comenzar",
+        contactSales: "Contacto de Ventas",
         // Contact
         getInTouch: "Contáctanos",
         fullName: "Nombre Completo",
