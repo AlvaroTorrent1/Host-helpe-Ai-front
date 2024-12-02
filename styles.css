@@ -871,7 +871,7 @@ section {
 /* Button Styles */
 .cta-button {
     display: inline-block;
-    background: var(--primary);
+    background: #eca408;
     color: white;
     padding: 1rem 2.5rem;
     border-radius: 50px;
@@ -1834,6 +1834,7 @@ html {
     display: flex;
     gap: 10px;
     margin: 1rem 0 3rem 0;
+    z-index: 10;
 }
 
 .social-link {
@@ -1844,8 +1845,9 @@ html {
     height: 32px;
     border-radius: 50%;
     background: white;
-    box-shadow: 0 2px 8px rgba(255, 153, 51, 0.1);
+    box-shadow: 0 2px 8px rgba(255, 153, 51, 0.5);
     transition: all 0.3s ease;
+    z-index: 10;
 }
 
 .social-link:hover {
@@ -1853,42 +1855,11 @@ html {
     box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
 }
 
-.social-links1 {
-    display: flex;
 
-}
-
-
-
-
-.social_links1 .social-link1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(255, 153, 51, 0.1);
-    transition: all 0.3s ease;
-}
-
-.social_links1 .social-link1:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
-}
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-    .social_links1 {
-        margin: 1rem 0;  /* Further reduced margin for mobile */
-        gap: 0.75rem;   /* Slightly reduced gap between icons */
-    }
 
-    .social_links1 .social-link1 {
-        width: 35px;    /* Slightly smaller icons on mobile */
-        height: 35px;
-    }
     
     /* Adjust spacing for showcase content */
     .showcase-content {
@@ -1905,6 +1876,7 @@ html {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+
 /* Fix for the extra scroll space */
 html, body {
     overflow-x: hidden;
@@ -2825,8 +2797,9 @@ main {
 
 
 .top-content h1 {
-    font-size: clamp(1.8rem, 6vw, 1.5rem);
+    font-size: clamp(3rem, 6vw, 3rem);
     font-weight: 700;
+    font-family: Teko-Bold;
     color: #333;
     margin-bottom: 0.25rem; /* Reduced from 1rem */
     line-height: 1.1;
@@ -5234,7 +5207,7 @@ body.story-active {
 /* Ensure iPhone stays on top */
 .iphone-container {
     position: relative;
-    z-index: 1000000 !important; /* Increased z-index to ensure it stays on top */
+    z-index: 1000 !important; /* Increased z-index to ensure it stays on top */
 }
 
 /* Mobile Responsive Adjustments */
@@ -5267,3 +5240,73 @@ body.story-active {
         transform: translate(-50%, -50%) scale(3);
     }
 }
+
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-dots {
+    display: flex;
+    justify-content: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: #000;
+    border-radius: 50%;
+    margin: 0 5px;
+    animation: bounce 0.5s infinite alternate;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+#main-content {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Pixel animation styles */
+.pixel {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    transition: opacity 0.5s ease-out;
+}
+
+.animate-pixels .pixel {
+    opacity: 0;
+    transition-delay: calc(var(--pixel-index) * 10ms);
+}
+
+#loading-screen.animate-pixels {
+    transition: opacity 0.5s ease-out 1s;
+    opacity: 0;
+}
+
