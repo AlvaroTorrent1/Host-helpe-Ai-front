@@ -5133,5 +5133,44 @@ body.story-active {
   gap: 0.75rem;
   color: #333;
 }
+.pricing-features li.disabled i {
+    color: #6c757d;
+}
 
+/* Bold specific features */
+.pricing-features li strong {
+    font-weight: 700;
+}
+
+/* Ensure Custom Training and Smart Pricing are bold in enterprise plan */
+.pricing-card:last-child .pricing-features li:nth-child(6),
+.pricing-card:last-child .pricing-features li:nth-child(7) {
+    font-weight: 700;
+}
+
+/* Voice Chatbots bold in pro plan */
+.pricing-card.featured .pricing-features li:nth-child(5) {
+    font-weight: 700;
+}
+
+/* Make specific features bold using specific classes */
+.pricing-features li span.voice-chatbots,
+.pricing-features li span.custom-training,
+.pricing-features li span.smart-pricing {
+    font-weight: 700;
+}
+
+/* Alternative approach using direct text targeting */
+.pricing-features li:has(> span:contains("Voice Chatbots")),
+.pricing-features li:has(> span:contains("Custom Training")),
+.pricing-features li:has(> span:contains("Smart Pricing")) {
+    font-weight: 700;
+}
+
+/* Make specific features bold */
+.pricing-features li:contains('Voice Chatbots'),
+.pricing-features li:contains('Custom Training'),
+.pricing-features li:contains('Smart Pricing') {
+    font-weight: 700;
+}
 

@@ -110,7 +110,7 @@ const translations = {
         
         // Footer
         copyright: "© 2024 Host Helper AI",
-        empowering: "Empowering Airbnb hosts with AI-driven solutions",
+        text3: "Empowering Airbnb hosts with AI-driven solutions",
         
         // Common
         perMonth: "/month",
@@ -125,6 +125,9 @@ const translations = {
         signIn: "Sign In",
         username: "Username",
         email: "Email"
+
+       
+        
     },
     es: {
         // Hero Section
@@ -223,7 +226,7 @@ const translations = {
         perfectStart: "Perfecto para empezar",
         largeScale: "Para operaciones a gran escala",
         customPricing: "Precios Personalizados",
-        simplePricing: "Precios Pencillos",
+        simplePricing: "Precios Sencillos",
         choosePlan: "Elija el plan perfecto para sus necesidades",
         getStartedPro: "Comenzar",
         contactSales: "Contacto de Ventas",
@@ -237,7 +240,7 @@ const translations = {
         
         // Footer
         copyright: "© 2024 Host Helper AI",
-        empowering: "Empoderando a los anfitriones de Airbnb con soluciones impulsadas por IA",
+        text3: "Empoderando a los anfitriones de Airbnb con soluciones impulsadas por IA",
         
         // Common
         perMonth: "/mes",
