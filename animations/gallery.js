@@ -20,102 +20,144 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchStartY = 0;
     let isSwiping = false;
 
-    function updateGallery() {
+    function updateGallery(instant = false) {
         const items = Array.from(galleryData.children);
         galleryTimeline.innerHTML = '';
     
-        // Ensure correct indices are calculated
         const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
         const nextIndex = (currentIndex + 1) % totalItems;
     
-        // Clone elements from the correct indices
-        const prevClone = items[prevIndex]?.cloneNode(true) || items[0].cloneNode(true);
-        const currentClone = items[currentIndex]?.cloneNode(true) || items[0].cloneNode(true);
-        const nextClone = items[nextIndex]?.cloneNode(true) || items[0].cloneNode(true);
+        const prevClone = items[prevIndex].cloneNode(true);
+        const currentClone = items[currentIndex].cloneNode(true);
+        const nextClone = items[nextIndex].cloneNode(true);
     
+        // Add classes and click handlers
         prevClone.className = 'gallery-item previous';
         currentClone.className = 'gallery-item current';
         nextClone.className = 'gallery-item next';
+
+        // Add click handlers to side images
+        prevClone.addEventListener('click', () => {
+            if (!isAnimating) navigate('prev');
+        });
+        nextClone.addEventListener('click', () => {
+            if (!isAnimating) navigate('next');
+        });
     
-        // Append clones in the correct order
+        if (instant) {
+            prevClone.style.transition = 'none';
+            currentClone.style.transition = 'none';
+            nextClone.style.transition = 'none';
+        }
+    
         galleryTimeline.appendChild(prevClone);
         galleryTimeline.appendChild(currentClone);
         galleryTimeline.appendChild(nextClone);
     
-        // Update styles for animation
-        resetStyles([prevClone, currentClone, nextClone]);
+        if (instant) {
+            // Force reflow
+            galleryTimeline.offsetHeight;
+            prevClone.style.transition = '';
+            currentClone.style.transition = '';
+            nextClone.style.transition = '';
+        }
     
         updateDots();
         addLightboxHandlers(currentClone);
-    }
-    
-    // Reset styles for clones
-    function resetStyles(items) {
-        items.forEach(item => {
-            item.style.transition = 'none';
-            item.style.transform = '';
-            item.style.opacity = '';
-            item.style.zIndex = '';
+        
+        // Add hover effects
+        [prevClone, nextClone].forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'scale(0.95)';
+                item.style.opacity = '0.7';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'scale(0.9)';
+                item.style.opacity = '0.4';
+            });
         });
     }
 
-    // Update navigation dots
     function updateDots() {
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === currentIndex);
         });
     }
 
-    // Add lightbox functionality to current image
     function addLightboxHandlers(currentClone) {
         currentClone.addEventListener('click', () => openLightbox(currentIndex));
     }
 
-    // Navigation function
     function navigate(direction) {
         if (isAnimating) return;
         isAnimating = true;
 
-        const isMobile = window.innerWidth <= 768;
         const items = Array.from(galleryTimeline.children);
+        const isMobile = window.innerWidth <= 768;
 
         items.forEach(item => {
-            item.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.6s ease';
+            item.style.transition = 'all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)';
         });
 
         if (direction === 'next') {
             currentIndex = (currentIndex + 1) % totalItems;
+
+            // Enhanced animations
+            if (isMobile) {
+                items[0].style.transform = 'translate3d(-100%, -50%, -100px) scale(0.7)';
+                items[0].style.opacity = '0';
+                items[1].style.transform = 'translate3d(-50%, -50%, -50px) scale(0.85)';
+                items[1].style.opacity = '0.4';
+                items[2].style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
+                items[2].style.opacity = '1';
+            } else {
+                items[0].style.transform = 'translateX(-150%) scale(0.7)';
+                items[0].style.opacity = '0';
+                items[1].style.transform = 'translateX(-100%) scale(0.85)';
+                items[1].style.opacity = '0.4';
+                items[2].style.transform = 'translateX(0) scale(1)';
+                items[2].style.opacity = '1';
+            }
         } else {
             currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-        }
 
-        if (isMobile) {
-            items[1].style.transform = 'translate3d(-50%, -50%, 0) scale(0.85)';
-            items[1].style.opacity = '0';
-            items[2].style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
-            items[2].style.opacity = '1';
-            items[2].style.zIndex = '3';
-        } else {
-            items[0].style.transform = 'translateX(-100%) scale(0.9)';
-            items[0].style.opacity = '0';
-            items[1].style.transform = 'translateX(-100%)';
-            items[1].style.opacity = '0';
-            items[2].style.transform = 'translateX(0)';
-            items[2].style.opacity = '1';
+            // Enhanced animations for previous
+            if (isMobile) {
+                items[2].style.transform = 'translate3d(100%, -50%, -100px) scale(0.7)';
+                items[2].style.opacity = '0';
+                items[1].style.transform = 'translate3d(-50%, -50%, -50px) scale(0.85)';
+                items[1].style.opacity = '0.4';
+                items[0].style.transform = 'translate3d(-50%, -50%, 0) scale(1)';
+                items[0].style.opacity = '1';
+            } else {
+                items[2].style.transform = 'translateX(150%) scale(0.7)';
+                items[2].style.opacity = '0';
+                items[1].style.transform = 'translateX(100%) scale(0.85)';
+                items[1].style.opacity = '0.4';
+                items[0].style.transform = 'translateX(0) scale(1)';
+                items[0].style.opacity = '1';
+            }
         }
 
         setTimeout(() => {
-            updateGallery();
+            updateGallery(true);
             isAnimating = false;
         }, 600);
     }
 
-    // Lightbox functionality
     function openLightbox(index) {
         const items = Array.from(galleryData.children);
         lightboxImg.src = items[index].querySelector('img').src;
         lightbox.classList.add('active');
         stopAutoPlay();
+
+        // Add smooth transition for lightbox image
+        lightboxImg.style.opacity = '0';
+        lightboxImg.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            lightboxImg.style.opacity = '1';
+            lightboxImg.style.transform = 'scale(1)';
+        }, 50);
     }
 
     function closeLightbox() {
@@ -124,17 +166,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function navigateLightbox(direction) {
-        if (direction === 'next') {
-            currentIndex = (currentIndex + 1) % totalItems;
-        } else {
-            currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-        }
-        openLightbox(currentIndex);
+        lightboxImg.style.opacity = '0';
+        lightboxImg.style.transform = 'scale(0.9)';
+
+        setTimeout(() => {
+            if (direction === 'next') {
+                currentIndex = (currentIndex + 1) % totalItems;
+            } else {
+                currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+            }
+            openLightbox(currentIndex);
+            updateGallery();
+        }, 300);
     }
 
-    // Auto play
     function startAutoPlay() {
-        stopAutoPlay(); // Clear any existing interval
+        stopAutoPlay();
         autoPlayInterval = setInterval(() => navigate('next'), 5000);
     }
 
@@ -142,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (autoPlayInterval) clearInterval(autoPlayInterval);
     }
 
-    // Swipe handling
     function handleSwipe(event) {
         if (!isSwiping) return;
 
@@ -172,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Touch and mouse events
     galleryTimeline.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
         isSwiping = true;
@@ -185,17 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
         stopAutoPlay();
     });
 
-    galleryTimeline.addEventListener('mouseup', () => isSwiping = false);
+    galleryTimeline.addEventListener('mouseup', handleSwipe);
     galleryTimeline.addEventListener('mouseleave', () => isSwiping = false);
 
-    // Keyboard navigation
+    // Keyboard navigation for lightbox
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
         if (e.key === 'ArrowLeft') navigateLightbox('prev');
         if (e.key === 'ArrowRight') navigateLightbox('next');
         if (e.key === 'Escape') closeLightbox();
     });
-        
+
     function preloadImages() {
         const items = Array.from(galleryData.children);
         items.forEach(item => {
@@ -206,14 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
-    // initialization
-    preloadImages(); // Initialize
-    updateGallery();
+
+    // Initialize
+    preloadImages();
+    updateGallery(true);
     startAutoPlay();
 
-
-    // Pause auto play on hover
+    // Pause autoplay on hover
     galleryTimeline.addEventListener('mouseenter', stopAutoPlay);
     galleryTimeline.addEventListener('mouseleave', startAutoPlay);
 });
