@@ -68,12 +68,12 @@ const translations = {
         
         // Gallery
         ourClients: "Our Clients",
-        cozyApartment: "Cozy apartment by the sea",
-        cozyApartmentDesc: "Elegant beachfront apartment with panoramic sea views.",
+        apartmentSolset: "Apartamentos Solset",
+        apartmentSolsetDesc: "https://solsetnerja.com/en/",
         urbanLoft: "Urban Loft",
         urbanLoftDesc: "Modern city living in the heart of downtown.",
-        modernApartment: "Modern Apartment",
-        modernApartmentDesc: "Beautiful and calm getaway perfect for couples.",
+        apartmentDonaLola: "Alojamientos Doña Lola",
+        apartmentDonaLolaDesc: "https://lolaalojamientos.com/individual/",
         mountainRetreat: "Mountain Retreat",
         mountainRetreatDesc: "Cozy cabin with stunning mountain views.",
         forestHideaway: "Forest Hideaway",
@@ -199,12 +199,12 @@ const translations = {
         
         // Gallery
         ourClients: "Nuestros Clientes",
-        cozyApartment: "Acogedor apartamento junto al mar",
-        cozyApartmentDesc: "Elegante apartamento en primera línea de playa con vistas panorámicas al mar.",
+        apartmentSolset: "Apartamentos Solset",
+        apartmentSolsetDesc: "https://solsetnerja.com/",
         urbanLoft: "Loft Urbano",
         urbanLoftDesc: "Vida moderna en el corazón de la ciudad.",
-        modernApartment: "Apartamento moderno",
-        modernApartmentDesc: "Hermosa y tranquila escapada perfecta para parejas.",
+        apartmentDonaLola: "Alojamientos Doña Lola",
+        apartmentDonaLolaDesc: "https://lolaalojamientos.com/individual/",
         mountainRetreat: "Refugio de Montaña",
         mountainRetreatDesc: "Cabaña acogedora con impresionantes vistas a la montaña.",
         forestHideaway: "Refugio del Bosque",
