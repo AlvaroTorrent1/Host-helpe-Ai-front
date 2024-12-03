@@ -144,7 +144,7 @@ const translations = {
         // Story Section
         storyTitle1: "Cumplimiento normativo sin esfuerzo",
         storyDesc1: "Simplifica la recopilación de datos de huéspedes para cumplir con la normativa de alquiler vacacional en España. Host Helper Ai automatiza el proceso, ahorrando tiempo y garantizando precisión.",
-        storyTitle2: "Facturación sin complicaciones",
+        storyTitle2: "Entradas sin complicaciones",
         storyDesc2: "Automatiza los check-ins con instrucciones claras, permitiendo a los huéspedes acceder a las propiedades en cualquier momento sin complicaciones.",
         storyTitle3: "Mantenimiento predictivo", 
         storyDesc3: "Adelántese a las necesidades de mantenimiento con nuestros avanzados algoritmos de IA que predicen y programan los servicios necesarios antes de que surjan problemas, garantizando que sus propiedades permanezcan en perfecto estado.",
@@ -260,15 +260,33 @@ const translations = {
     }
   };
   
-  const LanguageManager = () => {
-    const [currentLang, setCurrentLang] = React.useState('en');
-  
+// languageManager.js
+const LanguageManager = () => {
+    // Initialize with Spanish
+    const [currentLang, setCurrentLang] = React.useState('es');
+
+    // Initial load effect
+    React.useEffect(() => {
+        // Set initial language to Spanish
+        document.documentElement.lang = 'es';
+        updateContent('es');
+        
+        // Update button states
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-lang') === 'es') {
+                btn.classList.add('active');
+            }
+        });
+    }, []);
+
+    // Handle language changes
     React.useEffect(() => {
         updateContent(currentLang);
+        document.documentElement.lang = currentLang;
     }, [currentLang]);
-  
+
     const updateContent = (lang) => {
-        // Update all elements with data-translate attribute
         const elements = document.querySelectorAll('[data-translate]');
         elements.forEach(element => {
             const key = element.getAttribute('data-translate');
@@ -280,31 +298,71 @@ const translations = {
                 }
             }
         });
-  
-        // Update chat language if the function exists
+
+        // Update button states
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-lang') === lang) {
+                btn.classList.add('active');
+            }
+        });
+
         if (window.updateChatLanguage) {
             window.updateChatLanguage(lang);
         }
     };
-  
+
     // Make selectLanguage available globally
     window.selectLanguage = (lang) => {
         setCurrentLang(lang);
-        const overlay = document.getElementById('languageOverlay');
-        if (overlay) {
-            overlay.classList.add('hiding');
-            setTimeout(() => overlay.classList.add('hidden'), 500);
-        }
+        document.documentElement.lang = lang;
+        updateContent(lang);
     };
-  
-    return null;
-  };
-  
-  // Make translations available globally
-  window.translations = translations;
-  
-  // Render the component
-  ReactDOM.render(
+
+    return (
+        <div className="language-switcher">
+            <button 
+                className={`lang-btn ${currentLang === 'en' ? 'active' : ''}`}
+                data-lang="en"
+                onClick={() => window.selectLanguage('en')}
+            >
+                EN
+            </button>
+            <button 
+                className={`lang-btn ${currentLang === 'es' ? 'active' : ''}`}
+                data-lang="es"
+                onClick={() => window.selectLanguage('es')}
+            >
+                ES
+            </button>
+        </div>
+    );
+};
+
+// Make translations available globally
+window.translations = translations;
+
+// Initialize translations immediately
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial language to Spanish
+    document.documentElement.lang = 'es';
+    
+    // Initial translation
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations.es[key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations.es[key];
+            } else {
+                element.textContent = translations.es[key];
+            }
+        }
+    });
+});
+
+// Render the component
+ReactDOM.render(
     <LanguageManager />,
     document.getElementById('react-main-content')
-  );
+);
