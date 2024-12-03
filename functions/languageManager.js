@@ -68,12 +68,12 @@ const translations = {
         
         // Gallery
         ourClients: "Our Clients",
-        luxuryVilla: "Luxury Villa",
-        luxuryVillaDesc: "Elegant beachfront villa with panoramic ocean views.",
+        cozyApartment: "Cozy apartment by the sea",
+        cozyApartmentDesc: "Elegant beachfront apartment with panoramic sea views.",
         urbanLoft: "Urban Loft",
         urbanLoftDesc: "Modern city living in the heart of downtown.",
-        seasideCottage: "Beautiful view to the sea",
-        seasideCottageDesc: "A amazing apartment with view straight to the sea",
+        modernApartment: "Modern Apartment",
+        modernApartmentDesc: "Beautiful and calm getaway perfect for couples.",
         mountainRetreat: "Mountain Retreat",
         mountainRetreatDesc: "Cozy cabin with stunning mountain views.",
         forestHideaway: "Forest Hideaway",
@@ -199,12 +199,12 @@ const translations = {
         
         // Gallery
         ourClients: "Nuestros Clientes",
-        luxuryVilla: "Villa de Lujo",
-        luxuryVillaDesc: "Elegante villa frente al mar con vistas panorámicas al océano.",
+        cozyApartment: "Acogedor apartamento junto al mar",
+        cozyApartmentDesc: "Elegante apartamento en primera línea de playa con vistas panorámicas al mar.",
         urbanLoft: "Loft Urbano",
         urbanLoftDesc: "Vida moderna en el corazón de la ciudad.",
-        seasideCottage: "Bonitas vistas al mar",
-        seasideCottageDesc: "Un apartamento increíble con vistas directas al mar",
+        modernApartment: "Apartamento moderno",
+        modernApartmentDesc: "Hermosa y tranquila escapada perfecta para parejas.",
         mountainRetreat: "Refugio de Montaña",
         mountainRetreatDesc: "Cabaña acogedora con impresionantes vistas a la montaña.",
         forestHideaway: "Refugio del Bosque",
