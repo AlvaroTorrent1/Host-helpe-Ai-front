@@ -404,7 +404,7 @@
         </section>
 
             </section>
-        <div id="react-main-content"></div>
+<!-- <div id="react-main-content"></div> -->
 
 <!-- Photo Gallery Section -->
 <div class="gallery-container">
@@ -1066,10 +1066,12 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
+
+
 <script type="text/babel">
     ReactDOM.render(
         <LanguageManager />,
-        document.getElementById('react-main-content')
+        document.querySelector('.language-switcher') // Render into an existing language switcher container
     );
 </script>
 
