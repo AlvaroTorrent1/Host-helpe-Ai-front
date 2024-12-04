@@ -1252,7 +1252,7 @@ html {
 }
 
 .pricing-card.featured {
-    border: 2px solid #FF9933;
+    border: 2px solid #ECA408;
     transform: translateY(-10px);
 }
 
@@ -1260,7 +1260,7 @@ html {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #FF9933;
+    background: #ECA408;
     color: #fff;
     padding: 0.25rem 1rem;
     border-radius: 20px;
@@ -1455,14 +1455,14 @@ html {
   .trial-card .pricing-action button,
   .trial-card .pricing-action a {
     background: transparent;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid #ECA408;
+    color: #ECA408;
   }
   
   /* Pro Card Button */
   .featured .pricing-action button,
   .featured .pricing-action a {
-    background: #FF9933;
+    background: #ECA408;
     color: white;
     border: none;
   }
@@ -1471,8 +1471,8 @@ html {
   .pricing-card:not(.trial-card):not(.featured) .pricing-action button,
   .pricing-card:not(.trial-card):not(.featured) .pricing-action a {
     background: white;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid #ECA408;
+    color: #ECA408;
   }
   
   /* Hover Effects */
@@ -1681,7 +1681,7 @@ html {
     .contact-container h1 {
         font-size: 22px;
         text-align: center;
-        color: #eca408;
+        color: #ECA408;
         margin-bottom: 15px; /* Reduce bottom margin */
         font-weight: 600;
         padding: 0; /* Remove padding */
@@ -1728,7 +1728,7 @@ html {
             border-radius: 25px; /* More rounded corners */
             padding: 12px; /* Adjust padding */
             font-size: 16px; /* Adjust font size */
-            background: #FF9933; /* Keep the orange color */
+            background: #ECA408; /* Keep the orange color */
             display: block; /* Ensure it takes full width */
         }
     }
@@ -2290,7 +2290,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #FF9933;
+    color: #ECA408;
     margin-bottom: 1rem;
 }
 
@@ -2310,7 +2310,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #FF9933;
+    color: #ECA408;
 }
 
 /* Base Gallery Layout */
@@ -3873,7 +3873,7 @@ section h2 {
     font-weight: 700;
     font-size: clamp(1.8rem, 4vw, 2.5rem);
     margin-bottom: clamp(1rem, 2vw, 1.5rem);
-    color: #FF9933
+    color: #ECA408
 }
 
 section p {
@@ -3960,7 +3960,7 @@ main {
 
 .trial-footer {
     background: #FFF5E6;
-    color: #FF9933;
+    color: #ECA408;
     font-size: 1.1rem;
     font-weight: 600;
     padding: 15;
@@ -3981,15 +3981,15 @@ main {
 /* Ensure buttons are consistent */
 .pricing-card .btn-outline-primary {
     background: transparent;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid #ECA408;
+    color: #ECA408;
     transition: all 0.3s ease;
 
  
 }
 
 .pricing-card .btn-outline-primary:hover {
-    background: #FF9933;
+    background: #ECA408;
     color: white;
     transform: translateY(-2px);
 }
@@ -4000,7 +4000,7 @@ main {
 }
 
 .pricing-card.featured {
-    border: 2px solid #FF9933;
+    border: 2px solid #ECA408;
     transform: translateY(-10px);
 }
 
@@ -4008,7 +4008,7 @@ main {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #FF9933;
+    background: #ECA408;
     color: #fff;
     padding: 0.25rem 1rem;
     border-radius: 20px;
@@ -4020,7 +4020,7 @@ main {
     display: inline-block;
     padding: 0.5rem 1rem;
     background: #FFF5E6;
-    color: #FF9933;
+    color: #ECA408;
     border-radius: 20px;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -5295,7 +5295,7 @@ body.story-active {
 
   .trial-footer {
     background: #FFF5E6;
-    color: #FF9933;
+    color: #ECA408;
     font-size: 1rem;
     font-weight: 600;
     padding: 10px;
@@ -5360,7 +5360,7 @@ body.story-active {
     }
   
     .trial-footer {
-      background: #FFF5E6;
+      background: #d6d3d3;
       color: #FF9933;
       font-size: 1rem;
       font-weight: 600;
