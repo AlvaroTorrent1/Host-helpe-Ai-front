@@ -195,14 +195,15 @@
     <section class="chat-demo-section">
         <div class="video-background">
             <div class="video-foreground">
-                <div class="video-wrapper active">
-                    <iframe src="https://www.youtube.com/embed/2b2dlIzvxMI?autoplay=1&controls=0&showinfo=0&rel=0&mute=1&enablejsapi=1&playsinline=1&disablekb=1&modestbranding=1&iv_load_policy=3&end=119&playlist=2b2dlIzvxMI&loop=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                </div>
-                <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/2b2dlIzvxMI?autoplay=1&controls=0&showinfo=0&rel=0&mute=1&enablejsapi=1&playsinline=1&disablekb=1&modestbranding=1&iv_load_policy=3&end=119&playlist=2b2dlIzvxMI&loop=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                </div>
+                <video id="background-video-1" class="background-video active" autoplay muted playsinline>
+                    <source src="backg.mp4" type="video/mp4">
+                </video>
+                <video id="background-video-2" class="background-video" autoplay muted playsinline>
+                    <source src="backg.mp4" type="video/mp4">
+                </video>
             </div>
         </div>
+
             <!-- Rest of your content -->
             <div class="content-stack">
                 <!-- Top Content -->
@@ -881,31 +882,48 @@ function toggleMobileMenu() {
     </script>
 
 <script>
-const loadNextVideo = (wrappers, activeIndex) => {
-    const nextIndex = (activeIndex + 1) % wrappers.length;
-    const nextWrapper = wrappers[nextIndex];
+    // Video backg
+    document.addEventListener('DOMContentLoaded', function() {
+    const video1 = document.getElementById('background-video-1');
+    const video2 = document.getElementById('background-video-2');
+    
+    // Set initial time to skip black frame
+    video1.currentTime = 0.034;
+    video2.currentTime = 0.034;
 
-    // Start loading next video 3 seconds before current one ends
-    setTimeout(() => {
-        nextWrapper.querySelector('iframe').src = nextWrapper.querySelector('iframe').src;
+    // Start second video paused
+    video2.pause();
+
+    function switchVideos() {
+        const activeVideo = video1.classList.contains('active') ? video1 : video2;
+        const nextVideo = video1.classList.contains('active') ? video2 : video1;
+        
+        // Start playing the next video
+        nextVideo.currentTime = 0.034;
+        nextVideo.play();
+        
+        // Add active class to next video (will fade in)
         setTimeout(() => {
-            wrappers[activeIndex].classList.remove('active');
-            nextWrapper.classList.add('active');
-        }, 1000);
-    }, 115000);
-};
+            nextVideo.classList.add('active');
+            activeVideo.classList.remove('active');
+        }, 50);
 
-document.addEventListener('DOMContentLoaded', () => {
-    const wrappers = document.querySelectorAll('.video-wrapper');
-    let activeIndex = 0;
-    
-    wrappers[0].classList.add('active');
-    loadNextVideo(wrappers, activeIndex);
-    
-    setInterval(() => {
-        activeIndex = (activeIndex + 1) % wrappers.length;
-        loadNextVideo(wrappers, activeIndex);
-    }, 119000);
+        // After fade completes, pause the inactive video
+        setTimeout(() => {
+            activeVideo.pause();
+        }, 2000);
+    }
+
+    // Switch videos slightly before the end
+    function checkTime() {
+        const activeVideo = video1.classList.contains('active') ? video1 : video2;
+        if (activeVideo.currentTime >= activeVideo.duration - 2) {
+            switchVideos();
+        }
+    }
+
+    video1.addEventListener('timeupdate', checkTime);
+    video2.addEventListener('timeupdate', checkTime);
 });
 </script>
 <script>
