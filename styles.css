@@ -768,7 +768,7 @@ section {
 
 .feature-card i {
     font-size: 2.5rem;
-    color: #ECA408;
+    color: var(--primary);
     margin-bottom: 1.5rem;
     position: relative;
     z-index: 1;
@@ -841,7 +841,7 @@ section {
 .stat-value {
     font-size: 3.5rem;
     font-weight: 700;
-    color: #ECA408;
+    color: #ff8c1a;
     margin-bottom: 0.5rem;
     line-height: 1.2;
 }
@@ -1252,7 +1252,7 @@ html {
 }
 
 .pricing-card.featured {
-    border: 2px solid #ECA408;
+    border: 2px solid #FF9933;
     transform: translateY(-10px);
 }
 
@@ -1260,7 +1260,7 @@ html {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #ECA408;
+    background: #FF9933;
     color: #fff;
     padding: 0.25rem 1rem;
     border-radius: 20px;
@@ -1455,14 +1455,14 @@ html {
   .trial-card .pricing-action button,
   .trial-card .pricing-action a {
     background: transparent;
-    border: 2px solid #ECA408;
-    color: #ECA408;
+    border: 2px solid #FF9933;
+    color: #FF9933;
   }
   
   /* Pro Card Button */
   .featured .pricing-action button,
   .featured .pricing-action a {
-    background: #ECA408;
+    background: #FF9933;
     color: white;
     border: none;
   }
@@ -1471,8 +1471,8 @@ html {
   .pricing-card:not(.trial-card):not(.featured) .pricing-action button,
   .pricing-card:not(.trial-card):not(.featured) .pricing-action a {
     background: white;
-    border: 2px solid #ECA408;
-    color: #ECA408;
+    border: 2px solid #FF9933;
+    color: #FF9933;
   }
   
   /* Hover Effects */
@@ -1681,7 +1681,7 @@ html {
     .contact-container h1 {
         font-size: 22px;
         text-align: center;
-        color: #ECA408;
+        color: #eca408;
         margin-bottom: 15px; /* Reduce bottom margin */
         font-weight: 600;
         padding: 0; /* Remove padding */
@@ -1728,7 +1728,7 @@ html {
             border-radius: 25px; /* More rounded corners */
             padding: 12px; /* Adjust padding */
             font-size: 16px; /* Adjust font size */
-            background: #ECA408; /* Keep the orange color */
+            background: #FF9933; /* Keep the orange color */
             display: block; /* Ensure it takes full width */
         }
     }
@@ -2290,7 +2290,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #ECA408;
+    color: #FF9933;
     margin-bottom: 1rem;
 }
 
@@ -2310,7 +2310,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #ECA408;
+    color: #FF9933;
 }
 
 /* Base Gallery Layout */
@@ -3873,7 +3873,7 @@ section h2 {
     font-weight: 700;
     font-size: clamp(1.8rem, 4vw, 2.5rem);
     margin-bottom: clamp(1rem, 2vw, 1.5rem);
-    color: #ECA408
+    color: #FF9933
 }
 
 section p {
@@ -3960,7 +3960,7 @@ main {
 
 .trial-footer {
     background: #FFF5E6;
-    color: #ECA408;
+    color: #FF9933;
     font-size: 1.1rem;
     font-weight: 600;
     padding: 15;
@@ -3981,15 +3981,15 @@ main {
 /* Ensure buttons are consistent */
 .pricing-card .btn-outline-primary {
     background: transparent;
-    border: 2px solid #ECA408;
-    color: #ECA408;
+    border: 2px solid #FF9933;
+    color: #FF9933;
     transition: all 0.3s ease;
 
  
 }
 
 .pricing-card .btn-outline-primary:hover {
-    background: #ECA408;
+    background: #FF9933;
     color: white;
     transform: translateY(-2px);
 }
@@ -4000,7 +4000,7 @@ main {
 }
 
 .pricing-card.featured {
-    border: 2px solid #ECA408;
+    border: 2px solid #FF9933;
     transform: translateY(-10px);
 }
 
@@ -4008,7 +4008,7 @@ main {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #ECA408;
+    background: #FF9933;
     color: #fff;
     padding: 0.25rem 1rem;
     border-radius: 20px;
@@ -4020,7 +4020,7 @@ main {
     display: inline-block;
     padding: 0.5rem 1rem;
     background: #FFF5E6;
-    color: #ECA408;
+    color: #FF9933;
     border-radius: 20px;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -5295,7 +5295,7 @@ body.story-active {
 
   .trial-footer {
     background: #FFF5E6;
-    color: #ECA408;
+    color: #FF9933;
     font-size: 1rem;
     font-weight: 600;
     padding: 10px;
@@ -5360,7 +5360,7 @@ body.story-active {
     }
   
     .trial-footer {
-      background: #d6d3d3;
+      background: #FFF5E6;
       color: #FF9933;
       font-size: 1rem;
       font-weight: 600;
@@ -5396,57 +5396,72 @@ body.story-active {
       text-decoration: none;
     }
   }
-  /* Exactly match PC navigation for mobile */
+  /* Exactly match PC header for mobile */
 @media (max-width: 768px) {
     .header-wrapper {
       position: fixed;
       width: 100%;
       padding: 0;
-      margin: 0;
       z-index: 1000;
-      background-color: rgba(250, 244, 235, 1);
+      background-color: rgb(255, 245, 235);
     }
   
     header {
-      width: min(90%, 1000px) !important;
-      margin: 0 auto;
-      padding: 8px 24px;
-      background-color: rgba(250, 244, 235, 0.52);
-      backdrop-filter: blur(2rem);
-      -webkit-backdrop-filter: blur(2rem);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-  
-    .header-content {
-      max-width: min(85%, 1200px);
-      margin: 0 auto;
+      width: 100% !important;
+      padding: 15px 20px;
+      background-color: rgb(255, 245, 235);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 32px;
-      height: 48px;
-      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-      position: relative;
+    }
+  
+    .logo {
+      display: flex;
+      align-items: center;
     }
   
     .logo img {
       height: 35px;
       width: auto;
-      object-fit: contain;
-      margin: auto;
     }
   
-    /* Mobile menu button */
+    /* Navigation links container */
+    nav {
+      display: none; /* Hide on mobile */
+    }
+  
+    /* Language switcher on mobile */
+    .language-switcher {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+  
+    .language-switcher button {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #333;
+      padding: 5px;
+      cursor: pointer;
+    }
+  
+    .language-switcher button.active {
+      color: #FF9933;
+      font-weight: 500;
+    }
+  
+    /* Menu button aligned with the original design */
     .mobile-menu-button {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: none;
       border: none;
       cursor: pointer;
       padding: 8px;
-      margin-left: auto;
+      margin-left: 15px;
     }
   
     .menu-icon {
@@ -5465,7 +5480,6 @@ body.story-active {
       border-radius: 2px;
     }
   }
-
   
   .video-background {
     position: absolute;
