@@ -1789,11 +1789,6 @@ html {
     align-items: center;
 }
 
-.logo-text-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
 .footer-logo {
     width: 50px;
