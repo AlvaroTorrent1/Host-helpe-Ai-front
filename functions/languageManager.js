@@ -94,7 +94,7 @@ const translations = {
         trialText: "Try free for 2 weeks - No credit card required",
         bestGrowing: "Best for growing businesses",
         perfectStart: "Perfect for getting started",
-        largeScale: "For large-scale operations",
+        largeScale: "For large operations",
         customPricing: "Custom Pricing",
         simplePricing: "Simple Pricing",
         choosePlan: "Choose the perfect plan for your needs",
