@@ -5290,7 +5290,7 @@ body.story-active {
 
   .pricing-card.trial-card {
     position: relative;
-    padding-bottom: 80px; /* Increased to accommodate button and footer */
+    padding-bottom: 70px; /* Increased to accommodate button and footer */
   }
 
   .trial-footer {
@@ -5340,7 +5340,7 @@ body.story-active {
     }
   
     .pricing-card {
-      width: 102%;
+      width: 90%;
       max-width: 500px;
       display: flex;
       flex-direction: column;
