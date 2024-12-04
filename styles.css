@@ -196,7 +196,7 @@ header {
 
     /* Ensure headers and sections keep their light-mode appearance */
     .header-wrapper, .hero-section, .section, .contact-section {
-        background-color: #FFE8CC !important; /* Light background */
+
         color: #333 !important; /* Dark text */
     }
 
@@ -2807,7 +2807,7 @@ main {
 }
 
 .top-content h1 {
-    font-size: clamp(3rem, 6vw, 3rem);
+    font-size: clamp(2.9rem, 6vw, 3rem);
     font-family: 'Teko-Bold', sans-serif;
     font-weight: 700;
     color: #333;
@@ -3204,10 +3204,6 @@ main {
     .chat-demo-section {
         padding: 4rem 1rem;
         margin-bottom: 20rem;
-    }
-
-    .content-stack {
-        gap: 2rem;
     }
 
     .iphone-frame {
