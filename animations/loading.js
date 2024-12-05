@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     let loadingScreen = document.getElementById('loading-screen');
     let mainContent = document.getElementById('main-content');
+    let chatDemoSection = document.querySelector('.chat-demo-section');
+    let iPhoneFrame = document.querySelector('.iphone-frame');
+    let topContent = document.querySelector('.top-content');
+    let socialLinks = document.querySelector('.social-links');
+    let showcaseContent = document.querySelector('.showcase-content');
 
     function debugLog(message) {
         console.log(`[Debug] ${message}`);
@@ -8,33 +13,122 @@ document.addEventListener('DOMContentLoaded', function() {
 
     debugLog('DOMContentLoaded event fired');
 
+    // Initial setup - hide all animated elements
+    if (iPhoneFrame) {
+        iPhoneFrame.style.visibility = 'hidden';
+        iPhoneFrame.classList.remove('animate');
+    }
+    if (chatDemoSection) {
+        chatDemoSection.style.visibility = 'hidden';
+    }
+    if (topContent) {
+        topContent.querySelectorAll('h1, p').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+        });
+    }
+    if (socialLinks) {
+        socialLinks.style.opacity = '0';
+        socialLinks.style.transform = 'translateY(15px)';
+    }
+    if (showcaseContent) {
+        showcaseContent.style.opacity = '0';
+        showcaseContent.style.transform = 'translateY(20px)';
+        let ctaButton = showcaseContent.querySelector('.cta-button');
+        if (ctaButton) {
+            ctaButton.style.opacity = '0';
+            ctaButton.style.transform = 'translateY(15px)';
+        }
+    }
+
+    function triggerAnimations() {
+        debugLog('Triggering all animations');
+        
+        // Title animation
+        if (topContent) {
+            const title = topContent.querySelector('h1');
+            if (title) {
+                setTimeout(() => {
+                    title.style.transition = 'all 0.8s ease';
+                    title.style.opacity = '1';
+                    title.style.transform = 'translateY(0)';
+                }, 300);
+            }
+            
+            const subtitle = topContent.querySelector('p');
+            if (subtitle) {
+                setTimeout(() => {
+                    subtitle.style.transition = 'all 0.8s ease';
+                    subtitle.style.opacity = '1';
+                    subtitle.style.transform = 'translateY(0)';
+                }, 500);
+            }
+        }
+
+        // Social links animation
+        if (socialLinks) {
+            setTimeout(() => {
+                socialLinks.style.transition = 'all 0.8s ease';
+                socialLinks.style.opacity = '1';
+                socialLinks.style.transform = 'translateY(0)';
+            }, 700);
+        }
+
+        // Showcase content animation
+        if (showcaseContent) {
+            setTimeout(() => {
+                showcaseContent.style.transition = 'all 0.8s ease';
+                showcaseContent.style.opacity = '1';
+                showcaseContent.style.transform = 'translateY(0)';
+            }, 900);
+
+            const ctaButton = showcaseContent.querySelector('.cta-button');
+            if (ctaButton) {
+                setTimeout(() => {
+                    ctaButton.style.transition = 'all 0.8s ease';
+                    ctaButton.style.opacity = '1';
+                    ctaButton.style.transform = 'translateY(0)';
+                }, 1100);
+            }
+        }
+
+        // iPhone animation
+        if (iPhoneFrame) {
+            iPhoneFrame.style.visibility = 'visible';
+            iPhoneFrame.style.opacity = '0';
+            iPhoneFrame.classList.remove('animate');
+            void iPhoneFrame.offsetWidth;
+            iPhoneFrame.classList.add('animate');
+        }
+
+        if (chatDemoSection) {
+            chatDemoSection.style.visibility = 'visible';
+        }
+    }
+
     function showContent() {
         debugLog('Showing content');
         if (loadingScreen && mainContent) {
             startPixelAnimation();
-            // Fade out loading screen gradually
-            loadingScreen.style.transition = 'opacity 0.8s ease-out';
+            
+            loadingScreen.style.transition = 'opacity 0.5s ease-out';
             loadingScreen.style.opacity = '0';
             
-            // Fade in main content with a delay
             setTimeout(() => {
-                mainContent.style.transition = 'opacity 0.8s ease-in';
+                mainContent.style.transition = 'opacity 0.3s ease-in';
                 mainContent.style.opacity = '1';
                 document.body.classList.add('loaded');
-                debugLog('Loading screen hidden');
                 
-                // Remove loading screen after fade out
+                triggerAnimations();
+                
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                }, 800);
-            }, 700);
-        } else {
-            console.error('Loading screen or main content elements not found');
-            if (!loadingScreen) debugLog('Loading screen element missing');
-            if (!mainContent) debugLog('Main content element missing');
+                }, 300);
+            }, 400);
         }
     }
 
+    // Rest of your functions remain the same
     function ensureElementsExist() {
         if (!loadingScreen) {
             debugLog('Creating loading screen');
@@ -107,12 +201,4 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('An error occurred:', error);
             showContent();
         });
-
-    // Fallback safety timeout
-    setTimeout(() => {
-        if (!document.body.classList.contains('loaded')) {
-            debugLog('Fallback: Force hiding loading screen after 10 seconds');
-            showContent();
-        }
-    }, 10000);
 });

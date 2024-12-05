@@ -2813,16 +2813,6 @@ main {
     font-display: swap;
 }
 
-.top-content h1 {
-    font-size: clamp(2rem, 6vw, 3rem);
-    font-family: 'Teko-Bold', sans-serif;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 0.25rem;
-    line-height: 1.1;
-    text-align: center;
-    padding: 0 20px;
-}
 
 .top-content h1 {
     font-size: clamp(2rem, 6vw, 3rem);
@@ -3014,9 +3004,8 @@ main {
     z-index: 3;
 }
 
-
 .iphone-frame {
-    --iphone-aspect-ratio: 0.462; /* iPhone aspect ratio (width/height) */
+    --iphone-aspect-ratio: 0.462;
     --iphone-base-height: 812px;
     --iphone-base-width: 375px;
     height: min(var(--iphone-base-height), 95vh);
@@ -3028,26 +3017,13 @@ main {
     margin: 0 auto;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     transform-style: preserve-3d;
-    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(1.5);
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    will-change: transform;
+    display: none;  /* Start completely hidden */
+    will-change: transform, opacity;
     backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    animation: phoneAppear 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    overflow: visible;
-    z-index: 3
 }
 
-
-
-/* Hover effect */
-.iphone-frame:hover {
-    transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
-    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
-}
-
-/* Add animation keyframes */
 @keyframes phoneAppear {
     0% {
         opacity: 0;
@@ -3058,6 +3034,20 @@ main {
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.85);
     }
 }
+
+.iphone-frame.animate {
+    display: block;  /* Show the frame when animation class is added */
+    animation: phoneAppear 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation-delay: 1s;
+    opacity: 0;  /* Start with opacity 0 until animation begins */
+}
+
+/* Hover effect */
+.iphone-frame:hover {
+    transform: perspective(1000px) rotateY(-12deg) rotateX(3deg) scale(0.87) translateY(-10px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+}
+
 
 /* Responsive scaling */
 @media (max-width: 1400px) {
@@ -5509,7 +5499,7 @@ body.story-active {
         justify-content: center;
         width: 100%;
         padding: 20px;
-        margin-top: -230px;
+        margin-top: -115px;
         position: relative;
         z-index: 10;
     }
@@ -5549,3 +5539,815 @@ body.story-active {
         pointer-events: none !important;
     }
 }   
+
+/* Hide all animated elements initially */
+.animate-content .top-content h1,
+.animate-content .top-content p,
+.animate-content .social-links,
+.animate-content .showcase-content,
+.animate-content .cta-button {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Animation classes */
+.animate-content.show-animations .top-content h1 {
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+}
+
+.animate-content.show-animations .top-content p {
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.5s;
+}
+
+.animate-content.show-animations .social-links {
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.7s;
+}
+
+.animate-content.show-animations .showcase-content {
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.9s;
+}
+
+.animate-content.show-animations .showcase-content .cta-button {
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 1.1s;
+}
+
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Interactive hover effects */
+.social-links .social-link {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.social-links .social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+}
+
+.cta-button {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(236, 164, 8, 0.3);
+}
+
+/* Enhanced Message Input Area */
+.input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    min-height: 60px;
+    max-height: 120px;
+    z-index: 10;
+    isolation: isolate;
+    transform: translateZ(0);
+    border-radius: 0 0 40px 40px;
+    animation: inputAreaPulse 2s infinite;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes inputAreaPulse {
+    0%, 100% {
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05),
+                    inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    50% {
+        box-shadow: 0 -5px 20px rgba(7, 94, 84, 0.1),
+                    inset 0 1px 5px rgba(7, 94, 84, 0.1);
+    }
+}
+
+/* Animated Input Placeholder */
+.message-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 15px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 20px;
+    background: #f0f0f0;
+    font-size: 16px;
+    line-height: 20px;
+    max-height: 100px;
+    overflow-y: auto;
+    transform: translateZ(0);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.message-input::placeholder {
+    color: #666;
+    animation: placeholderWave 3s infinite;
+}
+
+@keyframes placeholderWave {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Input Focus Effects */
+.message-input:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 2px 15px rgba(7, 94, 84, 0.1),
+                inset 0 1px 5px rgba(7, 94, 84, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Enhanced Send Button */
+.send-button {
+    background: #075E54;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.send-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.send-button:hover::before {
+    width: 150%;
+    height: 150%;
+}
+
+/* Message Animations */
+.message {
+    max-width: 70%;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    position: relative;
+    word-wrap: break-word;
+    font-size: 14px;
+    font-weight: 530;
+    white-space: normal;
+    word-break: break-word;
+    animation: messagePopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: left center;
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message.received {
+    background: white;
+    margin-right: auto;
+    border-radius: 0 15px 15px 15px;
+    max-width: 65%;
+}
+
+.message.sent {
+    background: #DCF8C6;
+    margin-left: auto;
+    border-radius: 15px 0 15px 15px;
+    max-width: 65%;
+    transform-origin: right center;
+}
+
+@keyframes messagePopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.02) translateY(-3px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Message Hover Effects */
+.message::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.message:hover::after {
+    opacity: 1;
+}
+
+/* iPhone Frame Professional Enhancement */
+.iphone-frame {
+    --iphone-aspect-ratio: 0.462;
+    --iphone-base-height: 812px;
+    --iphone-base-width: 375px;
+    height: min(var(--iphone-base-height), 95vh);
+    width: calc(min(var(--iphone-base-height), 95vh) * var(--iphone-aspect-ratio));
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 50px;
+    padding: 15px;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3),
+                0 10px 30px -15px rgba(0, 0, 0, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    display: none;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Professional Screen Effect */
+.screen {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(2px);
+    backface-visibility: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%
+    );
+    animation: screenScan 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes screenScan {
+    0% {
+        transform: translateY(-100%) translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateY(100%) translateX(100%) rotate(45deg);
+    }
+}
+
+/* Enhanced 3D Transform on Hover */
+.iphone-frame:hover {
+    transform: perspective(2000px) 
+               rotateY(-12deg) 
+               rotateX(3deg) 
+               scale(0.87) 
+               translateY(-10px);
+    box-shadow: 35px 35px 60px -12px rgba(0, 0, 0, 0.3),
+                15px 15px 30px -15px rgba(0, 0, 0, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.15);
+}
+
+/* Professional Appearance Animation */
+@keyframes phoneAppear {
+    0% {
+        opacity: 0;
+        transform: perspective(2000px) 
+                   rotateY(-30deg) 
+                   rotateX(10deg) 
+                   translateZ(-100px) 
+                   scale(0.8);
+        filter: brightness(0.8) contrast(0.95);
+    }
+    50% {
+        opacity: 0.8;
+        transform: perspective(2000px) 
+                   rotateY(-20deg) 
+                   rotateX(7deg) 
+                   translateZ(-50px) 
+                   scale(0.9);
+        filter: brightness(0.9) contrast(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85);
+        filter: brightness(1) contrast(1);
+    }
+}
+
+/* Floating Animation */
+@keyframes subtleFloat {
+    0%, 100% {
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85) 
+                   translateY(0);
+    }
+    50% {
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85) 
+                   translateY(-5px);
+    }
+}
+
+/* Enhanced Message Input Area */
+.input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    min-height: 60px;
+    max-height: 120px;
+    z-index: 10;
+    isolation: isolate;
+    transform: translateZ(0);
+    border-radius: 0 0 40px 40px;
+    animation: inputAreaPulse 2s infinite;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes inputAreaPulse {
+    0%, 100% {
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05),
+                    inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    50% {
+        box-shadow: 0 -5px 20px rgba(7, 94, 84, 0.1),
+                    inset 0 1px 5px rgba(7, 94, 84, 0.1);
+    }
+}
+
+/* Animated Input Placeholder */
+.message-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 15px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 20px;
+    background: #f0f0f0;
+    font-size: 16px;
+    line-height: 20px;
+    max-height: 100px;
+    overflow-y: auto;
+    transform: translateZ(0);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.message-input::placeholder {
+    color: #666;
+    animation: placeholderWave 3s infinite;
+}
+
+@keyframes placeholderWave {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Input Focus Effects */
+.message-input:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 2px 15px rgba(7, 94, 84, 0.1),
+                inset 0 1px 5px rgba(7, 94, 84, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Enhanced Send Button */
+.send-button {
+    background: #075E54;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.send-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.send-button:hover::before {
+    width: 150%;
+    height: 150%;
+}
+
+/* Message Animations */
+.message {
+    max-width: 70%;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    position: relative;
+    word-wrap: break-word;
+    font-size: 14px;
+    font-weight: 530;
+    white-space: normal;
+    word-break: break-word;
+    animation: messagePopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: left center;
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message.received {
+    background: white;
+    margin-right: auto;
+    border-radius: 0 15px 15px 15px;
+    max-width: 65%;
+}
+
+.message.sent {
+    background: #DCF8C6;
+    margin-left: auto;
+    border-radius: 15px 0 15px 15px;
+    max-width: 65%;
+    transform-origin: right center;
+}
+
+@keyframes messagePopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.02) translateY(-3px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Message Hover Effects */
+.message::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.message:hover::after {
+    opacity: 1;
+}
+
+/* iPhone Frame Professional Enhancement */
+.iphone-frame {
+    --iphone-aspect-ratio: 0.462;
+    --iphone-base-height: 812px;
+    --iphone-base-width: 375px;
+    height: min(var(--iphone-base-height), 95vh);
+    width: calc(min(var(--iphone-base-height), 95vh) * var(--iphone-aspect-ratio));
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-radius: 50px;
+    padding: 15px;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3),
+                0 10px 30px -15px rgba(0, 0, 0, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    display: none;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Professional Screen Effect */
+.screen {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(2px);
+    backface-visibility: hidden;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%
+    );
+    animation: screenScan 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes screenScan {
+    0% {
+        transform: translateY(-100%) translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateY(100%) translateX(100%) rotate(45deg);
+    }
+}
+
+/* Enhanced 3D Transform on Hover */
+.iphone-frame:hover {
+    transform: perspective(2000px) 
+               rotateY(-12deg) 
+               rotateX(3deg) 
+               scale(0.87) 
+               translateY(-10px);
+    box-shadow: 35px 35px 60px -12px rgba(0, 0, 0, 0.3),
+                15px 15px 30px -15px rgba(0, 0, 0, 0.2),
+                inset 0 2px 15px rgba(255, 255, 255, 0.15);
+}
+
+/* Professional Appearance Animation */
+@keyframes phoneAppear {
+    0% {
+        opacity: 0;
+        transform: perspective(2000px) 
+                   rotateY(-30deg) 
+                   rotateX(10deg) 
+                   translateZ(-100px) 
+                   scale(0.8);
+        filter: brightness(0.8) contrast(0.95);
+    }
+    50% {
+        opacity: 0.8;
+        transform: perspective(2000px) 
+                   rotateY(-20deg) 
+                   rotateX(7deg) 
+                   translateZ(-50px) 
+                   scale(0.9);
+        filter: brightness(0.9) contrast(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85);
+        filter: brightness(1) contrast(1);
+    }
+}
+
+/* Floating Animation */
+@keyframes subtleFloat {
+    0%, 100% {
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85) 
+                   translateY(0);
+    }
+    50% {
+        transform: perspective(2000px) 
+                   rotateY(-15deg) 
+                   rotateX(5deg) 
+                   scale(0.85) 
+                   translateY(-5px);
+    }
+}
+
+/* Enhanced Input Area Hint */
+.input-area[data-translate]::after {
+    content: attr(data-translate);
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #075E54, #128C7E);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(7, 94, 84, 0.2),
+                0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: none;
+    z-index: 1000;
+}
+
+/* Show hint only when quick replies are hidden */
+.input-area[data-translate]:not(.quick-replies-visible)::after {
+    visibility: visible;
+    animation: hintPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Add arrow to bubble */
+.input-area[data-translate]::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #128C7E;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+/* Show arrow with bubble */
+.input-area[data-translate]:not(.quick-replies-visible)::before {
+    visibility: visible;
+    animation: hintArrowPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Updated hint animation */
+@keyframes hintPulse {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px) scale(0.95);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px) scale(0.95);
+    }
+}
+
+/* Arrow animation */
+@keyframes hintArrowPulse {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-3px);
+    }
+}
+
+/* Hide hint when input is focused */
+.input-area:focus-within::before,
+.input-area:focus-within::after {
+    visibility: hidden;
+    opacity: 0;
+    animation: none;
+}
+
+@keyframes hintPulse {
+    0%, 100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Active States and Interactions */
+.input-area:focus-within {
+    box-shadow: 0 -5px 20px rgba(7, 94, 84, 0.15);
+}
+
+.input-area:focus-within::after {
+    opacity: 0;
+    animation: none;
+}
+
+/* Message Input Active State */
+.message-input:focus {
+    background: white;
+    box-shadow: 0 2px 15px rgba(7, 94, 84, 0.1),
+                inset 0 1px 5px rgba(7, 94, 84, 0.1);
+    transform: translateY(-1px) scale(1.01);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .input-area::after {
+        font-size: 12px;
+        padding: 6px 12px;
+        top: -25px;
+    }
+
+    .message-input {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .send-button {
+        width: 36px;
+        height: 36px;
+    }
+}
