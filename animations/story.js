@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchEndX = null;
     let touchEndY = null;
     
-    const ANIMATION_DURATION = 400; // Reduced from 600ms for smoother feel
-    const TOUCH_THRESHOLD = 40; // Reduced threshold for more responsive swipes
+    const ANIMATION_DURATION = 400;
+    const TOUCH_THRESHOLD = 40;
     const isMobile = window.innerWidth <= 768;
 
     function init() {
@@ -23,18 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstCard = cards[0];
         const indicatorTemplate = `
             <div class="click-indicator interaction-indicator"></div>
-       `;
+        `;
         firstCard.insertAdjacentHTML('beforeend', indicatorTemplate);
-        // Only add swipe indicators on mobile
+        
         if (isMobile) {
             addSwipeIndicators();
         }
 
-        // Add click handlers for desktop
         if (!isMobile) {
             cards.forEach((card, index) => {
                 card.addEventListener('click', () => {
                     if (!isAnimating) {
+                        markAsInteracted(card);
                         switchToCard((index + 1) % cards.length, 'next');
                     }
                 });
@@ -51,19 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         card.classList.add('interacted');
     }
-    
-        
-    // And in the click handler:
-    cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-            if (window.innerWidth >= 769 && !isAnimating) {
-                // Immediately mark all cards as interacted to remove all indicators
-                cards.forEach(c => markAsInteracted(c));
-                switchToCard((index + 1) % cards.length, 'next');
-            }
-        });
-    });
-
 
     function addSwipeIndicators() {
         // Add swipe indicators outside the cards
@@ -78,7 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function switchToCard(newIndex, direction = 'next') {
-        if (isAnimating || newIndex === currentIndex || newIndex < 0 || newIndex >= cards.length) return;
+        if (isAnimating) return;
+
+        // Handle looping
+        if (newIndex < 0) {
+            newIndex = cards.length - 1;
+            direction = 'prev';
+        } else if (newIndex >= cards.length) {
+            newIndex = 0;
+            direction = 'next';
+        }
+
+        if (newIndex === currentIndex) return;
 
         isAnimating = true;
 
@@ -98,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(() => {
                 cards[newIndex].classList.add('active');
                 dots[newIndex].classList.add('active');
+
             });
         });
 
@@ -130,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaX = touchStartX - touchEndX;
         const deltaY = touchStartY - touchEndY;
 
-        // Only prevent default if horizontal swipe is more significant
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             e.preventDefault();
         }
@@ -142,11 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaX = touchStartX - touchEndX;
         const deltaY = touchStartY - touchEndY;
 
-        // Ensure horizontal swipe is more significant than vertical
         if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > TOUCH_THRESHOLD) {
-            if (deltaX > 0 && currentIndex < cards.length - 1) {
+            // Mark current card as interacted before switching
+            markAsInteracted(cards[currentIndex]);
+            
+            if (deltaX > 0) {
+                // Swipe left - go to next card (with looping)
                 switchToCard(currentIndex + 1, 'next');
-            } else if (deltaX < 0 && currentIndex > 0) {
+            } else {
+                // Swipe right - go to previous card (with looping)
                 switchToCard(currentIndex - 1, 'prev');
             }
         }
@@ -164,10 +166,21 @@ document.addEventListener('DOMContentLoaded', () => {
         storySection.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
 
+    // Click handler for cards
+    cards.forEach((card, index) => {
+        card.addEventListener('click', () => {
+            if (window.innerWidth >= 769 && !isAnimating) {
+                markAsInteracted(card);
+                switchToCard((index + 1) % cards.length, 'next');
+            }
+        });
+    });
+
     // Navigation dot handlers
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
             if (!isAnimating && index !== currentIndex) {
+                markAsInteracted(cards[currentIndex]);
                 const direction = index > currentIndex ? 'next' : 'prev';
                 switchToCard(index, direction);
             }

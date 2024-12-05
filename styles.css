@@ -2286,6 +2286,10 @@ main {
     }
 }
 
+.gallery-section{
+    background-color: white;
+
+}
 
 
 .gallery-header {
@@ -2406,6 +2410,7 @@ main {
 .gallery-item-description {
     font-size: 1rem;
     opacity: 0.9;
+    color: white;
 }
 
 /* Navigation Controls */
