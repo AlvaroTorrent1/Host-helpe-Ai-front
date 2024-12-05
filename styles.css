@@ -2802,7 +2802,7 @@ main {
 }
 
 .top-content h1 {
-    font-size: clamp(2.9rem, 6vw, 3rem);
+    font-size: clamp(2rem, 6vw, 3rem);
     font-family: 'Teko-Bold', sans-serif;
     font-weight: 700;
     color: #333;
@@ -2812,15 +2812,50 @@ main {
     padding: 0 20px;
 }
 
-.top-content p {
-    font-size: clamp(1rem, 2vw, 0.7rem);
-    color: #666;
-    margin-bottom: 0.5rem; /* Reduced from 1.5rem */
-    line-height: 1.4;
+.top-content h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-family: 'Teko-Bold', sans-serif;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.25rem;
+    line-height: 1.1;
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 0 20px;
+
+    /* Animation styles */
+    opacity: 0;
+    transform: scale(0.8) translateY(20px); /* Start scaled down and slightly lower */
+    animation: coolFadeIn 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards, colorGlow 5s infinite alternate;
 }
+
+/* Keyframes for fade-in and scale */
+@keyframes coolFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05) translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Keyframes for glowing color */
+@keyframes colorGlow {
+    0% {
+        color: #333;
+        text-shadow: 0 0 10px rgba(255, 153, 51, 0.4), 0 0 20px rgba(255, 153, 51, 0.2);
+    }
+    100% {
+        color: #FF9933;
+        text-shadow: 0 0 20px rgba(255, 153, 51, 0.8), 0 0 40px rgba(255, 153, 51, 0.5);
+    }
+}
+
 
 /* Responsive adjustment */
 @media (max-width: 640px) {
