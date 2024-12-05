@@ -2307,7 +2307,6 @@ main {
 /* Gallery Container */
 .gallery-container {
     max-width: 1400px;
-    margin: 0 auto;
     padding: 4rem 2rem;
     background: white;
 }
