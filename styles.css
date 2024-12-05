@@ -1968,7 +1968,7 @@ main {
         margin-top: 15px;
     }
 }
-/* Phone footer */
+/* Updated Phone Footer */
 .footer {
     background: #FFF5E6;
     padding: 20px 0;
@@ -1982,28 +1982,47 @@ main {
     padding: 0 15px;
 }
 
+/* Stack Social Links at the Top */
 .footer-content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Stack content vertically */
     align-items: center;
+    text-align: center; /* Center align for mobile view */
 }
 
+/* Social Links at the Top */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px; /* Add spacing below icons */
+}
+
+/* Logo and Text Content in a Row */
 .logo-text-container {
     display: flex;
-    align-items: flex-start;
+    flex-direction: row; /* Align logo and text side by side */
+    align-items: center;
     gap: 10px;
+    width: 100%;
+    justify-content: flex-start; /* Align items to the left */
+    text-align: left; /* Align text content left */
 }
 
+/* Footer Logo */
 .footer-logo {
     width: 50px;
     height: auto;
+    flex-shrink: 0; /* Ensure logo size remains fixed */
 }
 
+/* Text Content */
 .text-content {
     display: flex;
     flex-direction: column;
 }
 
+/* Footer Text */
 .company-text {
     font-size: 12px;
     color: #666;
@@ -2030,16 +2049,7 @@ main {
     height: 12px;
 }
 
-.social-links {
-    display: flex;
-    gap: 10px;
-}
-
-.social-link img {
-    width: 28px;
-    height: 28px;
-}
-
+/* Copyright */
 .copyright {
     font-size: 10px;
     color: #666;
@@ -2047,6 +2057,7 @@ main {
     margin-top: 10px;
     margin-bottom: 0;
 }
+
 /* Mobile-specific styles for Footer */
 @media (max-width: 768px) {
     .footer {
