@@ -5420,45 +5420,62 @@ body.story-active {
   }
   /* Exactly match PC header for mobile */
 
-  
-  .video-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 105vh;
-    z-index: 1;
-    overflow: hidden;
-    pointer-events: none;
-    background: #FFE8CC;
-}
+    .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 105vh;
+        z-index: 1;
+        overflow: hidden;
+        pointer-events: none;
+        background: #FFE8CC;
+    }
 
-.video-foreground {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+    .video-foreground {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 
-.background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 200vw;
-    min-height: 200vh;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%) scale(1.2);
-    pointer-events: none;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 2s ease-in-out;
-}
+    .video-foreground::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 300px; /* Increased height for more gradual fade */
+        background: linear-gradient(
+            to bottom,
+            rgba(255, 232, 204, 0) 0%,
+            rgba(255, 232, 204, 0.075) 20%,
+            rgba(255, 232, 204, 0.185) 40%,
+            rgba(255, 232, 204, 0.13) 60%,
+            #FFE8CC 100%
+        );
+        z-index: 2;
+    }
 
-.background-video.active {
-    opacity: 1;
-}
+    .background-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 200vw;
+        min-height: 200vh;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%) scale(1.2);
+        pointer-events: none;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+    }
+
+    .background-video.active {
+        opacity: 1;
+    }
 
 /* Base state - hide mobile button by default */
 .mobile-get-started {
