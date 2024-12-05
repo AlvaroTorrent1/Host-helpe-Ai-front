@@ -5298,6 +5298,7 @@ body.story-active {
       align-items: center;
       gap: 1.5rem;
       padding: 1rem;
+      margin: -3rem;
     }
   
     .pricing-card {
