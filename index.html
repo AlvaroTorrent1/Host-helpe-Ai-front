@@ -26,6 +26,7 @@
         #loading-screen.hidden {
             display: none;
         }
+
     </style>
     
 
@@ -619,6 +620,26 @@
                 <h2 class="section-title" data-translate="simplePricing">Simple Pricing</h2>
                 <p class="section-subtitle" data-translate="choosePlan">Choose the perfect plan for your needs</p>
                 </div>
+
+                <div class="price-toggle">
+                    <span class="billing-label" id="monthly-label">Monthly</span>
+                    <label class="switch">
+                      <input type="checkbox" id="billing-toggle">
+                      <span class="slider"></span>
+                    </label>
+                    <span class="billing-label" id="annual-label">Annual</span>
+                    <span class="discount-tag">Save 37%</span>
+                    
+                    <div class="user-counter">
+                      <span>Users:</span>
+                      <button class="counter-button" id="decrease">−</button>
+                      <input type="number" class="counter-input" id="user-count" value="3" min="1" max="1000">
+                      <button class="counter-button" id="increase">+</button>
+                      <span>users</span>
+                    </div>
+                  </div>
+                  
+
         <!-- Updated Pricing Cards -->
         <div class="pricing-cards">
            <!-- Basic Plan with Free Trial -->
@@ -1092,6 +1113,92 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
+<script>
+    // Button toggler
+const billingToggle = document.getElementById('billing-toggle');
+const userCount = document.getElementById('user-count');
+const increaseBtn = document.getElementById('increase');
+const decreaseBtn = document.getElementById('decrease');
+const monthlyLabel = document.getElementById('monthly-label');
+const annualLabel = document.getElementById('annual-label');
+
+function updateLabels(isAnnual) {
+  if (isAnnual) {
+    annualLabel.classList.add('active');
+    monthlyLabel.classList.remove('active');
+  } else {
+    monthlyLabel.classList.add('active');
+    annualLabel.classList.remove('active');
+  }
+}
+
+// Initialize labels
+updateLabels(false);
+
+billingToggle.addEventListener('change', (e) => {
+  console.log('Billing cycle:', e.target.checked ? 'Annual' : 'Monthly');
+  updateLabels(e.target.checked);
+});
+
+function updateCount(increment) {
+  const currentValue = parseInt(userCount.value);
+  const newValue = increment ? 
+    Math.min(currentValue + 1, 1000) : 
+    Math.max(currentValue - 1, 1);
+  
+  if (newValue !== currentValue) {
+    userCount.value = newValue;
+    userCount.style.transform = 'scale(1.1)';
+    setTimeout(() => userCount.style.transform = 'scale(1)', 200);
+  }
+}
+
+increaseBtn.addEventListener('click', () => {
+  updateCount(true);
+  increaseBtn.style.transform = 'scale(0.95)';
+  setTimeout(() => increaseBtn.style.transform = 'scale(1)', 100);
+});
+
+decreaseBtn.addEventListener('click', () => {
+  updateCount(false);
+  decreaseBtn.style.transform = 'scale(0.95)';
+  setTimeout(() => decreaseBtn.style.transform = 'scale(1)', 100);
+});
+
+userCount.addEventListener('change', () => {
+  let value = parseInt(userCount.value);
+  value = Math.max(1, Math.min(1000, value || 1));
+  userCount.value = value;
+});
+
+userCount.addEventListener('focus', () => {
+  userCount.select();
+});
+
+// Add hover effect for buttons
+[increaseBtn, decreaseBtn].forEach(btn => {
+  btn.addEventListener('mouseover', () => {
+    btn.style.transform = 'scale(1.1)';
+  });
+  
+  btn.addEventListener('mouseout', () => {
+    btn.style.transform = 'scale(1)';
+  });
+});
+
+// Add keyboard support
+document.addEventListener('keydown', (e) => {
+  if (document.activeElement === userCount) {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      updateCount(true);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      updateCount(false);
+    }
+  }
+});
+</script>
 
 
 <script type="text/babel">

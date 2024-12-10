@@ -6795,3 +6795,174 @@ main {
     }
 
 }
+
+.price-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center all items */
+    gap: 15px; /* Equal spacing between items */
+    margin: 20px auto;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 5px 20px; /* Added horizontal padding */
+    width: fit-content; /* Let content determine width */
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(255, 153, 51, 0.15);
+    transition: all 0.3s ease;
+  }
+  
+  .price-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 153, 51, 0.2);
+  }
+  
+  /* Switch container */
+  .switch {
+    position: relative;
+    width: 60px;
+    height: 28px;
+    margin: 0 10px; /* Equal margins on both sides */
+    flex-shrink: 0; /* Prevent switch from shrinking */
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #FFD1A1;
+    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 34px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    right: 36px;
+    height: 20px;
+    width: 20px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  input:checked + .slider {
+    background-color: #FF9933;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(36px);
+  }
+  
+  .discount-tag {
+    background: linear-gradient(135deg, #FF9933, #ff8533);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transform-origin: center;
+    animation: pulse 2s infinite;
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  
+  .user-counter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 0px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.12);
+    transition: all 0.3s ease;
+  }
+  
+  .user-counter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 153, 51, 0.18);
+  }
+  
+  .counter-button {
+    width: 34px;
+    height: 34px;
+    border: 2px solid #FF9933;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background:#FFF5E6;
+    color: #FF9933;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 16px;
+  }
+  
+  .counter-button:hover {
+    background: #FF9933;
+    color:  #FFF5E6;
+    transform: scale(1.1);
+  }
+  
+  .counter-input {
+    width: 60px;
+    text-align: center;
+    border: 2px solid #FFD1A1;
+    border-radius: 8px;
+    padding: 6px;
+    background-color:  #FFF5E6;
+    font-weight: bold;
+    color: #FF9933;
+    font-size: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .counter-input:focus {
+    outline: none;
+    border-color: #FF9933;
+    box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.2);
+  }
+  
+  span {
+    color: #444;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  
+  /* Text labels */
+  .billing-label {
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  
+  .billing-label:hover {
+    background: rgba(255, 153, 51, 0.1);
+  }
+  
+  .billing-label.active {
+    background: #FF9933;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
+  }
