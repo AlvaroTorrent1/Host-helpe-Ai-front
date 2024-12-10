@@ -2822,46 +2822,50 @@ main {
     font-size: clamp(2rem, 6vw, 3rem);
     font-family: 'Teko-Bold', sans-serif;
     font-weight: 700;
-    color: #333;
+    color: #ECA408;
     margin-bottom: 0.25rem;
     line-height: 1.1;
     text-align: center;
     padding: 0 20px;
 
-    /* Animation styles */
+}
+
+.typewriter-text {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-family: 'Teko-Bold', sans-serif;
+    font-weight: 700;
+    color: #ECA408;
+    margin-bottom: 0.25rem;
+    line-height: 1.1;
+    text-align: center;
+    padding: 0 20px;
+    overflow: hidden;
+    white-space: nowrap;
     opacity: 0;
-    transform: scale(0.8) translateY(20px); /* Start scaled down and slightly lower */
-    animation: coolFadeIn 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards, colorGlow 5s infinite alternate;
-}
-
-/* Keyframes for fade-in and scale */
-@keyframes coolFadeIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-    }
-    50% {
-        opacity: 0.5;
-        transform: scale(1.05) translateY(0);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-/* Keyframes for glowing color */
-@keyframes colorGlow {
-    0% {
-        color: #333;
-        text-shadow: 0 0 10px rgba(255, 153, 51, 0.4), 0 0 20px rgba(255, 153, 51, 0.2);
-    }
-    100% {
-        color: #FF9933;
-        text-shadow: 0 0 20px rgba(255, 153, 51, 0.8), 0 0 40px rgba(255, 153, 51, 0.5);
-    }
-}
-
+    transform: scale(0.8) translateY(20px);
+    animation: coolFadeIn 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards, 
+               typewriter 3s steps(20) 2s 1 normal both;
+  }
+  
+  @keyframes coolFadeIn {
+      0% {
+          opacity: 0;
+          transform: scale(0.8) translateY(20px);
+      }
+      50% {
+          opacity: 0.5;
+          transform: scale(1.05) translateY(0);
+      }
+      100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+      }
+  }
+  
+  @keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+  }
 
 /* Responsive adjustment */
 @media (max-width: 640px) {
@@ -6789,4 +6793,5 @@ main {
         max-width: 100vw;
         overflow-x: hidden;
     }
+
 }
