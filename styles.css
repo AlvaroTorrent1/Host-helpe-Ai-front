@@ -1077,7 +1077,7 @@ html {
 }
 
 .contact-container h1 {
-    color: #eca408;
+    color: #ECA408;
     font-size: 3em;
     text-align: center;
     animation: fadeIn 1s ease-out;
@@ -4055,7 +4055,7 @@ main {
     display: inline-block;
     padding: 0.5rem 1rem;
     background: #FFF5E6;
-    color: #FF9933;
+    color: #ECA408;
     border-radius: 20px;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -4103,7 +4103,7 @@ main {
 }
 
 .pricing-features li i {
-    color: #FF9933;
+    color: #ECA408;
     font-size: 1rem;
 }
 
