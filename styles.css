@@ -767,7 +767,7 @@ section {
 
 .feature-card i {
     font-size: 2.5rem;
-    color: var(--primary);
+    color: #ECA408;
     margin-bottom: 1.5rem;
     position: relative;
     z-index: 1;
@@ -840,7 +840,7 @@ section {
 .stat-value {
     font-size: 3.5rem;
     font-weight: 700;
-    color: #ff8c1a;
+    color:#ECA408;
     margin-bottom: 0.5rem;
     line-height: 1.2;
 }
@@ -1607,7 +1607,7 @@ html {
   /* Pro Card Button */
   .featured .pricing-action button,
   .featured .pricing-action a {
-    background: #FF9933;
+    background:#ECA408;
     color: white;
     border: none;
   }
@@ -1616,8 +1616,8 @@ html {
   .pricing-card:not(.trial-card):not(.featured) .pricing-action button,
   .pricing-card:not(.trial-card):not(.featured) .pricing-action a {
     background: white;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid#ECA408;
+    color:#ECA408;
   }
   
   /* Hover Effects */
@@ -2300,7 +2300,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #FF9933;
+    color: #ECA408;
     margin-bottom: 1rem;
 }
 
@@ -2319,7 +2319,7 @@ main {
 .gallery-header h2 {
     font-size: clamp(2rem, 4vw, 48px);
     font-weight: 700;
-    color: #FF9933;
+    color:#ECA408;
 }
 
 /* Base Gallery Layout */
@@ -3908,7 +3908,7 @@ section h2 {
     font-weight: 700;
     font-size: clamp(1.8rem, 4vw, 2.5rem);
     margin-bottom: clamp(1rem, 2vw, 1.5rem);
-    color: #FF9933
+    color:#ECA408
 }
 
 section p {
