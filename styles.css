@@ -2784,6 +2784,7 @@ main {
     text-align: center;
     position: relative;
     z-index: 2;
+    margin-right: -175px;
 }
 
 .top-content,
