@@ -2784,7 +2784,6 @@ main {
     text-align: center;
     position: relative;
     z-index: 2;
-    margin-right: -175px;
 }
 
 .top-content,
@@ -2881,7 +2880,7 @@ main {
     color: #333;
     margin-bottom: 0.25rem; /* Reduced from 1rem */
     position: relative;
-    top: -2rem; /* Reduced from -4rem */
+    top: -1.5rem; /* Reduced from -4rem */
     text-align: center;
 }
 
@@ -3938,7 +3937,7 @@ main {
 
 /* Container and Utility Classes */
 .container {
-    width: min(90%, 1400px);
+    width: min(100%, 1400px);
     margin-inline: auto;
     padding-inline: var(--container-padding);
 }
@@ -5300,6 +5299,7 @@ body.story-active {
       gap: 1.5rem;
       padding: 1rem;
       margin: -3rem;
+      width: 150% !important;
     }
   
     .pricing-card {
@@ -5439,7 +5439,7 @@ body.story-active {
         justify-content: center;
         width: 100%;
         padding: 20px;
-        margin-top: -115px;
+        margin-top: -25rem;
         position: relative;
         z-index: 10;
     }
@@ -6401,3 +6401,392 @@ body.story-active {
       height: 28px;
     }
   }
+
+/* Portrait Lock Base Styles */
+.portrait-lock {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #FFE8CC;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .portrait-lock img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+    animation: rotate 1s ease-in-out infinite;
+  }
+  
+  .portrait-lock p {
+    font-size: 18px;
+    color: #333;
+    max-width: 280px;
+    line-height: 1.4;
+  }
+  
+  @keyframes rotate {
+    0% { transform: rotate(90deg); }
+    100% { transform: rotate(90deg); }
+  }
+  
+  /* Orientation Lock Styles */
+  @media screen and (max-width: 768px) {
+    /* Base portrait mode */
+    html, body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
+  
+    /* Landscape handling */
+    @media (orientation: landscape) {
+      body {
+        position: fixed;
+        width: 100vh;
+        height: 100vw;
+        transform: rotate(90deg);
+        transform-origin: left top;
+        top: 100%;
+        left: 0;
+        overflow: hidden;
+      }
+  
+      .portrait-lock {
+        display: flex;
+      }
+      
+      /* iPhone notch/Dynamic Island handling */
+      @supports (padding: env(safe-area-inset-left)) {
+        body {
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+    }
+  }
+  
+  /* Fix for iOS Safari's full height issue */
+  @supports (-webkit-touch-callout: none) {
+    .chat-demo-section {
+      min-height: -webkit-fill-available;
+    }
+    
+    @media (orientation: landscape) {
+      body {
+        height: -webkit-fill-available;
+      }
+    }
+  }
+  
+  /* Prevent pull-to-refresh */
+  body {
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }                   
+
+  /* Base Layout Fixes */
+body {
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* First Section Adjustments */
+.chat-demo-section {
+    padding-top: 0px !important; /* Reduce top spacing */
+}
+
+.top-content {
+    text-align: center;
+    width: 100%;
+    margin-top: -20px; /* Move content up */
+}
+
+.top-content h1 {
+    text-align: center;
+    width: 100%;
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin: 0 auto;
+}
+
+.section-subtitle {
+    text-align: center;
+    width: 100%;
+    margin: 1rem auto;
+}
+
+/* Header Fixes */
+.header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background-color: rgba(250, 244, 235, 0.95);
+}
+
+/* Main Content Area Fixes */
+main {
+    overflow-x: hidden;
+    width: 100%;
+    flex: 1 0 auto;
+}
+
+/* Pricing Card Button Fixes */
+.pricing-card {
+    position: relative;
+    padding-bottom: 120px; /* Increase bottom padding */
+}
+
+.pricing-features {
+    margin-bottom: 60px; /* Add space between features and button */
+}
+
+.pricing-action {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+}
+
+.trial-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1px;
+}
+
+/* Footer Positioning */
+.footer {
+    flex-shrink: 0;
+    margin-top: auto;
+    padding: 20px 0;
+    background: #FFF5E6;
+    width: 100%;
+}
+
+/* Landscape Mode Specific Fixes */
+@media screen and (orientation: landscape) and (max-height: 700px) {
+    .chat-demo-section {
+        min-height: 120vh;
+        padding: 60px 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+
+    .pricing-features{
+        margin-bottom: 10px;
+    }
+
+
+
+    .social-links {
+        margin: 0rem 0;
+    }
+
+    .features-grid{
+        gap: 10px;
+        height: 23rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
+        padding: 1rem;
+        
+    }
+
+    .trial-footer{
+    padding: 1px;
+    font-size: 14px;
+    }
+
+
+    .content-stack {
+        margin: 0;
+        padding: 0;
+        width: 45%;
+        text-align: center;
+    }
+
+    .iphone-container {
+        width: 40%;
+        height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .iphone-frame {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        width: 20rem;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.5);
+        margin: 0;
+    }
+
+    :root {
+        --header-height: 0px;
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+        min-height: 100vh;
+        padding: 80px 3rem 2rem 3rem;
+    }
+
+    .pricing-cards {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        padding: 1rem;
+        margin: 0 auto;
+        justify-content: center;
+        max-width: 95%;
+    }
+
+    .pricing-card {
+        width: 280px;
+        min-width: 280px;
+        margin: 0;
+        height: 45rem;
+        min-height: 600px; /* Increase minimum height */
+    }
+
+    /* Mobile Get Started Button */
+    .mobile-get-started {
+        display: none !important;
+    }
+}
+
+/* Mobile Portrait Mode Fixes */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .chat-demo-section {
+        flex-direction: column;
+        padding: 60px 1rem 2rem 1rem;
+        min-height: 100vh;
+    }
+
+    .content-stack {
+        width: 100%;
+        margin: 5rem;
+        text-align: center;
+    }
+
+    .iphone-container {
+        width: 100%;
+        height: auto;
+        margin-top: -6rem;
+    }
+
+    .stats-grid {
+        margin-bottom: 20rem !important;
+    }
+
+    .pricing-cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .pricing-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
+
+
+
+/* Ensure proper z-index stacking */
+.header-wrapper { z-index: 2000; }
+.chat-demo-section { z-index: 1; }
+.story-section { z-index: 1; }
+.pricing-section { z-index: 1; }
+
+/* Fix for Samsung Galaxy S8+ and similar devices in landscape mode */
+@media screen and (max-height: 360px) and (min-width: 740px) {
+    html, body {
+        position: static;
+        height: auto;
+        transform: none;
+        overflow-y: auto;
+    }
+    /* Reset container width constraints */
+    .container, 
+    .section-container,
+    .pricing-section .container {
+        width: 100vw !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: visible;
+    }
+
+    /* Main content adjustments */
+    .chat-demo-section,
+    .pricing-section,
+    .features-section,
+    .stats-section {
+        width: 100vw;
+        min-width: 100vw;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    /* Pricing cards container */
+    .pricing-cards {
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1rem;
+        transform: scale(0.7);
+        margin-left: -15%; /* Adjust to center the scaled content */
+    }
+
+    /* Individual pricing card */
+    .pricing-card {
+        min-width: 280px;
+        margin: 0;
+    }
+
+    /* Remove margin-right adjustment */
+    .content-stack {
+        margin-right: 0 !important;
+    }
+
+    /* Fix iPhone container positioning */
+    .iphone-container {
+        width: 45%;
+        margin-right: -10%;
+    }
+
+    /* Ensure proper width calculation for sections */
+    section {
+        width: 100vw;
+        min-width: 100vw;
+        box-sizing: border-box;
+    }
+
+    /* Fix any horizontal scrolling */
+    html, body {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+}
