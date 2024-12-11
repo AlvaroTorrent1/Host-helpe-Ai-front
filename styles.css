@@ -2164,6 +2164,7 @@ main {
         flex-direction: row;
         text-align: left;
         margin-bottom: 0;
+        padding-left: 10px;
     }
 
     .logo-text {
@@ -7063,3 +7064,59 @@ main {
     }
 }
 
+/* Gallery Navigation Controls */
+.nav-button-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-line {
+    width: 64px;
+    height: 1px;
+    background: #ECA408;
+    opacity: 0.8;
+}
+
+.nav-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(236, 164, 8, 0.3);
+    background: rgba(236, 164, 8, 0.1);
+    color: #ECA408;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+    background: rgba(236, 164, 8, 0.2);
+    transform: scale(1.1);
+}
+
+/* Progress Dots */
+.progress-dots {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(236, 164, 8, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dot:hover {
+    background: rgba(236, 164, 8, 0.6);
+}
+
+.dot.active {
+    background: #ECA408;
+    transform: scale(1.2);
+}
