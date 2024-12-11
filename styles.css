@@ -1600,8 +1600,8 @@ html {
   .trial-card .pricing-action button,
   .trial-card .pricing-action a {
     background: transparent;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid #ECA408;
+    color: #ECA408;
   }
   
   /* Pro Card Button */
@@ -3995,7 +3995,7 @@ main {
 
 .trial-footer {
     background: #FFF5E6;
-    color: #FF9933;
+    color: #ECA408;
     font-size: 1.1rem;
     font-weight: 600;
     padding: 15;
@@ -6857,7 +6857,7 @@ main {
   }
   
   input:checked + .slider {
-    background-color: #FF9933;
+    background-color: #ECA408;
   }
   
   input:checked + .slider:before {
@@ -6865,7 +6865,7 @@ main {
   }
   
   .discount-tag {
-    background: linear-gradient(135deg, #FF9933, #ff8533);
+    background: linear-gradient(135deg, #ECA408, #ECA408);
     color: white;
     padding: 5px 8px;
     border-radius: 20px;
@@ -6962,7 +6962,7 @@ main {
   }
   
   .billing-label.active {
-    background: #FF9933;
+    background: #ECA408;
     color: white;
     box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
   }
