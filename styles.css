@@ -4025,15 +4025,15 @@ main {
 /* Ensure buttons are consistent */
 .pricing-card .btn-outline-primary {
     background: transparent;
-    border: 2px solid #FF9933;
-    color: #FF9933;
+    border: 2px solid #ECA408;
+    color: #ECA408;
     transition: all 0.3s ease;
 
  
 }
 
 .pricing-card .btn-outline-primary:hover {
-    background: #FF9933;
+    background: #ECA408;
     color: white;
     transform: translateY(-2px);
 }
@@ -4044,7 +4044,7 @@ main {
 }
 
 .pricing-card.featured {
-    border: 2px solid #FF9933;
+    border: 2px solid #ECA408;
     transform: translateY(-10px);
 }
 
@@ -4147,14 +4147,14 @@ main {
 }
 
 .btn-primary:hover {
-    background: #FF8000;
+    background: #ECA408;
     transform: translateY(-2px);
 }
 
 .btn-outline-primary {
     background: transparent;
     border: 2px solid #FF9933;
-    color: #FF9933;
+    color: #ECA408;
 }
 
 .btn-outline-primary:hover {
@@ -4187,7 +4187,7 @@ main {
     .pricing-section h2 {
         font-family: 'Poppins', Arial, sans-serif;
         font-weight: 700;
-        color: #FF9933;
+        color: #ECA408;
         font-size: clamp(1.8rem, 4vw, 2.5rem);
         margin-bottom: 1rem;
     }
@@ -4338,7 +4338,7 @@ main {
 
 .form-control:focus {
     outline: none;
-    border-color: #FF9933;
+    border-color: #ECA408;
     box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.25);
 }
 
@@ -6975,3 +6975,88 @@ main {
     color: white;
     box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
   }
+  /* Mobile-specific footer styles */
+@media (max-width: 768px) {
+    .footer {
+        padding: 5px 0; /* Minimize top and bottom padding */
+    }
+
+    .footer .logo-text-container {
+        gap: 3px; /* Reduce space between logo and text */
+    }
+
+    .footer .text {
+        font-size: 0.8rem; /* Make text smaller */
+        line-height: 1.2; /* Tighten line spacing */
+    }
+
+    .footer-logo {
+        width: 40px; /* Make logo slightly smaller */
+        height: auto;
+    }
+
+    .footer .social-links {
+        gap: 3px; /* Compress spacing between icons */
+        margin: 8px 0; /* Reduce margin */
+    }
+
+    .footer .social-link {
+        width: 24px; /* Make icons smaller */
+        height: 24px;
+    }
+
+    .contact-info {
+        font-size: 0.7rem; /* Smaller contact info text */
+        line-height: 1.3;
+        margin-top: 3px;
+    }
+
+    .contact-item {
+        gap: 4px; /* Reduce space between icon and text */
+    }
+
+    .contact-icon {
+        width: 12px;
+        height: 12px;
+    }
+
+    .copyright {
+        font-size: 0.7rem; /* Smaller copyright text */
+        margin-top: 5px; /* Reduce spacing above copyright */
+    }
+
+    .footer-content {
+        padding: 0 10px; /* Add some horizontal padding */
+    }
+
+    /* Ensure proper vertical spacing */
+    .footer .logo-text-container {
+        margin-bottom: 5px;
+    }
+
+    /* Make footer more compact overall */
+    .footer .container {
+        gap: 5px;
+    }
+
+    /* Optimize email and phone display */
+    .contact-info a {
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+    .footer-logo {
+        width: 35px; /* Even smaller logo */
+    }
+
+    .footer .social-link {
+        width: 22px; /* Slightly smaller icons */
+        height: 22px;
+    }
+
+    .contact-info {
+        font-size: 0.65rem; /* Slightly smaller text */
+    }
+}
