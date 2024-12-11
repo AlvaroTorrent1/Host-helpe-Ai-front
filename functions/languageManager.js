@@ -78,6 +78,12 @@ const translations = {
         mountainRetreatDesc: "Cozy cabin with stunning mountain views.",
         forestHideaway: "Forest Hideaway",
         forestHideawayDesc: "Secluded forest retreat with luxury amenities.",
+        
+        // Switch
+        monthlypay: "Monthly",
+        annualpay: "Annual",
+        discount: "Save 37%",
+        
         // Pricing
         basic: "Basic",
         pro: "Pro",
@@ -209,11 +215,17 @@ const translations = {
         mountainRetreatDesc: "Cabaña acogedora con impresionantes vistas a la montaña.",
         forestHideaway: "Refugio del Bosque",
         forestHideawayDesc: "Retiro secreto en el bosque con amenidades de lujo.",
+        
+        // Switch
+        monthlypay: "Mensual",
+        annualpay: "Anual",
+        discount: "Ahorra un 37%",       
+       
         // Pricing
         basic: "Básico",
         pro: "Pro",
         enterprise: "Empresa",
-        mostPopular: "Más Populares",
+        mostPopular: "Más Popular",
         Ai: "Respuestas IA",
         nProperty: "N propiedades",
         emailSupport: "Asistencia por correo electrónico",

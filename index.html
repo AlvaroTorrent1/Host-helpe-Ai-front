@@ -118,7 +118,7 @@
 <script src="animations/story.js" defer></script>
 <script src="animations/loading.js" defer></script>
 <script src="animations/mobileheader.js" defer></script>
-<script src="animations/ipdynamic.js" defer></script>
+
 
 
     <link rel="stylesheet" href="language-selector.css">
@@ -622,21 +622,14 @@
                 </div>
 
                 <div class="price-toggle">
-                    <span class="billing-label" id="monthly-label">Monthly</span>
+                    <span class="billing-label" data-translate="monthlypay" id="monthly-label">Monthly</span>
                     <label class="switch">
                       <input type="checkbox" id="billing-toggle">
                       <span class="slider"></span>
                     </label>
-                    <span class="billing-label" id="annual-label">Annual</span>
-                    <span class="discount-tag">Save 37%</span>
+                    <span class="billing-label" data-translate="annualpay" id="annual-label">Annual</span>
+                    <span class="discount-tag" data-translate="discount">Save 37%</span>
                     
-                    <div class="user-counter">
-                      <span>Users:</span>
-                      <button class="counter-button" id="decrease">−</button>
-                      <input type="number" class="counter-input" id="user-count" value="3" min="1" max="1000">
-                      <button class="counter-button" id="increase">+</button>
-                      <span>users</span>
-                    </div>
                   </div>
                   
 
@@ -1109,6 +1102,174 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize first section
     switchToSection(0);
 });
+
+</script>
+
+<script>
+    //Monthly, annual switch
+    document.addEventListener('DOMContentLoaded', function() {
+    const billingToggle = document.getElementById('billing-toggle');
+    const monthlyLabel = document.getElementById('monthly-label');
+    const annualLabel = document.getElementById('annual-label');
+    
+    const prices = {
+        monthly: {
+            basic: 8.9,
+            pro: 19.9,
+            enterprise: null
+        },
+        annual: {
+            basic: 106.80,
+            pro: 238.80,
+            enterprise: null
+        }
+    };
+
+    function formatPrice(price) {
+        if (price === null) return '';
+        return Number(price).toFixed(2);
+    }
+
+    function animateValue(element, start, end, duration) {
+        element.style.transform = 'translateY(20px)';
+        element.style.opacity = '0';
+        
+        setTimeout(() => {
+            const startTimestamp = performance.now();
+            const startFloat = parseFloat(start);
+            const endFloat = parseFloat(end);
+
+            const step = (currentTimestamp) => {
+                const progress = Math.min((currentTimestamp - startTimestamp) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4); // Easing function
+                
+                const current = startFloat + (endFloat - startFloat) * easeProgress;
+                element.textContent = formatPrice(current);
+                element.style.transform = `translateY(${20 * (1 - easeProgress)}px)`;
+                element.style.opacity = easeProgress;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+
+            window.requestAnimationFrame(step);
+        }, 50);
+    }
+
+    function animatePeriod(element, newText) {
+        element.style.transform = 'translateY(20px)';
+        element.style.opacity = '0';
+        
+        setTimeout(() => {
+            element.textContent = newText;
+            element.style.transform = 'translateY(0)';
+            element.style.opacity = '1';
+        }, 150);
+    }
+
+    function updatePrices(isAnnual) {
+        const currentLang = document.documentElement.lang || 'en';
+        const priceElements = document.querySelectorAll('.amount');
+        const periodElements = document.querySelectorAll('.period');
+        const currentPrices = isAnnual ? prices.annual : prices.monthly;
+
+        // Add animation class to pricing cards
+   //     document.querySelectorAll('.pricing-card').forEach(card => {
+   //         card.classList.add('price-change');
+   //         setTimeout(() => card.classList.remove('price-change'), 200);
+   //     });
+
+        // Animate price amounts
+        priceElements.forEach((element, index) => {
+            const planTypes = ['basic', 'pro', 'enterprise'];
+            const oldPrice = element.textContent;
+            const newPrice = currentPrices[planTypes[index]];
+            
+            if (newPrice !== null) {
+                animateValue(element, oldPrice, newPrice, 600);
+            }
+        });
+
+        // Animate period text
+        const periodText = isAnnual 
+            ? (currentLang === 'es' ? '/año' : '/year')
+            : (currentLang === 'es' ? '/mes' : '/month');
+
+        periodElements.forEach(element => {
+            animatePeriod(element, periodText);
+        });
+
+        // Update toggle button states
+        monthlyLabel.classList.toggle('active', !isAnnual);
+        annualLabel.classList.toggle('active', isAnnual);
+    }
+
+    // Add required CSS styles dynamically
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        .price {
+            position: relative;
+        }
+        .amount, .period {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pricing-card {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .price-change {
+            animation: priceChange 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes priceChange {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Initialize prices
+    updatePrices(false);
+
+    // Handle toggle changes
+    if (billingToggle) {
+        billingToggle.addEventListener('change', (e) => {
+            updatePrices(e.target.checked);
+        });
+
+        // Add click handlers for labels
+        monthlyLabel.addEventListener('click', () => {
+            billingToggle.checked = false;
+            updatePrices(false);
+        });
+
+        annualLabel.addEventListener('click', () => {
+            billingToggle.checked = true;
+            updatePrices(true);
+        });
+    }
+
+    // Update prices when language changes
+    const originalSelectLanguage = window.selectLanguage;
+    window.selectLanguage = (lang) => {
+        if (originalSelectLanguage) {
+            originalSelectLanguage(lang);
+        }
+        if (billingToggle) {
+            updatePrices(billingToggle.checked);
+        }
+    };
+});
+
 
 </script>
 
