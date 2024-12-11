@@ -2844,7 +2844,6 @@ main {
     opacity: 0;
     transform: scale(0.8) translateY(20px);
     animation: coolFadeIn 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards, 
-               typewriter 3s steps(20) 2s 1 normal both;
   }
   
   @keyframes coolFadeIn {
@@ -2860,11 +2859,6 @@ main {
           opacity: 1;
           transform: scale(1) translateY(0);
       }
-  }
-  
-  @keyframes typewriter {
-    from { width: 0; }
-    to { width: 100%; }
   }
 
 /* Responsive adjustment */
@@ -3918,8 +3912,23 @@ section p {
     line-height: 1.6;
     color: rgb(102, 102, 102);  
     margin: auto;
+    /* Typewriter effect */
+    clip-path: inset(0 100% 0 0);
+    animation: typing 4s ease-in-out forwards;
 }
 
+section p:nth-child(2) {
+    animation-delay: 2.5s;
+}
+
+@keyframes typing {
+    from { 
+        clip-path: inset(0 100% 0 0);
+    }
+    to { 
+        clip-path: inset(0 0 0 0);
+    }
+}
 /* Fix for Extra Scroll Space */
 html, body {
     overflow-x: hidden;
