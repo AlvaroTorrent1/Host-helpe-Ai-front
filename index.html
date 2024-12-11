@@ -893,7 +893,6 @@ function toggleMobileMenu() {
     <script src="animations/landing-page.js"></script>
     <script src="animations/gallery.js"></script> 
     <script src="animations/phone.js"></script> 
-    <script src="animations/logodisappear.js"></script> 
     <script>
         // Initialize AOS
         AOS.init({
@@ -1037,23 +1036,6 @@ function toggleMobileMenu() {
     </script>
 
 
-
-<!-- Updated JavaScript -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const menuButton = document.querySelector('.mobile-menu-button');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    
-    if (menuButton && mobileMenu) {
-        menuButton.addEventListener('click', function() {
-            mobileMenu.style.display = 'block';
-            setTimeout(() => {
-                mobileMenu.classList.toggle('active');
-            }, 10);
-        });
-    }
-});
-</script>
 
 
 
@@ -1361,6 +1343,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 </script>
+
 
 
 <script type="text/babel">

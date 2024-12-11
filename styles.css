@@ -1001,9 +1001,10 @@ section {
     }
 }
 
-/* Smooth Scroll Behavior */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* You have this */
+    /* But missing: */
+    scroll-padding-top: var(--header-height); /* This accounts for fixed header */
 }
 
 /* AOS Animation Overrides */
@@ -6795,6 +6796,7 @@ main {
         width: 100vw;
         min-width: 100vw;
         box-sizing: border-box;
+        scroll-margin-top: var(--header-height);
     }
 
     /* Fix any horizontal scrolling */
@@ -7060,3 +7062,4 @@ main {
         font-size: 0.65rem; /* Slightly smaller text */
     }
 }
+
