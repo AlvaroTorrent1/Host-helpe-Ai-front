@@ -1,115 +1,93 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const menuButton = document.querySelector('.mobile-menu-button');
     const mobileMenu = document.getElementById('mobileMenu');
     let isMenuOpen = false;
 
-    function toggleMenu() {
+    console.log('DOM fully loaded and parsed');
+    console.log('Menu button:', menuButton);
+    console.log('Mobile menu:', mobileMenu);
+
+    // Toggle menu visibility with animation
+    function toggleMenu(event) {
+        if (event) {
+            event.stopPropagation();
+        }
         isMenuOpen = !isMenuOpen;
-        
+        console.log('Toggling menu. isMenuOpen:', isMenuOpen);
+
         if (isMenuOpen) {
-            mobileMenu.style.display = 'block';
+            mobileMenu.style.visibility = 'visible';
+            mobileMenu.style.opacity = 0;
+            mobileMenu.style.pointerEvents = 'auto'; // Allow clicks when the menu is open
             setTimeout(() => {
                 mobileMenu.classList.add('active');
                 menuButton.classList.add('active');
                 document.body.style.overflow = 'hidden';
-            }, 10);
+                mobileMenu.style.transition = 'opacity 0.3s ease'; // Apply fade-in animation
+                mobileMenu.style.opacity = 1; // Fade in
+                console.log('Menu opened');
+            }, 10); // Allow reflow for animation
         } else {
-            mobileMenu.classList.remove('active');
-            menuButton.classList.remove('active');
-            document.body.style.overflow = '';
+            mobileMenu.style.transition = 'opacity 0.3s ease'; // Apply fade-out animation
+            mobileMenu.style.opacity = 0;
+            mobileMenu.style.pointerEvents = 'none'; // Disable clicks while closing
             setTimeout(() => {
-                mobileMenu.style.display = 'none';
-            }, 300);
+                mobileMenu.classList.remove('active');
+                menuButton.classList.remove('active');
+                document.body.style.overflow = '';
+                mobileMenu.style.visibility = 'hidden'; // Hide after animation
+                console.log('Menu closed');
+            }, 300); // Match animation duration
         }
     }
 
+    // Simplified scroll function
     function scrollToSection(targetId) {
+        console.log('scrollToSection called with targetId:', targetId);
         const targetSection = document.getElementById(targetId);
-        if (!targetSection) return;
-    
-        // Close menu first
-        toggleMenu();
-    
-        // Get header height for offset
-        const header = document.querySelector('.header-wrapper');
-        const headerHeight = header ? header.offsetHeight : 0;
-    
-        // Wait for menu close animation
-        setTimeout(() => {
-            // Calculate the absolute position of the target element relative to the document
-            const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset;
-            
-            // Subtract the header height to account for fixed header
-            const offsetPosition = targetPosition - headerHeight;
-    
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        }, 350);
+        if (!targetSection) {
+            console.error('Target section not found:', targetId);
+            return;
+        }
+
+        // Perform a direct scroll to the target
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        console.log('Scrolling to section:', targetId);
     }
 
+    // Event listeners for the menu button and nav links
     if (menuButton && mobileMenu) {
-        // Ensure menu is hidden initially
-        mobileMenu.style.display = 'none';
-        mobileMenu.classList.remove('active');
-        
-        // Menu button click handler
-        menuButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleMenu();
+        menuButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            console.log('Menu button clicked');
+            toggleMenu(e);
         });
 
-        // Handle navigation links
-        mobileMenu.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
+        // Attach click handlers to mobile nav links
+        const navLinks = mobileMenu.querySelectorAll('.nav-link');
+        console.log('Nav links found:', navLinks);
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
+                console.log('Nav link clicked:', this.getAttribute('href'));
                 const targetId = this.getAttribute('href').substring(1);
-                scrollToSection(targetId);
+                toggleMenu(); // Close menu before scrolling
+                setTimeout(() => scrollToSection(targetId), 300); // Match menu close timing
             });
         });
-
-        // Handle desktop nav links as well
-        document.querySelectorAll('.nav-link').forEach(link => {
-            if (!mobileMenu.contains(link)) {  // Only for non-mobile menu links
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    
-                    const header = document.querySelector('.header-wrapper');
-                    const headerHeight = header ? header.offsetHeight : 0;
-                    
-                    const element = document.getElementById(targetId);
-                    if (element) {
-                        const elementPosition = element.getBoundingClientRect().top;
-                        const offsetPosition = window.scrollY + elementPosition - headerHeight;
-                        
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            }
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (isMenuOpen && !mobileMenu.contains(e.target) && !menuButton.contains(e.target)) {
-                toggleMenu();
-            }
-        });
-
-        // Prevent menu from closing when clicking inside
-        mobileMenu.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768 && isMenuOpen) {
-                toggleMenu();
-            }
-        });
     }
+
+    // Close the menu when clicking outside
+    document.addEventListener('click', function (event) {
+        if (isMenuOpen && !mobileMenu.contains(event.target) && event.target !== menuButton) {
+            console.log('Click detected outside menu, closing menu');
+            toggleMenu(event);
+        }
+    });
+
+    // Prevent menu from closing when clicking inside it
+    mobileMenu.addEventListener('click', function (event) {
+        event.stopPropagation();
+        console.log('Click inside mobile menu, propagation stopped');
+    });
 });
