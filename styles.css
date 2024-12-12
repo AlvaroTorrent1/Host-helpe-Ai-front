@@ -7152,3 +7152,8 @@ main {
     background: #ECA408;
     transform: scale(1.2);
 }
+@media screen and (max-width: 768px) { /* Adjust max-width if needed */
+  .trial-footer {
+    color: #ECA408;
+  }
+}
