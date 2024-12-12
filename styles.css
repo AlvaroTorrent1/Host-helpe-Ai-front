@@ -3914,9 +3914,24 @@ section p {
     line-height: 1.6;
     color: rgb(102, 102, 102);  
     margin: auto;
-    /* Typewriter effect */
-    clip-path: inset(0 100% 0 0);
-    animation: typing 4s ease-in-out forwards;
+    opacity: 0;
+}
+
+[data-translate="text1"].typing,
+[data-translate="text2"].typing {
+    opacity: 1;
+    animation: fadeInAndSlide 1s forwards;
+}
+
+@keyframes fadeInAndSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 section p:nth-child(2) {
@@ -3931,6 +3946,23 @@ section p:nth-child(2) {
         clip-path: inset(0 0 0 0);
     }
 }
+
+[data-translate="text1"],
+[data-translate="text2"] {
+    font-family: Poppins, Arial, sans-serif;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    max-width: min(600px, 90vw);
+    line-height: 1.6;
+    color: rgb(102, 102, 102);  
+    margin: auto;
+    opacity: 0;
+}
+
+/* Leave other text visible */
+section p:not([data-translate="text1"]):not([data-translate="text2"]) {
+    opacity: 1;
+}
+
 /* Fix for Extra Scroll Space */
 html, body {
     overflow-x: hidden;
