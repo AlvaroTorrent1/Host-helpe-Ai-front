@@ -5510,7 +5510,7 @@ body.story-active {
     .cta-button-mobile:active,
     .cta-button-mobile:focus {
         background: #ff9933;
-        transform: translateY(-2px);
+        transform: translateY(160px);
         box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
         color: white !important;
         text-decoration: none;
