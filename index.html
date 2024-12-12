@@ -58,27 +58,27 @@
     <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/Assets.xcassets/AppIcon.appiconset/152.png">
     <link rel="apple-touch-icon" sizes="167x167" href="assets/favicon/Assets.xcassets/AppIcon.appiconset/167.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/Assets.xcassets/AppIcon.appiconset/180.png">
+<!-- Android icons - Optimized for home screen -->
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Host Helper">
 
-    <!-- Android icons -->
-    <link rel="manifest" href="assets/favicon/site.webmanifest">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Host Helper">
-    <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/android-chrome-96x96.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/IconAndroid512x512.png">
-    <!-- Force smaller icon for home screen -->
-    <meta name="msapplication-TileImage" content="assets/favicon/android-chrome-96x96.png">
-    <meta name="msapplication-TileColor" content="#FF9933">
-    <meta name="theme-color" content="#FF9933">
+<!-- Primary Android home screen icon -->
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
+<link rel="shortcut icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
 
-    <!-- Force home screen icon size -->
-    <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png" data-purpose="homescreen">
-    <link rel="shortcut icon" type="image/png" sizes="48x48" href="assets/favicon/android-chrome-48x48.png">
+<!-- Fallback icons with explicit purpose -->
+<link rel="icon" type="image/png" sizes="72x72" href="assets/favicon/android-chrome-72x72.png" purpose="any">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/android-chrome-96x96.png" purpose="any">
 
-    <!-- Hide larger icons from home screen selection -->
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png" media="(prefers-color-scheme: light)">
-    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png" media="(prefers-color-scheme: light)">
+<!-- Larger icons for high-res displays but not home screen -->
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png" purpose="maskable">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png" purpose="maskable">
 
+<!-- Force Android to use smaller icon -->
+<meta name="msapplication-TileImage" content="assets/favicon/android-chrome-96x96.png">
+<meta name="msapplication-TileColor" content="#FF9933">
+<meta name="theme-color" content="#FF9933">
     <!-- PWA/Add to homescreen for Chrome on Android -->
     <meta name="application-name" content="Host Helper AI">
     <meta name="theme-color" content="#FFFFFF">
