@@ -5504,9 +5504,18 @@ body.story-active {
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
+        margin-top: 14rem;
     }
 
-
+    .cta-button-mobile:hover,
+    .cta-button-mobile:active,
+    .cta-button-mobile:focus {
+        background: #ff9933;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
+        color: white !important;
+        text-decoration: none;
+    }
 }
 
 /* Ensure mobile button is completely hidden on desktop */
