@@ -11,8 +11,8 @@ const translations = {
         hostHelperAi1: "Host Helper Ai",
         text1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings.",
         //Whatsapp
-         showcase: "Whatsapp Showcase",
-         text2: "Experience an interactive preview of our AI assistant...",
+         showcase: "Secure the Best Reviews for Your Business",
+         text2: "Our chatbot will send a persuasive request to improve your ratings across platforms",
         // Story Section
         storyTitle1: "Effortless Regulatory Compliance",
         storyDesc1: "Your intelligent companion in the world of property hosting, designed to revolutionize how you manage your Airbnb listings with cutting-edge AI technology.",
@@ -145,8 +145,8 @@ const translations = {
         hostHelperAi1: "Host Helper Ai",
         text1: "Su compañero inteligente en el mundo del alojamiento de propiedades, diseñado para revolucionar la forma de gestionar sus anuncios de Airbnb.",
         //Whatsapp
-        showcase: "Escaparate de Whatsapp",
-        text2: "Experimente un avance interactivo de nuestro asistente AI...",
+        showcase: "Asegura las mejores reseñas para tu negocio",
+        text2: "Nuestro chatbot enviará una solicitud persuasiva para mejorar tus valoraciones en plataformas",
         // Story Section
         storyTitle1: "Cumplimiento normativo sin esfuerzo",
         storyDesc1: "Simplifica la recopilación de datos de huéspedes para cumplir con la normativa de alquiler vacacional en España. Host Helper Ai automatiza el proceso, ahorrando tiempo y garantizando precisión.",
