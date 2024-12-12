@@ -3950,8 +3950,6 @@ section p:nth-child(2) {
 [data-translate="text1"],
 [data-translate="text2"] {
     font-family: Poppins, Arial, sans-serif;
-    font-size: clamp(0.7rem, 1.5vw, 1rem);
-    max-width: min(600px, 90vw);
     line-height: 1.6;
     color: rgb(102, 102, 102);  
     margin: auto;
