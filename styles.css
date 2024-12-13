@@ -2833,13 +2833,6 @@ main {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    /* Matched shadow effect */
-    text-shadow: 
-        -1px -1px 0 rgba(179, 104, 0, 0.8),    /* Darker orange outline */
-        1px -1px 0 rgba(179, 104, 0, 0.8),
-        -1px 1px 0 rgba(179, 104, 0, 0.8),
-        1px 1px 0 rgba(179, 104, 0, 0.8),
-        0 0 8px rgba(236, 164, 8, 0.3);        /* Subtle orange glow */
 }
 
 .typewriter-text {
