@@ -240,8 +240,26 @@
     <!-- WhatsApp Showcase Content -->
     <div class="showcase-content">
         <h2 data-translate="showcase">WhatsApp Showcase</h2>
+        
         <p data-translate="text2">Experience an interactive preview of our AI assistant...</p>
         <a href="#contactForm" class="cta-button" data-translate="getStarted">Get Started</a>
+        <div class="stars-container">
+            <svg class="star shine" viewBox="0 0 24 24" style="--star-index: 0">
+              <path class="star-path" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <svg class="star shine" viewBox="0 0 24 24" style="--star-index: 1">
+              <path class="star-path" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <svg class="star shine" viewBox="0 0 24 24" style="--star-index: 2">
+              <path class="star-path" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <svg class="star shine" viewBox="0 0 24 24" style="--star-index: 3">
+              <path class="star-path" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <svg class="star shine" viewBox="0 0 24 24" style="--star-index: 4">
+              <path class="star-path" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+        </div>
     </div>
 </div>  
 
@@ -1344,7 +1362,21 @@ document.addEventListener('keydown', (e) => {
 });
 </script>
 
-
+<script>
+    document.querySelectorAll('.star').forEach((star, index) => {
+      star.style.opacity = '0';
+      star.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        star.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        star.style.opacity = '1';
+        star.style.transform = 'translateY(0)';
+        star.classList.add('pop');
+        setTimeout(() => {
+          star.classList.remove('pop');
+        }, 600);
+      }, index * 150);
+    });
+    </script>
 
 <script type="text/babel">
     ReactDOM.render(
