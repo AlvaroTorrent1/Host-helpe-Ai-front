@@ -75,13 +75,15 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-chrome-192x192.png" purpose="maskable">
 <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon/android-chrome-512x512.png" purpose="maskable">
 
-<!-- Force Android to use smaller icon -->
-<meta name="msapplication-TileImage" content="assets/favicon/android-chrome-96x96.png">
-<meta name="msapplication-TileColor" content="#FF9933">
+<!-- Android-specific meta tags -->
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FF9933">
-    <!-- PWA/Add to homescreen for Chrome on Android -->
-    <meta name="application-name" content="Host Helper AI">
-    <meta name="theme-color" content="#FFFFFF">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Android icon specifications -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" sizes="192x192" href="assets/icons/logo.png">
+<link rel="icon" sizes="128x128" href="assets/icons/logo.png">
 
     <!-- Microsoft Tile icon -->
     <meta name="msapplication-TileImage" content="assets/favicon/Assets.xcassets/AppIcon.appiconset/144.png">

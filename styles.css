@@ -7325,3 +7325,29 @@ main {
     }
 }
 
+/* Add this CSS to your styles.css file */
+
+/* Android-specific PWA display */
+@media all and (display-mode: standalone) {
+    .logo img {
+      max-width: 48px !important; /* Force smaller size for Android home screen */
+      height: auto !important;
+    }
+  }
+  
+  /* Android Chrome standalone mode */
+  @media screen and (display-mode: standalone), 
+         screen and (-webkit-standalone: yes) {
+    .logo img {
+      max-width: 48px !important;
+      height: auto !important;
+    }
+  }
+  
+  /* Ensure proper sizing in fullscreen mode */
+  @media all and (display-mode: fullscreen) {
+    .logo img {
+      max-width: 48px !important;
+      height: auto !important;
+    }
+  }
