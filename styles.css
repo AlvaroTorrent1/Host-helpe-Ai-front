@@ -7325,12 +7325,10 @@ main {
     }
 }
 
-/* Add this CSS to your styles.css file */
-
-/* Android-specific PWA display */
+/* Android PWA logo size adjustment */
 @media all and (display-mode: standalone) {
     .logo img {
-      max-width: 48px !important; /* Force smaller size for Android home screen */
+      max-width: 36px !important; /* Reduced from 48px to 36px */
       height: auto !important;
     }
   }
@@ -7339,7 +7337,7 @@ main {
   @media screen and (display-mode: standalone), 
          screen and (-webkit-standalone: yes) {
     .logo img {
-      max-width: 48px !important;
+      max-width: 36px !important;
       height: auto !important;
     }
   }
@@ -7347,7 +7345,15 @@ main {
   /* Ensure proper sizing in fullscreen mode */
   @media all and (display-mode: fullscreen) {
     .logo img {
-      max-width: 48px !important;
+      max-width: 36px !important;
+      height: auto !important;
+    }
+  }
+  
+  /* Additional size reduction when scrolling */
+  @media all and (display-mode: standalone) {
+    .header.scrolled .logo img {
+      max-width: 32px !important;
       height: auto !important;
     }
   }
