@@ -6631,7 +6631,7 @@ main {
 @media screen and (orientation: landscape) and (max-height: 700px) {
     .chat-demo-section {
         min-height: 120vh;
-        padding: 60px 2rem 2rem 2rem;
+        padding: 80px 0rem 2rem 4rem;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -6665,7 +6665,7 @@ main {
 
 
     .content-stack {
-        margin: 0;
+        margin: 50px;
         padding: 0;
         width: 45%;
         text-align: center;
@@ -6677,6 +6677,7 @@ main {
         display: flex;
         justify-content: center;
         align-items: center;
+        padding-right: 4rem;
     }
 
     .iphone-frame {
