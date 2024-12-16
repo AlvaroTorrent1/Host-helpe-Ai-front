@@ -5474,50 +5474,6 @@ body.story-active {
     pointer-events: none !important;
 }
 
-/* Mobile Get Started Button Styles */
-@media (max-width: 768px) {
-
-
-    /* Show and style mobile button */
-    .mobile-get-started {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        justify-content: center;
-        width: 100%;
-        padding: 20px;
-        margin-top: -25rem;
-        position: relative;
-        z-index: 10;
-    }
-
-    .cta-button-mobile {
-        display: inline-block;
-        background: #ECA408;
-        color: white !important;
-        padding: 1rem 2.5rem;
-        border-radius: 50px;
-        font-size: 1.2rem;
-        font-weight: 600;
-        text-decoration: none;
-        text-align: center;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        margin-top: 14rem;
-    }
-
-    .cta-button-mobile:hover,
-    .cta-button-mobile:active,
-    .cta-button-mobile:focus {
-        background: #ff9933;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
-        color: white !important;
-        text-decoration: none;
-    }
-}
 
 /* Ensure mobile button is completely hidden on desktop */
 @media (min-width: 769px) {
