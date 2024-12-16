@@ -3005,7 +3005,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 0rem;
     overflow: visible; /* Ensure nothing is clipped */
     position: relative;
     z-index: 3;
@@ -6591,7 +6591,7 @@ main {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+
         gap: 2rem;
     }
 
@@ -6634,6 +6634,7 @@ main {
         justify-content: center;
         align-items: center;
         padding-right: 4rem;
+        top: 35px;
     }
 
     .iphone-frame {
