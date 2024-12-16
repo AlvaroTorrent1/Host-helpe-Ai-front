@@ -7164,11 +7164,11 @@ main {
     display: flex;
     justify-content: center;
     gap: 8px;
-    width: 100%;
+    width: 50%;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    margin-top: 6rem;
+    margin-top: 2rem;
     z-index: 1;
 }
 
@@ -7228,15 +7228,6 @@ main {
   animation: shine 10s ease-in-out infinite;
 }
 
-@keyframes popAndRotate {
-  0% { transform: scale(1) translateZ(0); }
-  30% { transform: scale(1.2) translateZ(15px); }
-  45% { transform: scale(1.1) translateZ(10px); }
-  60% { transform: scale(0.95) translateZ(5px); }
-  75% { transform: scale(1.05) translateZ(8px); }
-  100% { transform: scale(1) translateZ(0); }
-}
-
 @keyframes shine {
   0% { 
     filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.2));
@@ -7260,10 +7251,7 @@ main {
   }
 }
 
-.star {
-  animation: float 8s ease-in-out infinite;
-  animation-delay: calc(var(--star-index) * 0.6s);
-}
+
 
 @keyframes float {
   0% { transform: translateZ(0) translateY(0); }
@@ -7286,35 +7274,21 @@ main {
     transform: translateX(-50%);
     margin-top: 6rem;
     z-index: 1;
-    opacity: 0;
+
     animation: showStars 9s ease forwards;
     animation-delay: 5s;
 }
 
 .star {
-    opacity: 0;
+
     transform: translateX(-20px);
 }
 
-.star:nth-child(1) { animation: popInStar 9s ease forwards 10s; }
-.star:nth-child(2) { animation: popInStar 9s ease forwards 10.2s; }
-.star:nth-child(3) { animation: popInStar 9s ease forwards 10.4s; }
-.star:nth-child(4) { animation: popInStar 9s ease forwards 10.6s; }
-.star:nth-child(5) { animation: popInStar 9s ease forwards 10.8s; }
-
-@keyframes showStars {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
 
 @keyframes popInStar {
     0% {
         opacity: 0;
-        transform: translateX(-20px) scale(0.5);
+        transform: translateX(20px) scale(0.5);
     }
     70% {
         transform: translateX(0) scale(1.2);
@@ -7357,3 +7331,151 @@ main {
       height: auto !important;
     }
   }
+
+  .top-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    text-align: justify;
+    border-radius: 0.5rem;
+    position: relative;
+    z-index: 10;
+    margin-top: 4rem;
+}
+
+.top-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    color: #ECA408;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.top-content p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: #666;
+    margin: auto;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    /* margin: 1rem 0; */
+    bottom: 15px;
+    z-index: 10;
+    position: relative;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 8px rgba(236, 164, 8, 0.3);
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(236, 164, 8, 0.4);
+}
+
+.social-link svg {
+    color: #ECA408;
+    width: 20px;
+    height: 20px;
+}
+
+.showcase-content {
+    text-align: center;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 10;
+}
+
+
+.showcase-content p {
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    color: #666;
+    margin: 0 auto 1.5rem;
+    max-width: 600px;
+    text-align: justify
+}
+
+.stars-container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+
+    background-color: white;
+    border-radius: 100px;
+    width: fit-content;
+    margin-bottom: 0.5rem;
+    padding: 10px;
+    bottom: 100px;
+}
+
+.star {
+    width: 24px;
+    height: 24px;
+}
+
+.star-path {
+    fill: #FFD700;
+    stroke: #FFD700;
+    stroke-width: 1;
+    transition: all 0.3s ease;
+}
+.cta-button {
+    display: inline-block;
+    background: #ECA408;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.cta-button:hover {
+    background: #ff9933;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(236, 164, 8, 0.2);
+}
+
+
+@media (max-width: 768px) {
+    .top-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .social-link {
+        width: 36px;
+        height: 36px;
+    }
+
+    .social-link svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .star {
+        width: 20px;
+        height: 20px;
+    }
+
+    .cta-button {
+        padding: 0.875rem 2rem;
+        font-size: 1.1rem;
+    }
+}
