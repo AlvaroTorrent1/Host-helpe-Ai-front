@@ -801,7 +801,6 @@ section {
 /* Stats Section */
 .stats-section {
     min-height: 100vh;
-    background: #FFE8CC;
     padding: 6rem 2rem;
     display: flex;
     align-items: center;
@@ -7467,4 +7466,147 @@ main {
     margin-right: auto;
     width: 100%;
     padding: 0 0;
+}
+
+
+/* Mobile Spacing Adjustments */
+@media (max-width: 768px) {
+    /* Reduce section padding */
+    section {
+        padding: 2rem 1rem !important;
+        min-height: auto !important;
+    }
+
+    /* Adjust chat demo section spacing */
+    .chat-demo-section {
+        padding: 1rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    /* Fix content stack spacing */
+    .content-stack {
+        margin: 2rem auto !important;
+    }
+
+    /* Reduce stats section spacing */
+    .stats-section {
+        padding: 0rem 1rem !important;
+        bottom: 5rem;
+    }
+    
+    .stats-grid {
+        margin-bottom: 2rem !important;
+        gap: 1rem !important;
+    }
+
+    /* Features section adjustments */
+    .features-section {
+        padding: 2rem 1rem !important;
+    }
+
+    .social-links{
+        bottom: 20px;
+    }
+    .features-grid {
+        gap: 1rem !important;
+        margin-top: -10rem;
+    }
+
+    /* Gallery section spacing */
+    .gallery-section {
+        padding: 2rem 1rem !important;
+    }
+
+    .gallery-container {
+        padding: 1rem !important;
+    }
+
+    /* Pricing section adjustments */
+    .pricing-section {
+        padding: 2rem 1rem !important;
+    }
+
+    .pricing-cards {
+        gap: 1rem !important;
+        margin: 1rem auto !important;
+    }
+
+    /* Contact section spacing */
+    .contact-section {
+        padding: 2rem 0 !important;
+    }
+
+    /* General spacing utilities */
+    .mb-5 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .section-container {
+        padding: 1rem !important;
+    }
+
+    /* Top content adjustments */
+    .top-content {
+        margin: 1rem auto !important;
+    }
+
+    /* Showcase content spacing */
+    .showcase-content {
+        margin-top: 1rem !important;
+    }
+
+    /* Footer adjustments */
+    .footer {
+        padding: 1rem 0 !important;
+    }
+
+    /* Section headers */
+    .section-header {
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Add smooth transitions */
+    * {
+        transition: padding 0.3s ease, margin 0.3s ease;
+    }
+
+    /* Fix iPhone frame positioning */
+    .iphone-container {
+        margin-top: -3rem !important;
+    }
+
+    /* Adjust stars container position */
+    .stars-container {
+        margin-top: 1rem !important;
+    }
+
+    /* Fix story section spacing */
+    .story-section {
+        margin-top: -13rem !important;
+        margin-bottom: -15rem !important;
+    }
+
+    /* Header gap fix */
+    .header-wrapper + main {
+        padding-top: 60px !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+    section {
+        padding: 1.5rem 0.75rem !important;
+    }
+
+    .content-stack {
+        margin: 1rem auto !important;
+    }
+
+    .pricing-cards {
+        padding: 0.5rem !important;
+    }
+
+    .contact-container {
+        margin: 0.5rem !important;
+    }
 }
