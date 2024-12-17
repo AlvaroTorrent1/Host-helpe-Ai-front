@@ -7468,14 +7468,6 @@ main {
     padding: 0 0;
 }
 
-@media (min-width: 428px) and (max-width: 926px) {
-
-    .story-section {
-        margin-top: 10rem !important;
-
-    }
-
-}
 
 
 /* Mobile Spacing Adjustments */
@@ -7608,4 +7600,13 @@ main {
     .contact-container {
         margin: 0.5rem !important;
     }
+}
+
+@media (min-width: 428px) and (max-width: 926px) {
+
+    .story-section {
+        margin-top: 15rem !important;
+
+    }
+
 }
