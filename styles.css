@@ -7471,7 +7471,7 @@ main {
 @media (min-width: 428px) and (max-width: 926px) {
 
     .story-section {
-        margin-bottom: 5rem
+        margin-top: 10rem !important;
 
     }
 
