@@ -7468,6 +7468,15 @@ main {
     padding: 0 0;
 }
 
+@media (min-width: 428px) and (max-width: 926px) {
+
+    .story-section {
+        margin-bottom: 5rem
+
+    }
+
+}
+
 
 /* Mobile Spacing Adjustments */
 @media (max-width: 768px) {
