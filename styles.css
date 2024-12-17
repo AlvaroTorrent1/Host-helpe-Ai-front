@@ -7521,15 +7521,7 @@ main {
         padding: 1rem !important;
     }
 
-    /* Pricing section adjustments */
-    .pricing-section {
-        padding: 2rem 1rem !important;
-    }
 
-    .pricing-cards {
-        gap: 1rem !important;
-        margin: 1rem auto !important;
-    }
 
     /* Contact section spacing */
     .contact-section {
@@ -7602,9 +7594,7 @@ main {
         margin: 1rem auto !important;
     }
 
-    .pricing-cards {
-        padding: 0.5rem !important;
-    }
+
 
     .contact-container {
         margin: 0.5rem !important;
