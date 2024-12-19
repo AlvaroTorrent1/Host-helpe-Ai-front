@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -166,8 +166,14 @@
 
             <!-- Language Switcher -->
             <div class="language-switcher">
-                <button class="lang-btn" onclick="selectLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="selectLanguage('es')">ES</button>
+                <button class="lang-btn" data-lang="es" aria-label="Español">
+                    <img src="assets/icons/es-flag.svg" alt="Español" width="20" height="20">
+                    <span>ES</span>
+                </button>
+                <button class="lang-btn" data-lang="en" aria-label="English">
+                    <img src="assets/icons/en-flag.svg" alt="English" width="20" height="20">
+                    <span>EN</span>
+                </button>
             </div>
 
 <!-- Menu button -->
@@ -189,8 +195,14 @@
             </nav>
             <!-- Language Switcher for Mobile -->
             <div class="language-switcher mobile">
-                <button class="lang-btn" onclick="selectLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="selectLanguage('es')">ES</button>
+                <button class="lang-btn" data-lang="es" aria-label="Español">
+                    <img src="assets/icons/es-flag.svg" alt="Español" width="20" height="20">
+                    <span>ES</span>
+                </button>
+                <button class="lang-btn" data-lang="en" aria-label="English">
+                    <img src="assets/icons/en-flag.svg" alt="English" width="20" height="20">
+                    <span>EN</span>
+                </button>
             </div>
         </div>
     </header>

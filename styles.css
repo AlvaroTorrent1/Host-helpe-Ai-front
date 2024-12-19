@@ -687,7 +687,7 @@ section {
 .hero-content h1 {
     font-size: clamp(2rem, 5vw, 4.5rem);
     font-weight: 700;
-    color: #007bff; /* Cambiando a un azul brillante */
+    color: #ECA408; /* Volviendo al naranja original */
     margin-bottom: 1.5rem;
     line-height: 1.2;
 }
@@ -871,7 +871,7 @@ section {
 /* Button Styles */
 .cta-button {
     display: inline-block;
-    background: #ECA408;
+    background: #ECA408; /* Volviendo al naranja original */
     color: white;
     padding: 1rem 2.5rem;
     border-radius: 50px;
@@ -2820,10 +2820,10 @@ main {
 
 
 .top-content h1 {
-    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-size: clamp(2.5rem, 5vw, 4rem);
     font-family: 'Teko-Bold', sans-serif;
     font-weight: 700;
-    color: #007bff; /* Cambiando a un azul brillante */
+    color: #ECA408; /* Volviendo al naranja original */
     margin-bottom: 1.5rem;
     line-height: 1.2;
     text-align: left;
@@ -7303,7 +7303,7 @@ main {
 .top-content h1 {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 700;
-    color: #007bff; /* Cambiando a un azul brillante */
+    color: #ECA408; /* Volviendo al naranja original */
     margin-bottom: 1.5rem;
     line-height: 1.2;
 }
