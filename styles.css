@@ -9,7 +9,13 @@
     --scrollbar-thumb-gradient-start: #FF9933;
     --scrollbar-thumb-gradient-end: #FF8000;
     --scrollbar-thumb-hover: #FF7F00;
-  }
+    --primary-color: #ECA408;
+    --secondary-color: #FF9933;
+    --text-color: #333;
+    --background-color: #FFE8CC;
+    --transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --box-shadow-standard: 0 10px 20px rgba(236, 164, 8, 0.1);
+}
   
   /* Webkit browsers (Chrome, Safari, newer versions of Edge) */
   html::-webkit-scrollbar {
@@ -2769,11 +2775,65 @@ main {
 
 /* Update the chat-demo-section layout */
 .chat-demo-section {
+    min-height: 100vh;
+    padding-top: 80px; /* Añadir padding superior para compensar la barra fija */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4rem 2rem;
-    gap: 4rem;
+}
+
+.iphone-container {
+    margin-top: 80px; /* Ajustar margen superior */
+}
+
+/* Mejorar responsividad para diferentes dispositivos */
+@media (max-width: 1200px) {
+    .iphone-frame {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-width: 992px) {
+    .chat-demo-section {
+        flex-direction: column;
+        padding: 100px 20px;
+    }
+
+    .content-stack {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .iphone-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* Ajustes para tablets */
+@media (max-width: 768px) {
+    .iphone-frame {
+        transform: scale(0.8);
+    }
+}
+
+/* Ajustes para móviles */
+@media (max-width: 576px) {
+    .iphone-frame {
+        transform: scale(0.7);
+    }
+
+    .chat-demo-section {
+        padding: 80px 10px;
+    }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 360px) {
+    .iphone-frame {
+        transform: scale(0.6);
+    }
 }
 
 .content-stack {
@@ -2922,7 +2982,7 @@ main {
   
   .chat-demo-title .cta-button {
     display: inline-block;
-    background: #007bff;
+    background: #ECA408; /* Cambiando de #007bff a #ECA408 */
     color: white;
     padding: 1rem 2.5rem;
     border-radius: 50px;
@@ -2934,9 +2994,9 @@ main {
   }
   
   .chat-demo-title .cta-button:hover {
-    background: #eca408;
+    background: #ff9933; /* Color hover naranja más claro */
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 153, 51, 0.2);
+    box-shadow: 0 10px 20px rgba(236, 164, 8, 0.2);
   }
 
   
@@ -4038,10 +4098,10 @@ main {
 
 .trial-footer {
     background: #FFF5E6;
-    color: #ECA408;
-    font-size: 1.1rem;
+    color: #FF9933;
+    font-size: 1rem;
     font-weight: 600;
-    padding: 15;
+    padding: 1px;
     border-radius: 0 0 20px 20px;
     text-align: center;
     position: absolute;
@@ -4059,15 +4119,15 @@ main {
 /* Ensure buttons are consistent */
 .pricing-card .btn-outline-primary {
     background: transparent;
-    border: 2px solid #ECA408;
-    color: #ECA408;
+    border: 2px solid #FF9933;
+    color: #FF9933;
     transition: all 0.3s ease;
 
  
 }
 
 .pricing-card .btn-outline-primary:hover {
-    background: #ECA408;
+    background: #FF9933;
     color: white;
     transform: translateY(-2px);
 }
@@ -4078,7 +4138,7 @@ main {
 }
 
 .pricing-card.featured {
-    border: 2px solid #ECA408;
+    border: 2px solid #FF9933;
     transform: translateY(-10px);
 }
 
@@ -4086,7 +4146,7 @@ main {
     position: absolute;
     top: -12px;
     right: 20px;
-    background: #ECA408;
+    background: #FF9933;
     color: #fff;
     padding: 0.25rem 1rem;
     border-radius: 20px;
@@ -4098,7 +4158,7 @@ main {
     display: inline-block;
     padding: 0.5rem 1rem;
     background: #FFF5E6;
-    color: #ECA408;
+    color: #FF9933;
     border-radius: 20px;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -4146,7 +4206,7 @@ main {
 }
 
 .pricing-features li i {
-    color: #ECA408;
+    color: #FF9933;
     font-size: 1rem;
 }
 
@@ -5687,7 +5747,6 @@ body.story-active {
     margin-left: auto;
     border-radius: 15px 0 15px 15px;
     max-width: 65%;
-    transform-origin: right center;
 }
 
 @keyframes messagePopIn {
@@ -5985,7 +6044,6 @@ body.story-active {
     margin-left: auto;
     border-radius: 15px 0 15px 15px;
     max-width: 65%;
-    transform-origin: right center;
 }
 
 @keyframes messagePopIn {
@@ -7609,4 +7667,75 @@ main {
 
     }
 
+}
+
+/* Sistema de grid flexible */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: var(--container-padding);
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Soporte para modo oscuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #fff;
+        --background-color: #1a1a1a;
+    }
+}
+
+/* Mejoras de rendimiento */
+.iphone-frame {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Mejorar interactividad */
+.interactive-element {
+    transition: transform 0.3s ease;
+}
+
+.interactive-element:hover {
+    transform: translateY(-2px);
+}
+
+/* Feedback visual para interacciones */
+.button:active {
+    transform: scale(0.98);
+}
+
+/* Mejoras de accesibilidad */
+:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Soporte para navegación con teclado */
+:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+/* Optimizar renderizado */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevenir CLS (Cumulative Layout Shift) */
+img, video {
+    aspect-ratio: attr(width) / attr(height);
+}
+
+.content-container {
+    contain: content;
 }
