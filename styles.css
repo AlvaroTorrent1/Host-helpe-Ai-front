@@ -7739,3 +7739,68 @@ img, video {
 .content-container {
     contain: content;
 }
+
+/* Ajustes base para el iPhone */
+.iphone-frame {
+    position: relative;
+    width: 280px; /* Ancho base del iPhone */
+    height: 570px; /* Altura base del iPhone */
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    transition: all 0.3s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Ajustes para modo portrait */
+@media screen and (orientation: portrait) {
+    .chat-demo-section {
+        min-height: 100vh;
+        padding-top: var(--header-height);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .iphone-container {
+        margin-top: 2rem;
+    }
+}
+
+/* Ajustes para modo landscape */
+@media screen and (orientation: landscape) {
+    .chat-demo-section {
+        min-height: 100vh;
+        padding: 2rem 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .iphone-container {
+        height: auto;
+        margin-top: 0;
+    }
+
+    .iphone-frame {
+        height: 80vh !important;
+        width: auto !important;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.65);
+    }
+}
+
+/* Corregir color del botón CTA */
+.chat-demo-title .cta-button,
+.cta-button {
+    background: #ECA408 !important; /* Color naranja original */
+    color: white;
+}
+
+.cta-button:hover {
+    background: #ff9933 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(236, 164, 8, 0.2);
+}
