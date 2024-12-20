@@ -5694,9 +5694,6 @@ body.story-active {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
 }
 
 .send-button::before {
@@ -7743,8 +7740,8 @@ img, video {
 /* Ajustes base para el iPhone */
 .iphone-frame {
     position: relative;
-    width: 280px; /* Ancho base del iPhone */
-    height: 570px; /* Altura base del iPhone */
+    width: 320px; /* Ancho base aumentado */
+    height: 650px; /* Altura base aumentada */
     margin: 0 auto;
     background: #1a1a1a;
     border-radius: 40px;
@@ -7812,4 +7809,122 @@ img, video {
         height: 490px;
         transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
     }
+}
+
+/* Ajustes base para el iPhone - Proporciones reales de iPhone */
+.iphone-frame {
+    position: relative;
+    width: 300px; /* Ancho base */
+    height: 648px; /* Altura base (proporción 2.16:1) */
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    transition: all 0.3s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* PC - Pantallas grandes */
+@media screen and (min-width: 1200px) {
+    .chat-demo-section {
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 100vh;
+    }
+
+    .iphone-frame {
+        width: 300px;
+        height: 648px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    }
+}
+
+/* Tablet */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .chat-demo-section {
+        padding: 2rem;
+        min-height: 100vh;
+    }
+
+    .iphone-frame {
+        width: 270px;
+        height: 583px; /* Mantiene proporción 2.16:1 */
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    }
+}
+
+/* Móvil - Portrait */
+@media screen and (max-width: 767px) and (orientation: portrait) {
+    .chat-demo-section {
+        padding-top: var(--header-height);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .iphone-frame {
+        width: 240px;
+        height: 518px; /* Mantiene proporción 2.16:1 */
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    }
+
+    .iphone-container {
+        margin-top: 2rem;
+    }
+}
+
+/* Móvil - Landscape */
+@media screen and (max-width: 926px) and (orientation: landscape) {
+    .chat-demo-section {
+        padding: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        min-height: 100vh;
+    }
+
+    .content-stack {
+        flex: 1;
+        padding-right: 2rem;
+    }
+
+    .iphone-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .iphone-frame {
+        width: 240px;
+        height: 518px; /* Mantiene proporción 2.16:1 */
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.8);
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media screen and (max-width: 360px) {
+    .iphone-frame {
+        width: 220px;
+        height: 475px; /* Mantiene proporción 2.16:1 */
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    }
+}
+
+/* Botón CTA temporalmente en azul para testing */
+.chat-demo-title .cta-button,
+.cta-button {
+    background: #007bff !important; /* Azul para testing */
+    color: white;
+}
+
+.cta-button:hover {
+    background: #0056b3 !important; /* Azul más oscuro para hover */
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
 }
