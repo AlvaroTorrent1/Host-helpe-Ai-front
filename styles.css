@@ -2287,6 +2287,43 @@ main {
         box-shadow: 0 10px 20px rgba(255, 140, 26, 0.2);
     }
 
+
+    /* Make input and textarea larger and more user-friendly on mobile */
+    .contact-container input,
+    .contact-container textarea {
+        padding: 20px; /* Increase padding for better usability */
+        font-size: 1.1rem; /* Slightly larger text inside input */
+        border-radius: 12px; /* Keep rounded corners */
+        border: 2px solid #eee; /* Match the border color from the desktop version */
+        background-color: white; /* Ensure background is consistent */
+        color: #333; /* Text color should remain consistent */
+    }
+
+    /* Make textarea bigger and easier to type in on mobile */
+    .contact-container textarea {
+        min-height: 250px; /* Make the textarea larger on mobile */
+        resize: vertical;
+    }
+
+    /* Make the button larger and more accessible */
+    .contact-container button {
+        font-size: 1.1rem; /* Slightly increase font size for button */
+        padding: 18px; /* Increase padding for easier interaction */
+        background: #eca408; /* Match the button color from the desktop version */
+        color: white; /* Keep text color white for consistency */
+        border: none; /* No border for the button */
+        border-radius: 12px; /* Keep rounded corners for the button */
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* Button hover effect */
+    .contact-container button:hover {
+        background: #ff9933; /* Hover effect matches the desktop version */
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 140, 26, 0.2);
+    }
+
     /* Optional: Align form inputs better */
     .contact-container {
         padding: 30px; /* Slightly reduce padding on mobile to give more space */
@@ -7994,4 +8031,54 @@ img, video {
         width: auto;
         max-height: 460px;
     }
+}
+
+/* Ajustes base para el iPhone con proporciones reales */
+.iphone-frame {
+    position: relative;
+    width: 230px; /* Ancho base más fino */
+    height: 497px; /* Altura proporción ~2.16:1 */
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    transition: all 0.3s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Ajustes responsive manteniendo proporciones reales */
+@media screen and (min-width: 1200px) {
+    .iphone-frame {
+        width: 230px;
+        height: 497px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .iphone-frame {
+        width: 210px;
+        height: 454px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .iphone-frame {
+        width: 190px;
+        height: 411px;
+    }
+}
+
+/* Botón CTA en verde para testing */
+.chat-demo-title .cta-button,
+.cta-button {
+    background: #28a745 !important; /* Verde para testing */
+    color: white;
+}
+
+.cta-button:hover {
+    background: #218838 !important; /* Verde más oscuro para hover */
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(40, 167, 69, 0.2);
 }
