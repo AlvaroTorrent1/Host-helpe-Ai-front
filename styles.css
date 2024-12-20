@@ -7804,3 +7804,12 @@ img, video {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(236, 164, 8, 0.2);
 }
+
+/* Ajustes específicos para pantallas muy pequeñas */
+@media screen and (max-width: 360px) {
+    .iphone-frame {
+        width: 240px;
+        height: 490px;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) scale(0.7);
+    }
+}
