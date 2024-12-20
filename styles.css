@@ -7928,3 +7928,98 @@ img, video {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
 }
+
+/* Ajustes base para el iPhone con proporciones más finas */
+.iphone-frame {
+    position: relative;
+    width: 280px; /* Ancho reducido */
+    height: 580px; /* Altura ajustada para proporción más fina */
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+    transition: all 0.3s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Ajuste del espaciado entre texto y teléfono */
+.chat-demo-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5%; /* Reducido del gap por defecto */
+}
+
+/* Efecto typewriter para el texto */
+.typewriter-text {
+    overflow: hidden;
+    border-right: 3px solid #ECA408;
+    white-space: nowrap;
+    margin: 0 auto;
+    animation: 
+        typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #ECA408 }
+}
+
+/* Volver el botón CTA al color original */
+.chat-demo-title .cta-button,
+.cta-button {
+    background: #ECA408 !important; /* Color naranja original */
+    color: white;
+}
+
+.cta-button:hover {
+    background: #ff9933 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(236, 164, 8, 0.2);
+}
+
+/* Ajustes responsive manteniendo proporciones finas */
+@media screen and (min-width: 1200px) {
+    .iphone-frame {
+        width: 280px;
+        height: 580px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .iphone-frame {
+        width: 260px;
+        height: 540px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .iphone-frame {
+        width: 240px;
+        height: 500px;
+    }
+    
+    .chat-demo-section {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .iphone-frame {
+        height: 85vh;
+        width: auto;
+        max-height: 500px;
+    }
+}
