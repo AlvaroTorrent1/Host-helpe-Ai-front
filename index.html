@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Helper AI</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <a href="#">
+                        <img src="./images/LogoCLEAR.png" alt="Host Helper AI Logo">
+                    </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features" data-i18n="nav.features">Características</a></li>
+                    <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
+                    <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
+                    <li><a href="#contact" data-i18n="nav.contact">Contacto</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <div class="language-selector">
+                        <button class="btn btn-language">
+                            <i class="fas fa-globe"></i>
+                            <span>ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown">
+                            <a href="#" class="language-option active" data-lang="es">
+                                <span class="flag">🇪🇸</span>
+                                <span>Español</span>
+                            </a>
+                            <a href="#" class="language-option" data-lang="en">
+                                <span class="flag">🇬🇧</span>
+                                <span>English</span>
+                            </a>
+                            <a href="#" class="language-option" data-lang="fr">
+                                <span class="flag">🇫🇷</span>
+                                <span>Français</span>
+                            </a>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
+                    <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Después del header -->
+    <button class="mobile-menu-button">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="mobile-menu">
+        <nav>
+            <a href="#features" data-i18n="nav.features">Características</a>
+            <a href="#pricing" data-i18n="nav.pricing">Precios</a>
+            <a href="#about" data-i18n="nav.about">Nosotros</a>
+            <a href="#contact" data-i18n="nav.contact">Contacto</a>
+        </nav>
+        <div class="mobile-buttons">
+            <div class="language-selector">
+                <button class="btn btn-language">
+                    <i class="fas fa-globe"></i>
+                    <span>ES</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown">
+                    <a href="#" class="language-option active" data-lang="es">
+                        <span class="flag">🇪🇸</span>
+                        <span>Español</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="en">
+                        <span class="flag">🇬🇧</span>
+                        <span>English</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="fr">
+                        <span class="flag">���🇷</span>
+                        <span>Français</span>
+                    </a>
+                </div>
+            </div>
+            <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
+            <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
+        </div>
+    </div>
+
+    <!-- Sección Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <h1>Host Helper <span class="highlight">Ai</span></h1>
+                    <div class="hero-message">
+                        <div class="typewriter-text" id="typewriter" data-i18n="hero.message"></div>
+                    </div>
+                    <button class="btn btn-primary btn-large" data-i18n="buttons.startNow">Comenzar Ahora</button>
+                </div>
+                <div class="hero-video">
+                    <video id="christmasVideo">
+                        <source src="./videos/Christmas_Español.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento video.
+                    </video>
+                    <div class="video-controls">
+                        <button class="video-control-btn play-pause">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="video-control-btn restart">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <div class="video-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <div class="volume-control">
+                            <button class="video-control-btn volume">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <div class="volume-slider">
+                                <input type="range" min="0" max="100" value="100" class="volume-range">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Características -->
+    <section id="features" class="section features-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="features.title">Características</h2>
+            <div class="features-carousel">
+                <div class="features-carousel-track">
+                    <!-- Tarjeta 1 - Emergencias 24/7 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Asistencia 24/7</h3>
+                        <p>Nuestro chatbot está disponible las 24 horas para resolver emergencias y atender a tus huéspedes cuando más lo necesitan.</p>
+                    </div>
+
+                    <!-- Tarjeta 2 - Automatización -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Gestión de Datos</h3>
+                        <p>Automatizamos la recogida y subida de datos de viajeros a la plataforma del Sistema de Entrada Segura del Ministerio del Interior.</p>
+                    </div>
+
+                    <!-- Tarjeta 3 - WhatsApp -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h3>WhatsApp</h3>
+                        <p>Atención inmediata a través de WhatsApp, el canal preferido por los huéspedes para comunicarse.</p>
+                    </div>
+
+                    <!-- Tarjeta 4 - Telegram -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3>Telegram</h3>
+                        <p>Comunicación eficiente mediante Telegram, ofreciendo una alternativa segura y rápida para tus huéspedes.</p>
+                    </div>
+
+                    <!-- Tarjeta 5 - Llamadas -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h3>Llamadas</h3>
+                        <p>Sistema de atención telefónica automatizada para gestionar consultas y emergencias de forma inmediata.</p>
+                    </div>
+
+                    <!-- Tarjeta 6 - Incidencias -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3>Resolución de Incidencias</h3>
+                        <p>Gestión eficiente de incidencias con seguimiento en tiempo real y resolución rápida de problemas.</p>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-control prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-control next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Precios -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="pricing.title">Planes y Precios</h2>
+            
+            <!-- Toggle de precios -->
+            <div class="pricing-toggle">
+                <span class="toggle-label" data-i18n="pricing.monthly">Mensual</span>
+                <label class="switch">
+                    <input type="checkbox" id="billing-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label" data-i18n="pricing.annual">Anual</span>
+                <span class="discount-badge" data-i18n="pricing.saveText">Ahorra 20%</span>
+            </div>
+
+            <!-- Grid de precios -->
+            <div class="pricing-grid">
+                <!-- Plan Básico -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.basic.title">Básico</h3>
+                        <p class="card-description" data-i18n="pricing.basic.description">Perfecto para empezar</p>
+                    </div>
+                    <div class="card-price">
+                        <div class="price monthly">
+                            <span class="amount">19</span>
+                            <span class="currency">€</span>
+                            <span class="period">/mes</span>
+                        </div>
+                        <div class="price annual hidden">
+                            <span class="amount">15</span>
+                            <span class="currency">€</span>
+                            <span class="period">/mes</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Hasta 5 propiedades</li>
+                        <li><i class="fas fa-check"></i> Respuestas automáticas</li>
+                        <li><i class="fas fa-check"></i> Plantillas básicas</li>
+                        <li><i class="fas fa-check"></i> Soporte por email</li>
+                    </ul>
+                    <button class="btn btn-primary">Empezar ahora</button>
+                </div>
+
+                <!-- Plan Pro -->
+                <div class="pricing-card featured">
+                    <div class="card-badge" data-i18n="pricing.pro.badge">Más popular</div>
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.pro.title">Pro</h3>
+                        <p class="card-description" data-i18n="pricing.pro.description">Para anfitriones profesionales</p>
+                    </div>
+                    <div class="card-price">
+                        <div class="price monthly">
+                            <span class="amount">39</span>
+                            <span class="currency">€</span>
+                            <span class="period">/mes</span>
+                        </div>
+                        <div class="price annual hidden">
+                            <span class="amount">31</span>
+                            <span class="currency">€</span>
+                            <span class="period">/mes</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Hasta 20 propiedades</li>
+                        <li><i class="fas fa-check"></i> Respuestas personalizadas</li>
+                        <li><i class="fas fa-check"></i> Plantillas avanzadas</li>
+                        <li><i class="fas fa-check"></i> Soporte prioritario 24/7</li>
+                        <li><i class="fas fa-check"></i> Análisis de rendimiento</li>
+                        <li><i class="fas fa-check"></i> Integración con calendarios</li>
+                    </ul>
+                    <button class="btn btn-primary">Comenzar prueba gratuita</button>
+                </div>
+
+                <!-- Plan Custom -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.custom.title">Custom</h3>
+                        <p class="card-description" data-i18n="pricing.custom.description">Soluciones empresariales</p>
+                    </div>
+                    <div class="card-price">
+                        <div class="custom-price">
+                            <span class="contact-text" data-i18n="pricing.custom.contact">Contacta con nosotros</span>
+                        </div>
+                    </div>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Propiedades ilimitadas</li>
+                        <li><i class="fas fa-check"></i> Soluciones personalizadas</li>
+                        <li><i class="fas fa-check"></i> API dedicada</li>
+                        <li><i class="fas fa-check"></i> Gestor de cuenta personal</li>
+                        <li><i class="fas fa-check"></i> SLA garantizado</li>
+                        <li><i class="fas fa-check"></i> Implementación personalizada</li>
+                    </ul>
+                    <button class="btn btn-secondary">Contactar ventas</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Después de la sección de precios y antes de la sección de contacto -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <h2 class="section-title">Nosotros</h2>
+            <!-- Nuevo carrusel de clientes -->
+            <div class="clients-carousel">
+                <div class="clients-carousel-track">
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic2.png" alt="Apartamentos Torre del Mar">
+                        </div>
+                        <div class="client-content">
+                            <h3>Apartamentos Torre del Mar</h3>
+                            <a href="#" class="client-link" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-globe"></i> Ver apartamento
+                            </a>
+                            <p>Moderno apartamento turístico ubicado en primera línea de playa en Torre del Mar. Completamente equipado y con espectaculares vistas al mar Mediterráneo.</p>
+                        </div>
+                    </div>
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic7.png" alt="Solset Nerja">
+                        </div>
+                        <div class="client-content">
+                            <h3>Solset Nerja</h3>
+                            <a href="https://solsetnerja.com/" class="client-link" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-globe"></i> solsetnerja.com
+                            </a>
+                            <p>Complejo de 15 exclusivos apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria.</p>
+                        </div>
+                    </div>
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic9.png" alt="Doña Lola Alojamientos">
+                        </div>
+                        <div class="client-content">
+                            <h3>Doña Lola Alojamientos Boutique</h3>
+                            <a href="https://lolaalojamientos.com/" class="client-link" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-globe"></i> lolaalojamientos.com
+                            </a>
+                            <p>Alojamiento boutique con encanto en el centro histórico. Decoración cuidada al detalle, combinando el estilo andaluz tradicional con comodidades modernas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-control prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-control next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Fin del carrusel -->
+            <div class="about-content">
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Innovación Constante</h3>
+                        <p>Desarrollamos soluciones tecnológicas avanzadas para simplificar la gestión de alojamientos turísticos.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Equipo Experto</h3>
+                        <p>Contamos con profesionales especializados en turismo y tecnología para ofrecer el mejor servicio.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Compromiso</h3>
+                        <p>Nos dedicamos a mejorar constantemente para garantizar la satisfacción de nuestros clientes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contact" class="section contact-section">
+        <div class="container">
+            <h2 class="section-title">Contacto</h2>
+            <div class="contact-content">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name" data-i18n="contact.name">Nombre</label>
+                        <input type="text" id="name" name="name" data-i18n-placeholder="contact.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" data-i18n="contact.email">Email</label>
+                        <input type="email" id="email" name="email" data-i18n-placeholder="contact.email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" data-i18n="contact.phone">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" data-i18n-placeholder="contact.phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="message" data-i18n="contact.message">Mensaje</label>
+                        <textarea id="message" name="message" rows="5" required data-i18n-placeholder="contact.message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large" data-i18n="contact.send">Enviar mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script type="module" src="js/language.js"></script>
+    <script type="module" src="js/main.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <div class="footer-logo">
+                        <img src="./images/LogoCLEAR.png" alt="Host Helper AI Logo">
+                    </div>
+                    <p class="company-slogan" data-i18n="footer.slogan">"Simplificando la gestión de tu alojamiento"</p>
+                    <div class="contact-info">
+                        <a href="tel:+34687472327" class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            +34 687 472 327
+                        </a>
+                        <a href="mailto:support@hosthelperai.com" class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            support@hosthelperai.com
+                        </a>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/company/host-helper-ai/" 
+                       class="social-link" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Síguenos en LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://www.instagram.com/host_helper_ai/" 
+                       class="social-link" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Síguenos en Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@HostHelperAi" 
+                       class="social-link" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Síguenos en YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Host Helper AI. <span data-i18n="footer.rights">Todos los derechos reservados</span>.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
