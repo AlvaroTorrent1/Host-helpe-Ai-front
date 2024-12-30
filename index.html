@@ -19,40 +19,24 @@
                     <a href="#">
                         <img src="./images/logo.png" alt="Host Helper AI Logo">
                     </a>
-            </div>
+          </div>
                 <ul class="nav-links">
-                    <li><a href="#features">Características</a></li>
-                    <li><a href="#pricing">Precios</a></li>
-                    <li><a href="#about">Nosotros</a></li>
-                    <li><a href="#contact">Contacto</a></li>
+                    <li><a href="#features" data-i18n="nav.features">Características</a></li>
+                    <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
+                    <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
+                    <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
                 </ul>
                 <div class="nav-buttons">
                     <div class="language-selector">
-                        <button class="btn btn-language">
-                            <i class="fas fa-globe"></i>
-                    <span>ES</span>
-                            <i class="fas fa-chevron-down"></i>
-                </button>
-                        <div class="language-dropdown">
-                            <a href="#" class="language-option active" data-lang="es">
-                                <span class="flag">🇪🇸</span>
-                                <span>Español</span>
-                            </a>
-                            <a href="#" class="language-option" data-lang="en">
-                                <span class="flag">🇬🇧</span>
-                                <span>English</span>
-                            </a>
-                            <a href="#" class="language-option" data-lang="fr">
-                                <span class="flag">🇫🇷</span>
-                                <span>Français</span>
-                    </a>
-                </div>
-            </div>
+                        <button class="lang-btn active" data-lang="es">ES</button>
+                        <button class="lang-btn" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="fr">FR</button>
+        </div>
                     <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
                     <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
-    </div>  
+      </div>
             </nav>
-</div>
+        </div>
     </header>
 
     <!-- Sección Hero -->
@@ -60,17 +44,17 @@
         <div class="hero-background">
             <video autoplay muted loop playsinline id="backgroundVideo">
                 <source src="./videos/backg.mp4" type="video/mp4">
-            </video>
-                    </div>
+                </video>
+            </div>
         <div class="container">
             <div class="hero-content">
                 <div class="hero-left">
                     <div class="hero-title">
-                        <h1>Host Helper <span class="highlight">Ai</span></h1>
-                    </div>
+                        <h1 data-i18n="hero.title">Host Helper <span class="highlight">Ai</span></h1>
+        </div>
                     <div class="hero-message">
                         <div class="typewriter-container">
-                            <div class="typewriter-text" id="typewriter">
+                            <div class="typewriter-text" id="typewriter" data-i18n="hero.message">
                                 🎄 Esta Navidad, regálate tiempo!
 
                                 Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico. 
@@ -80,15 +64,27 @@
                                 Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.
 
                                 🎯 Empieza el 2025 con nosotros!
-    </div>
-            </div>
-        </div>
-            </div>
+    </div>  
+</div>
+                    </div>
+                    </div>
                 <div class="hero-video">
-                    <video id="christmasVideo" autoplay muted playsinline>
+                    <video id="christmasVideo" autoplay playsinline>
                         <source src="./videos/Christmas_Español.mp4" type="video/mp4">
                     </video>
+                    <div class="hero-video-controls">
+                        <button class="hero-video-btn play-pause" aria-label="Play/Pause" title="Pausar">
+                            <i class="fas fa-pause"></i>
+                    </button>
+                        <div class="volume-control">
+                            <button class="hero-video-btn volume" aria-label="Mute/Unmute" title="Activar sonido">
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" aria-label="Volume">
+                </div>
             </div>
+        </div>
+</div>
         </div>
     </div>
 </section>
@@ -96,7 +92,7 @@
     <!-- Sección Características -->
     <section id="features" class="section features-section">
         <div class="container">
-            <h2 class="section-title">Características</h2>
+            <h2 class="section-title" data-i18n="features.title">Características</h2>
             <div class="features-carousel">
                 <button class="carousel-arrow prev">
                     <i class="fas fa-chevron-left"></i>
@@ -104,8 +100,8 @@
                 <div class="features-track">
                     <div class="feature-card">
                 <i class="fas fa-robot"></i>
-                        <h3>Asistencia 24/7</h3>
-                        <p>Nuestro chatbot está disponible las 24 horas para resolver emergencias y atender a tus huéspedes cuando más lo necesitan.</p>
+                        <h3 data-i18n="features.card1.title">Asistencia 24/7</h3>
+                        <p data-i18n="features.card1.description">Nuestro chatbot está disponible las 24 horas para resolver emergencias y atender a tus huéspedes cuando más lo necesitan.</p>
             </div>
                     <div class="feature-card">
                         <i class="fas fa-database"></i>
@@ -120,12 +116,12 @@
                     <div class="feature-card">
                         <i class="fab fa-telegram"></i>
                         <h3>Telegram</h3>
-                        <p>Comunicación eficiente mediante Telegram, ofreciendo una alternativa segura y rápida para tus huéspedes.</p>
+                        <p>Comunicación eficiente mediante Telegram, ofreciendo una alternativa segura y rápida. Gestión automatizada de mensajes y notificaciones instantáneas.</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-phone-alt"></i>
                         <h3>Llamadas</h3>
-                        <p>Sistema de atención telefónica automatizada para gestionar consultas y emergencias de forma inmediata.</p>
+                        <p>Sistema de atención telefónica automatizada para gestionar consultas y emergencias. Respuesta inmediata por voz y transferencia a operador humano si es necesario.</p>
                     </div>
                     </div>
                 <button class="carousel-arrow next">
@@ -139,16 +135,14 @@
     <section id="pricing" class="section pricing-section">
         <div class="container">
             <div class="pricing-header">
-                <h2 class="section-title">Planes de suscripción</h2>
-                <p class="pricing-subtitle">Elige el plan que mejor se adapte a tus necesidades</p>
+                <h2 class="section-title" data-i18n="pricing.title">Planes de suscripción</h2>
+                <p class="pricing-subtitle" data-i18n="pricing.subtitle">Elige el plan que mejor se adapte a tus necesidades</p>
                 <div class="billing-toggle">
-                    <span class="toggle-label">Mensual</span>
-                    <label class="switch">
-                        <input type="checkbox" id="billing-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <span class="toggle-label">Anual</span>
-                    <div class="save-badge">Ahorra hasta un 20%</div>
+                    <button class="billing-btn monthly active" data-i18n="pricing.monthly">Mensual</button>
+                    <button class="billing-btn annual" data-i18n="pricing.annual">
+                        Anual
+                        <span class="save-badge">Ahorra 20%</span>
+                    </button>
     </div>
         </div>
 
@@ -158,22 +152,17 @@
                     <div class="card-header">
                         <h3>Básico</h3>
                         <div class="price-container">
-                            <div class="price monthly">
-                                <span class="amount">19</span>
-                                <div class="price-details">
-                                    <span class="currency">€</span>
-                                    <span class="period">/mes</span>
+                            <div class="price monthly active">
+                                <span class="amount">9.99</span>
+                                <span class="period">€/mes</span>
             </div>
-        </div>
                             <div class="price annual">
-                                <span class="amount">15</span>
-                                <div class="price-details">
-                                    <span class="currency">€</span>
-                                    <span class="period">/mes</span>
+                                <span class="amount">7.99</span>
+                                <span class="period">€/mes</span>
+                                <span class="billed">Facturado anualmente</span>
+        </div>
         </div>
     </div>
-        </div>
-        </div>
                     <div class="card-content">
                         <ul class="features-list">
                             <li>
@@ -195,7 +184,7 @@
                         </ul>
                         <button class="btn-subscribe">Empezar ahora</button>
         </div>
-    </div>
+        </div>
 
                 <!-- Plan Pro -->
                 <div class="pricing-card popular">
@@ -203,20 +192,15 @@
                     <div class="card-header">
                         <h3>Pro</h3>
                         <div class="price-container">
-                            <div class="price monthly">
-                                <span class="amount">39</span>
-                                <div class="price-details">
-                                    <span class="currency">€</span>
-                                    <span class="period">/mes</span>
-            </div>
+                            <div class="price monthly active">
+                                <span class="amount">29.99</span>
+                                <span class="period">€/mes</span>
         </div>
                             <div class="price annual">
-                                <span class="amount">31</span>
-                                <div class="price-details">
-                                    <span class="currency">€</span>
-                                    <span class="period">/mes</span>
-            </div>
-        </div>
+                                <span class="amount">23.99</span>
+                                <span class="period">€/mes</span>
+                                <span class="billed">Facturado anualmente</span>
+    </div>
             </div>
         </div>
                     <div class="card-content">
@@ -280,8 +264,8 @@
                         <button class="btn-subscribe">Contactar ventas</button>
             </div>
         </div>
-    </div>
-</div>
+            </div>
+        </div>
 </section>
 
     <!-- Sección Nosotros -->
@@ -308,7 +292,8 @@
                         </div>
                         <div class="client-content">
                             <h3>Solset Nerja</h3>
-                            <p>Complejo de apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria.</p>
+                            <a href="https://solsetnerja.com/" target="_blank" rel="noopener noreferrer" class="client-website">Visitar web</a>
+                            <p>Complejo de apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria. Ubicado estratégicamente cerca de la playa de La Torrecilla, con una variedad de bares y restaurantes a solo unos pasos.</p>
                             </div>
                         </div>
                     <div class="client-card">
@@ -317,7 +302,8 @@
                         </div>
                         <div class="client-content">
                             <h3>Doña Lola Alojamientos</h3>
-                            <p>Alojamiento boutique con encanto en el centro histórico. Decoración cuidada al detalle, combinando el estilo andaluz tradicional con comodidades modernas.</p>
+                            <a href="https://lolaalojamientos.com/" target="_blank" rel="noopener noreferrer" class="client-website">Visitar web</a>
+                            <p>Alojamiento boutique con encanto en el centro histórico de Lucena. Un concepto diferente que combina hostal y apartamentos turísticos, donde el diseño, la calidad y la localización son los puntos fuertes. Decoración cuidada al detalle, combinando el estilo andaluz tradicional con comodidades modernas.</p>
                 </div>
             </div>
         </div>
@@ -325,7 +311,7 @@
                     <i class="fas fa-chevron-right"></i>
                 </button>
     </div>
-        </div>
+                </div>
     </section>
 
     <!-- Sección Contacto -->
@@ -335,12 +321,12 @@
                 <source src="./videos/backg.mp4" type="video/mp4">
             </video>
             <div class="contact-overlay"></div>
-        </div>
+                  </div>
         <div class="container">
             <div class="contact-content">
                 <div class="contact-info">
-                    <h2>CONTÁCTANOS</h2>
-                    <p class="contact-description">¿Tienes alguna pregunta o sugerencia? Estamos aquí para ayudarte. Rellena el formulario a continuación y nos pondremos en contacto contigo lo antes posible.</p>
+                    <h2 data-i18n="contact.title">AGENDAR UNA DEMO</h2>
+                    <p class="contact-description" data-i18n="contact.description">¿Tienes alguna pregunta o sugerencia? Estamos aquí para ayudarte. Rellena el formulario a continuación y nos pondremos en contacto contigo lo antes posible.</p>
                     <div class="contact-methods">
                         <a href="mailto:info@hosthelperai.com" class="contact-method">
                             <i class="fas fa-envelope"></i>
@@ -351,15 +337,15 @@
                             WhatsApp
                         </a>
                 </div>
-                  </div>
+            </div>
                 <div class="contact-form-container">
-                    <h3>Déjanos tus consulta y nos pondremos en contacto contigo.</h3>
+                    <h3>Solicita una demostración personalizada y descubre todo lo que podemos hacer por tu negocio.</h3>
                     <form class="contact-form" id="contactForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="name">Nombre</label>
-                                <input type="text" id="name" name="name" placeholder="Nombre" required>
-                </div>
+                                <label for="name" data-i18n="form.name">Nombre</label>
+                                <input type="text" id="name" name="name" data-i18n-placeholder="form.namePlaceholder" placeholder="Nombre" required>
+            </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido</label>
                                 <input type="text" id="lastname" name="lastname" placeholder="Apellido" required>
@@ -387,36 +373,49 @@
     </section>
 
     <!-- Scripts -->
-    <script type="module" src="js/language.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="./js/translations.js"></script>
+    <script type="module" src="./js/language.js"></script>
+    <script type="module" src="./js/main.js"></script>
 
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
         <div class="footer-content">
+            <div class="footer-brand">
                 <div class="footer-logo">
                     <img src="./images/logo.png" alt="Host Helper AI Logo">
-                    </div>
-                <div class="footer-links">
-                    <ul>
-                        <li><a href="#features">Características</a></li>
-                        <li><a href="#pricing">Precios</a></li>
-                        <li><a href="#about">Nosotros</a></li>
-                        <li><a href="#contact">Contacto</a></li>
-                    </ul>
                 </div>
-                <div class="footer-social">
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <p class="company-slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
             </div>
+            <div class="footer-contact">
+                <h4>Contacto</h4>
+                <a href="mailto:support@hosthelperai.com" class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    support@hosthelperai.com
+                </a>
+                <a href="tel:+34687472327" class="contact-item">
+                    <i class="fas fa-phone"></i>
+                            +34 687 472 327
+                </a>
+                    </div>
+            <div class="footer-social">
+                <h4>Síguenos</h4>
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com/company/host-helper-ai/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.instagram.com/host_helper_ai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@HostHelperAi" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                </a>
             </div>
         </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Host Helper AI. Todos los derechos reservados.</p>
-            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
+        </div>
     </div>
 </footer>
 </body>
