@@ -8,7 +8,7 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Header con navegación -->
@@ -50,8 +50,11 @@
             <div class="hero-content">
                 <div class="hero-left">
                     <div class="hero-title">
-                        <h1 data-i18n="hero.title">Host Helper <span class="highlight">Ai</span></h1>
+                        <div class="hero-title-container">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo" class="hero-logo">
+                            <h1 data-i18n="hero.title">Host Helper <span class="highlight">Ai</span></h1>
         </div>
+    </div>
                     <div class="hero-message">
                         <div class="typewriter-container">
                             <div class="typewriter-text" id="typewriter" data-i18n="hero.message">
@@ -195,12 +198,12 @@
                             <div class="price monthly active">
                                 <span class="amount" data-i18n="pricing.pro.monthly.amount">29.99</span>
                                 <span class="period" data-i18n="pricing.pro.monthly.period">€/mes</span>
-            </div>
+        </div>
                             <div class="price annual">
                                 <span class="amount" data-i18n="pricing.pro.annual.amount">23.99</span>
                                 <span class="period" data-i18n="pricing.pro.annual.period">€/mes</span>
                                 <span class="billed" data-i18n="pricing.pro.annual.billed">Facturado anualmente</span>
-        </div>
+    </div>
             </div>
         </div>
                     <div class="card-content">
@@ -239,7 +242,7 @@
                                 <span class="amount" data-i18n="pricing.enterprise.price">Personalizado</span>
             </div>
         </div>
-    </div>
+            </div>
                     <div class="card-content">
                         <ul class="features-list">
                             <li>
@@ -264,10 +267,10 @@
                             </li>
                         </ul>
                         <button class="btn-subscribe" data-i18n="pricing.enterprise.contact">Contactar ventas</button>
-            </div>
         </div>
             </div>
         </div>
+            </div>
 </section>
 
     <!-- Sección Nosotros -->
@@ -384,10 +387,15 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-brand">
-                <div class="footer-logo">
-                    <img src="./images/logo.png" alt="Host Helper AI Logo">
+                <div class="footer-brand-content">
+                    <div class="footer-title-container">
+                        <div class="footer-logo">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                    </div>
+                        <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
                 </div>
-                <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+                    <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+            </div>
             </div>
             <div class="footer-contact">
                 <h4 data-i18n="footer.contact.title">Contacto</h4>
@@ -411,9 +419,9 @@
                     </a>
                     <a href="https://www.youtube.com/@HostHelperAi" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                         <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
+                </a>
             </div>
+        </div>
         </div>
         <div class="footer-bottom">
             <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>

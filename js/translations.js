@@ -123,15 +123,15 @@ export const translations = {
             clients: {
                 torremar: {
                     title: "Apartamentos Torre del Mar",
-                    description: "Moderno apartamento turístico ubicado en primera línea de playa en Torre del Mar. Completamente equipado y con espectaculares vistas al mar Mediterráneo."
+                    description: "Apartamento moderno en primera línea de playa con vistas al Mediterráneo."
                 },
                 solset: {
                     title: "Solset Nerja",
-                    description: "Complejo de apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria. Ubicado estratégicamente cerca de la playa de La Torrecilla, con una variedad de bares y restaurantes a solo unos pasos."
+                    description: "Apartamentos con vistas al mar, terrazas privadas y piscina en Nerja."
                 },
                 lola: {
                     title: "Doña Lola Alojamientos",
-                    description: "Alojamiento boutique con encanto en el centro histórico de Lucena."
+                    description: "Alojamiento boutique en el centro histórico de Lucena."
                 }
             }
         },
@@ -270,15 +270,15 @@ export const translations = {
             clients: {
                 torremar: {
                     title: "Torre del Mar Apartments",
-                    description: "Modern tourist apartment located on the beachfront in Torre del Mar. Fully equipped and with spectacular views of the Mediterranean Sea."
+                    description: "Modern beachfront apartment with Mediterranean views."
                 },
                 solset: {
                     title: "Solset Nerja",
-                    description: "Apartment complex with sea views in the heart of Nerja. Contemporary design with private terraces and communal pool. Strategically located near La Torrecilla beach, with a variety of bars and restaurants just steps away."
+                    description: "Sea view apartments with private terraces and pool in Nerja."
                 },
                 lola: {
                     title: "Doña Lola Accommodations",
-                    description: "Charming boutique accommodation in the historic center of Lucena."
+                    description: "Boutique accommodation in historic Lucena."
                 }
             }
         },
@@ -417,15 +417,15 @@ export const translations = {
             clients: {
                 torremar: {
                     title: "Appartements Torre del Mar",
-                    description: "Appartement touristique moderne situé en front de mer à Torre del Mar. Entièrement équipé et avec des vues spectaculaires sur la Méditerranée."
+                    description: "Appartement moderne en bord de mer avec vue sur la Méditerranée."
                 },
                 solset: {
                     title: "Solset Nerja",
-                    description: "Complexe d'appartements avec vue sur la mer au cœur de Nerja. Design contemporain avec terrasses privées et piscine commune. Stratégiquement situé près de la plage de La Torrecilla, avec une variété de bars et restaurants à quelques pas."
+                    description: "Appartements vue mer avec terrasses privées et piscine à Nerja."
                 },
                 lola: {
                     title: "Hébergements Doña Lola",
-                    description: "Hébergement boutique de charme dans le centre historique de Lucena."
+                    description: "Hébergement boutique au centre historique de Lucena."
                 }
             }
         },
