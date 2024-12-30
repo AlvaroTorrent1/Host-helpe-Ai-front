@@ -41,6 +41,20 @@ function changeLanguage(lang) {
     document.documentElement.lang = lang;
 }
 
+function updateContent(lang) {
+    // Actualizar elementos con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        element.innerHTML = getTranslation(key, lang);
+    });
+
+    // Actualizar placeholders
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        element.placeholder = getTranslation(key, lang);
+    });
+}
+
 // Inicializar el idioma
 document.addEventListener('DOMContentLoaded', () => {
     // Obtener el idioma preferido o usar español por defecto

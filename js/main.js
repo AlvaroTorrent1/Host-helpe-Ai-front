@@ -12,33 +12,56 @@ function initTypewriter() {
     const text = document.getElementById('typewriter');
     if (!text) return;
     
-    const content = text.textContent;
+    // Convertir los saltos de línea del texto original en <br>
+    const content = text.textContent.trim().replace(/\n\n/g, '<br><br>');
     text.textContent = '';
-    text.classList.add('typing');
     
-    let i = 0;
-    function type() {
-        if (i < content.length) {
-            // Si encontramos un emoji (🎄, 🤖, 🎯), lo añadimos de una vez
-            if (content[i].match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/)) {
-                text.textContent += content[i] + content[i + 1];
-                i += 2;
-            } else {
-                text.textContent += content[i];
-                i++;
-            }
-            
-            // Ajustar la velocidad según el carácter
-            let delay = 30;
-            if (content[i] === '\n') delay = 500; // Pausa más larga en saltos de línea
-            if (content[i] === '.') delay = 300; // Pausa en puntos
-            
-            setTimeout(type, delay);
-        }
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
     
-    // Comenzar a escribir después de un pequeño delay inicial
-    setTimeout(type, 500);
+    async function type() {
+        let htmlContent = '';
+        const lines = content.split('<br><br>');
+        
+        for (let line of lines) {
+            for (let i = 0; i < line.length; i++) {
+                try {
+                    // Si encontramos un emoji
+                    if (line[i].match(/[\uD800-\uDBFF][\uDC00-\uDFFF]/)) {
+                        htmlContent += line[i] + line[i + 1];
+                        i++;
+                    } 
+                    // Para puntos, hacer una pausa más larga
+                    else if (line[i] === '.') {
+                        htmlContent += line[i];
+                        text.innerHTML = htmlContent;
+                        await sleep(300);
+                    }
+                    // Caracteres normales
+                    else {
+                        htmlContent += line[i];
+                        text.innerHTML = htmlContent;
+                        await sleep(30);
+                    }
+                } catch (error) {
+                    console.error('Error en el efecto typewriter:', error);
+                    text.innerHTML = content;
+                    return;
+                }
+            }
+            // Añadir salto de línea después de cada línea
+            htmlContent += '<br><br>';
+            text.innerHTML = htmlContent;
+            await sleep(500);
+        }
+    }
+
+    // Iniciar el efecto con manejo de errores
+    type().catch(error => {
+        console.error('Error al iniciar el typewriter:', error);
+        text.innerHTML = content.replace(/\n\n/g, '<br><br>');
+    });
 }
 
 function initLanguageSelector() {
@@ -67,41 +90,81 @@ function initClientsCarousel() {
     const prevButton = carousel.querySelector('.carousel-arrow.prev');
     const nextButton = carousel.querySelector('.carousel-arrow.next');
     
-    let currentIndex = 0;
+    // Clonar las primeras y últimas tarjetas para el efecto infinito
+    const firstCardClone = cards[0].cloneNode(true);
+    const secondCardClone = cards[1].cloneNode(true);
+    const lastCardClone = cards[cards.length - 1].cloneNode(true);
+    const secondLastCardClone = cards[cards.length - 2].cloneNode(true);
+    
+    // Añadir clones al inicio y final
+    track.appendChild(firstCardClone);
+    track.appendChild(secondCardClone);
+    track.insertBefore(lastCardClone, cards[0]);
+    track.insertBefore(secondLastCardClone, cards[0]);
+    
+    let currentIndex = 2; // Comenzamos en 2 porque tenemos dos clones al inicio
     const cardWidth = cards[0].offsetWidth;
     const gap = 32;
     
-    function updateCarousel() {
-        const moveX = currentIndex * (cardWidth + gap);
-        track.style.transform = `translateX(-${moveX}px)`;
+    // Posicionar inicialmente el track
+    track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+    
+    function updateCarousel(direction) {
+        track.style.transition = 'transform 0.5s ease-in-out';
+        currentIndex += direction;
+        track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
         
-        prevButton.style.opacity = currentIndex === 0 ? '0.5' : '1';
-        nextButton.style.opacity = currentIndex >= cards.length - 3 ? '0.5' : '1';
-        prevButton.disabled = currentIndex === 0;
-        nextButton.disabled = currentIndex >= cards.length - 3;
+        // Manejar el efecto infinito
+        if (currentIndex >= cards.length + 2) {
+            setTimeout(() => {
+                track.style.transition = 'none';
+                currentIndex = 2;
+                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            }, 500);
+        } else if (currentIndex <= 1) {
+            setTimeout(() => {
+                track.style.transition = 'none';
+                currentIndex = cards.length + 1;
+                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            }, 500);
+        }
     }
 
-    prevButton.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel();
-        }
+    // Event Listeners
+    nextButton.addEventListener('click', () => updateCarousel(1));
+    prevButton.addEventListener('click', () => updateCarousel(-1));
+
+    // Reiniciar la transición después de los saltos
+    track.addEventListener('transitionend', () => {
+        track.style.transition = 'transform 0.5s ease-in-out';
     });
 
-    nextButton.addEventListener('click', () => {
-        if (currentIndex < cards.length - 3) {
-            currentIndex++;
-            updateCarousel();
-        }
-    });
-
-    updateCarousel();
-    
+    // Ajustar el carrusel cuando cambie el tamaño de la ventana
     window.addEventListener('resize', () => {
         const newCardWidth = cards[0].offsetWidth;
-        const moveX = currentIndex * (newCardWidth + gap);
-        track.style.transform = `translateX(-${moveX}px)`;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${currentIndex * (newCardWidth + gap)}px)`;
     });
+
+    // Opcional: Autoplay
+    let autoplayInterval;
+    
+    function startAutoplay() {
+        autoplayInterval = setInterval(() => {
+            updateCarousel(1);
+        }, 5000); // Cambiar cada 5 segundos
+    }
+    
+    function stopAutoplay() {
+        clearInterval(autoplayInterval);
+    }
+
+    // Iniciar autoplay
+    startAutoplay();
+
+    // Detener autoplay al hover
+    carousel.addEventListener('mouseenter', stopAutoplay);
+    carousel.addEventListener('mouseleave', startAutoplay);
 }
 
 function initPricingToggle() {
@@ -146,49 +209,60 @@ function initFeaturesCarousel() {
     const prevButton = carousel.querySelector('.carousel-arrow.prev');
     const nextButton = carousel.querySelector('.carousel-arrow.next');
     
-    let currentIndex = 0;
-    const cardWidth = cards[0].offsetWidth;
-    const gap = 32; // El espacio entre tarjetas
+    // Clonar las primeras y últimas tarjetas para el efecto infinito
+    const firstCardClone = cards[0].cloneNode(true);
+    const secondCardClone = cards[1].cloneNode(true);
+    const lastCardClone = cards[cards.length - 1].cloneNode(true);
+    const secondLastCardClone = cards[cards.length - 2].cloneNode(true);
     
-    function updateCarousel() {
-        const moveX = currentIndex * (cardWidth + gap);
-        track.style.transform = `translateX(-${moveX}px)`;
+    // Añadir clones al inicio y final
+    track.appendChild(firstCardClone);
+    track.appendChild(secondCardClone);
+    track.insertBefore(lastCardClone, cards[0]);
+    track.insertBefore(secondLastCardClone, cards[0]);
+    
+    let currentIndex = 2; // Comenzamos en 2 porque tenemos dos clones al inicio
+    const cardWidth = cards[0].offsetWidth;
+    const gap = 32;
+    
+    // Posicionar inicialmente el track
+    track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+    
+    function updateCarousel(direction) {
+        track.style.transition = 'transform 0.5s ease-in-out';
+        currentIndex += direction;
+        track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
         
-        // Actualizar estado de los botones
-        prevButton.disabled = currentIndex === 0;
-        nextButton.disabled = currentIndex >= cards.length - 3;
-        
-        // Actualizar opacidad de los botones
-        prevButton.style.opacity = currentIndex === 0 ? '0.5' : '1';
-        nextButton.style.opacity = currentIndex >= cards.length - 3 ? '0.5' : '1';
-    }
-
-    function moveNext() {
-        if (currentIndex < cards.length - 3) {
-            currentIndex++;
-            updateCarousel();
-        }
-    }
-
-    function movePrev() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel();
+        // Manejar el efecto infinito
+        if (currentIndex >= cards.length + 2) {
+            setTimeout(() => {
+                track.style.transition = 'none';
+                currentIndex = 2;
+                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            }, 500);
+        } else if (currentIndex <= 1) {
+            setTimeout(() => {
+                track.style.transition = 'none';
+                currentIndex = cards.length + 1;
+                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
+            }, 500);
         }
     }
 
     // Event Listeners
-    nextButton.addEventListener('click', moveNext);
-    prevButton.addEventListener('click', movePrev);
+    nextButton.addEventListener('click', () => updateCarousel(1));
+    prevButton.addEventListener('click', () => updateCarousel(-1));
 
-    // Inicializar carrusel
-    updateCarousel();
+    // Reiniciar la transición después de los saltos
+    track.addEventListener('transitionend', () => {
+        track.style.transition = 'transform 0.5s ease-in-out';
+    });
 
     // Ajustar el carrusel cuando cambie el tamaño de la ventana
     window.addEventListener('resize', () => {
         const newCardWidth = cards[0].offsetWidth;
-        const moveX = currentIndex * (newCardWidth + gap);
-        track.style.transform = `translateX(-${moveX}px)`;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${currentIndex * (newCardWidth + gap)}px)`;
     });
 } 
 
