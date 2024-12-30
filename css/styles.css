@@ -1104,18 +1104,18 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     overflow: hidden;
-    padding: 2rem 1rem;
+    padding: 2rem 3rem;
 }
 
 .clients-track {
     display: flex;
     transition: transform 0.5s ease;
-    gap: 1.5rem;
-    padding: 1rem;
+    gap: 2rem;
+    padding: 0;
 }
 
 .client-card {
-    flex: 0 0 calc(33.333% - 1rem);
+    flex: 0 0 calc(33.333% - 1.35rem);
     padding: 1.5rem;
     background: white;
     border-radius: 20px;
@@ -1123,12 +1123,13 @@ body {
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    min-height: 540px;
+    min-height: 580px;
+    width: 100%;
 }
 
 .client-image {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
     border-radius: 15px;
     overflow: hidden;
     margin: 0 auto 1.5rem;
@@ -1207,57 +1208,75 @@ body {
 /* Flechas de navegación */
 .clients-carousel .carousel-arrow {
     position: absolute;
-    top: 50%;
+    top: 35%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
     z-index: 2;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .clients-carousel .carousel-arrow:hover {
     background: var(--secondary-color);
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .clients-carousel .carousel-arrow.prev {
-    left: 1rem;
+    left: 0.5rem;
 }
 
 .clients-carousel .carousel-arrow.next {
-    right: 1rem;
+    right: 0.5rem;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
     .client-card {
-        flex: 0 0 calc(50% - 1rem);
+        flex: 0 0 calc(50% - 1.35rem);
         min-height: 500px;
     }
     
     .client-image {
-        width: 280px;
-        height: 280px;
+        width: 300px;
+        height: 300px;
+    }
+    
+    .clients-carousel {
+        padding: 2rem;
+    }
+    
+    .clients-carousel .carousel-arrow {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .clients-carousel .carousel-arrow.prev {
+        left: 0.3rem;
+    }
+    
+    .clients-carousel .carousel-arrow.next {
+        right: 0.3rem;
     }
 }
 
 @media (max-width: 768px) {
     .client-card {
         flex: 0 0 100%;
-        min-height: 480px;
+        min-height: 520px;
     }
     
     .client-image {
-        width: 260px;
-        height: 260px;
+        width: 280px;
+        height: 280px;
     }
     
     .client-content p {
@@ -1265,6 +1284,19 @@ body {
         min-height: 60px;
         margin-bottom: 1rem;
         text-align: center;
+    }
+    
+    .clients-carousel {
+        padding: 2rem 1.5rem;
+    }
+    
+    .clients-carousel .carousel-arrow {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .clients-carousel .carousel-arrow i {
+        font-size: 1rem;
     }
 }
 
