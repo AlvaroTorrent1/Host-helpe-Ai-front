@@ -591,30 +591,26 @@ body {
 @media (max-width: 768px) {
     .footer-content {
         flex-direction: column;
-        gap: 2rem;
+        gap: 3rem;
         text-align: center;
-    }
-
-    .social-icons {
-        justify-content: center;
-    }
-
-    .contact-item {
-        justify-content: center;
+        padding: 0 1rem;
     }
 
     .footer-brand {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        margin-bottom: 1rem;
     }
     
     .footer-title-container {
         justify-content: center;
+        margin-bottom: 0.5rem;
     }
 
     .footer-brand-content {
         align-items: center;
+        gap: 0.8rem;
     }
 
     .footer-logo {
@@ -624,6 +620,53 @@ body {
     
     .company-slogan {
         font-size: 0.9rem;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .footer-contact,
+    .footer-social {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .footer-contact h4,
+    .footer-social h4 {
+        margin-bottom: 1.2rem;
+        font-size: 1.2rem;
+    }
+
+    .contact-item {
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .contact-item i {
+        width: 24px;
+        text-align: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .social-icons a {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .footer-bottom {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+
+    .footer-bottom p {
+        font-size: 0.85rem;
+        opacity: 0.8;
     }
 }
 
@@ -1524,4 +1567,66 @@ body {
 
 .volume-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+        order: 1;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        flex-direction: column;
+        gap: 0;
+        height: 0;
+        overflow: hidden;
+        transition: height 0.3s ease;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.active {
+        height: auto;
+        padding: 1rem 0;
+    }
+
+    .nav-links li {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 1rem 2rem;
+    }
+
+    .nav {
+        justify-content: space-between;
+    }
+
+    .nav-buttons {
+        order: 2;
+    }
 }
