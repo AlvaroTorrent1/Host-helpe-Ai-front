@@ -30,11 +30,17 @@
                     <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
                 </ul>
                 <div class="nav-buttons">
-                    <div class="language-selector">
-                        <button class="lang-btn active" data-lang="es">ES</button>
-                        <button class="lang-btn" data-lang="en">EN</button>
-                        <button class="lang-btn" data-lang="fr">FR</button>
-        </div>
+                    <div class="language-dropdown-container">
+                        <button class="language-toggle">
+                            <span class="current-lang">ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown">
+                            <button class="lang-option active" data-lang="es">Español</button>
+                            <button class="lang-option" data-lang="en">English</button>
+                            <button class="lang-option" data-lang="fr">Français</button>
+                        </div>
+                    </div>
                     <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
                     <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
       </div>

@@ -1,3 +1,5 @@
+import { changeLanguage } from './language.js';
+
 // En la inicialización
 document.addEventListener('DOMContentLoaded', () => {
     initTypewriter();
@@ -66,20 +68,53 @@ function initTypewriter() {
 }
 
 function initLanguageSelector() {
-    const langButtons = document.querySelectorAll('.lang-btn');
+    const langToggle = document.querySelector('.language-toggle');
+    const langDropdown = document.querySelector('.language-dropdown');
+    const langOptions = document.querySelectorAll('.lang-option');
+    const currentLangSpan = document.querySelector('.current-lang');
     
-    langButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remover clase active de todos los botones
-            langButtons.forEach(btn => btn.classList.remove('active'));
-            // Añadir clase active al botón clickeado
-            button.classList.add('active');
+    // Toggle dropdown
+    langToggle.addEventListener('click', () => {
+        langToggle.classList.toggle('active');
+        langDropdown.classList.toggle('show');
+    });
+
+    // Select language
+    langOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const lang = option.getAttribute('data-lang');
             
-            // Aquí puedes añadir la lógica para cambiar el idioma
-            const lang = button.getAttribute('data-lang');
-            // Por ejemplo: changeLanguage(lang);
+            // Actualizar UI
+            langOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            currentLangSpan.textContent = lang.toUpperCase();
+            langToggle.classList.remove('active');
+            langDropdown.classList.remove('show');
+            
+            // Cambiar el idioma usando la función importada
+            changeLanguage(lang);
+            
+            // Guardar preferencia
+            localStorage.setItem('preferredLanguage', lang);
         });
     });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!langToggle.contains(e.target)) {
+            langToggle.classList.remove('active');
+            langDropdown.classList.remove('show');
+        }
+    });
+    
+    // Establecer el idioma inicial
+    const preferredLanguage = localStorage.getItem('preferredLanguage') || 'es';
+    const initialOption = document.querySelector(`.lang-option[data-lang="${preferredLanguage}"]`);
+    if (initialOption) {
+        initialOption.classList.add('active');
+        currentLangSpan.textContent = preferredLanguage.toUpperCase();
+        changeLanguage(preferredLanguage);
+    }
 }
 
 function initClientsCarousel() {
