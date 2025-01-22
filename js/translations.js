@@ -25,8 +25,8 @@ export const translations = {
         features: {
             title: "Características",
             card1: {
-                title: "Asistencia 24/7",
-                description: "Nuestro chatbot está disponible las 24 horas para resolver emergencias y atender a tus huéspedes cuando más lo necesitan."
+                title: "Asistente Virtual 24/7",
+                description: "Nuestro asistente AI está disponible las 24 horas para atender a tus huéspedes, resolver dudas y gestionar incidencias de forma inmediata, asegurando una atención continua y profesional."
             },
             card2: {
                 title: "Gestión de Datos",
@@ -43,6 +43,10 @@ export const translations = {
             card5: {
                 title: "Llamadas",
                 description: "Sistema de atención telefónica automatizada para gestionar consultas y emergencias. Respuesta inmediata por voz y transferencia a operador humano si es necesario."
+            },
+            card6: {
+                title: "Ingresos Extra",
+                description: "Genera ingresos adicionales con nuestro sistema de cross-selling a través de WhatsApp. Ofrece servicios complementarios y experiencias locales de forma automatizada a tus huéspedes."
             }
         },
         pricing: {
@@ -180,8 +184,8 @@ export const translations = {
         features: {
             title: "Features",
             card1: {
-                title: "24/7 Assistance",
-                description: "Our chatbot is available 24 hours to solve emergencies and assist your guests when they need it most."
+                title: "24/7 Virtual Assistant",
+                description: "Our AI assistant is available 24 hours to attend to your guests, resolve queries and manage incidents immediately, ensuring continuous and professional service."
             },
             card2: {
                 title: "Data Management",
@@ -198,6 +202,10 @@ export const translations = {
             card5: {
                 title: "Calls",
                 description: "Automated telephone service system to manage inquiries and emergencies. Immediate voice response and transfer to human operator if needed."
+            },
+            card6: {
+                title: "Extra Income",
+                description: "Generate additional revenue with our WhatsApp cross-selling system. Offer complementary services and local experiences to your guests in an automated way."
             }
         },
         pricing: {
@@ -327,8 +335,8 @@ export const translations = {
         features: {
             title: "Fonctionnalités",
             card1: {
-                title: "Assistance 24/7",
-                description: "Notre chatbot est disponible 24h/24 pour résoudre les urgences et assister vos clients quand ils en ont le plus besoin."
+                title: "Assistant Virtuel 24/7",
+                description: "Notre assistant IA est disponible 24h/24 pour s'occuper de vos clients, répondre aux questions et gérer les incidents immédiatement, assurant un service continu et professionnel."
             },
             card2: {
                 title: "Gestion des Données",
@@ -345,6 +353,10 @@ export const translations = {
             card5: {
                 title: "Appels",
                 description: "Système de service téléphonique automatisé pour gérer les demandes et les urgences. Réponse vocale immédiate et transfert vers un opérateur humain si nécessaire."
+            },
+            card6: {
+                title: "Revenus Supplémentaires",
+                description: "Générez des revenus additionnels grâce à notre système de vente croisée via WhatsApp. Proposez des services complémentaires et des expériences locales à vos clients de manière automatisée."
             }
         },
         pricing: {
