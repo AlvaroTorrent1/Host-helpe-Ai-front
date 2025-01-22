@@ -398,6 +398,16 @@ body {
     width: 50px;
     height: 50px;
     object-fit: contain;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .hero-title h1 {
@@ -408,6 +418,19 @@ body {
     line-height: 1.2;
     margin: 0;
     letter-spacing: -0.5px;
+    animation: zoomIn 1s cubic-bezier(0.11, 0, 0.5, 0);
+    transform-origin: center;
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Estilo muy específico para el Ai en el hero */
@@ -492,8 +515,10 @@ h1 span.highlight {
     .hero-text {
         font-size: 0.95rem;
         line-height: 1.5;
-        text-align: center;
+        text-align: justify;
+        text-justify: inter-word;
         padding-right: 0;
+        hyphens: auto;
     }
 }
 
@@ -1447,7 +1472,6 @@ h1 span.highlight {
 .features-section {
     padding: 4rem 0;
     background: var(--white);
-    overflow: hidden;
 }
 
 .section-title {
@@ -1457,26 +1481,23 @@ h1 span.highlight {
     margin-bottom: 3rem;
 }
 
+/* Estilos base del carousel */
 .features-carousel {
     position: relative;
     width: 100%;
-    max-width: calc(300px * 3 + 4rem); /* Ancho para 3 tarjetas + gaps */
+    max-width: 1200px;
     margin: 0 auto;
     overflow: hidden;
-    padding: 2rem 0;
 }
 
 .features-track {
     display: flex;
-    gap: 2rem;
-    transition: transform 0.5s ease-in-out;
-    padding: 0 1rem;
+    transition: transform 0.5s ease;
 }
 
 .feature-card {
-    flex: 0 0 300px;
-    width: 300px;
-    padding: 2rem 2.5rem;
+    flex-shrink: 0;
+    padding: 2rem;
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -1499,7 +1520,6 @@ h1 span.highlight {
     font-size: 1.2rem;
     color: var(--text-color);
     margin-bottom: 1rem;
-    text-align: center;
 }
 
 .feature-card p {
@@ -1511,63 +1531,60 @@ h1 span.highlight {
     hyphens: auto;
 }
 
-/* Flechas de navegación */
-.features-carousel .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-    z-index: 2;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.features-carousel .carousel-arrow:hover {
-    background: var(--secondary-color);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.features-carousel .carousel-arrow.prev {
-    left: 0;
-}
-
-.features-carousel .carousel-arrow.next {
-    right: 0;
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-    .features-carousel {
-        max-width: calc(250px * 3 + 3rem);
-    }
-    
-    .feature-card {
-        flex: 0 0 250px;
-        width: 250px;
-    }
-}
-
+/* Versión móvil */
 @media (max-width: 768px) {
+    .features-section .container {
+        padding: 0 20px;
+    }
+
     .features-carousel {
-        max-width: calc(200px * 3 + 2rem);
+        width: 100%;
     }
-    
+
     .feature-card {
-        flex: 0 0 200px;
-        width: 200px;
-        padding: 2rem 1.5rem;
+        width: 100%;
+        flex: 0 0 100%;
     }
-    
-    .feature-card p {
-        text-align: center;
+
+    .features-track {
+        display: flex;
+        transform: translateX(0);
+        cursor: grab;
+    }
+
+    .carousel-arrow {
+        display: none !important;
+    }
+}
+
+/* Versión desktop */
+@media (min-width: 769px) {
+    .feature-card {
+        width: 300px;
+        flex: 0 0 300px;
+    }
+
+    .carousel-arrow {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .carousel-arrow.prev {
+        left: -20px;
+    }
+
+    .carousel-arrow.next {
+        right: -20px;
     }
 }
 

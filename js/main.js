@@ -242,64 +242,66 @@ function initFeaturesCarousel() {
     const carousel = document.querySelector('.features-carousel');
     const track = carousel.querySelector('.features-track');
     const cards = Array.from(track.children);
-    const prevButton = carousel.querySelector('.carousel-arrow.prev');
-    const nextButton = carousel.querySelector('.carousel-arrow.next');
+    let currentIndex = 0;
     
-    // Clonar las primeras y últimas tarjetas para el efecto infinito
-    const firstCardClone = cards[0].cloneNode(true);
-    const secondCardClone = cards[1].cloneNode(true);
-    const lastCardClone = cards[cards.length - 1].cloneNode(true);
-    const secondLastCardClone = cards[cards.length - 2].cloneNode(true);
-    
-    // Añadir clones al inicio y final
-    track.appendChild(firstCardClone);
-    track.appendChild(secondCardClone);
-    track.insertBefore(lastCardClone, cards[0]);
-    track.insertBefore(secondLastCardClone, cards[0]);
-    
-    let currentIndex = 2; // Comenzamos en 2 porque tenemos dos clones al inicio
-    const cardWidth = cards[0].offsetWidth;
-    const gap = 32;
-    
-    // Posicionar inicialmente el track
-    track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
-    
-    function updateCarousel(direction) {
-        track.style.transition = 'transform 0.5s ease-in-out';
-        currentIndex += direction;
-        track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
-        
-        // Manejar el efecto infinito
-        if (currentIndex >= cards.length + 2) {
-            setTimeout(() => {
-                track.style.transition = 'none';
-                currentIndex = 2;
-                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
-            }, 500);
-        } else if (currentIndex <= 1) {
-            setTimeout(() => {
-                track.style.transition = 'none';
-                currentIndex = cards.length + 1;
-                track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
-            }, 500);
-        }
-    }
+    // Variables para el touch
+    let startX;
+    let currentX;
+    let isDragging = false;
+    let initialPosition;
 
-    // Event Listeners
-    nextButton.addEventListener('click', () => updateCarousel(1));
-    prevButton.addEventListener('click', () => updateCarousel(-1));
-
-    // Reiniciar la transición después de los saltos
-    track.addEventListener('transitionend', () => {
-        track.style.transition = 'transform 0.5s ease-in-out';
-    });
-
-    // Ajustar el carrusel cuando cambie el tamaño de la ventana
-    window.addEventListener('resize', () => {
-        const newCardWidth = cards[0].offsetWidth;
+    // Touch events
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        initialPosition = currentIndex * -300; // 300px es el ancho de la tarjeta
         track.style.transition = 'none';
-        track.style.transform = `translateX(-${currentIndex * (newCardWidth + gap)}px)`;
     });
+
+    track.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        track.style.transform = `translateX(${initialPosition + diff}px)`;
+    });
+
+    track.addEventListener('touchend', (e) => {
+        isDragging = false;
+        track.style.transition = 'transform 0.3s ease-out';
+        
+        const diff = currentX - startX;
+        const threshold = 100; // Distancia mínima para cambiar de tarjeta
+
+        if (Math.abs(diff) > threshold) {
+            if (diff > 0 && currentIndex > 0) {
+                currentIndex--;
+            } else if (diff < 0 && currentIndex < cards.length - 1) {
+                currentIndex++;
+            }
+        }
+
+        track.style.transform = `translateX(${currentIndex * -300}px)`;
+    });
+
+    // Mantener los event listeners de las flechas para desktop
+    if (window.innerWidth > 768) {
+        const prevButton = carousel.querySelector('.carousel-arrow.prev');
+        const nextButton = carousel.querySelector('.carousel-arrow.next');
+        
+        prevButton?.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                track.style.transform = `translateX(${currentIndex * -300}px)`;
+            }
+        });
+
+        nextButton?.addEventListener('click', () => {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                track.style.transform = `translateX(${currentIndex * -300}px)`;
+            }
+        });
+    }
 } 
 
 function initHeroVideo() {
