@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Helper AI</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+            <div class="logo">
+                    <a href="#">
+                        <img src="./images/logo.png" alt="Host Helper AI Logo">
+                    </a>
+          </div>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#features" data-i18n="nav.features">Características</a></li>
+                    <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
+                    <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
+                    <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
+                </ul>
+                <div class="nav-buttons">
+                    <div class="language-dropdown-container">
+                        <button class="language-toggle">
+                            <span class="current-lang">ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown">
+                            <button class="lang-option active" data-lang="es">Español</button>
+                            <button class="lang-option" data-lang="en">English</button>
+                            <button class="lang-option" data-lang="fr">Français</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
+                    <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
+      </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sección Hero -->
+    <section class="hero">
+        <div class="hero-background">
+            <video autoplay muted loop playsinline id="backgroundVideo">
+                <source src="./videos/backg.mp4" type="video/mp4">
+                </video>
+            </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="hero-title">
+                        <div class="hero-title-container">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo" class="hero-logo">
+                            <h1>Host Helper <span style="color: #ECA408;">Ai</span></h1>
+                        </div>
+                    </div>
+                    <div class="hero-message">
+                        <div class="hero-text" id="hero-message" data-i18n="hero.message">
+                            Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico. 
+
+                            🤖 Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.
+
+                            Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.
+
+                            🎯 Empieza el 2025 con nosotros!
+                        </div>
+                    </div>
+                    </div>
+                <div class="hero-video">
+                    <video id="christmasVideo" autoplay playsinline>
+                        <source src="./videos/Christmas_Español.mp4" type="video/mp4">
+                    </video>
+                    <div class="hero-video-controls">
+                        <button class="hero-video-btn play-pause" aria-label="Play/Pause" title="Pausar">
+                            <i class="fas fa-pause"></i>
+                    </button>
+                        <div class="volume-control">
+                            <button class="hero-video-btn volume" aria-label="Mute/Unmute" title="Activar sonido">
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" aria-label="Volume">
+                </div>
+            </div>
+        </div>
+</div>
+        </div>
+    </div>
+</section>
+
+    <!-- Sección Características -->
+    <section id="features" class="section features-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="features.title">Características</h2>
+            <div class="features-carousel">
+                <button class="carousel-arrow prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="features-track">
+                    <div class="feature-card">
+                        <i class="fas fa-robot"></i>
+                        <h3 data-i18n="features.card1.title">Asistente Virtual 24/7</h3>
+                        <p data-i18n="features.card1.description">Nuestro asistente AI está disponible las 24 horas para atender a tus huéspedes, resolver dudas y gestionar incidencias de forma inmediata, asegurando una atención continua y profesional.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-database"></i>
+                        <h3 data-i18n="features.card2.title">Gestión de Datos</h3>
+                        <p data-i18n="features.card2.description">Automatizamos la recogida y registro de datos de viajeros en el Sistema de Entrada Segura del Ministerio del Interior, ahorrándote tiempo y evitando errores en el proceso.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fab fa-whatsapp"></i>
+                        <h3 data-i18n="features.card3.title">WhatsApp Business</h3>
+                        <p data-i18n="features.card3.description">Gestiona todas las comunicaciones a través de WhatsApp Business, el canal preferido por los huéspedes. Respuestas instantáneas, envío de información y atención personalizada 24/7.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fab fa-telegram"></i>
+                        <h3 data-i18n="features.card4.title">Telegram</h3>
+                        <p data-i18n="features.card4.description">Canal alternativo de comunicación que ofrece todas las ventajas de la mensajería instantánea. Ideal para huéspedes que prefieren Telegram por su seguridad y rapidez.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-phone-alt"></i>
+                        <h3 data-i18n="features.card5.title">Llamadas Automáticas</h3>
+                        <p data-i18n="features.card5.description">Sistema de atención telefónica inteligente que gestiona llamadas entrantes, proporciona información clave y transfiere a un operador humano cuando es necesario.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-euro-sign"></i>
+                        <h3 data-i18n="features.card6.title">Ingresos Extra</h3>
+                        <p data-i18n="features.card6.description">Genera ingresos adicionales con nuestro sistema de cross-selling a través de WhatsApp. Ofrece servicios complementarios y experiencias locales de forma automatizada a tus huéspedes.</p>
+                    </div>
+                </div>
+                <button class="carousel-arrow next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                </div>
+            </div>
+        </section>
+
+    <!-- Sección Precios -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <div class="pricing-header">
+                <h2 class="section-title" data-i18n="pricing.title">Planes de suscripción</h2>
+                <p class="pricing-subtitle" data-i18n="pricing.subtitle">Elige el plan que mejor se adapte a tus necesidades</p>
+                <div class="billing-toggle">
+                    <button class="billing-btn monthly active" data-i18n="pricing.monthly">Mensual</button>
+                    <button class="billing-btn annual" data-i18n="pricing.annual">
+                        Anual
+                        <span class="save-badge">Ahorra 20%</span>
+                    </button>
+    </div>
+        </div>
+
+            <div class="pricing-grid">
+                <!-- Plan Básico -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.basic.title">Básico</h3>
+                        <div class="price-container">
+                            <div class="price monthly active">
+                                <span class="amount" data-i18n="pricing.basic.monthly.amount">9.99</span>
+                                <span class="period" data-i18n="pricing.basic.monthly.period">€/mes</span>
+            </div>
+                            <div class="price annual">
+                                <span class="amount" data-i18n="pricing.basic.annual.amount">7.99</span>
+                                <span class="period" data-i18n="pricing.basic.annual.period">€/mes</span>
+                                <span class="billed" data-i18n="pricing.basic.annual.billed">Facturado anualmente</span>
+        </div>
+        </div>
+    </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.basic.features.f1">1 propiedad</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.basic.features.f2">Atención 24/7</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>WhatsApp y Telegram</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>Gestión de datos básica</span>
+                            </li>
+                        </ul>
+                        <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
+        </div>
+        </div>
+
+                <!-- Plan Pro -->
+                <div class="pricing-card popular">
+                    <div class="popular-tag" data-i18n="pricing.popularTag">Más popular</div>
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.pro.title">Pro</h3>
+                        <div class="price-container">
+                            <div class="price monthly active">
+                                <span class="amount" data-i18n="pricing.pro.monthly.amount">29.99</span>
+                                <span class="period" data-i18n="pricing.pro.monthly.period">€/mes</span>
+        </div>
+                            <div class="price annual">
+                                <span class="amount" data-i18n="pricing.pro.annual.amount">23.99</span>
+                                <span class="period" data-i18n="pricing.pro.annual.period">€/mes</span>
+                                <span class="billed" data-i18n="pricing.pro.annual.billed">Facturado anualmente</span>
+    </div>
+            </div>
+        </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f1">Hasta 5 propiedades</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f2">Todo lo del plan Básico</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f3">Llamadas automáticas</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f4">Gestión avanzada de datos</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f5">Análisis y reportes</span>
+                            </li>
+                        </ul>
+                        <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
+            </div>
+        </div>
+
+                <!-- Plan Enterprise -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.enterprise.title">Enterprise</h3>
+                        <div class="price-container">
+                            <div class="price">
+                                <span class="amount" data-i18n="pricing.enterprise.price">Personalizado</span>
+            </div>
+        </div>
+            </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f1">Propiedades ilimitadas</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f2">Todo lo del plan Pro</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f3">API dedicada</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f4">Soporte prioritario</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f5">Personalización completa</span>
+                            </li>
+                        </ul>
+                        <button class="btn-subscribe" data-i18n="pricing.enterprise.contact">Contactar ventas</button>
+        </div>
+            </div>
+        </div>
+            </div>
+</section>
+
+    <!-- Sección Nosotros -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="about.title">Nosotros</h2>
+            <div class="clients-carousel">
+                <button class="carousel-arrow prev">
+                    <i class="fas fa-chevron-left"></i>
+    </button>
+                <div class="clients-track">
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic2.png" alt="Apartamentos Torre del Mar">
+</div>
+                        <div class="client-content">
+                            <h3 data-i18n="about.clients.torremar.title">Apartamentos Torre del Mar</h3>
+                            <p data-i18n="about.clients.torremar.description">Moderno apartamento turístico ubicado en primera línea de playa en Torre del Mar. Completamente equipado y con espectaculares vistas al mar Mediterráneo.</p>
+                </div>
+                            </div>
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic7.png" alt="Solset Nerja">
+                        </div>
+                        <div class="client-content">
+                            <h3 data-i18n="about.clients.solset.title">Solset Nerja</h3>
+                            <a href="https://solsetnerja.com/" target="_blank" rel="noopener noreferrer" class="client-website" data-i18n="about.visitWeb">Visitar web</a>
+                            <p data-i18n="about.clients.solset.description">Complejo de apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria. Ubicado estratégicamente cerca de la playa de La Torrecilla, con una variedad de bares y restaurantes a solo unos pasos.</p>
+                            </div>
+                        </div>
+                    <div class="client-card">
+                        <div class="client-image">
+                            <img src="./images/pic9.png" alt="Doña Lola Alojamientos">
+                        </div>
+                        <div class="client-content">
+                            <h3 data-i18n="about.clients.lola.title">Doña Lola Alojamientos</h3>
+                            <a href="https://lolaalojamientos.com/" target="_blank" rel="noopener noreferrer" class="client-website" data-i18n="about.visitWeb">Visitar web</a>
+                            <p data-i18n="about.clients.lola.description">Alojamiento boutique con encanto en el centro histórico de Lucena.</p>
+                </div>
+            </div>
+        </div>
+                <button class="carousel-arrow next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+    </div>
+                </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contact" class="section contact-section">
+        <div class="contact-background">
+            <video autoplay muted loop playsinline id="contactBackgroundVideo">
+                <source src="./videos/backg.mp4" type="video/mp4">
+            </video>
+            <div class="contact-overlay"></div>
+                  </div>
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 data-i18n="contact.title">AGENDAR UNA DEMO</h2>
+                    <p class="contact-description" data-i18n="contact.description">
+                        ¡Optimiza tu negocio con Host Helper AI! 🚀
+
+                        ¿Qué te ofrecemos?
+
+                        🤖 Asistente virtual 24/7
+                        📱 Gestión multicanal (WhatsApp, Telegram, Llamadas)
+                        ⚡️ Automatización de check-in y documentación
+                        💰 Cross-selling inteligente
+                        ⭐️ Mejora en satisfacción de huéspedes
+
+                        ¡Agenda una demo gratuita de 30 minutos y descubre cómo podemos ayudarte!
+                    </p>
+                    <div class="contact-methods">
+                        <a href="mailto:info@hosthelperai.com" class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span data-i18n="contact.methods.email">E-mail</span>
+                        </a>
+                        <a href="https://wa.me/34XXXXXXXXX" class="contact-method">
+                            <i class="fab fa-whatsapp"></i>
+                            <span data-i18n="contact.methods.whatsapp">WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-calendly">
+                    <div class="calendly-inline-widget" 
+                         data-url="https://calendly.com/hosthelperai-services" 
+                         style="min-width:320px;height:850px;">
+                    </div>
+                    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script type="module" src="./js/translations.js"></script>
+    <script type="module" src="./js/language.js"></script>
+    <script type="module" src="./js/main.js"></script>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-brand-content">
+                    <div class="footer-title-container">
+                        <div class="footer-logo">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                    </div>
+                        <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
+                </div>
+                    <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+            </div>
+            </div>
+            <div class="footer-contact">
+                <h4 data-i18n="footer.contact.title">Contacto</h4>
+                <a href="mailto:support@hosthelperai.com" class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    support@hosthelperai.com
+                </a>
+                <a href="tel:+34687472327" class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    +34 687 472 327
+                </a>
+            </div>
+            <div class="footer-social">
+                <h4 data-i18n="footer.social.title">Síguenos</h4>
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com/company/host-helper-ai/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.instagram.com/host_helper_ai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@HostHelperAi" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
