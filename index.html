@@ -21,35 +21,20 @@
     <header class="header">
         <div class="container">
             <nav class="nav">
-            <div class="logo">
-                    <a href="#">
-                        <img src="./images/logo.png" alt="Host Helper AI Logo">
-                    </a>
-          </div>
-                <button class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <ul class="nav-links">
-                    <li><a href="#features" data-i18n="nav.features">Características</a></li>
-                    <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
-                    <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
-                    <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
-                </ul>
-                <div class="nav-buttons">
-                    <div class="language-dropdown-container">
-                        <button class="language-toggle">
-                            <span class="current-lang">ES</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="language-dropdown">
-                            <button class="lang-option active" data-lang="es">Español</button>
-                            <button class="lang-option" data-lang="en">English</button>
-                            <button class="lang-option" data-lang="fr">Français</button>
-                        </div>
+                <div class="nav-content">
+                    <div class="nav-brand">
+                        <a href="#">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                        </a>
                     </div>
-                    <button class="btn btn-secondary" data-i18n="buttons.login">Iniciar Sesión</button>
-                    <button class="btn btn-primary" data-i18n="buttons.register">Registrarse</button>
-      </div>
+                    
+                    <ul class="nav-links">
+                        <li><a href="#features" data-i18n="nav.features">Características</a></li>
+                        <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
+                        <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
+                        <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
+                    </ul>
+                </div>
             </nav>
         </div>
     </header>
@@ -59,56 +44,59 @@
         <div class="hero-background">
             <video autoplay muted loop playsinline id="backgroundVideo">
                 <source src="./videos/backg.mp4" type="video/mp4">
-                </video>
-            </div>
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
+        
         <div class="container">
+            <div class="hero-brand">
+                <div class="brand-container">
+                    <img src="./images/logo.png" alt="Host Helper AI Logo" class="hero-logo">
+                    <h1>Host Helper <span class="ai-text">Ai</span></h1>
+                </div>
+            </div>
+            
             <div class="hero-content">
-                <div class="hero-left">
-                    <div class="hero-title">
-                        <div class="hero-title-container">
-                            <img src="./images/logo.png" alt="Host Helper AI Logo" class="hero-logo">
-                            <h1>Host Helper <span style="color: #ECA408;">Ai</span></h1>
-                        </div>
+                <div class="hero-main">
+                    <h2 class="main-title gradient-text" data-i18n="hero.mainTitle">Tu conserje virtual 24/7</h2>
+                    <h3 class="main-subtitle" data-i18n="hero.mainSubtitle">que atiende a tus huéspedes por ti</h3>
+                </div>
+                
+                <div class="hero-secondary">
+                    <div class="secondary-content">
+                        <h3 class="secondary-title" data-i18n="hero.secondaryTitle">Genera ingresos extra</h3>
+                        <p class="secondary-description" data-i18n="hero.secondaryDescription">mientras tu bot vende servicios adicionales</p>
                     </div>
-                    <div class="hero-message">
-                        <div class="hero-text" id="hero-message" data-i18n="hero.message">
-                            Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico. 
+                </div>
 
-                            🤖 Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.
+                <div class="hero-cta">
+                    <a href="#contact" class="contact-button">
+                        <span data-i18n="hero.ctaButton">Contactar con ventas</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
 
-                            Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.
-
-                            🎯 Empieza el 2025 con nosotros!
-                        </div>
-                    </div>
-                    </div>
-                <div class="hero-video">
-                    <video id="christmasVideo" autoplay playsinline>
-                        <source src="./videos/Christmas_Español.mp4" type="video/mp4">
-                    </video>
-                    <div class="hero-video-controls">
-                        <button class="hero-video-btn play-pause" aria-label="Play/Pause" title="Pausar">
-                            <i class="fas fa-pause"></i>
-                    </button>
-                        <div class="volume-control">
-                            <button class="hero-video-btn volume" aria-label="Mute/Unmute" title="Activar sonido">
-                                <i class="fas fa-volume-mute"></i>
-                            </button>
-                            <input type="range" class="volume-slider" min="0" max="100" value="0" aria-label="Volume">
+                <div class="hero-social">
+                    <a href="https://www.linkedin.com/company/host-helper-ai" target="_blank" class="social-link">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hosthelperes" target="_blank" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@HostHelperAI" target="_blank" class="social-link">
+                        <i class="fab fa-youtube"></i>
+                    </a>
                 </div>
             </div>
         </div>
-</div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- Sección Características -->
     <section id="features" class="section features-section">
         <div class="container">
             <h2 class="section-title" data-i18n="features.title">Características</h2>
             <div class="features-carousel">
-                <button class="carousel-arrow prev">
+                <button class="carousel-button prev">
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div class="features-track">
@@ -148,12 +136,12 @@
                         <p data-i18n="features.card5.description">Sistema de atención telefónica inteligente que gestiona llamadas entrantes, proporciona información clave y transfiere a un operador humano cuando es necesario.</p>
                     </div>
                 </div>
-                <button class="carousel-arrow next">
+                <button class="carousel-button next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
-                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
     <!-- Sección Precios -->
     <section id="pricing" class="section pricing-section">
@@ -167,8 +155,8 @@
                         Anual
                         <span class="save-badge">Ahorra 20%</span>
                     </button>
-    </div>
-        </div>
+                </div>
+            </div>
 
             <div class="pricing-grid">
                 <!-- Plan Básico -->
@@ -179,14 +167,14 @@
                             <div class="price monthly active">
                                 <span class="amount" data-i18n="pricing.basic.monthly.amount">9.99</span>
                                 <span class="period" data-i18n="pricing.basic.monthly.period">€/mes</span>
-            </div>
+                            </div>
                             <div class="price annual">
                                 <span class="amount" data-i18n="pricing.basic.annual.amount">7.99</span>
                                 <span class="period" data-i18n="pricing.basic.annual.period">€/mes</span>
                                 <span class="billed" data-i18n="pricing.basic.annual.billed">Facturado anualmente</span>
-        </div>
-        </div>
-    </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-content">
                         <ul class="features-list">
                             <li>
@@ -207,8 +195,8 @@
                             </li>
                         </ul>
                         <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
-        </div>
-        </div>
+                    </div>
+                </div>
 
                 <!-- Plan Pro -->
                 <div class="pricing-card popular">
@@ -219,14 +207,14 @@
                             <div class="price monthly active">
                                 <span class="amount" data-i18n="pricing.pro.monthly.amount">29.99</span>
                                 <span class="period" data-i18n="pricing.pro.monthly.period">€/mes</span>
-        </div>
+                            </div>
                             <div class="price annual">
                                 <span class="amount" data-i18n="pricing.pro.annual.amount">23.99</span>
                                 <span class="period" data-i18n="pricing.pro.annual.period">€/mes</span>
                                 <span class="billed" data-i18n="pricing.pro.annual.billed">Facturado anualmente</span>
-    </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-content">
                         <ul class="features-list">
                             <li>
@@ -251,8 +239,8 @@
                             </li>
                         </ul>
                         <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
-            </div>
-        </div>
+                    </div>
+                </div>
 
                 <!-- Plan Enterprise -->
                 <div class="pricing-card">
@@ -261,9 +249,9 @@
                         <div class="price-container">
                             <div class="price">
                                 <span class="amount" data-i18n="pricing.enterprise.price">Personalizado</span>
-            </div>
-        </div>
-            </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-content">
                         <ul class="features-list">
                             <li>
@@ -288,30 +276,60 @@
                             </li>
                         </ul>
                         <button class="btn-subscribe" data-i18n="pricing.enterprise.contact">Contactar ventas</button>
-        </div>
+                    </div>
+                </div>
             </div>
         </div>
-            </div>
-</section>
+    </section>
 
     <!-- Sección Nosotros -->
     <section id="about" class="section about-section">
         <div class="container">
             <h2 class="section-title" data-i18n="about.title">Nosotros</h2>
+            
+            <div class="about-intro">
+                <div class="intro-content">
+                    <div class="intro-text">
+                        <p class="headline">Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico.</p>
+                        
+                        <div class="feature-points">
+                            <div class="feature-point">
+                                <span class="icon">🤖</span>
+                                <p>Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.</p>
+                            </div>
+                            
+                            <div class="feature-point">
+                                <span class="icon">💰</span>
+                                <p>Genera ingresos extra con nuestro sistema de cross-selling automatizado.</p>
+                            </div>
+                            
+                            <div class="feature-point">
+                                <span class="icon">📊</span>
+                                <p>Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.</p>
+                            </div>
+                            
+                            <div class="feature-point highlight">
+                                <a href="#contact" class="cta-link" data-i18n="about.cta">¡Empieza el 2025 con nosotros!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="clients-carousel">
                 <button class="carousel-arrow prev">
                     <i class="fas fa-chevron-left"></i>
-    </button>
+                </button>
                 <div class="clients-track">
                     <div class="client-card">
                         <div class="client-image">
                             <img src="./images/pic2.png" alt="Apartamentos Torre del Mar">
-</div>
+                        </div>
                         <div class="client-content">
                             <h3 data-i18n="about.clients.torremar.title">Apartamentos Torre del Mar</h3>
                             <p data-i18n="about.clients.torremar.description">Moderno apartamento turístico ubicado en primera línea de playa en Torre del Mar. Completamente equipado y con espectaculares vistas al mar Mediterráneo.</p>
-                </div>
-                            </div>
+                        </div>
+                    </div>
                     <div class="client-card">
                         <div class="client-image">
                             <img src="./images/pic7.png" alt="Solset Nerja">
@@ -320,8 +338,8 @@
                             <h3 data-i18n="about.clients.solset.title">Solset Nerja</h3>
                             <a href="https://solsetnerja.com/" target="_blank" rel="noopener noreferrer" class="client-website" data-i18n="about.visitWeb">Visitar web</a>
                             <p data-i18n="about.clients.solset.description">Complejo de apartamentos con vistas al mar en el corazón de Nerja. Diseño contemporáneo con terrazas privadas y piscina comunitaria. Ubicado estratégicamente cerca de la playa de La Torrecilla, con una variedad de bares y restaurantes a solo unos pasos.</p>
-                            </div>
                         </div>
+                    </div>
                     <div class="client-card">
                         <div class="client-image">
                             <img src="./images/pic9.png" alt="Doña Lola Alojamientos">
@@ -330,14 +348,14 @@
                             <h3 data-i18n="about.clients.lola.title">Doña Lola Alojamientos</h3>
                             <a href="https://lolaalojamientos.com/" target="_blank" rel="noopener noreferrer" class="client-website" data-i18n="about.visitWeb">Visitar web</a>
                             <p data-i18n="about.clients.lola.description">Alojamiento boutique con encanto en el centro histórico de Lucena.</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
                 <button class="carousel-arrow next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
-    </div>
-                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Sección Contacto -->
@@ -347,7 +365,7 @@
                 <source src="./videos/backg.mp4" type="video/mp4">
             </video>
             <div class="contact-overlay"></div>
-                  </div>
+        </div>
         <div class="container">
             <div class="contact-content">
                 <div class="contact-info">
@@ -401,11 +419,11 @@
                     <div class="footer-title-container">
                         <div class="footer-logo">
                             <img src="./images/logo.png" alt="Host Helper AI Logo">
-                    </div>
+                        </div>
                         <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
-                </div>
+                    </div>
                     <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
-            </div>
+                </div>
             </div>
             <div class="footer-contact">
                 <h4 data-i18n="footer.contact.title">Contacto</h4>
@@ -432,13 +450,817 @@
                 </a>
             </div>
         </div>
-        </div>
-        <div class="footer-bottom">
-            <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
-        </div>
+    </div>
+    <div class="footer-bottom">
+        <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
     </div>
 </footer>
 <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2025/01/23/11/20250123112128-UAC75SJ2.js"></script>
 </body>
 </html>
+
+<style>
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.hero-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-brand {
+    position: absolute;
+    top: 1.5rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+    animation: slideUp 0.8s ease-out forwards;
+    width: 100%;
+    max-width: 1400px;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: slideUp 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.hero-logo {
+    width: 35px;
+    height: auto;
+    transform-origin: center;
+}
+
+.brand-container:hover .hero-logo {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.brand-container h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ai-text {
+    color: #ECA408;
+}
+
+.hero-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 0;
+    text-align: center;
+}
+
+.main-title, .main-subtitle {
+    text-align: center;
+    margin-left: 0;
+}
+
+.secondary-title, .secondary-description {
+    text-align: center;
+    margin-left: 0;
+}
+
+.hero-main, .hero-secondary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-title {
+    font-size: 3.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.main-subtitle {
+    font-size: 2.45rem;
+    font-weight: 700;
+    color: #333;
+    opacity: 0.9;
+}
+
+.hero-secondary {
+    margin-left: 8rem;
+}
+
+.secondary-content {
+    max-width: 800px;
+}
+
+.secondary-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #ECA408;
+    margin-bottom: 1rem;
+}
+
+.secondary-description {
+    font-size: 1.4rem;
+    color: #333;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+@media (max-width: 1200px) {
+    .main-title {
+        font-size: 3.15rem;
+    }
+    
+    .main-subtitle {
+        font-size: 2.1rem;
+    }
+    
+    .secondary-title {
+        font-size: 2.45rem;
+    }
+    
+    .secondary-description {
+        font-size: 1.26rem;
+    }
+    
+    .hero-secondary {
+        margin-left: 6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        max-width: 100vw;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        width: 100%;
+        padding: 0 1rem;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .main-title, 
+    .main-subtitle,
+    .secondary-title,
+    .secondary-description {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Aseguramos que ningún elemento cause scroll horizontal */
+    * {
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
+    .hero-brand {
+        padding: 0 1rem;
+    }
+    
+    .hero-main {
+        margin-top: 6rem;  /* Aumentamos el espacio superior */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-title {
+        font-size: 2.45rem;
+        margin-top: 2rem;  /* Espacio adicional arriba del título */
+    }
+
+    .main-subtitle {
+        font-size: 1.75rem;
+        margin-top: 1rem;  /* Espacio entre título y subtítulo */
+    }
+
+    .hero-secondary {
+        position: relative;
+        right: 85px;  /* Aumentamos significativamente el desplazamiento hacia la izquierda */
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .secondary-title {
+        font-size: 2.1rem;
+        text-align: center;
+        position: relative;
+        right: 35px;  /* Aumentamos más el ajuste del título */
+    }
+
+    .secondary-description {
+        font-size: 1.12rem;
+        text-align: center;
+        position: relative;
+        right: 35px;  /* Aumentamos más el ajuste de la descripción */
+    }
+
+    .hamburger-menu {
+        display: block;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        padding: 80px 20px 20px;
+        transition: 0.3s ease-in-out;
+        z-index: 999;
+    }
+
+    .mobile-menu.active {
+        left: 0;
+    }
+
+    .mobile-menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .mobile-menu-item {
+        font-size: 1.2rem;
+        color: #333;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .mobile-menu-item:hover {
+        color: #ECA408;
+    }
+
+    .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+}
+
+.hero-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.contact-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #333;
+    border: 2px solid #ECA408;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.contact-button:hover {
+    background: #ECA408;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.contact-button i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.contact-button:hover i {
+    transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+    .hero-cta {
+        margin-top: 2rem;
+        width: 100%;
+        left: 0;
+        transform: none;
+    }
+
+    .contact-button {
+        padding: 0.8rem 1.6rem;
+        font-size: 1rem;
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.features-carousel {
+    overflow-x: auto;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 2rem 0;
+}
+
+.features-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.features-carousel.grabbing {
+    cursor: grabbing;
+}
+
+/* Ocultamos las flechas en desktop */
+@media (min-width: 1024px) {
+    .carousel-button {
+        display: none;
+    }
+}
+
+/* Mantenemos las flechas solo en móvil */
+@media (max-width: 1023px) {
+    .carousel-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #ECA408;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-button:hover {
+        background: #ECA408;
+        color: #fff;
+    }
+
+    .carousel-button.prev {
+        left: 1rem;
+    }
+
+    .carousel-button.next {
+        right: 1rem;
+    }
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #333 0%, #ECA408 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+/* Ajuste específico para la versión en inglés */
+html[lang="en"] .hero-secondary {
+    margin-left: 12rem;
+}
+
+html[lang="en"] .secondary-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+/* Ajuste específico para la versión en francés */
+html[lang="fr"] .hero-secondary {
+    margin-left: 4rem;  /* Reducimos el margen izquierdo para centrar mejor */
+}
+
+html[lang="fr"] .secondary-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+/* Mantenemos los estilos existentes */
+.hero-secondary {
+    margin-left: 8rem;  /* Margen original para español */
+}
+
+.secondary-content {
+    max-width: 800px;
+}
+
+.intro-text {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.headline {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.feature-points {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.feature-point {
+    text-align: justify;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #666;
+}
+
+.feature-point p {
+    margin: 0;
+}
+
+.feature-point.highlight {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Eliminamos los estilos de los iconos */
+.feature-point .icon {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .headline {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .feature-point {
+        font-size: 1.1rem;
+    }
+
+    .feature-point.highlight {
+        font-size: 1.3rem;
+    }
+}
+
+.cta-link {
+    color: #ECA408;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cta-link:hover {
+    color: #333;
+    transform: translateY(-2px);
+    display: inline-block;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #333;
+    border: 2px solid #ECA408;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+    cursor: pointer;
+    background: linear-gradient(90deg, #333 0%, #ECA408 100%);
+    color: #fff;
+}
+
+.cta-button:hover {
+    background: linear-gradient(90deg, #ECA408 0%, #333 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    border-color: transparent;
+}
+
+.hero-social {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+}
+
+.hero-social .social-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid #ECA408;
+}
+
+.hero-social .social-link:hover {
+    background: #ECA408;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .hero-social {
+        margin-top: 1.5rem;
+        left: 0;
+        transform: none;
+        width: 100%;
+    }
+}
+
+/* Ocultamos las flechas de navegación */
+.carousel-button {
+    display: none;  /* Ocultamos las flechas completamente */
+}
+
+.features-card {
+    cursor: grab;  /* Indicador visual de que se puede hacer scroll */
+}
+
+.features-card:active {
+    cursor: grabbing;  /* Cuando se está haciendo scroll */
+}
+
+@media (max-width: 768px) {
+    .features-carousel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;  /* Scroll suave en iOS */
+        scrollbar-width: none;  /* Ocultar scrollbar en Firefox */
+        -ms-overflow-style: none;  /* Ocultar scrollbar en IE/Edge */
+    }
+
+    .features-carousel::-webkit-scrollbar {
+        display: none;  /* Ocultar scrollbar en Chrome/Safari/Opera */
+    }
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 10px;  /* Desplazamiento hacia la derecha */
+}
+
+.footer-slogan {
+    padding-left: 35px;  /* Mismo desplazamiento para mantener alineación */
+}
+
+@media (max-width: 768px) {
+    .footer-brand {
+        margin-left: 35px;  /* Ajuste adicional para móvil */
+    }
+
+    .footer-slogan {
+        margin-left: 35px;  /* Ajuste adicional para móvil */
+        max-width: 80%;  /* Evitar que el texto se desborde */
+    }
+}
+
+/* Aseguramos que el logo sea visible y tenga el tamaño correcto */
+.nav-brand img {
+    height: 30px;
+    width: auto;
+    display: block;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 3rem;  /* Añadimos más espacio entre el logo y los enlaces */
+}
+
+.nav-brand {
+    margin-left: -4rem;  /* Aumentamos el desplazamiento hacia la izquierda */
+}
+
+@media (max-width: 768px) {
+    .nav-brand {
+        margin-left: -2rem;  /* Ajuste específico para móvil */
+    }
+    
+    .nav-content {
+        gap: 2rem;  /* Reducimos el espacio en móvil */
+    }
+}
+
+/* Aplicamos los mismos estilos del carrusel de características al de clientes */
+.clients-carousel {
+    overflow-x: auto;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 2rem 0;
+}
+
+.clients-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.clients-carousel.grabbing {
+    cursor: grabbing;
+}
+
+/* Ocultamos las flechas de navegación */
+.clients-carousel .carousel-arrow {
+    display: none;  /* Ocultamos las flechas completamente */
+}
+
+.clients-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* Ajustamos el comportamiento táctil */
+@media (max-width: 768px) {
+    .clients-carousel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .clients-track {
+        padding: 0 1rem;
+    }
+}
+</style>
+
+<script>
+// Añadir funcionalidad de arrastrar con el ratón
+const carousel = document.querySelector('.features-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+carousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    carousel.classList.add('grabbing');
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+});
+
+carousel.addEventListener('mouseleave', () => {
+    isDown = false;
+    carousel.classList.remove('grabbing');
+});
+
+carousel.addEventListener('mouseup', () => {
+    isDown = false;
+    carousel.classList.remove('grabbing');
+});
+
+carousel.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - carousel.offsetLeft;
+    const walk = (x - startX) * 2; // Velocidad de scroll
+    carousel.scrollLeft = scrollLeft - walk;
+});
+
+document.querySelector('.hamburger-menu').addEventListener('click', () => {
+    document.querySelector('.mobile-menu').classList.add('active');
+});
+
+document.querySelector('.close-menu').addEventListener('click', () => {
+    document.querySelector('.mobile-menu').classList.remove('active');
+});
+
+// Cerrar menú al hacer clic en un enlace
+document.querySelectorAll('.mobile-menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelector('.mobile-menu').classList.remove('active');
+    });
+});
+
+// Añadimos la funcionalidad de arrastrar para el carrusel de clientes
+const clientsCarousel = document.querySelector('.clients-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+clientsCarousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    clientsCarousel.classList.add('grabbing');
+    startX = e.pageX - clientsCarousel.offsetLeft;
+    scrollLeft = clientsCarousel.scrollLeft;
+});
+
+clientsCarousel.addEventListener('mouseleave', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mouseup', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - clientsCarousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    clientsCarousel.scrollLeft = scrollLeft - walk;
+});
+</script>
+

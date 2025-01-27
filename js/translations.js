@@ -20,7 +20,12 @@ export const translations = {
 
                 Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.
 
-                🎯 Empieza el 2025 con nosotros!`
+                🎯 Empieza el 2025 con nosotros!`,
+            mainTitle: "Tu conserje virtual 24/7",
+            mainSubtitle: "que atiende a tus huéspedes por ti",
+            secondaryTitle: "Genera ingresos extra",
+            secondaryDescription: "mientras tu bot vende servicios adicionales",
+            ctaButton: "Contactar con ventas"
         },
         features: {
             title: "Características",
@@ -179,7 +184,12 @@ export const translations = {
 
                 Automate data collection and get the best reviews for your business.
 
-                🎯 Start 2025 with us!`
+                🎯 Start 2025 with us!`,
+            mainTitle: "Your 24/7 virtual concierge",
+            mainSubtitle: "that takes care of your guests for you",
+            secondaryTitle: "Generate extra income",
+            secondaryDescription: "while your bot sells additional services",
+            ctaButton: "Contact sales"
         },
         features: {
             title: "Features",
@@ -330,7 +340,12 @@ export const translations = {
         },
         hero: {
             title: "Host Helper <span class='highlight'>Ai</span>",
-            message: "🎄 Ce Noël, offrez-vous du temps!\n\nHost Helper Ai est le meilleur complément pour votre entreprise de location de vacances.\n\n🤖 Assurez un service 24h/24 avec notre agent, en assistant vos clients via WhatsApp, Telegram et appels.\n\nAutomatisez la collecte de données et obtenez les meilleures critiques pour votre entreprise.\n\n🎯 Commencez 2025 avec nous!"
+            message: "🎄 Ce Noël, offrez-vous du temps!\n\nHost Helper Ai est le meilleur complément pour votre entreprise de location de vacances.\n\n🤖 Assurez un service 24h/24 avec notre agent, en assistant vos clients via WhatsApp, Telegram et appels.\n\nAutomatisez la collecte de données et obtenez les meilleures critiques pour votre entreprise.\n\n🎯 Commencez 2025 avec nous!",
+            mainTitle: "Votre concierge virtuel 24/7",
+            mainSubtitle: "qui s'occupe de vos clients pour vous",
+            secondaryTitle: "Générez des revenus supplémentaires",
+            secondaryDescription: "pendant que votre bot vend des services additionnels",
+            ctaButton: "Contacter les ventes"
         },
         features: {
             title: "Fonctionnalités",
