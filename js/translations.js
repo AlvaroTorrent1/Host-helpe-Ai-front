@@ -136,21 +136,11 @@ export const translations = {
         },
         about: {
             title: "Nosotros",
-            visitWeb: "Visitar web",
-            clients: {
-                torremar: {
-                    title: "Apartamentos Torre del Mar",
-                    description: "Apartamento moderno en primera línea de playa con vistas al Mediterráneo."
-                },
-                solset: {
-                    title: "Solset Nerja",
-                    description: "Apartamentos con vistas al mar, terrazas privadas y piscina en Nerja."
-                },
-                lola: {
-                    title: "Doña Lola Alojamientos",
-                    description: "Alojamiento boutique en el centro histórico de Lucena."
-                }
-            }
+            mainMessage: "Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico.",
+            serviceDescription: "Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.",
+            incomeDescription: "Genera ingresos extra con nuestro sistema de cross-selling automatizado.",
+            dataDescription: "Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.",
+            cta: "¡Empieza el 2025 con nosotros!"
         },
         footer: {
             slogan: "Automatizando la gestión de alojamientos turísticos con IA",
@@ -300,21 +290,11 @@ export const translations = {
         },
         about: {
             title: "About Us",
-            visitWeb: "Visit website",
-            clients: {
-                torremar: {
-                    title: "Torre del Mar Apartments",
-                    description: "Modern beachfront apartment with Mediterranean views."
-                },
-                solset: {
-                    title: "Solset Nerja",
-                    description: "Sea view apartments with private terraces and pool in Nerja."
-                },
-                lola: {
-                    title: "Doña Lola Accommodations",
-                    description: "Boutique accommodation in historic Lucena."
-                }
-            }
+            mainMessage: "Host Helper Ai is the best complement for your vacation rental business.",
+            serviceDescription: "Ensure 24/7 service with our agent, attending to your guests through WhatsApp, Telegram and calls.",
+            incomeDescription: "Generate extra income with our automated cross-selling system.",
+            dataDescription: "Automate data collection and get the best reviews for your business.",
+            cta: "Start 2025 with us!"
         },
         footer: {
             slogan: "Automating tourist accommodation management with AI",
@@ -325,162 +305,6 @@ export const translations = {
                 title: "Follow us"
             },
             copyright: "© 2025 Host Helper AI. All rights reserved."
-        }
-    },
-    fr: {
-        nav: {
-            features: "Fonctionnalités",
-            pricing: "Tarifs",
-            about: "À propos",
-            contact: "Démonstration"
-        },
-        buttons: {
-            login: "Connexion",
-            register: "S'inscrire"
-        },
-        hero: {
-            title: "Host Helper <span class='highlight'>Ai</span>",
-            message: "🎄 Ce Noël, offrez-vous du temps!\n\nHost Helper Ai est le meilleur complément pour votre entreprise de location de vacances.\n\n🤖 Assurez un service 24h/24 avec notre agent, en assistant vos clients via WhatsApp, Telegram et appels.\n\nAutomatisez la collecte de données et obtenez les meilleures critiques pour votre entreprise.\n\n🎯 Commencez 2025 avec nous!",
-            mainTitle: "Votre concierge virtuel 24/7",
-            mainSubtitle: "qui s'occupe de vos clients pour vous",
-            secondaryTitle: "Générez des revenus supplémentaires",
-            secondaryDescription: "pendant que votre bot vend des services additionnels",
-            ctaButton: "Contacter les ventes"
-        },
-        features: {
-            title: "Fonctionnalités",
-            card1: {
-                title: "Assistant Virtuel 24/7",
-                description: "Notre assistant IA est disponible 24h/24 pour s'occuper de vos clients, répondre aux questions et gérer les incidents immédiatement, assurant un service continu et professionnel."
-            },
-            card2: {
-                title: "Gestion des Données",
-                description: "Nous automatisons la collecte et le téléchargement des données des voyageurs vers la plateforme du Système d'Entrée Sécurisée du Ministère de l'Intérieur."
-            },
-            card3: {
-                title: "WhatsApp",
-                description: "Attention immédiate via WhatsApp, le canal préféré des clients pour communiquer."
-            },
-            card4: {
-                title: "Telegram",
-                description: "Communication efficace via Telegram, offrant une alternative sûre et rapide. Gestion automatisée des messages et notifications instantanées."
-            },
-            card5: {
-                title: "Appels",
-                description: "Système de service téléphonique automatisé pour gérer les demandes et les urgences. Réponse vocale immédiate et transfert vers un opérateur humain si nécessaire."
-            },
-            card6: {
-                title: "Revenus Supplémentaires",
-                description: "Générez des revenus additionnels grâce à notre système de vente croisée via WhatsApp. Proposez des services complémentaires et des expériences locales à vos clients de manière automatisée."
-            }
-        },
-        pricing: {
-            title: "Plans d'abonnement",
-            subtitle: "Choisissez le plan qui vous convient le mieux",
-            monthly: "Mensuel",
-            annual: "Annuel",
-            saveTag: "Économisez 20%",
-            subscribe: "Commencer",
-            popularTag: "Plus populaire",
-            basic: {
-                title: "Basique",
-                monthly: {
-                    amount: "9.99",
-                    period: "€/mois"
-                },
-                annual: {
-                    amount: "7.99",
-                    period: "€/mois",
-                    billed: "Facturé annuellement"
-                },
-                features: {
-                    f1: "1 propriété",
-                    f2: "Support 24/7",
-                    f3: "WhatsApp et Telegram",
-                    f4: "Gestion des données basique"
-                }
-            },
-            pro: {
-                title: "Pro",
-                monthly: {
-                    amount: "29.99",
-                    period: "€/mois"
-                },
-                annual: {
-                    amount: "23.99",
-                    period: "€/mois",
-                    billed: "Facturé annuellement"
-                },
-                features: {
-                    f1: "Jusqu'à 5 propriétés",
-                    f2: "Tout du plan Basique",
-                    f3: "Appels automatisés",
-                    f4: "Gestion avancée des données",
-                    f5: "Analyses et rapports"
-                }
-            },
-            enterprise: {
-                title: "Entreprise",
-                price: "Personnalisé",
-                contact: "Contacter les ventes",
-                features: {
-                    f1: "Propriétés illimitées",
-                    f2: "Tout du plan Pro",
-                    f3: "API dédiée",
-                    f4: "Support prioritaire",
-                    f5: "Personnalisation complète"
-                }
-            }
-        },
-        contact: {
-            title: "PLANIFIER UNE DÉMO",
-            description: "Vous avez des questions ou des suggestions ? Nous sommes là pour vous aider. Remplissez le formulaire ci-dessous et nous vous contacterons dans les plus brefs délais.",
-            subtitle: "Demandez une démonstration personnalisée et découvrez tout ce que nous pouvons faire pour votre entreprise.",
-            methods: {
-                email: "E-mail",
-                whatsapp: "WhatsApp"
-            }
-        },
-        form: {
-            name: "Nom",
-            namePlaceholder: "Nom",
-            lastname: "Nom de famille",
-            lastnamePlaceholder: "Nom de famille",
-            email: "Email",
-            emailPlaceholder: "exemple@exemple.com",
-            phone: "Téléphone",
-            phonePlaceholder: "Téléphone",
-            message: "Message",
-            messagePlaceholder: "Écrivez votre message ici",
-            submit: "Envoyer"
-        },
-        about: {
-            title: "À Propos",
-            visitWeb: "Visiter le site",
-            clients: {
-                torremar: {
-                    title: "Appartements Torre del Mar",
-                    description: "Appartement moderne en bord de mer avec vue sur la Méditerranée."
-                },
-                solset: {
-                    title: "Solset Nerja",
-                    description: "Appartements vue mer avec terrasses privées et piscine à Nerja."
-                },
-                lola: {
-                    title: "Hébergements Doña Lola",
-                    description: "Hébergement boutique au centre historique de Lucena."
-                }
-            }
-        },
-        footer: {
-            slogan: "Automatisation de la gestion des hébergements touristiques avec l'IA",
-            contact: {
-                title: "Contact"
-            },
-            social: {
-                title: "Suivez-nous"
-            },
-            copyright: "© 2025 Host Helper AI. Tous droits réservés."
         }
     }
 }; 
