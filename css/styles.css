@@ -362,6 +362,20 @@ body {
         padding: 0.7rem 1rem;
         font-size: 0.85rem;
     }
+
+    /* Ajuste específico para el texto en inglés en móvil */
+    html[lang="en"] .hero-secondary {
+        text-align: left;
+        padding-left: 1rem;
+    }
+
+    html[lang="en"] .hero-secondary .secondary-title {
+        text-align: left;
+    }
+
+    html[lang="en"] .hero-secondary .secondary-description {
+        text-align: left;
+    }
 }
 
 /* Ajustes adicionales para pantallas muy pequeñas */
