@@ -420,3 +420,11 @@ function initMobileMenu() {
         }
     });
 } 
+
+// Función para scroll suave al inicio
+function scrollToTop() {
+    const heroSection = document.getElementById('hero');
+    if (heroSection) {
+        heroSection.scrollIntoView({ behavior: 'smooth' });
+    }
+} 

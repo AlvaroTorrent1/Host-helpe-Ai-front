@@ -22,23 +22,24 @@
         <div class="container">
             <nav class="nav">
                 <div class="nav-content">
-                    <!-- Logo y título como enlace -->
-                    <a href="#" class="nav-brand">
-                        <img src="./images/logo.png" alt="Host Helper AI Logo">
-                        <h1 class="nav-title">Host Helper <span class="nav-highlight">Ai</span></h1>
-                    </a>
+                    <!-- Logo y título -->
+                    <div class="nav-brand desktop-brand">
+                        <a href="#hero" onclick="scrollToTop()">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                            <h1 class="nav-title">Host Helper <span class="nav-highlight">Ai</span></h1>
+                        </a>
+                    </div>
 
                     <!-- Menú hamburguesa para móvil -->
                     <button class="hamburger-menu">
                         <i class="fas fa-bars"></i>
                     </button>
 
-                    <!-- Contenido del menú móvil -->
                     <div class="nav-right">
                         <!-- Enlaces de navegación -->
                         <ul class="nav-links">
                             <li><a href="#features" data-i18n="nav.features">Características</a></li>
-                            <li><a href="#pricing" data-i18n="nav.pricing">Precios</a></li>
+                            <li><a href="pricing.html" data-i18n="nav.pricing">Precios</a></li>
                             <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
                             <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
                         </ul>
@@ -58,6 +59,41 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Botón de inicio de sesión -->
+                        <div class="nav-buttons">
+                            <a href="login.html" class="btn btn-login">
+                                <i class="fas fa-user"></i>
+                                <span data-i18n="buttons.login">Iniciar Sesión</span>
+                            </a>
+                        </div>
+
+                        <!-- Modal de autenticación -->
+                        <div id="authModal" class="auth-modal">
+                            <div class="auth-modal-content">
+                                <span class="close-modal">&times;</span>
+                                <h2 data-i18n="auth.title">Iniciar Sesión</h2>
+                                
+                                <!-- Botón de Google -->
+                                <button class="google-auth-btn" onclick="signInWithGoogle()">
+                                    <img src="images/google-icon.png" alt="Google Icon">
+                                    <span data-i18n="auth.googleLogin">Continuar con Google</span>
+                                </button>
+
+                                <div class="auth-divider">
+                                    <span data-i18n="auth.or">o</span>
+                                </div>
+
+                                <!-- Formulario de email -->
+                                <form id="emailAuthForm" onsubmit="handleEmailAuth(event)">
+                                    <input type="email" id="authEmail" placeholder="Email" required>
+                                    <input type="password" id="authPassword" placeholder="Contraseña" required>
+                                    <button type="submit" class="email-auth-btn" data-i18n="auth.emailLogin">
+                                        Continuar con Email
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -65,14 +101,13 @@
     </header>
 
     <!-- Sección Hero -->
-    <section class="hero">
+    <section id="hero" class="hero">
         <div class="hero-background">
             <video autoplay muted loop playsinline id="myVideo">
-                <source src="videos/backg.mp4" type="video/mp4">
+                <source src="./videos/backg.mp4" type="video/mp4">
             </video>
             <div class="hero-overlay"></div>
         </div>
-        
         <div class="container">
             <div class="hero-content">
                 <div class="hero-main">
@@ -154,145 +189,6 @@
                 <button class="carousel-button next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Precios -->
-    <section id="pricing" class="section pricing-section">
-        <div class="container">
-            <div class="pricing-header">
-                <h2 class="section-title" data-i18n="pricing.title">Planes de suscripción</h2>
-                <p class="pricing-subtitle" data-i18n="pricing.subtitle">Elige el plan que mejor se adapte a tus necesidades</p>
-                <div class="billing-toggle">
-                    <button class="billing-btn monthly active" data-i18n="pricing.monthly">Mensual</button>
-                    <button class="billing-btn annual" data-i18n="pricing.annual">
-                        Anual
-                        <span class="save-badge">Ahorra 20%</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="pricing-grid">
-                <!-- Plan Básico -->
-                <div class="pricing-card">
-                    <div class="card-header">
-                        <h3 data-i18n="pricing.basic.title">Básico</h3>
-                        <div class="price-container">
-                            <div class="price monthly active">
-                                <span class="amount" data-i18n="pricing.basic.monthly.amount">9.99</span>
-                                <span class="period" data-i18n="pricing.basic.monthly.period">€/mes</span>
-                            </div>
-                            <div class="price annual">
-                                <span class="amount" data-i18n="pricing.basic.annual.amount">7.99</span>
-                                <span class="period" data-i18n="pricing.basic.annual.period">€/mes</span>
-                                <span class="billed" data-i18n="pricing.basic.annual.billed">Facturado anualmente</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="features-list">
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.basic.features.f1">1 propiedad</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.basic.features.f2">Atención 24/7</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span>WhatsApp y Telegram</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.basic.features.f4">Gestión de datos básica</span>
-                            </li>
-                        </ul>
-                        <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
-                    </div>
-                </div>
-
-                <!-- Plan Pro -->
-                <div class="pricing-card popular">
-                    <div class="popular-tag" data-i18n="pricing.popularTag">Más popular</div>
-                    <div class="card-header">
-                        <h3 data-i18n="pricing.pro.title">Pro</h3>
-                        <div class="price-container">
-                            <div class="price monthly active">
-                                <span class="amount" data-i18n="pricing.pro.monthly.amount">29.99</span>
-                                <span class="period" data-i18n="pricing.pro.monthly.period">€/mes</span>
-                            </div>
-                            <div class="price annual">
-                                <span class="amount" data-i18n="pricing.pro.annual.amount">23.99</span>
-                                <span class="period" data-i18n="pricing.pro.annual.period">€/mes</span>
-                                <span class="billed" data-i18n="pricing.pro.annual.billed">Facturado anualmente</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="features-list">
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.pro.features.f1">Hasta 5 propiedades</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.pro.features.f2">Todo lo del plan Básico</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.pro.features.f3">Llamadas automáticas</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.pro.features.f4">Gestión avanzada de datos</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.pro.features.f5">Análisis y reportes</span>
-                            </li>
-                        </ul>
-                        <button class="btn-subscribe" data-i18n="pricing.subscribe">Empezar ahora</button>
-                    </div>
-                </div>
-
-                <!-- Plan Enterprise -->
-                <div class="pricing-card">
-                    <div class="card-header">
-                        <h3 data-i18n="pricing.enterprise.title">Enterprise</h3>
-                        <div class="price-container">
-                            <div class="price">
-                                <span class="amount" data-i18n="pricing.enterprise.price">Personalizado</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="features-list">
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.enterprise.features.f1">Propiedades ilimitadas</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.enterprise.features.f2">Todo lo del plan Pro</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.enterprise.features.f3">API dedicada</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.enterprise.features.f4">Soporte prioritario</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-check"></i>
-                                <span data-i18n="pricing.enterprise.features.f5">Personalización completa</span>
-                            </li>
-                        </ul>
-                        <button class="btn-subscribe" data-i18n="pricing.enterprise.contact">Contactar ventas</button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -458,6 +354,77 @@
 </footer>
 <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2025/01/23/11/20250123112128-UAC75SJ2.js"></script>
+<script src="js/carousel.js"></script>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+    from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAbpPPIGQ8XezinDucEOFG3IYgT3AQOQAE",
+        authDomain: "host-helper-ai.firebaseapp.com",
+        projectId: "host-helper-ai",
+        storageBucket: "host-helper-ai.firebasestorage.app",
+        messagingSenderId: "618253834482",
+        appId: "1:618253834482:web:b3c4739d47a3aa043c186b",
+        measurementId: "G-WJDZ2JG32V"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Función para iniciar sesión con Google
+    function signInWithGoogle() {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // El usuario ha iniciado sesión correctamente
+                const user = result.user;
+                console.log("Usuario logueado:", user);
+            }).catch((error) => {
+                // Error en el inicio de sesión
+                console.error("Error:", error);
+            });
+    }
+
+    // Función para registrarse con email y contraseña
+    function signUpWithEmail(email, password) {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Usuario registrado correctamente
+                const user = userCredential.user;
+                console.log("Usuario registrado:", user);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
+    // Función para iniciar sesión con email y contraseña
+    function signInWithEmail(email, password) {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Usuario ha iniciado sesión correctamente
+                const user = userCredential.user;
+                console.log("Usuario logueado:", user);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }
+
+    // Hacer las funciones disponibles globalmente
+    window.signInWithGoogle = signInWithGoogle;
+    window.signUpWithEmail = signUpWithEmail;
+    window.signInWithEmail = signInWithEmail;
+</script>
+
 </body>
 </html>
 

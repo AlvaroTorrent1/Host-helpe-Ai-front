@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios - Host Helper AI</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./images/logo.png">
+    <link rel="shortcut icon" type="image/png" href="./images/logo.png">
+    
+    <!-- Resto de los links -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-content">
+                    <!-- Logo y título con enlace -->
+                    <div class="nav-brand desktop-brand">
+                        <a href="index.html#hero">
+                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                            <h1 class="nav-title">Host Helper <span class="nav-highlight">Ai</span></h1>
+                        </a>
+                    </div>
+
+                    <!-- Menú hamburguesa para móvil -->
+                    <button class="hamburger-menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <div class="nav-right">
+                        <!-- Enlaces de navegación -->
+                        <ul class="nav-links">
+                            <li><a href="index.html#features" data-i18n="nav.features">Características</a></li>
+                            <li><a href="pricing.html" data-i18n="nav.pricing">Precios</a></li>
+                            <li><a href="index.html#about" data-i18n="nav.about">Nosotros</a></li>
+                            <li><a href="index.html#contact" data-i18n="nav.contact">Agendar Demo</a></li>
+                        </ul>
+
+                        <!-- Selector de idioma -->
+                        <div class="language-selector">
+                            <button class="language-button">
+                                <span>ES</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="language-options">
+                                <div class="language-option" data-lang="es">
+                                    <span>Español</span>
+                                </div>
+                                <div class="language-option" data-lang="en">
+                                    <span>English</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón de inicio de sesión -->
+                        <div class="nav-buttons">
+                            <a href="login.html" class="btn btn-login">
+                                <i class="fas fa-user"></i>
+                                <span data-i18n="buttons.login">Iniciar Sesión</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sección Precios -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <div class="pricing-header">
+                <h2 class="section-title" data-i18n="pricing.title">Planes de suscripción</h2>
+                <p class="pricing-subtitle" data-i18n="pricing.subtitle">Elige el plan que mejor se adapte a tus necesidades</p>
+                <div class="billing-toggle">
+                    <button class="billing-btn" data-billing="monthly" data-i18n="pricing.monthly">Mensual</button>
+                    <button class="billing-btn active" data-billing="annual" data-i18n="pricing.annual">
+                        Anual
+                        <span class="save-badge" data-i18n="pricing.saveTag">Ahorra 20%</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Plan Básico -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.basic.title">Básico</h3>
+                        <div class="price-container">
+                            <div class="price monthly">
+                                <span class="currency">€</span>
+                                <span class="amount" data-i18n="pricing.basic.monthly.amount">9.99</span>
+                                <span class="period" data-i18n="pricing.basic.monthly.period">€/mes</span>
+                            </div>
+                            <div class="price annual active">
+                                <span class="currency">€</span>
+                                <span class="amount" data-i18n="pricing.basic.annual.amount">7.99</span>
+                                <span class="period" data-i18n="pricing.basic.annual.period">€/mes</span>
+                                <span class="billed" data-i18n="pricing.basic.annual.billed">Facturado anualmente</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.basic.features.f1">1 propiedad</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.basic.features.f2">Atención 24/7</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>WhatsApp y Telegram</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.basic.features.f4">Gestión de datos básica</span>
+                            </li>
+                        </ul>
+                        <a 
+                           data-annual-link="https://buy.stripe.com/14kaHD96S0lpgdafZ0"
+                           data-monthly-link="https://buy.stripe.com/6oEbLH1Eq4BF4us288"
+                           class="pricing-cta-button pricing-link">
+                            Empezar ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Plan Pro -->
+                <div class="pricing-card popular">
+                    <div class="popular-tag" data-i18n="pricing.popularTag">Más popular</div>
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.pro.title">Pro</h3>
+                        <div class="price-container">
+                            <div class="price monthly">
+                                <span class="currency">€</span>
+                                <span class="amount" data-i18n="pricing.pro.monthly.amount">29.99</span>
+                                <span class="period" data-i18n="pricing.pro.monthly.period">€/mes</span>
+                            </div>
+                            <div class="price annual active">
+                                <span class="currency">€</span>
+                                <span class="amount" data-i18n="pricing.pro.annual.amount">23.99</span>
+                                <span class="period" data-i18n="pricing.pro.annual.period">€/mes</span>
+                                <span class="billed" data-i18n="pricing.pro.annual.billed">Facturado anualmente</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f1">Hasta 5 propiedades</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f2">Todo lo del plan Básico</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f3">Llamadas automáticas</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f4">Gestión avanzada de datos</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.pro.features.f5">Análisis y reportes</span>
+                            </li>
+                        </ul>
+                        <a 
+                           data-annual-link="https://buy.stripe.com/bIY3fbdn81pt0ec28b"
+                           data-monthly-link="https://buy.stripe.com/4gw6rn0Am6JN6CAfYZ"
+                           class="pricing-cta-button pricing-link">
+                            Empezar ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Plan Enterprise -->
+                <div class="pricing-card">
+                    <div class="card-header">
+                        <h3 data-i18n="pricing.enterprise.title">Enterprise</h3>
+                        <div class="price-container">
+                            <div class="price">
+                                <span class="amount" data-i18n="pricing.enterprise.price">Personalizado</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <ul class="features-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f1">Propiedades ilimitadas</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f2">Todo lo del plan Pro</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f3">API dedicada</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f4">Soporte prioritario</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span data-i18n="pricing.enterprise.features.f5">Personalización completa</span>
+                            </li>
+                        </ul>
+                        <a href="index.html#contact" class="pricing-cta-button" data-i18n="pricing.enterprise.contact">
+                            Contactar ventas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-brand-content">
+                        <div class="footer-title-container">
+                            <div class="footer-logo">
+                                <img src="./images/logo.png" alt="Host Helper AI Logo">
+                            </div>
+                            <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
+                        </div>
+                        <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+                    </div>
+                </div>
+                <div class="footer-contact">
+                    <h4 data-i18n="footer.contact.title">Contacto</h4>
+                    <a href="mailto:support@hosthelperai.com" class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        support@hosthelperai.com
+                    </a>
+                    <a href="tel:+34687472327" class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        +34 687 472 327
+                    </a>
+                </div>
+                <div class="footer-social">
+                    <h4 data-i18n="footer.social.title">Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/company/host-helper-ai/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.instagram.com/host_helper_ai/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@HostHelperAi" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="./js/translations.js"></script>
+    <script type="module" src="./js/language.js"></script>
+    <script type="module" src="./js/main.js"></script>
+    <script src="./js/pricing.js"></script>
+</body>
+</html>
+
+<style>
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.hero-main {
+    margin-top: 0;
+}
+
+.main-title, .main-subtitle {
+    text-align: center;
+    margin-left: 0;
+}
+
+.secondary-title, .secondary-description {
+    text-align: center;
+    margin-left: 0;
+}
+
+.hero-main, .hero-secondary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-title {
+    font-size: 3.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.main-subtitle {
+    font-size: 2.45rem;
+    font-weight: 700;
+    color: #333;
+    opacity: 0.9;
+}
+
+.hero-secondary {
+    margin-left: 8rem;
+}
+
+.secondary-content {
+    max-width: 800px;
+}
+
+.secondary-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #ECA408;
+    margin-bottom: 1rem;
+}
+
+.secondary-description {
+    font-size: 1.4rem;
+    color: #333;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+@media (max-width: 1200px) {
+    .main-title {
+        font-size: 3.15rem;
+    }
+    
+    .main-subtitle {
+        font-size: 2.1rem;
+    }
+    
+    .secondary-title {
+        font-size: 2.45rem;
+    }
+    
+    .secondary-description {
+        font-size: 1.26rem;
+    }
+    
+    .hero-secondary {
+        margin-left: 6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        max-width: 100vw;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100vw;
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        width: 100%;
+        padding: 0 1rem;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .main-title, 
+    .main-subtitle,
+    .secondary-title,
+    .secondary-description {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Aseguramos que ningún elemento cause scroll horizontal */
+    * {
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
+    .hero-main {
+        margin-top: 2rem;
+    }
+
+    .main-title {
+        margin-top: 1rem;
+        font-size: 2.45rem;
+    }
+
+    .main-subtitle {
+        font-size: 1.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .hero-secondary {
+        margin-top: 2rem;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+    }
+
+    .secondary-title {
+        font-size: 2.1rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        width: 100%;
+        position: relative;
+        right: 126px; /* Incrementado un 5% más (de 120px a 126px) */
+    }
+
+    .secondary-description {
+        font-size: 1.12rem;
+        text-align: center;
+        width: 100%;
+        position: relative;
+        right: 126px; /* Incrementado un 5% más (de 120px a 126px) */
+    }
+
+    .hero-cta {
+        margin-top: 2rem;
+    }
+
+    .hamburger-menu {
+        display: block;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        padding: 2rem;
+        transition: right 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-menu.show {
+        right: 0;
+    }
+
+    .mobile-menu-header {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 2rem;
+    }
+
+    .close-menu {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .mobile-menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .mobile-menu-item {
+        font-size: 1.2rem;
+        color: #333;
+        text-decoration: none;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #eee;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .mobile-menu .language-selector {
+        margin-top: 2rem;
+        width: 100%;
+    }
+
+    .mobile-menu .language-button {
+        width: 100%;
+        justify-content: space-between;
+        padding: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .nav-right {
+            display: none;
+        }
+
+        .hamburger-menu {
+            display: block;
+        }
+    }
+}
+
+.hero-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.contact-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #333;
+    border: 2px solid #ECA408;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.contact-button:hover {
+    background: #ECA408;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.contact-button i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.contact-button:hover i {
+    transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+    .hero-cta {
+        margin-top: 2rem;
+        width: 100%;
+        left: 0;
+        transform: none;
+    }
+
+    .contact-button {
+        padding: 0.8rem 1.6rem;
+        font-size: 1rem;
+    }
+}
+
+.features-carousel {
+    overflow-x: auto;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 2rem 0;
+}
+
+.features-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.features-carousel.grabbing {
+    cursor: grabbing;
+}
+
+/* Ocultamos las flechas en desktop */
+@media (min-width: 1024px) {
+    .carousel-button {
+        display: none;
+    }
+}
+
+/* Mantenemos las flechas solo en móvil */
+@media (max-width: 1023px) {
+    .carousel-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #ECA408;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-button:hover {
+        background: #ECA408;
+        color: #fff;
+    }
+
+    .carousel-button.prev {
+        left: 1rem;
+    }
+
+    .carousel-button.next {
+        right: 1rem;
+    }
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #333 0%, #ECA408 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+/* Ajuste específico para la versión en inglés */
+html[lang="en"] .hero-secondary {
+    margin-left: 12rem;
+}
+
+html[lang="en"] .secondary-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+/* Ajuste específico para la versión en francés */
+html[lang="fr"] .hero-secondary {
+    margin-left: 4rem;  /* Reducimos el margen izquierdo para centrar mejor */
+}
+
+html[lang="fr"] .secondary-content {
+    max-width: 800px;
+    text-align: center;
+}
+
+/* Mantenemos los estilos existentes */
+.hero-secondary {
+    margin-left: 8rem;  /* Margen original para español */
+}
+
+.secondary-content {
+    max-width: 800px;
+}
+
+.intro-text {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.headline {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.feature-points {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.feature-point {
+    text-align: justify;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #666;
+}
+
+.feature-point p {
+    margin: 0;
+}
+
+.feature-point.highlight {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Eliminamos los estilos de los iconos */
+.feature-point .icon {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .headline {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .feature-point {
+        font-size: 1.1rem;
+    }
+
+    .feature-point.highlight {
+        font-size: 1.3rem;
+    }
+}
+
+.cta-link {
+    color: #ECA408;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cta-link:hover {
+    color: #333;
+    transform: translateY(-2px);
+    display: inline-block;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #333;
+    border: 2px solid #ECA408;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+    cursor: pointer;
+    background: linear-gradient(90deg, #333 0%, #ECA408 100%);
+    color: #fff;
+}
+
+.cta-button:hover {
+    background: linear-gradient(90deg, #ECA408 0%, #333 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    border-color: transparent;
+}
+
+.hero-social {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+}
+
+.hero-social .social-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid #ECA408;
+}
+
+.hero-social .social-link:hover {
+    background: #ECA408;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .hero-social {
+        margin-top: 1.5rem;
+        left: 0;
+        transform: none;
+        width: 100%;
+    }
+}
+
+/* Ocultamos las flechas de navegación */
+.carousel-button {
+    display: none;  /* Ocultamos las flechas completamente */
+}
+
+.features-card {
+    cursor: grab;  /* Indicador visual de que se puede hacer scroll */
+}
+
+.features-card:active {
+    cursor: grabbing;  /* Cuando se está haciendo scroll */
+}
+
+@media (max-width: 768px) {
+    .features-carousel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;  /* Scroll suave en iOS */
+        scrollbar-width: none;  /* Ocultar scrollbar en Firefox */
+        -ms-overflow-style: none;  /* Ocultar scrollbar en IE/Edge */
+    }
+
+    .features-carousel::-webkit-scrollbar {
+        display: none;  /* Ocultar scrollbar en Chrome/Safari/Opera */
+    }
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 10px;  /* Desplazamiento hacia la derecha */
+}
+
+.footer-slogan {
+    padding-left: 35px;  /* Mismo desplazamiento para mantener alineación */
+}
+
+@media (max-width: 768px) {
+    .footer-brand {
+        margin-left: 35px;  /* Ajuste adicional para móvil */
+    }
+
+    .footer-slogan {
+        margin-left: 35px;  /* Ajuste adicional para móvil */
+        max-width: 80%;  /* Evitar que el texto se desborde */
+    }
+}
+
+/* Aseguramos que el logo sea visible y tenga el tamaño correcto */
+.nav-brand img {
+    height: 25px;
+    width: auto;
+    display: block;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    gap: 4rem; /* Reducido el espacio entre el brand y los enlaces */
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    margin-left: -2rem;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem; /* Reducido el espacio entre logo y texto */
+    text-decoration: none;
+}
+
+.nav-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem; /* Reducido más el tamaño del texto */
+    font-weight: 700; /* Cambiado a bold */
+    color: #333333;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.nav-highlight {
+    color: #ECA408;
+}
+
+/* Ajustamos el espaciado general de la barra */
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    gap: 4rem; /* Reducido el espacio entre el brand y los enlaces */
+}
+
+@media (max-width: 768px) {
+    .nav-content {
+        padding: 1rem 1.5rem;
+        justify-content: space-between;
+        gap: 10rem;
+    }
+
+    .nav-brand {
+        margin-left: -4.2rem; /* Reducido aún más el margen negativo para mover más a la derecha */
+    }
+
+    .brand-link {
+        gap: 0.8rem;
+    }
+
+    .nav-brand img {
+        height: 22px;
+    }
+
+    .nav-title {
+        font-size: 1.2rem;
+    }
+
+    .hamburger-menu {
+        margin-right: -3.5rem;
+        position: relative;
+        right: 0;
+    }
+}
+
+/* Aplicamos los mismos estilos del carrusel de características al de clientes */
+.clients-carousel {
+    overflow-x: auto;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 2rem 0;
+}
+
+.clients-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.clients-carousel.grabbing {
+    cursor: grabbing;
+}
+
+/* Ocultamos las flechas de navegación */
+.clients-carousel .carousel-arrow {
+    display: none;  /* Ocultamos las flechas completamente */
+}
+
+.clients-track {
+    display: flex;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* Ajustamos el comportamiento táctil */
+@media (max-width: 768px) {
+    .clients-carousel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .clients-track {
+        padding: 0 1rem;
+    }
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.language-selector {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.language-button {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid #ECA408;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+}
+
+.language-options {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ECA408;
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    min-width: 120px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
+}
+
+.language-options.show {
+    display: block;
+}
+
+.language-option {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.language-option:hover {
+    background: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .language-selector {
+        margin-left: 0;
+    }
+    
+    .nav-right {
+        gap: 1rem;
+    }
+}
+
+/* Estilos para el menú hamburguesa */
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+
+    .nav-right {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        padding: 5rem 2rem 2rem;
+        transition: right 0.3s ease;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .nav-right.show {
+        right: 0;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .nav-links li {
+        width: 100%;
+        text-align: left;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 0.5rem 0;
+        font-size: 1.2rem;
+    }
+
+    .language-selector {
+        margin: 0;
+        width: 100%;
+    }
+
+    .language-button {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .language-options {
+        width: 100%;
+        position: static;
+        margin-top: 0.5rem;
+    }
+}
+</style>
+
+<script>
+// Añadir funcionalidad de arrastrar con el ratón
+const carousel = document.querySelector('.features-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+carousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    carousel.classList.add('grabbing');
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+});
+
+carousel.addEventListener('mouseleave', () => {
+    isDown = false;
+    carousel.classList.remove('grabbing');
+});
+
+carousel.addEventListener('mouseup', () => {
+    isDown = false;
+    carousel.classList.remove('grabbing');
+});
+
+carousel.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - carousel.offsetLeft;
+    const walk = (x - startX) * 2; // Velocidad de scroll
+    carousel.scrollLeft = scrollLeft - walk;
+});
+
+document.querySelector('.hamburger-menu').addEventListener('click', () => {
+    document.querySelector('.mobile-menu').classList.add('active');
+});
+
+document.querySelector('.close-menu').addEventListener('click', () => {
+    document.querySelector('.mobile-menu').classList.remove('active');
+});
+
+// Cerrar menú al hacer clic en un enlace
+document.querySelectorAll('.mobile-menu-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelector('.mobile-menu').classList.remove('active');
+    });
+});
+
+// Añadimos la funcionalidad de arrastrar para el carrusel de clientes
+const clientsCarousel = document.querySelector('.clients-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+clientsCarousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    clientsCarousel.classList.add('grabbing');
+    startX = e.pageX - clientsCarousel.offsetLeft;
+    scrollLeft = clientsCarousel.scrollLeft;
+});
+
+clientsCarousel.addEventListener('mouseleave', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mouseup', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - clientsCarousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    clientsCarousel.scrollLeft = scrollLeft - walk;
+});
+
+// Selector de idiomas simplificado
+const langBtn = document.querySelector('.language-button');
+const langOptions = document.querySelector('.language-options');
+
+langBtn.onclick = (e) => {
+    e.stopPropagation();
+    langOptions.classList.toggle('show');
+}
+
+document.onclick = () => {
+    langOptions.classList.remove('show');
+}
+</script>
+
+<script type="module">
+import { translations } from './js/translations.js';
+
+document.addEventListener('DOMContentLoaded', function() {
+    const languageButton = document.querySelector('.language-button');
+    const languageOptions = document.querySelector('.language-options');
+
+    // Función para aplicar las traducciones
+    function applyTranslations(lang) {
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const keys = element.getAttribute('data-i18n').split('.');
+            let translation = translations[lang];
+            
+            // Navegar por el objeto de traducciones usando las claves
+            for (const key of keys) {
+                translation = translation[key];
+                if (!translation) break;
+            }
+            
+            if (translation) {
+                element.textContent = translation;
+            }
+        });
+    }
+
+    // Mostrar/ocultar opciones
+    languageButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        languageOptions.classList.toggle('show');
+    });
+
+    // Selección de idioma
+    const languageOptionElements = document.querySelectorAll('.language-option');
+    languageOptionElements.forEach(option => {
+        option.addEventListener('click', function() {
+            const selectedLang = this.getAttribute('data-lang');
+            
+            // Actualizar el texto del botón
+            languageButton.querySelector('span').textContent = selectedLang.toUpperCase();
+            
+            // Ocultar el menú
+            languageOptions.classList.remove('show');
+            
+            // Aplicar traducciones
+            applyTranslations(selectedLang);
+            
+            // Guardar preferencia
+            localStorage.setItem('preferredLanguage', selectedLang);
+        });
+    });
+
+    // Cerrar el menú al hacer clic fuera
+    document.addEventListener('click', () => {
+        languageOptions.classList.remove('show');
+    });
+
+    // Cargar idioma preferido al iniciar
+    const savedLang = localStorage.getItem('preferredLanguage') || 'es';
+    applyTranslations(savedLang);
+    languageButton.querySelector('span').textContent = savedLang.toUpperCase();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburgerBtn = document.querySelector('.hamburger-menu');
+    const navRight = document.querySelector('.nav-right');
+    const menuLinks = document.querySelectorAll('.nav-links a');
+
+    // Toggle menú
+    hamburgerBtn.addEventListener('click', function() {
+        navRight.classList.toggle('active');
+        // Cambiar icono
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // Cerrar menú al hacer clic en un enlace
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navRight.classList.remove('active');
+            const icon = hamburgerBtn.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!navRight.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            navRight.classList.remove('active');
+            const icon = hamburgerBtn.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+});
+</script>
+

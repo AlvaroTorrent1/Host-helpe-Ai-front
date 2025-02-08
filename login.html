@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Host Helper AI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <a href="index.html" class="login-logo">
+                    <img src="./images/logo.png" alt="Host Helper AI Logo">
+                    <h1>Host Helper <span class="highlight">Ai</span></h1>
+                </a>
+            </div>
+
+            <div class="login-options">
+                <button class="google-auth-btn" onclick="signInWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Icon">
+                    <span>Continuar con Google</span>
+                </button>
+
+                <div class="auth-divider">
+                    <span>o</span>
+                </div>
+
+                <form id="emailAuthForm" onsubmit="handleEmailAuth(event)">
+                    <input type="email" id="authEmail" placeholder="Email" required>
+                    <input type="password" id="authPassword" placeholder="Contraseña" required>
+                    <button type="submit" class="email-auth-btn">
+                        Continuar con Email
+                    </button>
+                </form>
+
+                <div class="login-footer">
+                    <a href="index.html">Volver al inicio</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+        from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbpPPIGQ8XezinDucEOFG3IYgT3AQOQAE",
+            authDomain: "host-helper-ai.firebaseapp.com",
+            projectId: "host-helper-ai",
+            storageBucket: "host-helper-ai.firebasestorage.app",
+            messagingSenderId: "618253834482",
+            appId: "1:618253834482:web:b3c4739d47a3aa043c186b",
+            measurementId: "G-WJDZ2JG32V"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.signInWithGoogle = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("Usuario logueado:", user);
+                    window.location.href = "dashboard.html";
+                }).catch((error) => {
+                    console.error("Error:", error);
+                });
+        }
+
+        window.handleEmailAuth = function(event) {
+            event.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("Usuario logueado:", user);
+                    window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+        }
+    </script>
+</body>
+</html> 
