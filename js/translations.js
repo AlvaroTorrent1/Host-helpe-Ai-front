@@ -11,20 +11,10 @@ export const translations = {
             register: "Registrarse"
         },
         hero: {
-            title: "Host Helper Ai",
-            message: `Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico. 
-
-                🤖 Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.
-
-                💰 Genera ingresos extra con nuestro sistema de cross-selling automatizado.
-
-                Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.
-
-                🎯 Empieza el 2025 con nosotros!`,
             mainTitle: "Tu conserje virtual 24/7",
             mainSubtitle: "que atiende a tus huéspedes por ti",
-            secondaryTitle: "Genera ingresos extra",
-            secondaryDescription: "mientras tu bot vende servicios adicionales",
+            extraIncome: "Genera ingresos extra",
+            botSells: "mientras tu bot vende servicios adicionales",
             ctaButton: "Contactar con ventas"
         },
         features: {
@@ -60,7 +50,7 @@ export const translations = {
             monthly: "Mensual",
             annual: "Anual",
             saveTag: "Ahorra 20%",
-            subscribe: "Empezar ahora",
+            startNow: "Empezar ahora",
             popularTag: "Más popular",
             basic: {
                 title: "Básico",
@@ -151,6 +141,54 @@ export const translations = {
                 title: "Síguenos"
             },
             copyright: "© 2025 Host Helper AI. Todos los derechos reservados."
+        },
+        faqs: {
+            title: "Preguntas Frecuentes",
+            items: {
+                implementation: {
+                    question: "¿Es fácil implementar Host Helper AI?",
+                    answer: "Sí, la implementación es muy sencilla. Nuestro equipo te guía en todo el proceso y en menos de 24 horas tu asistente virtual estará funcionando. No requiere instalaciones complejas ni conocimientos técnicos."
+                },
+                trial: {
+                    question: "¿Existe un período de prueba?",
+                    answer: "Ofrecemos una demostración personalizada gratuita donde podrás ver cómo funciona el asistente con tus propios datos y casos de uso específicos."
+                },
+                changePlan: {
+                    question: "¿Puedo cambiar de plan en cualquier momento?",
+                    answer: "Sí, puedes actualizar o cambiar tu plan en cualquier momento. Los cambios se aplican inmediatamente y el cobro se ajusta de forma proporcional."
+                },
+                languages: {
+                    question: "¿En qué idiomas está disponible el asistente?",
+                    answer: "El asistente está disponible en español e inglés, con capacidad de detectar automáticamente el idioma del huésped y responder apropiadamente."
+                },
+                extraIncome: {
+                    question: "¿Cómo funciona el sistema de ingresos extra?",
+                    answer: "El asistente ofrece servicios adicionales a tus huéspedes de forma proactiva, como traslados, excursiones o servicios de limpieza extra. Tú defines los servicios y las comisiones, y el sistema gestiona todo automáticamente."
+                },
+                support: {
+                    question: "¿Qué soporte técnico incluye?",
+                    answer: "Todos los planes incluyen soporte técnico por email. Los planes Pro y Enterprise incluyen además soporte prioritario y acceso a un gestor de cuenta dedicado."
+                }
+            }
+        },
+        clients: {
+            title: "Start 2025 with us!",
+            cards: {
+                torreDelMar: {
+                    title: "Apartamentos Torre del Mar",
+                    description: "Apartamento moderno frente al mar con vistas al Mediterráneo."
+                },
+                solsetNerja: {
+                    title: "Solset Nerja",
+                    description: "Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.",
+                    cta: "Visitar web"
+                },
+                donaLola: {
+                    title: "Alojamientos Doña Lola",
+                    description: "Alojamiento boutique en el centro histórico de Lucena.",
+                    cta: "Visitar web"
+                }
+            }
         }
     },
     en: {
@@ -165,20 +203,10 @@ export const translations = {
             register: "Sign Up"
         },
         hero: {
-            title: "Host Helper Ai",
-            message: `Host Helper Ai is the best complement for your vacation rental business.
-
-                🤖 Ensure 24/7 service with our agent, attending to your guests through WhatsApp, Telegram and calls.
-
-                💰 Generate extra income with our automated cross-selling system.
-
-                Automate data collection and get the best reviews for your business.
-
-                🎯 Start 2025 with us!`,
             mainTitle: "Your 24/7 virtual concierge",
             mainSubtitle: "that takes care of your guests for you",
-            secondaryTitle: "Generate extra income",
-            secondaryDescription: "while your bot sells additional services",
+            extraIncome: "Generate extra income",
+            botSells: "while your bot sells additional services",
             ctaButton: "Contact sales"
         },
         features: {
@@ -214,7 +242,7 @@ export const translations = {
             monthly: "Monthly",
             annual: "Annual",
             saveTag: "Save 20%",
-            subscribe: "Get Started",
+            startNow: "Get Started",
             popularTag: "Most popular",
             basic: {
                 title: "Basic",
@@ -305,6 +333,54 @@ export const translations = {
                 title: "Follow us"
             },
             copyright: "© 2025 Host Helper AI. All rights reserved."
+        },
+        faqs: {
+            title: "Frequently Asked Questions",
+            items: {
+                implementation: {
+                    question: "Is it easy to implement Host Helper AI?",
+                    answer: "Yes, implementation is very simple. Our team guides you through the entire process and your virtual assistant will be up and running in less than 24 hours. No complex installations or technical knowledge required."
+                },
+                trial: {
+                    question: "Is there a trial period?",
+                    answer: "We offer a free personalized demo where you can see how the assistant works with your own data and specific use cases."
+                },
+                changePlan: {
+                    question: "Can I change plans at any time?",
+                    answer: "Yes, you can upgrade or change your plan at any time. Changes are applied immediately and billing is adjusted proportionally."
+                },
+                languages: {
+                    question: "In which languages is the assistant available?",
+                    answer: "The assistant is available in Spanish and English, with the ability to automatically detect the guest's language and respond appropriately."
+                },
+                extraIncome: {
+                    question: "How does the extra income system work?",
+                    answer: "The assistant proactively offers additional services to your guests, such as transfers, excursions, or extra cleaning services. You define the services and commissions, and the system manages everything automatically."
+                },
+                support: {
+                    question: "What technical support is included?",
+                    answer: "All plans include email technical support. Pro and Enterprise plans also include priority support and access to a dedicated account manager."
+                }
+            }
+        },
+        clients: {
+            title: "Start 2025 with us!",
+            cards: {
+                torreDelMar: {
+                    title: "Torre del Mar Apartments",
+                    description: "Modern beachfront apartment with Mediterranean views."
+                },
+                solsetNerja: {
+                    title: "Solset Nerja",
+                    description: "Sea view apartments with private terraces and pool in Nerja.",
+                    cta: "Visit website"
+                },
+                donaLola: {
+                    title: "Doña Lola Accommodations",
+                    description: "Boutique accommodation in the historic center of Lucena.",
+                    cta: "Visit website"
+                }
+            }
         }
     }
 }; 

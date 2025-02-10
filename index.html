@@ -116,8 +116,10 @@
                 </div>
                 
                 <div class="hero-secondary">
-                    <h3 class="secondary-title" data-i18n="hero.secondaryTitle">Genera ingresos extra</h3>
-                    <p class="secondary-description" data-i18n="hero.secondaryDescription">mientras tu bot vende servicios adicionales</p>
+                    <div class="secondary-container">
+                        <h3 class="secondary-title" data-i18n="hero.extraIncome">Genera ingresos extra</h3>
+                        <p class="secondary-description" data-i18n="hero.botSells">mientras tu bot vende servicios adicionales</p>
+                    </div>
                 </div>
 
                 <div class="hero-cta">
@@ -142,14 +144,11 @@
     </section>
 
     <!-- Sección Características -->
-    <section id="features" class="section features-section">
+    <section class="features-section">
         <div class="container">
             <h2 class="section-title" data-i18n="features.title">Características</h2>
-            <div class="features-carousel">
-                <button class="carousel-button prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <div class="features-track">
+            <div class="features-carousel" id="featuresCarousel">
+                <div class="feature-cards">
                     <div class="feature-card">
                         <i class="fas fa-robot"></i>
                         <h3 data-i18n="features.card1.title">Asistente Virtual 24/7</h3>
@@ -186,9 +185,6 @@
                         <p data-i18n="features.card5.description">Sistema de atención telefónica inteligente que gestiona llamadas entrantes, proporciona información clave y transfiere a un operador humano cuando es necesario.</p>
                     </div>
                 </div>
-                <button class="carousel-button next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
         </div>
     </section>
@@ -229,26 +225,26 @@
                 <div class="client-card">
                     <img src="images/pic2.png" alt="Apartamentos Torre del Mar">
                     <div class="client-info">
-                        <h3 data-i18n="about.clients.torremar.title">Apartamentos Torre del Mar</h3>
-                        <p data-i18n="about.clients.torremar.description">Apartamento moderno frente al mar con vistas al Mediterráneo.</p>
+                        <h3 data-i18n="clients.cards.torreDelMar.title">Apartamentos Torre del Mar</h3>
+                        <p data-i18n="clients.cards.torreDelMar.description">Apartamento moderno frente al mar con vistas al Mediterráneo.</p>
                     </div>
                 </div>
 
                 <div class="client-card">
                     <img src="images/pic7.png" alt="Solset Nerja">
                     <div class="client-info">
-                        <h3 data-i18n="about.clients.solset.title">Solset Nerja</h3>
-                        <p data-i18n="about.clients.solset.description">Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.</p>
-                        <a href="https://solsetnerja.com/en/" target="_blank" class="client-link" data-i18n="about.visitWeb">Visitar web</a>
+                        <h3 data-i18n="clients.cards.solsetNerja.title">Solset Nerja</h3>
+                        <p data-i18n="clients.cards.solsetNerja.description">Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.</p>
+                        <a href="https://solsetnerja.com/en/" target="_blank" class="client-link" data-i18n="clients.cards.solsetNerja.cta">Visitar web</a>
                     </div>
                 </div>
 
                 <div class="client-card">
                     <img src="images/pic9.png" alt="Alojamientos Doña Lola">
                     <div class="client-info">
-                        <h3 data-i18n="about.clients.lola.title">Alojamientos Doña Lola</h3>
-                        <p data-i18n="about.clients.lola.description">Alojamiento boutique en el centro histórico de Lucena.</p>
-                        <a href="https://lolaalojamientos.com/" target="_blank" class="client-link" data-i18n="about.visitWeb">Visitar web</a>
+                        <h3 data-i18n="clients.cards.donaLola.title">Alojamientos Doña Lola</h3>
+                        <p data-i18n="clients.cards.donaLola.description">Alojamiento boutique en el centro histórico de Lucena.</p>
+                        <a href="https://lolaalojamientos.com/" target="_blank" class="client-link" data-i18n="clients.cards.donaLola.cta">Visitar web</a>
                     </div>
                 </div>
             </div>

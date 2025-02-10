@@ -240,68 +240,59 @@ function initPricingToggle() {
 
 function initFeaturesCarousel() {
     const carousel = document.querySelector('.features-carousel');
-    const track = carousel.querySelector('.features-track');
-    const cards = Array.from(track.children);
-    let currentIndex = 0;
-    
-    // Variables para el touch
-    let startX;
-    let currentX;
-    let isDragging = false;
-    let initialPosition;
+    if (!carousel) return;
+
+    const cards = carousel.querySelector('.feature-cards');
+    const cardWidth = carousel.querySelector('.feature-card').offsetWidth;
+    let startX = 0;
+    let scrollLeft = 0;
+    let isDown = false;
+
+    carousel.addEventListener('mousedown', e => {
+        isDown = true;
+        carousel.classList.add('active');
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+        isDown = false;
+        carousel.classList.remove('active');
+    });
+
+    carousel.addEventListener('mouseup', () => {
+        isDown = false;
+        carousel.classList.remove('active');
+    });
+
+    carousel.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+    });
 
     // Touch events
-    track.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-        initialPosition = currentIndex * -300; // 300px es el ancho de la tarjeta
-        track.style.transition = 'none';
+    carousel.addEventListener('touchstart', e => {
+        isDown = true;
+        carousel.classList.add('active');
+        startX = e.touches[0].clientX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
     });
 
-    track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
-        track.style.transform = `translateX(${initialPosition + diff}px)`;
+    carousel.addEventListener('touchend', () => {
+        isDown = false;
+        carousel.classList.remove('active');
     });
 
-    track.addEventListener('touchend', (e) => {
-        isDragging = false;
-        track.style.transition = 'transform 0.3s ease-out';
-        
-        const diff = currentX - startX;
-        const threshold = 100; // Distancia mínima para cambiar de tarjeta
-
-        if (Math.abs(diff) > threshold) {
-            if (diff > 0 && currentIndex > 0) {
-                currentIndex--;
-            } else if (diff < 0 && currentIndex < cards.length - 1) {
-                currentIndex++;
-            }
-        }
-
-        track.style.transform = `translateX(${currentIndex * -300}px)`;
+    carousel.addEventListener('touchmove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.touches[0].clientX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
     });
-
-    // Mantener los event listeners de las flechas para desktop
-    if (window.innerWidth > 768) {
-        const prevButton = carousel.querySelector('.carousel-arrow.prev');
-        const nextButton = carousel.querySelector('.carousel-arrow.next');
-        
-        prevButton?.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                track.style.transform = `translateX(${currentIndex * -300}px)`;
-            }
-        });
-
-        nextButton?.addEventListener('click', () => {
-            if (currentIndex < cards.length - 1) {
-                currentIndex++;
-                track.style.transform = `translateX(${currentIndex * -300}px)`;
-            }
-        });
-    }
 } 
 
 function initHeroVideo() {

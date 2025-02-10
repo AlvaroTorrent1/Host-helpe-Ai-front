@@ -31,67 +31,68 @@ function initializeCarousel(carouselElement) {
 }
 
 function initFeaturesCarousel() {
-    const track = document.querySelector('.features-track');
-    if (!track) return;
+    const carousel = document.querySelector('.features-carousel');
+    if (!carousel) return;
 
-    // Clonar elementos para scroll infinito
-    const cards = Array.from(track.children);
-    const clonedCards = cards.map(card => card.cloneNode(true));
-    clonedCards.forEach(card => track.appendChild(card));
+    const cards = carousel.querySelector('.feature-cards');
+    const cardWidth = carousel.querySelector('.feature-card').offsetWidth;
+    let isAutoPlaying = true;
+    let autoPlayInterval;
+    let currentPosition = 0;
 
-    // Variables para el touch/drag
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    let animationPaused = false;
-
-    function pauseAnimation() {
-        if (!animationPaused) {
-            track.style.animationPlayState = 'paused';
-            animationPaused = true;
-        }
+    // Función para el autoplay
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            if (isAutoPlaying) {
+                currentPosition -= 1; // Movimiento suave
+                // Resetear posición cuando llegue al final
+                if (Math.abs(currentPosition) >= (cards.scrollWidth - carousel.offsetWidth)) {
+                    currentPosition = 0;
+                }
+                cards.style.transform = `translateX(${currentPosition}px)`;
+            }
+        }, 30); // Velocidad del movimiento
     }
 
-    function resumeAnimation() {
-        if (animationPaused) {
-            track.style.animationPlayState = 'running';
-            animationPaused = false;
-        }
-    }
-
-    // Event listeners para desktop
+    // Eventos para desktop
     if (window.innerWidth > 768) {
-        track.addEventListener('mouseenter', pauseAnimation);
-        track.addEventListener('mouseleave', resumeAnimation);
+        // Pausar en hover
+        carousel.addEventListener('mouseenter', () => {
+            isAutoPlaying = false;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            isAutoPlaying = true;
+        });
+
+        // Iniciar autoplay
+        startAutoPlay();
+    } else {
+        // Comportamiento táctil para móvil
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        carousel.addEventListener('touchstart', (e) => {
+            isDown = true;
+            carousel.classList.add('active');
+            startX = e.touches[0].clientX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('touchend', () => {
+            isDown = false;
+            carousel.classList.remove('active');
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX - carousel.offsetLeft;
+            const walk = (x - startX);
+            carousel.scrollLeft = scrollLeft - walk;
+        });
     }
-
-    // Touch events para móvil
-    track.addEventListener('touchstart', (e) => {
-        isDown = true;
-        startX = e.touches[0].clientX;
-        scrollLeft = track.scrollLeft;
-        pauseAnimation();
-    });
-
-    track.addEventListener('touchend', () => {
-        isDown = false;
-        resumeAnimation();
-    });
-
-    track.addEventListener('touchmove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.touches[0].clientX;
-        const walk = (x - startX);
-        track.scrollLeft = scrollLeft - walk;
-    });
-
-    // Reset animation cuando llega al final
-    track.addEventListener('animationend', () => {
-        track.style.animation = 'none';
-        track.offsetHeight; // Trigger reflow
-        track.style.animation = null;
-    });
 }
 
 // Inicializar todos los carruseles cuando el DOM esté cargado
