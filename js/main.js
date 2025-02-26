@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initPricingToggle();
     initClientsCarousel();
     initLanguageSelector();
-    initHeroVideo();
     initFeaturesCarousel();
     initMobileMenu();
 }); 
@@ -296,82 +295,8 @@ function initFeaturesCarousel() {
 } 
 
 function initHeroVideo() {
-    const video = document.getElementById('christmasVideo');
-    const playPauseBtn = document.querySelector('.hero-video-btn.play-pause');
-    const volumeBtn = document.querySelector('.hero-video-btn.volume');
-    const volumeSlider = document.querySelector('.volume-slider');
-    
-    // Configurar video para autoplay
-    video.muted = true;
-    video.playsInline = true;
-    video.autoplay = true;
-
-    function updatePlayPauseIcon() {
-        const icon = playPauseBtn.querySelector('i');
-        if (video.paused) {
-            icon.className = 'fas fa-play';
-            playPauseBtn.setAttribute('title', 'Reproducir');
-        } else {
-            icon.className = 'fas fa-pause';
-            playPauseBtn.setAttribute('title', 'Pausar');
-        }
-    }
-
-    function updateVolumeIcon() {
-        const icon = volumeBtn.querySelector('i');
-        if (video.muted || video.volume === 0) {
-            icon.className = 'fas fa-volume-mute';
-            volumeBtn.setAttribute('title', 'Activar sonido');
-            volumeSlider.value = 0;
-        } else if (video.volume < 0.5) {
-            icon.className = 'fas fa-volume-down';
-            volumeBtn.setAttribute('title', 'Silenciar');
-        } else {
-            icon.className = 'fas fa-volume-up';
-            volumeBtn.setAttribute('title', 'Silenciar');
-        }
-    }
-
-    // Play/Pause
-    playPauseBtn.addEventListener('click', () => {
-        if (video.paused) {
-            video.play();
-        } else {
-            video.pause();
-        }
-    });
-
-    // Mute/Unmute
-    volumeBtn.addEventListener('click', () => {
-        video.muted = !video.muted;
-        if (!video.muted && video.volume === 0) {
-            video.volume = 0.5;
-            volumeSlider.value = 50;
-        }
-    });
-
-    // Volume Slider
-    volumeSlider.addEventListener('input', (e) => {
-        const value = e.target.value / 100;
-        video.volume = value;
-        video.muted = value === 0;
-        updateVolumeIcon();
-    });
-
-    // Event listeners
-    video.addEventListener('play', updatePlayPauseIcon);
-    video.addEventListener('pause', updatePlayPauseIcon);
-    video.addEventListener('volumechange', updateVolumeIcon);
-
-    // Reproducir automáticamente
-    video.play().catch(() => {
-        // Si falla el autoplay, actualizar el icono
-        updatePlayPauseIcon();
-    });
-
-    // Inicializar estados
-    updatePlayPauseIcon();
-    updateVolumeIcon();
+    // La función está vacía porque hemos eliminado el video
+    console.log('Video hero eliminado');
 } 
 
 function initMobileMenu() {

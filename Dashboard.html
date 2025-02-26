@@ -3,53 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Host Helper AI - Tu conserje virtual 24/7</title>
+    <title>Host Helper AI</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="./images/logo.png">
     <link rel="shortcut icon" type="image/png" href="./images/logo.png">
     
-    <!-- Estilos -->
-    <link rel="stylesheet" href="./css/styles.css">
-    
     <!-- Estilos de fondo personalizados - agregados al inicio para prioridad -->
     <style>
         body {
-            background: linear-gradient(135deg, #F39C12 0%, #F39C12 40%, #FFFFFF 100%) !important;
+            background: linear-gradient(135deg, #F5C75A 0%, #F7D78B 40%, #FFFFFF 100%) !important;
             background-attachment: fixed !important;
         }
-        
-        /* Contenedor de fondo con degradado */
-        .background-gradient {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #F39C12 0%, #F39C12 40%, #FFFFFF 100%);
-            z-index: -2;
+
+        /* Mejorar estilos de los iconos de las tarjetas */
+        .card-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #FFFFFF;
+            box-shadow: 0 6px 12px rgba(236, 164, 8, 0.2);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            border: 2px solid rgba(236, 164, 8, 0.15);
         }
-        
-        /* Overlay translúcido */
-        .overlay-translucent {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
-            z-index: -1;
+
+        .metric-card:hover .card-icon {
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(236, 164, 8, 0.3);
+        }
+
+        /* Hacer las tarjetas más pequeñas */
+        .metric-card {
+            max-width: 280px;
+            padding: 15px !important;
+            margin: 0 auto;
+        }
+
+        .dashboard-metrics {
+            gap: 15px;
+        }
+
+        .card-content h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .card-content .metric {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+
+        .card-content .trend {
+            font-size: 13px;
         }
     </style>
     
+    <!-- Resto de los links -->
+    <link rel="stylesheet" href="./css/styles.css">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Elementos de fondo -->
+    <!-- Contenedor de fondo con degradado -->
     <div class="background-gradient"></div>
     <div class="overlay-translucent"></div>
     
@@ -74,10 +99,6 @@
                     <div class="nav-right">
                         <!-- Enlaces de navegación -->
                         <ul class="nav-links">
-                            <li><a href="#features" data-i18n="nav.features">Características</a></li>
-                            <li><a href="pricing.html" data-i18n="nav.pricing">Precios</a></li>
-                            <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
-                            <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
                         </ul>
 
                         <!-- Selector de idioma -->
@@ -86,11 +107,17 @@
                                 <span>ES</span>
                                 <i class="fas fa-chevron-down"></i>
                             </button>
-                            <div class="language-options">
-                                <div class="language-option" data-lang="es">
+                            <div class="language-options"
+                                style="background-color: #FFFFFF !important; opacity: 1 !important;"
+                            >
+                                <div class="language-option" data-lang="es"
+                                    style="background-color: #FFFFFF !important;"
+                                >
                                     <span>Español</span>
                                 </div>
-                                <div class="language-option" data-lang="en">
+                                <div class="language-option" data-lang="en"
+                                    style="background-color: #FFFFFF !important;"
+                                >
                                     <span>English</span>
                                 </div>
                             </div>
@@ -98,9 +125,9 @@
 
                         <!-- Botón de inicio de sesión -->
                         <div class="nav-buttons">
-                            <a href="login.html" class="btn btn-login">
-                                <i class="fas fa-user"></i>
-                                <span data-i18n="buttons.login">Iniciar Sesión</span>
+                            <a href="#" class="btn btn-login" onclick="signOut(event)">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span data-i18n="buttons.logout">Cerrar Sesión</span>
                             </a>
                         </div>
 
@@ -137,202 +164,166 @@
     </header>
 
     <!-- Sección Hero -->
-    <section id="hero" class="hero">
-        <div class="hero-background-image"></div>
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-main">
-                    <h2 class="main-title gradient-text" data-i18n="hero.mainTitle">Tu conserje virtual 24/7</h2>
-                    <h3 class="main-subtitle" data-i18n="hero.mainSubtitle">que atiende a tus huéspedes por ti</h3>
-                </div>
-                
-                <div class="hero-secondary">
-                    <div class="secondary-container">
-                        <h3 class="secondary-title" data-i18n="hero.extraIncome">Genera ingresos extra</h3>
-                        <p class="secondary-description dark-text" data-i18n="hero.botSells">mientras tu bot vende servicios adicionales</p>
-                    </div>
-                </div>
-
-                <div class="hero-cta">
-                    <a href="#contact" class="contact-button" data-i18n="hero.ctaButton">
-                        Contactar con ventas
-                    </a>
-                </div>
-
-                <div class="hero-social">
-                    <a href="https://www.linkedin.com/company/host-helper-ai" target="_blank" class="social-link">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://www.instagram.com/hosthelperes" target="_blank" class="social-link">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://www.youtube.com/@HostHelperAI" target="_blank" class="social-link">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
+    <section id="dashboard" class="dashboard-section">
+        <div class="dashboard-container">
+            <!-- Selector de usuario y propiedades -->
+            <div class="user-property-selector" style="background-color: #FFFFFF !important; opacity: 1 !important;">
+                <div class="user-info">
+                    <i class="fas fa-user-circle" style="color: #ECA408; font-size: 28px;"></i>
+                    <div class="user-greeting">
+                        <span class="greeting-text" data-i18n="dashboard.welcome">Bienvenido,</span>
+                        <span class="user-fullname">Carlos Rodríguez</span>
         </div>
-    </section>
-
-    <!-- Sección Características -->
-    <section id="features" class="section features-section gradient-section">
-        <div class="gradient-background"></div>
-        <div class="container">
-            <h2 class="section-title" data-i18n="features.title">Características</h2>
-            <div class="features-carousel" id="featuresCarousel">
-                <div class="feature-cards">
-                    <div class="feature-card">
-                        <i class="fas fa-robot"></i>
-                        <h3 data-i18n="features.card1.title">Asistente Virtual 24/7</h3>
-                        <p data-i18n="features.card1.description">Nuestro asistente AI está disponible las 24 horas para atender a tus huéspedes, resolver dudas y gestionar incidencias de forma inmediata, asegurando una atención continua y profesional.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-euro-sign"></i>
-                        <h3 data-i18n="features.card6.title">Ingresos Extra</h3>
-                        <p data-i18n="features.card6.description">Genera ingresos adicionales con nuestro sistema de cross-selling a través de WhatsApp. Ofrece servicios complementarios y experiencias locales de forma automatizada a tus huéspedes.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-database"></i>
-                        <h3 data-i18n="features.card2.title">Gestión de Datos</h3>
-                        <p data-i18n="features.card2.description">Automatizamos la recogida y registro de datos de viajeros en el Sistema de Entrada Segura del Ministerio del Interior, ahorrándote tiempo y evitando errores en el proceso.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fab fa-whatsapp"></i>
-                        <h3 data-i18n="features.card3.title">WhatsApp Business</h3>
-                        <p data-i18n="features.card3.description">Gestiona todas las comunicaciones a través de WhatsApp Business, el canal preferido por los huéspedes. Respuestas instantáneas, envío de información y atención personalizada 24/7.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fab fa-telegram"></i>
-                        <h3 data-i18n="features.card4.title">Telegram</h3>
-                        <p data-i18n="features.card4.description">Canal alternativo de comunicación que ofrece todas las ventajas de la mensajería instantánea. Ideal para huéspedes que prefieren Telegram por su seguridad y rapidez.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-phone-alt"></i>
-                        <h3 data-i18n="features.card5.title">Llamadas Automáticas</h3>
-                        <p data-i18n="features.card5.description">Sistema de atención telefónica inteligente que gestiona llamadas entrantes, proporciona información clave y transfiere a un operador humano cuando es necesario.</p>
+                </div>
+                <div class="property-selector">
+                    <label for="property-select" data-i18n="dashboard.propertySelector.label">Propiedad:</label>
+                    <div class="select-wrapper">
+                        <select id="property-select" onchange="updateDashboardData(this.value)">
+                            <option value="all" data-i18n="dashboard.propertySelector.allProperties">Todas las propiedades</option>
+                            <option value="property1">Apartamento Barcelona</option>
+                            <option value="property2">Villa Marbella</option>
+                            <option value="property3">Piso Madrid Centro</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
+                </div>
 
-    <!-- Sección Nosotros -->
-    <section id="about" class="section about-section white-section">
         <div class="container">
-            <h2 class="section-title" data-i18n="about.title">Nosotros</h2>
-            
-            <div class="about-intro">
-                <div class="intro-content">
-                    <div class="intro-text">
-                        <p class="headline" data-i18n="about.mainMessage">Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico.</p>
-                        
-                        <div class="feature-points">
-                            <div class="feature-point">
-                                <p data-i18n="about.serviceDescription">Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.</p>
-                            </div>
-                            
-                            <div class="feature-point">
-                                <p data-i18n="about.incomeDescription">Genera ingresos extra con nuestro sistema de cross-selling automatizado.</p>
-                            </div>
-                            
-                            <div class="feature-point">
-                                <p data-i18n="about.dataDescription">Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.</p>
-                            </div>
-                            
-                            <div class="feature-point highlight">
-                                <a href="#contact" class="cta-link" data-i18n="about.cta">¡Empieza el 2025 con nosotros!</a>
-                            </div>
-                        </div>
+                <!-- Fila de KPIs -->
+                <div class="dashboard-metrics">
+                    <!-- Tarjeta de Incidencias Resueltas -->
+                    <div class="metric-card">
+                        <div class="card-icon">
+                            <i class="fas fa-tasks" style="color: #ECA408;"></i>
                     </div>
+                        <div class="card-content">
+                            <h3 data-i18n="dashboard.metrics.incidents">Incidencias Resueltas</h3>
+                            <p class="metric">24</p>
+                            <p class="trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span data-i18n="dashboard.metrics.vsLastMonth">12% vs mes anterior</span>
+                            </p>
+                    </div>
+                    </div>
+                    
+                    <!-- Tarjeta de Comisiones -->
+                    <div class="metric-card">
+                        <div class="card-icon">
+                            <i class="fas fa-hand-holding-usd" style="color: #ECA408;"></i>
+                    </div>
+                        <div class="card-content">
+                            <h3 data-i18n="dashboard.metrics.commissions">Comisiones Ganadas</h3>
+                            <p class="metric">45€</p>
+                            <p class="trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span data-i18n="dashboard.metrics.vsLastMonth">8% vs mes anterior</span>
+                            </p>
+                    </div>
+                    </div>
+
+                    <!-- Tarjeta de Registros -->
+                    <div class="metric-card">
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-check" style="color: #ECA408;"></i>
+                            </div>
+                        <div class="card-content">
+                            <h3 data-i18n="dashboard.metrics.registrations">Registros Completados</h3>
+                            <p class="metric">18</p>
+                            <p class="trend neutral">
+                                <i class="fas fa-equals"></i>
+                                <span data-i18n="dashboard.metrics.similar">Similar al mes anterior</span>
+                            </p>
+                            </div>
                 </div>
             </div>
 
-            <!-- Carrusel de clientes -->
-            <div class="clients-carousel">
-                <div class="client-card">
-                    <img src="images/ELPILAR.jpg" alt="Casa Rural El Pilar">
-                    <div class="client-info">
-                        <h3 data-i18n="clients.cards.elPilar.title">Casa Rural El Pilar</h3>
-                        <p data-i18n="clients.cards.elPilar.description">Alojamiento rural con encanto en Sierra de Gata, Extremadura.</p>
-                        <div class="client-cta-container">
-                            <a href="https://www.casaruralelpilar.com/" class="client-cta-button" target="_blank" data-i18n="clients.cards.elPilar.cta">Visitar web</a>
-                        </div>
+                <!-- Panel de últimos registros -->
+                <div class="dashboard-details">
+                    <div class="details-card" id="registrationDetails" style="background-color: #FFFFFF !important; opacity: 1 !important;">
+                        <h3 data-i18n="dashboard.details.recentRegistrations">Últimos registros</h3>
+                        <div class="registration-list-header" style="background-color: #f9f9f9 !important;">
+                            <div class="header-name" data-i18n="dashboard.details.name">Nombre</div>
+                            <div class="header-date" data-i18n="dashboard.details.date">Fecha</div>
+                            <div class="header-property" data-i18n="dashboard.details.property">Propiedad</div>
+                            <div class="header-status" data-i18n="dashboard.details.status">Estado</div>
+                    </div>
+                        <ul class="registration-list" style="background-color: #FFFFFF !important;">
+                            <li class="registration-item">
+                                <div class="registration-name">Emma Johnson</div>
+                                <div class="registration-date">15/06/2023</div>
+                                <div class="registration-property">Villa Marbella</div>
+                                <div class="registration-status completed" data-i18n="dashboard.statuses.completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Carlos Rodríguez</div>
+                                <div class="registration-date">12/06/2023</div>
+                                <div class="registration-property">Apartamento Barcelona</div>
+                                <div class="registration-status completed" data-i18n="dashboard.statuses.completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Sven van der Meer</div>
+                                <div class="registration-date">10/06/2023</div>
+                                <div class="registration-property">Piso Madrid Centro</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">María González</div>
+                                <div class="registration-date">08/06/2023</div>
+                                <div class="registration-property">Villa Marbella</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">John Smith</div>
+                                <div class="registration-date">05/06/2023</div>
+                                <div class="registration-property">Apartamento Barcelona</div>
+                                <div class="registration-status pending" data-i18n="dashboard.statuses.pending">Pendiente</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Luuk de Vries</div>
+                                <div class="registration-date">03/06/2023</div>
+                                <div class="registration-property">Piso Madrid Centro</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Sophie Williams</div>
+                                <div class="registration-date">01/06/2023</div>
+                                <div class="registration-property">Villa Marbella</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Javier Martínez</div>
+                                <div class="registration-date">29/05/2023</div>
+                                <div class="registration-property">Apartamento Barcelona</div>
+                                <div class="registration-status cancelled" data-i18n="dashboard.statuses.cancelled">Cancelado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">Femke Jansen</div>
+                                <div class="registration-date">27/05/2023</div>
+                                <div class="registration-property">Piso Madrid Centro</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                            <li class="registration-item">
+                                <div class="registration-name">David Thompson</div>
+                                <div class="registration-date">25/05/2023</div>
+                                <div class="registration-property">Villa Marbella</div>
+                                <div class="registration-status completed">Completado</div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="client-card">
-                    <img src="images/pic7.png" alt="Solset Nerja">
-                    <div class="client-info">
-                        <h3 data-i18n="clients.cards.solsetNerja.title">Solset Nerja</h3>
-                        <p data-i18n="clients.cards.solsetNerja.description">Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.</p>
-                        <div class="client-cta-container">
-                            <a href="https://solsetnerja.com/en/" target="_blank" class="client-cta-button" data-i18n="clients.cards.solsetNerja.cta">Visitar web</a>
-                        </div>
+                <!-- Fila de Gráficas -->
+                <div class="dashboard-charts">
+                    <div class="chart-card">
+                        <h3 data-i18n="dashboard.charts.messagesResponded">Mensajes respondidos</h3>
+                        <canvas id="incidenciasChart"></canvas>
                     </div>
-                </div>
-
-                <div class="client-card">
-                    <img src="images/pic9.png" alt="Alojamientos Doña Lola">
-                    <div class="client-info">
-                        <h3 data-i18n="clients.cards.donaLola.title">Alojamientos Doña Lola</h3>
-                        <p data-i18n="clients.cards.donaLola.description">Alojamiento boutique en el centro histórico de Lucena.</p>
-                        <div class="client-cta-container">
-                            <a href="https://lolaalojamientos.com/" target="_blank" class="client-cta-button" data-i18n="clients.cards.donaLola.cta">Visitar web</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    
+                    <div class="chart-card">
+                        <h3 data-i18n="dashboard.charts.commissionIncome">Ingresos por Comisiones</h3>
+                        <canvas id="comisionesChart"></canvas>
         </div>
-    </section>
-
-    <!-- Sección Contacto -->
-    <section id="contact" class="section contact-section">
-        <div class="contact-background">
-            <video autoplay muted loop playsinline id="contactBackgroundVideo">
-                <source src="./videos/backg.mp4" type="video/mp4">
-            </video>
-            <div class="contact-overlay"></div>
-        </div>
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h2 data-i18n="contact.title">AGENDAR UNA DEMO</h2>
-                    <p class="contact-description" data-i18n="contact.description">
-                        ¡Optimiza tu negocio con Host Helper AI! 🚀
-
-                        ¿Qué te ofrecemos?
-
-                        🤖 Asistente virtual 24/7
-                        📱 Gestión multicanal (WhatsApp, Telegram, Llamadas)
-                        ⚡️ Automatización de check-in y documentación
-                        💰 Cross-selling inteligente
-                        ⭐️ Mejora en satisfacción de huéspedes
-
-                        ¡Agenda una demo gratuita de 30 minutos y descubre cómo podemos ayudarte!
-                    </p>
-                    <div class="contact-methods">
-                        <a href="mailto:support@hosthelperai.com" class="contact-method">
-                            <i class="fas fa-envelope"></i>
-                            <span data-i18n="contact.methods.email">E-mail</span>
-                        </a>
-                        <a href="https://wa.me/34XXXXXXXXX" class="contact-method">
-                            <i class="fab fa-whatsapp"></i>
-                            <span data-i18n="contact.methods.whatsapp">WhatsApp</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="contact-calendly">
-                    <div class="calendly-inline-widget" 
-                         data-url="https://calendly.com/hosthelperai-services" 
-                         style="min-width:320px;height:850px;">
-                    </div>
-                    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
                 </div>
             </div>
         </div>
@@ -342,6 +333,7 @@
     <script type="module" src="./js/translations.js"></script>
     <script type="module" src="./js/language.js"></script>
     <script type="module" src="./js/main.js"></script>
+    <script src="./js/dashboard.js"></script>
 
 <!-- Footer -->
 <footer class="footer">
@@ -396,7 +388,7 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-analytics.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+    import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut } 
     from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
     // Firebase configuration
@@ -455,10 +447,211 @@
             });
     }
 
+    // Función para cerrar sesión
+    function handleSignOut(e) {
+        e.preventDefault();
+        firebaseSignOut(auth).then(() => {
+            console.log("Usuario ha cerrado sesión");
+            // Redirigir al usuario a la página de inicio o recargar
+            window.location.href = "index.html";
+        }).catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+            });
+    }
+
     // Hacer las funciones disponibles globalmente
     window.signInWithGoogle = signInWithGoogle;
     window.signUpWithEmail = signUpWithEmail;
     window.signInWithEmail = signInWithEmail;
+    window.signOut = handleSignOut;
+</script>
+
+<script type="module">
+import { translations } from './js/translations.js';
+
+// Añadir traducciones específicas del dashboard
+if (!translations.es.dashboard) {
+    translations.es.dashboard = {
+        metrics: {
+            incidents: "Incidencias Resueltas",
+            commissions: "Comisiones Ganadas",
+            registrations: "Registros Completados",
+            vsLastMonth: "vs mes anterior",
+            similar: "Similar al mes anterior"
+        },
+        charts: {
+            messagesResponded: "Mensajes respondidos",
+            commissionIncome: "Ingresos por Comisiones"
+        },
+        propertySelector: {
+            label: "Propiedad:",
+            allProperties: "Todas las propiedades"
+        },
+        details: {
+            recentRegistrations: "Últimos registros",
+            name: "Nombre",
+            date: "Fecha",
+            property: "Propiedad",
+            status: "Estado"
+        },
+        statuses: {
+            completed: "Completado",
+            pending: "Pendiente",
+            cancelled: "Cancelado"
+        },
+        welcome: "Bienvenido,"
+    };
+}
+
+// Inglés
+if (!translations.en.dashboard) {
+    translations.en.dashboard = {
+        metrics: {
+            incidents: "Resolved Incidents",
+            commissions: "Earned Commissions",
+            registrations: "Completed Registrations",
+            vsLastMonth: "vs last month",
+            similar: "Similar to last month"
+        },
+        charts: {
+            messagesResponded: "Messages Responded",
+            commissionIncome: "Commission Income"
+        },
+        propertySelector: {
+            label: "Property:",
+            allProperties: "All properties"
+        },
+        details: {
+            recentRegistrations: "Recent registrations",
+            name: "Name",
+            date: "Date",
+            property: "Property",
+            status: "Status"
+        },
+        statuses: {
+            completed: "Completed",
+            pending: "Pending",
+            cancelled: "Cancelled"
+        },
+        welcome: "Welcome,"
+    };
+}
+
+// Asegurar que los botones y elementos de navegación tengan traducciones
+if (!translations.es.buttons) {
+    translations.es.buttons = {
+        login: "Iniciar Sesión",
+        logout: "Cerrar Sesión",
+        register: "Registrarse",
+        submit: "Enviar",
+        cancel: "Cancelar",
+        save: "Guardar",
+        update: "Actualizar"
+    };
+}
+
+if (!translations.en.buttons) {
+    translations.en.buttons = {
+        login: "Sign In",
+        logout: "Sign Out",
+        register: "Register",
+        submit: "Submit",
+        cancel: "Cancel",
+        save: "Save",
+        update: "Update"
+    };
+}
+
+// Traducciones para elementos de autenticación
+if (!translations.es.auth) {
+    translations.es.auth = {
+        title: "Iniciar Sesión",
+        googleLogin: "Continuar con Google",
+        emailLogin: "Continuar con Email",
+        or: "o",
+        forgotPassword: "¿Olvidaste tu contraseña?",
+        noAccount: "¿No tienes cuenta?",
+        createAccount: "Crear cuenta"
+    };
+}
+
+if (!translations.en.auth) {
+    translations.en.auth = {
+        title: "Sign In",
+        googleLogin: "Continue with Google",
+        emailLogin: "Continue with Email",
+        or: "or",
+        forgotPassword: "Forgot password?",
+        noAccount: "Don't have an account?",
+        createAccount: "Create account"
+    };
+}
+
+// Traducciones para el footer
+if (!translations.es.footer) {
+    translations.es.footer = {
+        slogan: "Automatizando la gestión de alojamientos turísticos con IA",
+        contact: {
+            title: "Contacto"
+        },
+        social: {
+            title: "Síguenos"
+        },
+        copyright: "© 2025 Host Helper AI. Todos los derechos reservados."
+    };
+}
+
+if (!translations.en.footer) {
+    translations.en.footer = {
+        slogan: "Automating vacation rental management with AI",
+        contact: {
+            title: "Contact"
+        },
+        social: {
+            title: "Follow us"
+        },
+        copyright: "© 2025 Host Helper AI. All rights reserved."
+    };
+}
+</script>
+
+<script>
+// Función para actualizar los datos del dashboard según la propiedad seleccionada
+function updateDashboardData(propertyId) {
+    console.log("Actualizando datos para la propiedad:", propertyId);
+    
+    // Aquí iría la lógica para actualizar los datos según la propiedad seleccionada
+    // Por ejemplo, hacer una petición a la API para obtener los datos específicos
+    
+    // Simulación de actualización de datos
+    if (propertyId === 'all') {
+        // Mostrar datos para todas las propiedades
+        document.querySelector('.metric-card:nth-child(1) .metric').textContent = '24';
+        document.querySelector('.metric-card:nth-child(2) .metric').textContent = '45€';
+        document.querySelector('.metric-card:nth-child(3) .metric').textContent = '18';
+    } else if (propertyId === 'property1') {
+        // Datos para Apartamento Barcelona
+        document.querySelector('.metric-card:nth-child(1) .metric').textContent = '10';
+        document.querySelector('.metric-card:nth-child(2) .metric').textContent = '22€';
+        document.querySelector('.metric-card:nth-child(3) .metric').textContent = '7';
+    } else if (propertyId === 'property2') {
+        // Datos para Villa Marbella
+        document.querySelector('.metric-card:nth-child(1) .metric').textContent = '8';
+        document.querySelector('.metric-card:nth-child(2) .metric').textContent = '15€';
+        document.querySelector('.metric-card:nth-child(3) .metric').textContent = '5';
+    } else if (propertyId === 'property3') {
+        // Datos para Piso Madrid Centro
+        document.querySelector('.metric-card:nth-child(1) .metric').textContent = '6';
+        document.querySelector('.metric-card:nth-child(2) .metric').textContent = '8€';
+        document.querySelector('.metric-card:nth-child(3) .metric').textContent = '6';
+    }
+    
+    // También actualizaríamos los gráficos
+    // Esto requeriría acceder a las instancias de Chart.js y actualizar sus datos
+}
+
+// Hacer la función disponible globalmente
+window.updateDashboardData = updateDashboardData;
 </script>
 
 </body>
@@ -1099,17 +1292,17 @@ html[lang="fr"] .secondary-content {
 }
 
 .nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 2rem;
-    gap: 4rem; /* Reducido el espacio entre el brand y los enlaces */
 }
 
 .nav-brand {
-    display: flex;
-    align-items: center;
-    margin-left: -2rem;
+    padding-left: 0;
+    margin-left: 0;
 }
 
 .brand-link {
@@ -1158,10 +1351,6 @@ html[lang="fr"] .secondary-content {
 
     .nav-brand img {
         height: 22px;
-    }
-
-    .nav-title {
-        font-size: 1.2rem;
     }
 
     .hamburger-menu {
@@ -1243,31 +1432,38 @@ html[lang="fr"] .secondary-content {
     position: absolute;
     top: 100%;
     right: 0;
-    background: white;
-    border: 1px solid #ECA408;
-    border-radius: 4px;
-    padding: 0.5rem 0;
-    margin-top: 0.5rem;
-    min-width: 120px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #FFFFFF !important;
+    opacity: 1 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+    padding: 5px 0 !important;
+    border: 1px solid #e0e0e0 !important;
     display: none;
     z-index: 1000;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .language-options.show {
     display: block;
+    background-color: #FFFFFF !important;
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    min-width: 120px !important;
 }
 
 .language-option {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.9rem;
-    color: #333;
+    color: #333 !important;
+    padding: 8px 15px !important;
+    transition: background-color 0.2s ease !important;
+    background-color: #FFFFFF !important;
 }
 
 .language-option:hover {
-    background: #f5f5f5;
+    background-color: #f5f5f5 !important;
+    cursor: pointer !important;
 }
 
 @media (max-width: 768px) {
@@ -1347,38 +1543,466 @@ html[lang="fr"] .secondary-content {
         margin-top: 0.5rem;
     }
 }
+
+/* Agregar el degradado al fondo del dashboard */
+body {
+    background: linear-gradient(135deg, #F5C75A 0%, #F7D78B 40%, #FFFFFF 100%) !important;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Asegurar que la barra superior se mantiene intacta */
+.header {
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 100;
+}
+
+/* Ajustar contenido para adaptarse al nuevo fondo */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-metrics .metric-card,
+.dashboard-charts .chart-card {
+    background-color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Mejorar contraste para la legibilidad */
+.dashboard-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Contenedor de fondo con degradado */
+.background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #F5C75A 0%, #F7D78B 40%, #FFFFFF 100%);
+    z-index: -2; /* Cambiamos a -2 para que quede por debajo del overlay */
+}
+
+/* Overlay translúcido */
+.overlay-translucent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Blanco con 80% de opacidad - más blanco */
+    z-index: -1; /* Entre el degradado (-2) y el contenido (0 o positivo) */
+}
+
+/* Eliminar cualquier overlay que pudiera estar bloqueando el degradado */
+.hero-overlay, 
+.section-overlay,
+.dashboard-overlay {
+    background: transparent !important;
+}
+
+/* Asegurar que el contenedor del dashboard es transparente */
+.dashboard-section {
+    background: transparent !important;
+}
+
+/* Quitar fondos que puedan estar bloqueando */
+.container, 
+.dashboard-container {
+    background: transparent !important;
+}
+
+/* Mantener solo los fondos de las tarjetas */
+.dashboard-metrics .metric-card,
+.dashboard-charts .chart-card {
+    background-color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Eliminar cualquier fondo adicional */
+section, div:not(.metric-card):not(.chart-card):not(.header):not(.footer) {
+    background: transparent !important;
+}
+
+/* Estilos adicionales para el botón de cerrar sesión */
+.btn-login {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ECA408;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #d69000;
+}
+
+/* Asegurar que el ícono tenga el tamaño correcto */
+.btn-login i {
+    font-size: 16px;
+}
+
+/* Ajuste específico para el botón de cerrar sesión */
+.btn-login[onclick="signOut(event)"] {
+    background-color: #ECA408;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-login[onclick="signOut(event)"]:hover {
+    background-color: #d69000;
+}
+
+/* NUEVO - Alineación del logo con los contenedores del dashboard */
+.nav-brand {
+    margin-left: 20px !important; /* Alinea con el margen izquierdo de las cajas */
+}
+
+/* Asegurar que los contenedores del dashboard tienen el mismo margen */
+.dashboard-container, 
+.container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+}
+
+/* Asegurar que header y dashboard comparten la misma alineación */
+.header .container,
+.dashboard-section .dashboard-container {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+
+/* Estilos de mayor prioridad para evitar conflictos */
+.nav-content {
+    padding-left: 0 !important;
+}
+
+/* Estilos para el selector de usuario y propiedades */
+.user-property-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFFFF !important;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #FFFFFF !important;
+}
+
+.user-info i {
+    font-size: 24px;
+    color: #ECA408;
+    background-color: #FFFFFF !important;
+}
+
+.user-greeting {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF !important;
+}
+
+.greeting-text {
+    font-size: 14px;
+    color: #666666 !important;
+    margin-bottom: 2px;
+    background-color: #FFFFFF !important;
+}
+
+.user-fullname {
+    font-size: 18px;
+    font-weight: 600 !important;
+    color: #333333 !important;
+    background-color: #FFFFFF !important;
+}
+
+.property-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #FFFFFF !important;
+}
+
+.select-wrapper {
+    position: relative;
+    min-width: 200px;
+    background-color: #FFFFFF !important;
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    border: 1px solid #cccccc !important;
+    border-radius: 5px;
+    appearance: none;
+    background-color: #FFFFFF !important;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+.select-wrapper i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #666;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .user-property-selector {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .property-selector {
+        width: 100%;
+    }
+    
+    .select-wrapper {
+        width: 100%;
+    }
+}
+
+/* Estilos para el panel de últimos registros */
+.dashboard-details {
+    margin-bottom: 20px;
+}
+
+.details-card {
+    background-color: white !important;
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.details-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.registration-list-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr 1fr;
+    padding: 10px 0;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: #666;
+    background-color: #f9f9f9 !important;
+    padding: 12px 10px;
+    border-radius: 6px 6px 0 0;
+}
+
+.registration-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 350px;
+    overflow-y: auto;
+    background-color: white !important;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.registration-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr 1fr;
+    padding: 12px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: center;
+    background-color: white !important;
+}
+
+.registration-item:nth-child(even) {
+    background-color: #f9f9f9 !important;
+}
+
+.registration-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.registration-name {
+    font-weight: 500;
+    color: #333;
+    background-color: transparent !important;
+}
+
+.registration-date {
+    color: #666;
+    font-size: 14px;
+    background-color: transparent !important;
+}
+
+.registration-property {
+    color: #555;
+    font-size: 14px;
+    background-color: transparent !important;
+}
+
+.registration-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    width: fit-content;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.registration-status.completed {
+    background-color: #e6f7ee;
+    color: #0d8a4e;
+}
+
+.registration-status.pending {
+    background-color: #fff8e6;
+    color: #b78105;
+}
+
+.registration-status.cancelled {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Responsive para el panel de registros */
+@media (max-width: 768px) {
+    .registration-list-header {
+        display: none;
+    }
+    
+    .registration-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 15px 0;
+    }
+    
+    .registration-name::before {
+        content: "Nombre: ";
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .registration-date::before {
+        content: "Fecha: ";
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .registration-property::before {
+        content: "Propiedad: ";
+        font-weight: 600;
+        color: #666;
+    }
+}
 </style>
 
 <script>
-// Añadir funcionalidad de arrastrar con el ratón
+// Función para el primer carrusel
+function initFeatureCarousel() {
 const carousel = document.querySelector('.features-carousel');
-let featuresIsDown = false;
-let featuresStartX;
-let featuresScrollLeft;
+let isDown = false;
+let startX;
+let scrollLeft;
 
 carousel.addEventListener('mousedown', (e) => {
-    featuresIsDown = true;
+    isDown = true;
     carousel.classList.add('grabbing');
-    featuresStartX = e.pageX - carousel.offsetLeft;
-    featuresScrollLeft = carousel.scrollLeft;
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
 });
 
 carousel.addEventListener('mouseleave', () => {
-    featuresIsDown = false;
+    isDown = false;
     carousel.classList.remove('grabbing');
 });
 
 carousel.addEventListener('mouseup', () => {
-    featuresIsDown = false;
+    isDown = false;
     carousel.classList.remove('grabbing');
 });
 
 carousel.addEventListener('mousemove', (e) => {
-    if(!featuresIsDown) return;
+    if(!isDown) return;
     e.preventDefault();
     const x = e.pageX - carousel.offsetLeft;
-    const walk = (x - featuresStartX) * 2; // Velocidad de scroll
-    carousel.scrollLeft = featuresScrollLeft - walk;
+    const walk = (x - startX) * 2; // Velocidad de scroll
+    carousel.scrollLeft = scrollLeft - walk;
+});
+}
+
+// Función para el segundo carrusel
+function initClientsCarousel() {
+const clientsCarousel = document.querySelector('.clients-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+clientsCarousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    clientsCarousel.classList.add('grabbing');
+    startX = e.pageX - clientsCarousel.offsetLeft;
+    scrollLeft = clientsCarousel.scrollLeft;
+});
+
+clientsCarousel.addEventListener('mouseleave', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mouseup', () => {
+    isDown = false;
+    clientsCarousel.classList.remove('grabbing');
+});
+
+clientsCarousel.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - clientsCarousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    clientsCarousel.scrollLeft = scrollLeft - walk;
+    });
+}
+
+// Inicializar los carruseles
+document.addEventListener('DOMContentLoaded', () => {
+    initFeatureCarousel();
+    initClientsCarousel();
 });
 
 document.querySelector('.hamburger-menu').addEventListener('click', () => {
@@ -1394,37 +2018,6 @@ document.querySelectorAll('.mobile-menu-item').forEach(item => {
     item.addEventListener('click', () => {
         document.querySelector('.mobile-menu').classList.remove('active');
     });
-});
-
-// Añadimos la funcionalidad de arrastrar para el carrusel de clientes
-const clientsCarousel = document.querySelector('.clients-carousel');
-let clientsIsDown = false;
-let clientsStartX;
-let clientsScrollLeft;
-
-clientsCarousel.addEventListener('mousedown', (e) => {
-    clientsIsDown = true;
-    clientsCarousel.classList.add('grabbing');
-    clientsStartX = e.pageX - clientsCarousel.offsetLeft;
-    clientsScrollLeft = clientsCarousel.scrollLeft;
-});
-
-clientsCarousel.addEventListener('mouseleave', () => {
-    clientsIsDown = false;
-    clientsCarousel.classList.remove('grabbing');
-});
-
-clientsCarousel.addEventListener('mouseup', () => {
-    clientsIsDown = false;
-    clientsCarousel.classList.remove('grabbing');
-});
-
-clientsCarousel.addEventListener('mousemove', (e) => {
-    if(!clientsIsDown) return;
-    e.preventDefault();
-    const x = e.pageX - clientsCarousel.offsetLeft;
-    const walk = (x - clientsStartX) * 2;
-    clientsCarousel.scrollLeft = clientsScrollLeft - walk;
 });
 
 // Selector de idiomas simplificado

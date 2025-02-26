@@ -343,7 +343,9 @@
             <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
         </div>
     </footer>
-
+    <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2025/01/23/11/20250123112128-UAC75SJ2.js"></script>
+    <script src="js/carousel.js"></script>
     <!-- Scripts -->
     <script type="module" src="./js/translations.js"></script>
     <script type="module" src="./js/language.js"></script>
@@ -1287,33 +1289,33 @@ document.querySelectorAll('.mobile-menu-item').forEach(item => {
 
 // Añadimos la funcionalidad de arrastrar para el carrusel de clientes
 const clientsCarousel = document.querySelector('.clients-carousel');
-let isDown = false;
-let startX;
-let scrollLeft;
+let isDownClients = false;
+let startXClients;
+let scrollLeftClients;
 
 clientsCarousel.addEventListener('mousedown', (e) => {
-    isDown = true;
+    isDownClients = true;
     clientsCarousel.classList.add('grabbing');
-    startX = e.pageX - clientsCarousel.offsetLeft;
-    scrollLeft = clientsCarousel.scrollLeft;
+    startXClients = e.pageX - clientsCarousel.offsetLeft;
+    scrollLeftClients = clientsCarousel.scrollLeft;
 });
 
 clientsCarousel.addEventListener('mouseleave', () => {
-    isDown = false;
+    isDownClients = false;
     clientsCarousel.classList.remove('grabbing');
 });
 
 clientsCarousel.addEventListener('mouseup', () => {
-    isDown = false;
+    isDownClients = false;
     clientsCarousel.classList.remove('grabbing');
 });
 
 clientsCarousel.addEventListener('mousemove', (e) => {
-    if(!isDown) return;
+    if(!isDownClients) return;
     e.preventDefault();
     const x = e.pageX - clientsCarousel.offsetLeft;
-    const walk = (x - startX) * 2;
-    clientsCarousel.scrollLeft = scrollLeft - walk;
+    const walk = (x - startXClients) * 2;
+    clientsCarousel.scrollLeft = scrollLeftClients - walk;
 });
 
 // Selector de idiomas simplificado

@@ -172,11 +172,12 @@ export const translations = {
             }
         },
         clients: {
-            title: "Start 2025 with us!",
+            title: "¡Empieza el 2025 con nosotros!",
             cards: {
-                torreDelMar: {
-                    title: "Apartamentos Torre del Mar",
-                    description: "Apartamento moderno frente al mar con vistas al Mediterráneo."
+                elPilar: {
+                    title: "Casa Rural El Pilar",
+                    description: "Alojamiento rural con encanto en Sierra de Gata, Extremadura.",
+                    cta: "Visitar web"
                 },
                 solsetNerja: {
                     title: "Solset Nerja",
@@ -366,9 +367,10 @@ export const translations = {
         clients: {
             title: "Start 2025 with us!",
             cards: {
-                torreDelMar: {
-                    title: "Torre del Mar Apartments",
-                    description: "Modern beachfront apartment with Mediterranean views."
+                elPilar: {
+                    title: "El Pilar Rural House",
+                    description: "Charming rural accommodation in Sierra de Gata, Extremadura.",
+                    cta: "Visit website"
                 },
                 solsetNerja: {
                     title: "Solset Nerja",
