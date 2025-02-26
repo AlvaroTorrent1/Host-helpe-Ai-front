@@ -5,17 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Host Helper AI - Tu conserje virtual 24/7</title>
     
-    <!-- Precargar CSS críticos -->
-    <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/styles.css"></noscript>
-    
-    <!-- Cargar FontAwesome de forma asíncrona -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></noscript>
-    
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="./images/logo.png">
     <link rel="shortcut icon" type="image/png" href="./images/logo.png">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="./css/styles.css">
     
     <!-- Estilos de fondo personalizados - agregados al inicio para prioridad -->
     <style>
@@ -47,29 +42,11 @@
         }
     </style>
     
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-    
-    <!-- Preconexiones a dominios externos -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Evitar FOUC (Flash of Unstyled Content) -->
-    <style>
-        .hero, .features-section, .benefits-section {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .js-loaded .hero, .js-loaded .features-section, .js-loaded .benefits-section {
-            opacity: 1;
-        }
-    </style>
-    
-    <!-- Precargar favicon para evitar solicitud innecesaria posterior -->
-    <link rel="preload" href="assets/favicon.ico" as="image">
-    
-    <!-- Fonts optimization -->
-    <link rel="preload" href="assets/fonts/main-font.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
     <!-- Elementos de fondo -->
@@ -161,13 +138,7 @@
 
     <!-- Sección Hero -->
     <section id="hero" class="hero">
-        <div class="hero-image">
-            <img src="assets/hero-bg.jpg" alt="Imagen de fondo" 
-                 loading="eager" 
-                 width="1920" 
-                 height="1080"
-                 fetchpriority="high">
-        </div>
+        <div class="hero-background-image"></div>
         <div class="hero-overlay"></div>
         <div class="container">
             <div class="hero-content">
@@ -370,9 +341,7 @@
     <!-- Scripts -->
     <script type="module" src="./js/translations.js"></script>
     <script type="module" src="./js/language.js"></script>
-    <script src="js/main.js" defer></script>
-    <script src="js/i18n.js" defer></script>
-    <script src="js/carousel.js" defer></script>
+    <script type="module" src="./js/main.js"></script>
 
 <!-- Footer -->
 <footer class="footer">
@@ -421,6 +390,7 @@
 </footer>
 <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2025/01/23/11/20250123112128-UAC75SJ2.js"></script>
+<script src="js/carousel.js"></script>
 
 <script type="module">
     // Import the functions you need from the SDKs you need
@@ -489,62 +459,6 @@
     window.signInWithGoogle = signInWithGoogle;
     window.signUpWithEmail = signUpWithEmail;
     window.signInWithEmail = signInWithEmail;
-</script>
-
-<script>
-// Marcar cuando el DOM esté completamente cargado
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.classList.add('js-loaded');
-});
-
-// Optimización para el scroll y los efectos
-let scrollTimeout;
-window.addEventListener('scroll', function() {
-    if (!scrollTimeout) {
-        window.requestAnimationFrame(function() {
-            // Código para efectos de scroll
-            scrollTimeout = null;
-        });
-    }
-    scrollTimeout = true;
-}, {passive: true});
-</script>
-
-<!-- Script de diagnóstico para depurar problemas de rendimiento -->
-<script>
-    // Monitorear bloqueos de renderizado
-    const perfEntries = performance.getEntriesByType("navigation");
-    if (perfEntries.length > 0) {
-        const timing = perfEntries[0];
-        if (timing.domContentLoadedEventEnd - timing.domContentLoadedEventStart > 200) {
-            console.warn('Posible bloqueo en DOMContentLoaded');
-        }
-        if (timing.loadEventEnd - timing.loadEventStart > 200) {
-            console.warn('Posible bloqueo en load event');
-        }
-    }
-    
-    // Detectar problemas de layout
-    let previousFrameTime = performance.now();
-    let longFrames = 0;
-    
-    requestAnimationFrame(function frameCheck() {
-        const currentTime = performance.now();
-        const frameDuration = currentTime - previousFrameTime;
-        
-        // Frame lento (más de 50ms = menor a 20fps)
-        if (frameDuration > 50) {
-            longFrames++;
-            if (longFrames > 5) {
-                console.warn('Posible problema de rendimiento: frames consecutivos lentos');
-            }
-        } else {
-            longFrames = Math.max(0, longFrames - 1);
-        }
-        
-        previousFrameTime = currentTime;
-        requestAnimationFrame(frameCheck);
-    });
 </script>
 
 </body>
@@ -1244,6 +1158,10 @@ html[lang="fr"] .secondary-content {
 
     .nav-brand img {
         height: 22px;
+    }
+
+    .nav-title {
+        font-size: 1.2rem;
     }
 
     .hamburger-menu {

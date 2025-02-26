@@ -31,104 +31,68 @@ function initializeCarousel(carouselElement) {
 }
 
 function initFeaturesCarousel() {
-    const carousel = document.getElementById('featuresCarousel');
+    const carousel = document.querySelector('.features-carousel');
     if (!carousel) return;
-    
-    const cardsContainer = carousel.querySelector('.feature-cards');
-    const cards = cardsContainer.querySelectorAll('.feature-card');
-    
-    // Clonar algunas tarjetas para scroll infinito
-    const cardsToClone = Math.min(3, cards.length);
-    for (let i = 0; i < cardsToClone; i++) {
-        const clone = cards[i].cloneNode(true);
-        cardsContainer.appendChild(clone);
-    }
-    
-    // Variables y configuración
-    let position = 0;
-    const cardWidth = cards[0].offsetWidth + parseInt(getComputedStyle(cards[0]).marginRight);
-    let isAuto = true;
-    let isHovering = false;
-    let autoScrollInterval;
-    
-    // Funciones principales
-    function moveCarousel(newPosition) {
-        position = newPosition;
-        
-        // Usar transform en lugar de scrollLeft para mejor rendimiento
-        cardsContainer.style.transform = `translateX(-${position * cardWidth}px)`;
-        
-        // Resetear al inicio cuando llegamos al final
-        if (position >= cards.length) {
-            setTimeout(() => {
-                cardsContainer.style.transition = 'none';
-                position = 0;
-                cardsContainer.style.transform = `translateX(0)`;
-                setTimeout(() => {
-                    cardsContainer.style.transition = 'transform 0.5s ease';
-                }, 50);
-            }, 500);
-        }
-    }
-    
-    function startAutoScroll() {
-        if (autoScrollInterval) clearInterval(autoScrollInterval);
-        autoScrollInterval = setInterval(() => {
-            if (!isHovering && isAuto) {
-                moveCarousel(position + 1);
+
+    const cards = carousel.querySelector('.feature-cards');
+    const cardWidth = carousel.querySelector('.feature-card').offsetWidth;
+    let isAutoPlaying = true;
+    let autoPlayInterval;
+    let currentPosition = 0;
+
+    // Función para el autoplay
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            if (isAutoPlaying) {
+                currentPosition -= 1; // Movimiento suave
+                // Resetear posición cuando llegue al final
+                if (Math.abs(currentPosition) >= (cards.scrollWidth - carousel.offsetWidth)) {
+                    currentPosition = 0;
+                }
+                cards.style.transform = `translateX(${currentPosition}px)`;
             }
-        }, 3000);
+        }, 30); // Velocidad del movimiento
     }
-    
-    // Eventos optimizados
-    carousel.addEventListener('mouseenter', () => isHovering = true, {passive: true});
-    carousel.addEventListener('mouseleave', () => isHovering = false, {passive: true});
-    
-    // Evitar cálculos en desplazamiento táctil manual
-    let startX, startScrollLeft, isDragging = false;
-    
-    carousel.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        isHovering = true;
-        startX = e.touches[0].clientX;
-        startScrollLeft = position * cardWidth;
-        cardsContainer.style.transition = 'none';
-    }, {passive: true});
-    
-    carousel.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.touches[0].clientX;
-        const dist = startX - x;
-        const newPosition = startScrollLeft + dist;
-        cardsContainer.style.transform = `translateX(-${newPosition}px)`;
-    });
-    
-    carousel.addEventListener('touchend', () => {
-        isDragging = false;
-        cardsContainer.style.transition = 'transform 0.5s ease';
-        const newPosition = Math.round((parseInt(cardsContainer.style.transform.match(/-?\d+/) || 0) / cardWidth));
-        moveCarousel(newPosition);
-        
-        setTimeout(() => {
-            isHovering = false;
-        }, 1000);
-    }, {passive: true});
-    
-    // Usar IntersectionObserver para pausar/reanudar cuando no es visible
-    const observer = new IntersectionObserver((entries) => {
-        isAuto = entries[0].isIntersecting;
-        if (isAuto) {
-            startAutoScroll();
-        } else {
-            clearInterval(autoScrollInterval);
-        }
-    }, {threshold: 0.1});
-    
-    observer.observe(carousel);
-    
-    // Iniciar
-    startAutoScroll();
+
+    // Eventos para desktop
+    if (window.innerWidth > 768) {
+        // Pausar en hover
+        carousel.addEventListener('mouseenter', () => {
+            isAutoPlaying = false;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            isAutoPlaying = true;
+        });
+
+        // Iniciar autoplay
+        startAutoPlay();
+    } else {
+        // Comportamiento táctil para móvil
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        carousel.addEventListener('touchstart', (e) => {
+            isDown = true;
+            carousel.classList.add('active');
+            startX = e.touches[0].clientX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('touchend', () => {
+            isDown = false;
+            carousel.classList.remove('active');
+        });
+
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.touches[0].clientX - carousel.offsetLeft;
+            const walk = (x - startX);
+            carousel.scrollLeft = scrollLeft - walk;
+        });
+    }
 }
 
 // Inicializar todos los carruseles cuando el DOM esté cargado
