@@ -385,7 +385,7 @@ body {
 
     /* Ajustes para centrar correctamente "Genera ingresos extra" en móviles */
     .secondary-title {
-        transform: translateX(-70px) !important; /* Desplazamiento extremadamente mayor a la izquierda */
+        /*transform: translateX(-70px) !important; /* Desplazamiento extremadamente mayor a la izquierda */
         width: 100% !important;
         text-align: center !important;
         display: block !important;
@@ -393,7 +393,7 @@ body {
     
     /* Asegurar que el texto descriptivo también esté centrado */
     .hero-secondary .secondary-description {
-        transform: translateX(-70px) !important;
+         /*transform: translateX(-70px) !important;*/
         width: 100% !important;
         text-align: center !important;
     }
@@ -2028,7 +2028,7 @@ h1 span.highlight {
     justify-content: center;
     align-items: center;
     position: relative;
-    left: -105px; /* Mantener el desplazamiento para desktop */
+    left: 0px; /* Mantener el desplazamiento para desktop */
 }
 
 .secondary-container {
@@ -2065,7 +2065,7 @@ h1 span.highlight {
     .secondary-title,
     .secondary-description {
         position: relative;
-        left: -65px; /* Ajuste específico para móvil */
+        left: 0px; /* Ajuste específico para móvil */
         text-align: center !important;
         padding: 0;
         margin: 0 auto;
@@ -2423,23 +2423,10 @@ h1 span.highlight {
         opacity: 1;
     }
 
-    .secondary-title {
-        transform: translateX(-75px) !important; /* Desplazamiento extremadamente mayor para pantallas más pequeñas */
-    }
     
-    .hero-secondary .secondary-description {
-        transform: translateX(-75px) !important;
-    }
+  
 }
 
-/* Ajuste específico para mejor centrado en iPhone */
-@media (max-width: 375px) {
-    .secondary-title {
-        transform: translateX(-80px) !important; /* Ajuste mucho mayor específico para iPhone */
-    }
-    
-    .hero-secondary .secondary-description {
-        transform: translateX(-80px) !important;
-    }
-}
+
+
 
