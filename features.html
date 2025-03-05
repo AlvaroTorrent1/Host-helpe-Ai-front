@@ -3294,3 +3294,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 </style>
 
+<!-- Añadir estilos para igualar el tamaño de fuente en la sección Journey del Huésped -->
+<style>
+    /* Igualar tamaño de fuente en la sección Journey del Huésped */
+    .story-section .story-title {
+        font-size: 1.5rem; /* Aumentar tamaño del título */
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+    }
+    
+    .story-section .story-description {
+        font-size: 1rem; /* Aumentar tamaño de la descripción */
+        line-height: 1.6;
+        color: #555;
+    }
+    
+    /* Mantener consistencia en dispositivos móviles */
+    @media (max-width: 768px) {
+        .story-section .story-title {
+            font-size: 1.3rem; /* Tamaño reducido pero proporcional para móvil */
+        }
+        
+        .story-section .story-description {
+            font-size: 0.95rem; /* Tamaño reducido pero proporcional para móvil */
+        }
+    }
+</style>
+
+<!-- Añadir estilos para justificar el texto en la sección Journey del Huésped -->
+<style>
+    /* Justificar texto en la sección Journey del Huésped */
+    .story-section .story-description {
+        text-align: justify; /* Justificar el texto */
+        text-justify: inter-word; /* Mejorar la justificación entre palabras */
+        hyphens: auto; /* Permitir guiones para mejor justificación */
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+    }
+    
+    /* Ajustes adicionales para mejorar la legibilidad del texto justificado */
+    .story-section .story-description p {
+        margin-bottom: 12px; /* Espacio entre párrafos */
+    }
+    
+    /* Evitar problemas de justificación en pantallas muy pequeñas */
+    @media (max-width: 480px) {
+        .story-section .story-description {
+            text-align: left; /* Cambiar a alineación izquierda en pantallas muy pequeñas */
+            hyphens: none; /* Desactivar guiones en pantallas muy pequeñas */
+            -webkit-hyphens: none;
+            -ms-hyphens: none;
+        }
+    }
+</style>
+
