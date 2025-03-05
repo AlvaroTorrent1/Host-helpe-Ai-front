@@ -3349,3 +3349,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 </style>
 
+<!-- Añadir estilos para aumentar el espacio entre el título y la imagen en la sección Journey -->
+<style>
+    /* Aumentar espacio entre título y contenido en la sección Journey */
+    .story-section .section-title {
+        margin-bottom: 40px !important; /* Aumentar margen inferior del título */
+    }
+    
+    /* Añadir espacio adicional antes de la primera imagen */
+    .story-section .story-container {
+        margin-top: 20px; /* Espacio adicional en la parte superior del contenedor */
+    }
+    
+    /* Asegurar que la primera tarjeta tenga suficiente espacio */
+    .story-section .story-step:first-child {
+        margin-top: 15px; /* Espacio adicional para la primera tarjeta */
+    }
+    
+    /* Ajustes específicos para dispositivos móviles */
+    @media (max-width: 768px) {
+        .story-section .section-title {
+            margin-bottom: 50px !important; /* Margen aún mayor en móviles */
+        }
+        
+        /* Evitar solapamientos en dispositivos pequeños */
+        .story-section .story-container {
+            padding-top: 10px; /* Padding adicional en la parte superior */
+        }
+    }
+    
+    /* Ajustes para dispositivos muy pequeños */
+    @media (max-width: 480px) {
+        .story-section .section-title {
+            margin-bottom: 60px !important; /* Margen máximo en dispositivos muy pequeños */
+        }
+    }
+</style>
+
