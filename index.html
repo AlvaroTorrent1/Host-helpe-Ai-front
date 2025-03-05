@@ -40,6 +40,37 @@
             background-color: rgba(255, 255, 255, 0.7);
             z-index: -1;
         }
+
+        /* Ajustes para hacer las tarjetas de características más compactas */
+        .feature-card {
+            width: 280px; /* Reducido de 300px o similar */
+            padding: 20px; /* Reducido de 25-30px */
+            margin: 0 10px; /* Reducido el espacio entre tarjetas */
+        }
+        
+        .feature-card .card-icon {
+            font-size: 32px; /* Reducido de 36-40px */
+            margin-bottom: 15px; /* Reducido de 20px */
+        }
+        
+        .feature-card h3 {
+            font-size: 18px; /* Reducido de 20-22px */
+            margin-bottom: 10px; /* Reducido de 15px */
+        }
+        
+        .feature-card p {
+            font-size: 14px; /* Reducido de 16px */
+            line-height: 1.5; /* Ajustado para mejor legibilidad */
+            margin-bottom: 0;
+        }
+        
+        .features-carousel {
+            padding: 10px 0; /* Reducido el padding vertical */
+        }
+        
+        .feature-cards {
+            gap: 15px; /* Reducido el espacio entre tarjetas */
+        }
     </style>
     
     <!-- Font Awesome para iconos -->
@@ -61,40 +92,40 @@
                     <!-- Logo y título -->
                     <div class="nav-brand desktop-brand">
                         <a href="#hero" onclick="scrollToTop()">
-                            <img src="./images/logo.png" alt="Host Helper AI Logo">
+                        <img src="./images/logo.png" alt="Host Helper AI Logo">
                             <h1 class="nav-title">Host Helper <span class="nav-highlight">Ai</span></h1>
-                        </a>
-                    </div>
+                    </a>
+          </div>
 
                     <!-- Menú hamburguesa para móvil -->
                     <button class="hamburger-menu">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <i class="fas fa-bars"></i>
+                </button>
 
                     <div class="nav-right">
                         <!-- Enlaces de navegación -->
-                        <ul class="nav-links">
-                            <li><a href="#features" data-i18n="nav.features">Características</a></li>
+                <ul class="nav-links">
+                    <li><a href="#features" data-i18n="nav.features">Características</a></li>
                             <li><a href="pricing.html" data-i18n="nav.pricing">Precios</a></li>
-                            <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
-                            <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
-                        </ul>
+                    <li><a href="#about" data-i18n="nav.about">Nosotros</a></li>
+                    <li><a href="#contact" data-i18n="nav.contact">Agendar Demo</a></li>
+                </ul>
 
                         <!-- Selector de idioma -->
                         <div class="language-selector">
                             <button class="language-button">
                                 <span>ES</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
                             <div class="language-options">
                                 <div class="language-option" data-lang="es">
                                     <span>Español</span>
-                                </div>
+                        </div>
                                 <div class="language-option" data-lang="en">
                                     <span>English</span>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+      </div>
+        </div>
 
                         <!-- Botón de inicio de sesión -->
                         <div class="nav-buttons">
@@ -102,7 +133,7 @@
                                 <i class="fas fa-user"></i>
                                 <span data-i18n="buttons.login">Iniciar Sesión</span>
                             </a>
-                        </div>
+            </div>
 
                         <!-- Modal de autenticación -->
                         <div id="authModal" class="auth-modal">
@@ -118,7 +149,7 @@
 
                                 <div class="auth-divider">
                                     <span data-i18n="auth.or">o</span>
-                                </div>
+                        </div>
 
                                 <!-- Formulario de email -->
                                 <form id="emailAuthForm" onsubmit="handleEmailAuth(event)">
@@ -128,10 +159,10 @@
                                         Continuar con Email
                                     </button>
                                 </form>
-                            </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
+            </div>
             </nav>
         </div>
     </header>
@@ -170,10 +201,10 @@
                     <a href="https://www.youtube.com/@HostHelperAI" target="_blank" class="social-link">
                         <i class="fab fa-youtube"></i>
                     </a>
-                </div>
-            </div>
+</div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Sección Características -->
     <section id="features" class="section features-section gradient-section">
@@ -202,71 +233,79 @@
                     
                     <div class="feature-card">
                         <i class="fab fa-whatsapp"></i>
-                        <h3 data-i18n="features.card3.title">WhatsApp Business</h3>
-                        <p data-i18n="features.card3.description">Gestiona todas las comunicaciones a través de WhatsApp Business, el canal preferido por los huéspedes. Respuestas instantáneas, envío de información y atención personalizada 24/7.</p>
+                        <h3 data-i18n="features.card3.title">WhatsApp</h3>
+                        <p data-i18n="features.card3.description">Atención inmediata a través de WhatsApp, el canal preferido por los huéspedes para comunicarse.</p>
                     </div>
                     
                     <div class="feature-card">
-                        <i class="fab fa-telegram"></i>
-                        <h3 data-i18n="features.card4.title">Telegram</h3>
-                        <p data-i18n="features.card4.description">Canal alternativo de comunicación que ofrece todas las ventajas de la mensajería instantánea. Ideal para huéspedes que prefieren Telegram por su seguridad y rapidez.</p>
+                        <i class="fas fa-phone"></i>
+                        <h3 data-i18n="features.card5.title">Llamadas</h3>
+                        <p data-i18n="features.card5.description">Sistema de atención telefónica automatizada para gestionar consultas y emergencias. Respuesta inmediata por voz y transferencia a un operador humano si es necesario.</p>
                     </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-phone-alt"></i>
-                        <h3 data-i18n="features.card5.title">Llamadas Automáticas</h3>
-                        <p data-i18n="features.card5.description">Sistema de atención telefónica inteligente que gestiona llamadas entrantes, proporciona información clave y transfiere a un operador humano cuando es necesario.</p>
                     </div>
                 </div>
+                    
+            <!-- Texto informativo en caja blanca -->
+            <div class="features-info-box">
+                <h3 class="info-box-title" data-i18n="features.infoBox.title">El mejor complemento para tu negocio</h3>
+                
+                <div class="features-info-container">
+                    <!-- Columna de texto -->
+                    <div class="features-text-column">
+                        <p class="info-box-text">
+                            <span data-i18n="features.infoBox.ensure">Asegura el</span> 
+                            <span class="highlight" data-i18n="features.infoBox.service">servicio 24h</span> 
+                            <span data-i18n="features.infoBox.serviceDesc">con nuestro agente IA, atendiendo a tus huéspedes a través de WhatsApp y llamadas.</span>
+                        </p>
+                        
+                        <p class="info-box-text">
+                            <span data-i18n="features.infoBox.income">Genera ingresos extra con nuestro sistema de</span> 
+                            <span class="highlight" data-i18n="features.infoBox.crossSelling">cross-selling</span> 
+                            <span data-i18n="features.infoBox.automated">automatizado.</span>
+                        </p>
+                        
+                        <p class="info-box-text">
+                            <span data-i18n="features.infoBox.automate">Automatiza el</span> 
+                            <span class="highlight" data-i18n="features.infoBox.registration">registro de viajeros</span> 
+                            <span data-i18n="features.infoBox.and">y consigue las</span> 
+                            <span class="highlight" data-i18n="features.infoBox.reviews">mejores reseñas</span> 
+                            <span data-i18n="features.infoBox.forBusiness">para tu negocio.</span>
+                        </p>
+        </div>
+
+                    <!-- Columna de imagen -->
+                    <div class="features-image-column">
+                        <img src="images/dashboard.jpeg" alt="Dashboard Host Helper AI" class="dashboard-image">
+        </div>
             </div>
         </div>
-    </section>
+
+            <!-- Botón reposicionado debajo del cuadro -->
+            <div class="features-cta-container" style="margin-top: 30px; text-align: center;">
+                <a href="features.html" class="features-cta-button" onclick="window.location.href='features.html'; return false;" data-i18n="features.infoBox.knowMore">Saber más</a>
+        </div>
+            </div>
+</section>
 
     <!-- Sección Nosotros -->
     <section id="about" class="section about-section white-section">
         <div class="container">
             <h2 class="section-title" data-i18n="about.title">Nosotros</h2>
             
-            <div class="about-intro">
-                <div class="intro-content">
-                    <div class="intro-text">
-                        <p class="headline" data-i18n="about.mainMessage">Host Helper Ai es el mejor complemento para tu negocio de alquiler turístico.</p>
-                        
-                        <div class="feature-points">
-                            <div class="feature-point">
-                                <p data-i18n="about.serviceDescription">Asegura el servicio 24h con nuestro agente, atendiendo a tus huéspedes a través de WhatsApp, Telegram y llamadas.</p>
-                            </div>
-                            
-                            <div class="feature-point">
-                                <p data-i18n="about.incomeDescription">Genera ingresos extra con nuestro sistema de cross-selling automatizado.</p>
-                            </div>
-                            
-                            <div class="feature-point">
-                                <p data-i18n="about.dataDescription">Automatiza la recogida de datos y consigue las mejores reseñas para tu negocio.</p>
-                            </div>
-                            
-                            <div class="feature-point highlight">
-                                <a href="#contact" class="cta-link" data-i18n="about.cta">¡Empieza el 2025 con nosotros!</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Carrusel de clientes -->
             <div class="clients-carousel">
-                <div class="client-card">
+                    <div class="client-card">
                     <img src="images/ELPILAR.jpg" alt="Casa Rural El Pilar">
                     <div class="client-info">
                         <h3 data-i18n="clients.cards.elPilar.title">Casa Rural El Pilar</h3>
                         <p data-i18n="clients.cards.elPilar.description">Alojamiento rural con encanto en Sierra de Gata, Extremadura.</p>
                         <div class="client-cta-container">
                             <a href="https://www.casaruralelpilar.com/" class="client-cta-button" target="_blank" data-i18n="clients.cards.elPilar.cta">Visitar web</a>
-                        </div>
-                    </div>
+</div>
                 </div>
+                            </div>
 
-                <div class="client-card">
+                    <div class="client-card">
                     <img src="images/pic7.png" alt="Solset Nerja">
                     <div class="client-info">
                         <h3 data-i18n="clients.cards.solsetNerja.title">Solset Nerja</h3>
@@ -274,10 +313,10 @@
                         <div class="client-cta-container">
                             <a href="https://solsetnerja.com/en/" target="_blank" class="client-cta-button" data-i18n="clients.cards.solsetNerja.cta">Visitar web</a>
                         </div>
-                    </div>
-                </div>
+                            </div>
+                        </div>
 
-                <div class="client-card">
+                    <div class="client-card">
                     <img src="images/pic9.png" alt="Alojamientos Doña Lola">
                     <div class="client-info">
                         <h3 data-i18n="clients.cards.donaLola.title">Alojamientos Doña Lola</h3>
@@ -285,10 +324,10 @@
                         <div class="client-cta-container">
                             <a href="https://lolaalojamientos.com/" target="_blank" class="client-cta-button" data-i18n="clients.cards.donaLola.cta">Visitar web</a>
                         </div>
-                    </div>
                 </div>
             </div>
-        </div>
+    </div>
+                </div>
     </section>
 
     <!-- Sección Contacto -->
@@ -298,7 +337,7 @@
                 <source src="./videos/backg.mp4" type="video/mp4">
             </video>
             <div class="contact-overlay"></div>
-        </div>
+                  </div>
         <div class="container">
             <div class="contact-content">
                 <div class="contact-info">
@@ -309,7 +348,7 @@
                         ¿Qué te ofrecemos?
 
                         🤖 Asistente virtual 24/7
-                        📱 Gestión multicanal (WhatsApp, Telegram, Llamadas)
+                        📱 Gestión multicanal (WhatsApp, llamadas)
                         ⚡️ Automatización de check-in y documentación
                         💰 Cross-selling inteligente
                         ⭐️ Mejora en satisfacción de huéspedes
@@ -338,6 +377,201 @@
         </div>
     </section>
 
+    <!-- Carrusel de Logos Colaboradores -->
+    <section class="partners-carousel-section">
+        <div class="container">
+            <h2 class="section-title text-center" data-i18n="partners.title">Con el apoyo de</h2>
+            <div class="section-divider"></div>
+            
+            <div class="partners-carousel">
+                <div class="partners-track">
+                    <!-- Primera copia de logos (para el efecto de carrusel infinito) -->
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo_eoi.jpg" alt="Logo Colaborador 1">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo_microsoft_for_startups.png" alt="Logo Colaborador 2">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo-incibe.png" alt="Logo Colaborador 3">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\LogoMentorDay.png" alt="Logo Colaborador 4">
+                        </div>
+                    </div>
+                    
+                    <!-- Segunda copia de logos (para el efecto de carrusel infinito) -->
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo_eoi.jpg" alt="Logo Colaborador 1">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo_microsoft_for_startups.png" alt="Logo Colaborador 2">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\logo-incibe.png" alt="Logo Colaborador 3">
+                        </div>
+                    </div>
+                    <div class="partner-slide">
+                        <div class="partner-logo">
+                            <img src="images\LogoMentorDay.png" alt="Logo Colaborador 4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estilos para el carrusel de logos -->
+    <style>
+        .partners-carousel-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            overflow: hidden;
+        }
+        
+        .partners-carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+        
+        .partners-track {
+            display: flex;
+            animation: scroll 30s linear infinite;
+        }
+        
+        .partner-slide {
+            flex: 0 0 25%; /* 4 logos visibles a la vez */
+            min-width: 25%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        .partner-logo {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .partner-logo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .partner-logo img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%); /* Desplazamiento completo para crear efecto infinito */
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .partner-slide {
+                flex: 0 0 33.33%;
+                min-width: 33.33%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .partner-slide {
+                flex: 0 0 50%;
+                min-width: 50%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .partner-slide {
+                flex: 0 0 100%;
+                min-width: 100%;
+            }
+            
+            .partners-track {
+                animation: scroll 20s linear infinite;
+            }
+        }
+        
+        /* Pausa de animación al pasar el ratón */
+        .partners-carousel:hover .partners-track {
+            animation-play-state: paused;
+        }
+
+        /* Reducir el tamaño de las imágenes del carrusel de colaboradores en un 20% */
+        .partners-carousel .partner-logo img {
+            max-width: 80%; /* Reducido del 100% al 80% */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Reducir el tamaño del título de la sección de colaboradores en un 20% */
+        .partners-carousel-section .section-title {
+            font-size: 2rem; /* Reducido de 2.5rem a 2rem (aproximadamente 20% menos) */
+        }
+        
+        /* Ajustar el tamaño del contenedor del logo para mantener la proporción */
+        .partners-carousel .partner-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80%; /* Reducido del 100% al 80% */
+        }
+    </style>
+
+    <!-- Script para el carrusel de logos -->
+    <script>
+        // Asegurarse de que el carrusel funcione correctamente en diferentes dispositivos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ajustar la velocidad del carrusel según el ancho de la pantalla
+            const partnersTrack = document.querySelector('.partners-track');
+            if (window.innerWidth <= 576) {
+                partnersTrack.style.animationDuration = '20s';
+            } else if (window.innerWidth <= 768) {
+                partnersTrack.style.animationDuration = '25s';
+            } else {
+                partnersTrack.style.animationDuration = '30s';
+            }
+            
+            // Reiniciar la animación al cambiar el tamaño de la ventana
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 576) {
+                    partnersTrack.style.animationDuration = '20s';
+                } else if (window.innerWidth <= 768) {
+                    partnersTrack.style.animationDuration = '25s';
+                } else {
+                    partnersTrack.style.animationDuration = '30s';
+                }
+            });
+        });
+    </script>
+
     <!-- Scripts -->
     <script type="module" src="./js/translations.js"></script>
     <script type="module" src="./js/language.js"></script>
@@ -352,11 +586,11 @@
                     <div class="footer-title-container">
                         <div class="footer-logo">
                             <img src="./images/logo.png" alt="Host Helper AI Logo">
-                        </div>
-                        <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
                     </div>
-                    <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+                        <h3 class="footer-brand-title">Host Helper <span class="highlight">Ai</span></h3>
                 </div>
+                    <p class="company-slogan" data-i18n="footer.slogan">Automatizando la gestión de alojamientos turísticos con IA</p>
+            </div>
             </div>
             <div class="footer-contact">
                 <h4 data-i18n="footer.contact.title">Contacto</h4>
@@ -383,9 +617,9 @@
                 </a>
             </div>
         </div>
-    </div>
-    <div class="footer-bottom">
-        <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="footer.copyright">&copy; 2025 Host Helper AI. Todos los derechos reservados.</p>
     </div>
 </footer>
 <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
@@ -481,11 +715,6 @@
     overflow: hidden;
 }
 
-.hero-background video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 .hero-overlay {
     position: absolute;
@@ -1160,10 +1389,6 @@ html[lang="fr"] .secondary-content {
         height: 22px;
     }
 
-    .nav-title {
-        font-size: 1.2rem;
-    }
-
     .hamburger-menu {
         margin-right: -3.5rem;
         position: relative;
@@ -1345,6 +1570,119 @@ html[lang="fr"] .secondary-content {
         width: 100%;
         position: static;
         margin-top: 0.5rem;
+    }
+}
+
+/* Estilos para el nuevo botón "Saber más" */
+.features-cta-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 40px;
+}
+
+.features-cta-button {
+    display: inline-block;
+    padding: 15px 40px;
+    border: 2px solid #ECA408;
+    border-radius: 6px;
+    color: #333;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background-color: white;
+    font-size: 18px;
+}
+
+.features-cta-button:hover {
+    background-color: #ECA408;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(236, 164, 8, 0.2);
+}
+
+/* Estilos para la caja informativa debajo del carrusel */
+.features-info-box {
+    background-color: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.info-box-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.features-info-container {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.features-text-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.features-image-column {
+    flex: 1.2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.info-box-text {
+    font-size: 22px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.info-box-text .highlight {
+    color: #ECA408;
+    font-weight: 700;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .features-info-box {
+        padding: 25px;
+    }
+    
+    .features-info-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .info-box-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .info-box-text {
+        font-size: 18px;
+        text-align: center;
+    }
+    
+    .features-image-column {
+        order: -1; /* Coloca la imagen primero en móvil */
     }
 }
 </style>
