@@ -119,7 +119,7 @@ const LandingPage = () => {
             <div className="text-center mb-12 md:mb-16">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{t('landing.features.title')}</h2>
               <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-                Todo lo que necesitas para gestionar tus alojamientos turísticos de forma eficiente
+                {t('landing.features.subtitle')}
               </p>
             </div>
             
@@ -147,9 +147,9 @@ const LandingPage = () => {
                   </svg>
                   <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">Check-in automatizado</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">{t('landing.features.checkIn')}</h3>
                 <p className="text-gray-600 relative z-10">
-                  Automatiza el registro de viajeros y verificación de documentos. Ahorra tiempo y evita problemas con la documentación.
+                  {t('landing.features.checkInDesc')}
                 </p>
               </div>
               
@@ -161,9 +161,9 @@ const LandingPage = () => {
                   </svg>
                   <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">Upselling inteligente</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">{t('landing.features.upselling')}</h3>
                 <p className="text-gray-600 relative z-10">
-                  Genera ingresos adicionales ofreciendo servicios complementarios en el momento adecuado. Transfers, actividades locales, late check-out y más.
+                  {t('landing.features.upsellingDesc')}
                 </p>
               </div>
             </div>
@@ -174,7 +174,7 @@ const LandingPage = () => {
         <section className="py-24 bg-white" id="how-it-works">
           <div className="container-limited">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Empezar a utilizar Host Helper AI es muy sencillo</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{t('landing.howItWorks.title')}</h2>
             </div>
             
             {/* Paso 1 */}
@@ -184,9 +184,9 @@ const LandingPage = () => {
                   <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
                     1
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Regístrate y añade tu propiedad</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">{t('landing.howItWorks.step1.title')}</h3>
                 </div>
-                <p className="text-gray-600 mb-4">Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y las normas del alojamiento.</p>
+                <p className="text-gray-600 mb-4">{t('landing.howItWorks.step1.description')}</p>
               </div>
               <div className="md:w-1/2">
                 <div className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl" style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)" }}>
@@ -208,9 +208,9 @@ const LandingPage = () => {
                   <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
                     2
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Configura tu asistente virtual</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">{t('landing.howItWorks.step2.title')}</h3>
                 </div>
-                <p className="text-gray-600 mb-4">Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer.</p>
+                <p className="text-gray-600 mb-4">{t('landing.howItWorks.step2.description')}</p>
               </div>
               <div className="md:w-1/2">
                 <div className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl" style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)" }}>
@@ -232,9 +232,9 @@ const LandingPage = () => {
                   <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
                     3
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Comparte el enlace con tus huéspedes</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">{t('landing.howItWorks.step3.title')}</h3>
                 </div>
-                <p className="text-gray-600 mb-4">Proporciona el enlace de tu asistente a tus huéspedes. Ellos podrán hacer check-in, recibir asistencia y adquirir servicios adicionales fácilmente.</p>
+                <p className="text-gray-600 mb-4">{t('landing.howItWorks.step3.description')}</p>
               </div>
               <div className="md:w-1/2">
                 <div className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl" style={{ clipPath: "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)" }}>
@@ -254,12 +254,12 @@ const LandingPage = () => {
         {/* CTA Section */}
         <section className="py-6 md:py-10 bg-primary-500 w-full">
           <div className="container-limited text-center">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">Únete a los propietarios que están automatizando su gestión</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">{t('landing.cta.title')}</h2>
             <p className="text-base sm:text-lg text-white opacity-90 mb-4 max-w-3xl mx-auto">
-              Ahorra tiempo, aumenta tus ingresos y mejora la satisfacción de tus huéspedes.
+              {t('landing.cta.subtitle')}
             </p>
             <Link to="/register" className="inline-block px-5 py-2 sm:px-6 sm:py-2.5 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors">
-              Empieza tu prueba gratuita
+              {t('landing.cta.button')}
             </Link>
           </div>
         </section>
@@ -276,7 +276,7 @@ const LandingPage = () => {
             {/* Con el apoyo de - Left */}
             <div className="flex flex-col items-center md:items-start">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Con el apoyo de
+                {t('footer.support')}
                 <span className="absolute -bottom-1 left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
@@ -311,7 +311,7 @@ const LandingPage = () => {
             {/* Redes sociales - Centro */}
             <div className="flex flex-col items-center justify-center">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Síguenos
+                {t('footer.follow')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex space-x-4 justify-center">
@@ -342,7 +342,7 @@ const LandingPage = () => {
             {/* Contacto - Derecha */}
             <div className="flex flex-col items-center md:items-end">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Contacto
+                {t('footer.contact')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex flex-col space-y-2">
@@ -376,12 +376,12 @@ const LandingPage = () => {
             />
             <div className="h-0.5 w-16 bg-gradient-to-r from-primary-400 to-amber-300 rounded mb-2"></div>
             <p className="text-gray-600 text-sm max-w-xs text-center mt-1">
-              Automatizando la gestión de alojamientos turísticos con IA
+              {t('footer.slogan')}
             </p>
           </div>
           
           <div className="mt-6 pt-3 border-t border-gray-200/50 text-center">
-            <p className="text-gray-500 text-xs">© 2025 Host Helper AI. Todos los derechos reservados.</p>
+            <p className="text-gray-500 text-xs">{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>

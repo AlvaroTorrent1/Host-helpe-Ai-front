@@ -141,9 +141,9 @@ const Pricing = () => {
         <section className="bg-gradient-to-r from-[#ECA408] to-[#F5B730] py-16 w-full">
           <div className="container-limited">
             <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Planes de suscripción</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('pricing.title')}</h1>
               <p className="text-xl text-white opacity-90 max-w-2xl mx-auto">
-                Elige el plan que mejor se adapte a tus necesidades
+                {t('pricing.subtitle')}
               </p>
             </div>
           </div>
@@ -159,13 +159,13 @@ const Pricing = () => {
                   className={`px-4 py-2 rounded-md text-sm font-medium ${!isAnnual ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}
                   onClick={() => setIsAnnual(false)}
                 >
-                  Mensual
+                  {t('pricing.monthly')}
                 </button>
                 <button 
                   className={`px-4 py-2 rounded-md text-sm font-medium ${isAnnual ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}
                   onClick={() => setIsAnnual(true)}
                 >
-                  Anual<span className="ml-1 text-primary-500 text-xs">Ahorra 20%</span>
+                  {t('pricing.annual')}<span className="ml-1 text-primary-500 text-xs">{t('pricing.annualDiscount')}</span>
                 </button>
               </div>
             </div>
@@ -179,7 +179,7 @@ const Pricing = () => {
                 >
                   {plan.isPopular && (
                     <div className="bg-primary-400 text-white text-xs font-semibold py-1 px-3 text-center">
-                      Más popular
+                      {t('pricing.mostPopular')}
                     </div>
                   )}
 
@@ -190,7 +190,7 @@ const Pricing = () => {
                     
                     {plan.customPrice ? (
                       <div className="h-20 flex flex-col justify-center mb-6">
-                        <span className="text-3xl font-bold text-gray-900">{plan.customPrice}</span>
+                        <span className="text-3xl font-bold text-gray-900">{t('pricing.customPrice')}</span>
                       </div>
                     ) : (
                       <div className="h-20 flex flex-col justify-center mb-6">
@@ -198,10 +198,10 @@ const Pricing = () => {
                           <span className="text-3xl font-bold text-gray-900">
                             € {isAnnual ? plan.annualPrice : plan.monthlyPrice}
                           </span>
-                          <span className="text-gray-600 ml-1">€/mes</span>
+                          <span className="text-gray-600 ml-1">€{t('pricing.month')}</span>
                         </div>
                         {isAnnual && (
-                          <div className="text-sm text-gray-500 mt-1">Facturado anualmente</div>
+                          <div className="text-sm text-gray-500 mt-1">{t('pricing.billedAnnually')}</div>
                         )}
                       </div>
                     )}
@@ -237,7 +237,7 @@ const Pricing = () => {
         {/* FAQ Section */}
         <section className="py-16 bg-gray-50">
           <div className="container-limited">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 text-center">Preguntas Frecuentes</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 text-center">{t('pricing.faq.title')}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {faqItems.map((item, index) => (
@@ -254,16 +254,16 @@ const Pricing = () => {
         <section className="py-16 bg-gradient-to-r from-[#ECA408] to-[#F5B730]">
           <div className="container-limited text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              ¿Listo para revolucionar la gestión de tus alojamientos?
+              {t('pricing.ctaSection.title')}
             </h2>
             <p className="text-white text-lg mb-8 max-w-2xl mx-auto">
-              Empieza hoy mismo a ahorrar tiempo y aumentar tus ingresos con Host Helper AI
+              {t('pricing.ctaSection.subtitle')}
             </p>
             <Link 
               to="/register" 
               className="inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
             >
-              Comenzar prueba gratuita
+              {t('pricing.ctaSection.button')}
             </Link>
           </div>
         </section>
@@ -281,7 +281,7 @@ const Pricing = () => {
             {/* Con el apoyo de - Left */}
             <div className="flex flex-col items-center md:items-start">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Con el apoyo de
+                {t('footer.support')}
                 <span className="absolute -bottom-1 left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
@@ -316,7 +316,7 @@ const Pricing = () => {
             {/* Redes sociales - Centro */}
             <div className="flex flex-col items-center justify-center">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Síguenos
+                {t('footer.follow')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex space-x-4 justify-center">
@@ -347,7 +347,7 @@ const Pricing = () => {
             {/* Contacto - Derecha */}
             <div className="flex flex-col items-center md:items-end">
               <h4 className="text-lg font-medium mb-3 relative inline-block">
-                Contacto
+                {t('footer.contact')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-primary-400"></span>
               </h4>
               <div className="flex flex-col space-y-2">
@@ -381,12 +381,12 @@ const Pricing = () => {
             />
             <div className="h-0.5 w-16 bg-gradient-to-r from-primary-400 to-amber-300 rounded mb-2"></div>
             <p className="text-gray-600 text-sm max-w-xs text-center mt-1">
-              Automatizando la gestión de alojamientos turísticos con IA
+              {t('footer.slogan')}
             </p>
           </div>
           
           <div className="mt-6 pt-3 border-t border-gray-200/50 text-center">
-            <p className="text-gray-500 text-xs">© 2025 Host Helper AI. Todos los derechos reservados.</p>
+            <p className="text-gray-500 text-xs">{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>

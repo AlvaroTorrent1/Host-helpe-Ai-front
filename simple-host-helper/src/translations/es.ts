@@ -20,6 +20,7 @@ export const es = {
     },
     features: {
       title: 'Características Principales',
+      subtitle: 'Todo lo que necesitas para gestionar tus alojamientos turísticos de forma eficiente',
       chatbot: 'Chatbot 24/7',
       chatbotDesc: 'Asistente virtual para huéspedes que resuelve consultas en tiempo real',
       registration: 'Registro Automatizado',
@@ -29,7 +30,11 @@ export const es = {
       dashboard: 'Dashboard Centralizado',
       dashboardDesc: 'Gestión intuitiva de todas las propiedades desde un solo lugar',
       incidents: 'Gestión de Incidencias',
-      incidentsDesc: 'Sistema automatizado para resolución de problemas comunes'
+      incidentsDesc: 'Sistema automatizado para resolución de problemas comunes',
+      checkIn: 'Check-in automatizado',
+      checkInDesc: 'Automatiza el registro de viajeros y verificación de documentos. Ahorra tiempo y evita problemas con la documentación.',
+      upselling: 'Upselling inteligente',
+      upsellingDesc: 'Genera ingresos adicionales ofreciendo servicios complementarios en el momento adecuado. Transfers, actividades locales, late check-out y más.'
     },
     technologies: {
       title: 'Tecnologías Utilizadas',
@@ -43,13 +48,40 @@ export const es = {
       integrationDesc: 'API del Ministerio del Interior (SES), Botpress (chatbots)',
       deployment: 'Despliegue',
       deploymentDesc: 'Netlify/Vercel'
+    },
+    howItWorks: {
+      title: 'Empezar a utilizar Host Helper AI es muy sencillo',
+      step1: {
+        title: 'Regístrate y añade tu propiedad',
+        description: 'Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y las normas del alojamiento.'
+      },
+      step2: {
+        title: 'Configura tu asistente virtual',
+        description: 'Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer.'
+      },
+      step3: {
+        title: 'Comparte el enlace con tus huéspedes',
+        description: 'Proporciona el enlace de tu asistente a tus huéspedes. Ellos podrán hacer check-in, recibir asistencia y adquirir servicios adicionales fácilmente.'
+      }
+    },
+    cta: {
+      title: 'Únete a los propietarios que están automatizando su gestión',
+      subtitle: 'Ahorra tiempo, aumenta tus ingresos y mejora la satisfacción de tus huéspedes.',
+      button: 'Empieza tu prueba gratuita'
     }
   },
   
   // Testimonios
   testimonials: {
     title: 'Testimonios',
-    subtitle: 'Lo que dicen nuestros clientes sobre Host Helper AI'
+    subtitle: 'Lo que dicen nuestros clientes sobre Host Helper AI',
+    more: 'Más experiencias de nuestros clientes',
+    visitWebsite: 'Visitar web',
+    cta: {
+      title: 'Únete a nuestros clientes satisfechos',
+      subtitle: 'Comienza a disfrutar de los beneficios de Host Helper AI y transforma la gestión de tus alojamientos',
+      button: 'Solicitar demo gratuita'
+    }
   },
   
   // Precios
@@ -62,7 +94,12 @@ export const es = {
     month: '/mes',
     cta: 'Comenzar',
     contact: 'Contactar',
-    properties: 'propiedades',
+    monthly: 'Mensual',
+    annual: 'Anual',
+    annualDiscount: 'Ahorra 20%',
+    billedAnnually: 'Facturado anualmente',
+    mostPopular: 'Más popular',
+    customPrice: 'Personalizado',
     faq: {
       title: 'Preguntas frecuentes',
       q1: '¿Qué incluye el soporte prioritario?',
@@ -72,14 +109,36 @@ export const es = {
       q3: '¿En qué idiomas está disponible el asistente?',
       a3: 'El asistente está disponible en español e inglés, con capacidad de detectar automáticamente el idioma del huésped y responder apropiadamente.',
       q4: '¿Cómo funciona el sistema de ingresos extra?',
-      a4: 'El asistente ofrece servicios adicionales a tus huéspedes de forma proactiva, como traslados, entradas a espectáculos o reservas en restaurantes, generando comisiones para ti.'
+      a4: 'El asistente ofrece servicios adicionales a tus huéspedes de forma proactiva, como traslados, entradas a espectáculos o reservas en restaurantes, generando comisiones para ti.',
+      q5: '¿Es fácil implementar Host Helper AI?',
+      a5: 'Sí, la implementación es muy sencilla. Nuestro equipo te guiará en todo el proceso y tendrás tu asistente virtual funcionando en menos de 24 horas.',
+      q6: '¿Existe un período de prueba?',
+      a6: 'Ofrecemos una demostración personalizada gratuita donde podrás ver cómo funciona el asistente con tus propios datos y casos de uso específicos.',
+      q7: '¿Qué soporte técnico incluye?',
+      a7: 'Todos los planes incluyen soporte técnico por email. Los planes Pro y Enterprise incluyen además soporte prioritario y acceso a un gestor de cuenta dedicado.'
+    },
+    ctaSection: {
+      title: '¿Listo para revolucionar la gestión de tus alojamientos?',
+      subtitle: 'Empieza hoy mismo a ahorrar tiempo y aumentar tus ingresos con Host Helper AI',
+      button: 'Comenzar prueba gratuita'
     }
+  },
+  
+  // Footer
+  footer: {
+    support: 'Con el apoyo de',
+    follow: 'Síguenos',
+    contact: 'Contacto',
+    slogan: 'Automatizando la gestión de alojamientos turísticos con IA',
+    copyright: '© 2025 Host Helper AI. Todos los derechos reservados.'
   },
   
   // Común
   common: {
     language: 'Idioma',
     spanish: 'Español',
-    english: 'English'
+    english: 'English',
+    property: 'propiedad',
+    properties: 'propiedades'
   }
 }; 
