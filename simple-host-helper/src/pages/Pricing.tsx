@@ -19,74 +19,74 @@ const Pricing = () => {
   // Pricing plans
   const plans = [
     {
-      name: 'Básico',
+      name: t('pricing.basic'),
       monthlyPrice: 9.99,
       annualPrice: 7.99,
       features: [
-        '1 propiedad',
-        'Atención 24/7',
+        `1 ${t('common.property')}`,
+        t('pricing.features.support247'),
         'WhatsApp',
-        'Gestión de datos básica'
+        t('pricing.features.basicDataManagement')
       ],
       isPopular: false,
-      cta: 'Empezar ahora'
+      cta: t('pricing.cta')
     },
     {
-      name: 'Pro',
+      name: t('pricing.pro'),
       monthlyPrice: 29.99,
       annualPrice: 23.99,
       features: [
-        'Hasta 5 propiedades',
-        'Todo lo del plan Básico',
-        'Llamadas automáticas',
-        'Gestión avanzada de datos',
-        'Análisis y reportes'
+        `${t('pricing.features.upTo')} 5 ${t('common.properties')}`,
+        `${t('pricing.features.allFrom')} ${t('pricing.basic')}`,
+        t('pricing.features.automaticCalls'),
+        t('pricing.features.advancedDataManagement'),
+        t('pricing.features.analyticsReports')
       ],
       isPopular: true,
-      cta: 'Empezar ahora'
+      cta: t('pricing.cta')
     },
     {
-      name: 'Enterprise',
+      name: t('pricing.enterprise'),
       monthlyPrice: null,
       annualPrice: null,
-      customPrice: 'Personalizado',
+      customPrice: t('pricing.customPrice'),
       features: [
-        'Propiedades ilimitadas',
-        'Todo lo del plan Pro',
-        'API dedicada',
-        'Soporte prioritario',
-        'Personalización completa'
+        t('pricing.features.unlimitedProperties'),
+        `${t('pricing.features.allFrom')} ${t('pricing.pro')}`,
+        t('pricing.features.dedicatedAPI'),
+        t('pricing.features.prioritySupport'),
+        t('pricing.features.fullCustomization')
       ],
       isPopular: false,
-      cta: 'Contactar ventas'
+      cta: t('pricing.contact')
     }
   ];
 
   // FAQ items
   const faqItems = [
     {
-      question: '¿Es fácil implementar Host Helper AI?',
-      answer: 'Sí, la implementación es muy sencilla. Nuestro equipo te guiará en todo el proceso y tendrás tu asistente virtual funcionando en menos de 24 horas.'
+      question: t('pricing.faq.q5'),
+      answer: t('pricing.faq.a5')
     },
     {
-      question: '¿Existe un período de prueba?',
-      answer: 'Ofrecemos una demostración personalizada gratuita donde podrás ver cómo funciona el asistente con tus propios datos y casos de uso específicos.'
+      question: t('pricing.faq.q6'),
+      answer: t('pricing.faq.a6')
     },
     {
-      question: '¿Puedo cambiar de plan en cualquier momento?',
-      answer: 'Sí, puedes actualizar o cambiar tu plan en cualquier momento. Los cambios se aplican inmediatamente y el cobro se ajusta de forma proporcional.'
+      question: t('pricing.faq.q2'),
+      answer: t('pricing.faq.a2')
     },
     {
-      question: '¿En qué idiomas está disponible el asistente?',
-      answer: 'El asistente está disponible en español e inglés, con capacidad de detectar automáticamente el idioma del huésped y responder apropiadamente.'
+      question: t('pricing.faq.q3'),
+      answer: t('pricing.faq.a3')
     },
     {
-      question: '¿Cómo funciona el sistema de ingresos extra?',
-      answer: 'El asistente ofrece servicios adicionales a tus huéspedes de forma proactiva, como traslados, excursiones o servicios de limpieza extra. Tú defines los servicios y las comisiones, y el sistema gestiona todo automáticamente.'
+      question: t('pricing.faq.q4'),
+      answer: t('pricing.faq.a4')
     },
     {
-      question: '¿Qué soporte técnico incluye?',
-      answer: 'Todos los planes incluyen soporte técnico por email. Los planes Pro y Enterprise incluyen además soporte prioritario y acceso a un gestor de cuenta dedicado.'
+      question: t('pricing.faq.q7'),
+      answer: t('pricing.faq.a7')
     }
   ];
 

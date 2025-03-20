@@ -77,6 +77,46 @@ export const es = {
     subtitle: 'Lo que dicen nuestros clientes sobre Host Helper AI',
     more: 'Más experiencias de nuestros clientes',
     visitWebsite: 'Visitar web',
+    testimonial1: {
+      description: 'Alojamiento rural con encanto en Sierra de Gata, Extremadura.',
+      text: 'Host Helper ha transformado nuestra gestión de reservas. Los huéspedes están encantados con la atención 24/7 y nosotros ahorramos tiempo en responder preguntas repetitivas.',
+      author: 'María González',
+      position: 'Propietaria'
+    },
+    testimonial2: {
+      description: 'Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.',
+      text: 'Desde que implementamos Host Helper, nuestros huéspedes pueden hacer check-in sin problemas a cualquier hora. Hemos aumentado nuestras valoraciones en un 20%.',
+      author: 'Carlos Ruiz',
+      position: 'Director'
+    },
+    testimonial3: {
+      description: 'Alojamiento boutique en el centro histórico de Lucena.',
+      text: 'La función de venta de servicios adicionales nos ha permitido aumentar nuestros ingresos en un 30%. Los huéspedes valoran mucho la facilidad para solicitar servicios extra.',
+      author: 'Lola Martínez',
+      position: 'Gerente'
+    },
+    additionalTestimonials: {
+      testimonial1: {
+        author: 'Ana Moreno',
+        company: 'Apartamentos Turísticos Sevilla',
+        text: 'El asistente virtual de Host Helper ha sido una revolución para nuestra gestión diaria. Los huéspedes reciben respuestas inmediatas y nosotros podemos centrarnos en mejorar otros aspectos del negocio.'
+      },
+      testimonial2: {
+        author: 'Javier López',
+        company: 'Villa Costa del Sol',
+        text: 'Hemos reducido en un 70% el tiempo que dedicábamos a responder preguntas básicas de los huéspedes. La integración fue muy sencilla y el equipo de soporte siempre está disponible.'
+      },
+      testimonial3: {
+        author: 'Patricia García',
+        company: 'Hostal Madrid Centro',
+        text: 'Lo que más me gusta es que los huéspedes pueden hacer check-in a cualquier hora sin problemas. Es como tener un recepcionista 24/7 pero sin los costes asociados.'
+      },
+      testimonial4: {
+        author: 'Ricardo Fernández',
+        company: 'Apartamentos Turísticos Barcelona',
+        text: 'Desde que implementamos Host Helper, hemos incrementado nuestras ventas de servicios adicionales en un 40%. Es increíble cómo el chatbot puede sugerir servicios de forma natural y no intrusiva.'
+      }
+    },
     cta: {
       title: 'Únete a nuestros clientes satisfechos',
       subtitle: 'Comienza a disfrutar de los beneficios de Host Helper AI y transforma la gestión de tus alojamientos',
@@ -100,6 +140,19 @@ export const es = {
     billedAnnually: 'Facturado anualmente',
     mostPopular: 'Más popular',
     customPrice: 'Personalizado',
+    features: {
+      support247: 'Atención 24/7',
+      basicDataManagement: 'Gestión de datos básica',
+      upTo: 'Hasta',
+      allFrom: 'Todo lo del plan',
+      automaticCalls: 'Llamadas automáticas',
+      advancedDataManagement: 'Gestión avanzada de datos',
+      analyticsReports: 'Análisis y reportes',
+      unlimitedProperties: 'Propiedades ilimitadas',
+      dedicatedAPI: 'API dedicada',
+      prioritySupport: 'Soporte prioritario',
+      fullCustomization: 'Personalización completa'
+    },
     faq: {
       title: 'Preguntas frecuentes',
       q1: '¿Qué incluye el soporte prioritario?',

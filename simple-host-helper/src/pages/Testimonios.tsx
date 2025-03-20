@@ -21,30 +21,30 @@ const Testimonios = () => {
       id: 1,
       name: 'Casa Rural El Pilar',
       image: '/imagenes/ELPILAR.jpg',
-      description: 'Alojamiento rural con encanto en Sierra de Gata, Extremadura.',
-      testimonial: 'Host Helper ha transformado nuestra gestión de reservas. Los huéspedes están encantados con la atención 24/7 y nosotros ahorramos tiempo en responder preguntas repetitivas.',
-      author: 'María González',
-      position: 'Propietaria',
+      description: t('testimonials.testimonial1.description'),
+      testimonial: t('testimonials.testimonial1.text'),
+      author: t('testimonials.testimonial1.author'),
+      position: t('testimonials.testimonial1.position'),
       website: 'https://www.casaruralelpilar.com/'
     },
     {
       id: 2,
       name: 'Solset Nerja',
       image: '/imagenes/Solset.png',
-      description: 'Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.',
-      testimonial: 'Desde que implementamos Host Helper, nuestros huéspedes pueden hacer check-in sin problemas a cualquier hora. Hemos aumentado nuestras valoraciones en un 20%.',
-      author: 'Carlos Ruiz',
-      position: 'Director',
+      description: t('testimonials.testimonial2.description'),
+      testimonial: t('testimonials.testimonial2.text'),
+      author: t('testimonials.testimonial2.author'),
+      position: t('testimonials.testimonial2.position'),
       website: 'https://solsetnerja.com/en/'
     },
     {
       id: 3,
       name: 'Alojamientos Doña Lola',
       image: '/imagenes/pic9.png',
-      description: 'Alojamiento boutique en el centro histórico de Lucena.',
-      testimonial: 'La función de venta de servicios adicionales nos ha permitido aumentar nuestros ingresos en un 30%. Los huéspedes valoran mucho la facilidad para solicitar servicios extra.',
-      author: 'Lola Martínez',
-      position: 'Gerente',
+      description: t('testimonials.testimonial3.description'),
+      testimonial: t('testimonials.testimonial3.text'),
+      author: t('testimonials.testimonial3.author'),
+      position: t('testimonials.testimonial3.position'),
       website: 'https://lolaalojamientos.com/'
     }
   ];
@@ -174,12 +174,12 @@ const Testimonios = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold">Ana Moreno</h3>
-                    <p className="text-sm text-gray-600">Apartamentos Turísticos Sevilla</p>
+                    <h3 className="text-lg font-semibold">{t('testimonials.additionalTestimonials.testimonial1.author')}</h3>
+                    <p className="text-sm text-gray-600">{t('testimonials.additionalTestimonials.testimonial1.company')}</p>
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "El asistente virtual de Host Helper ha sido una revolución para nuestra gestión diaria. Los huéspedes reciben respuestas inmediatas y nosotros podemos centrarnos en mejorar otros aspectos del negocio."
+                  "{t('testimonials.additionalTestimonials.testimonial1.text')}"
                 </p>
               </div>
               
@@ -191,12 +191,12 @@ const Testimonios = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold">Javier López</h3>
-                    <p className="text-sm text-gray-600">Villa Costa del Sol</p>
+                    <h3 className="text-lg font-semibold">{t('testimonials.additionalTestimonials.testimonial2.author')}</h3>
+                    <p className="text-sm text-gray-600">{t('testimonials.additionalTestimonials.testimonial2.company')}</p>
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Hemos reducido en un 70% el tiempo que dedicábamos a responder preguntas básicas de los huéspedes. La integración fue muy sencilla y el equipo de soporte siempre está disponible."
+                  "{t('testimonials.additionalTestimonials.testimonial2.text')}"
                 </p>
               </div>
               
@@ -208,12 +208,12 @@ const Testimonios = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold">Patricia García</h3>
-                    <p className="text-sm text-gray-600">Hostal Madrid Centro</p>
+                    <h3 className="text-lg font-semibold">{t('testimonials.additionalTestimonials.testimonial3.author')}</h3>
+                    <p className="text-sm text-gray-600">{t('testimonials.additionalTestimonials.testimonial3.company')}</p>
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Lo que más me gusta es que los huéspedes pueden hacer check-in a cualquier hora sin problemas. Es como tener un recepcionista 24/7 pero sin los costes asociados."
+                  "{t('testimonials.additionalTestimonials.testimonial3.text')}"
                 </p>
               </div>
               
@@ -225,12 +225,12 @@ const Testimonios = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold">Ricardo Fernández</h3>
-                    <p className="text-sm text-gray-600">Apartamentos Turísticos Barcelona</p>
+                    <h3 className="text-lg font-semibold">{t('testimonials.additionalTestimonials.testimonial4.author')}</h3>
+                    <p className="text-sm text-gray-600">{t('testimonials.additionalTestimonials.testimonial4.company')}</p>
                   </div>
                 </div>
                 <p className="text-gray-700">
-                  "Desde que implementamos Host Helper, hemos incrementado nuestras ventas de servicios adicionales en un 40%. Es increíble cómo el chatbot puede sugerir servicios de forma natural y no intrusiva."
+                  "{t('testimonials.additionalTestimonials.testimonial4.text')}"
                 </p>
               </div>
             </div>
