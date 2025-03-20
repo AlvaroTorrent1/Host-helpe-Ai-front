@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import MobileMenu from '../components/MobileMenu';
 import LanguageSelector from '../components/LanguageSelector';
+import CalendlyWidget from '../components/CalendlyWidget';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const LandingPage = () => {
@@ -112,6 +113,11 @@ const LandingPage = () => {
           <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-white opacity-5 rounded-full transform translate-x-1/4 -translate-y-1/4"></div>
           <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-white opacity-5 rounded-full transform -translate-x-1/4 translate-y-1/4"></div>
         </section>
+
+        {/* Calendly Widget Section - before Features */}
+        <CalendlyWidget 
+          url="https://calendly.com/hosthelperai/demo" 
+        />
 
         {/* Features Section */}
         <section id="features" className="py-12 md:py-20 bg-white w-full">

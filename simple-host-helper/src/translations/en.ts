@@ -71,6 +71,13 @@ export const en = {
     }
   },
   
+  // Calendly Widget
+  calendly: {
+    title: 'Schedule a personalized demo',
+    subtitle: 'Book an appointment with our team to learn how Host Helper AI can help you automate the management of your tourist accommodations',
+    button: 'Book appointment now'
+  },
+  
   // Testimonios
   testimonials: {
     title: 'Testimonials',

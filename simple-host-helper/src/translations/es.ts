@@ -71,6 +71,13 @@ export const es = {
     }
   },
   
+  // Widget de Calendly
+  calendly: {
+    title: 'Agenda una demostración personalizada',
+    subtitle: 'Reserva una cita con nuestro equipo para conocer cómo Host Helper AI puede ayudarte a automatizar la gestión de tus alojamientos turísticos',
+    button: 'Reservar cita ahora'
+  },
+  
   // Testimonios
   testimonials: {
     title: 'Testimonios',
