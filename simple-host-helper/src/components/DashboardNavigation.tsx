@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const DashboardNavigation: React.FC = () => {
   const location = useLocation();
+  const { t } = useLanguage();
   const currentPath = location.pathname;
   
   const navItems = [
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/reservations', label: 'Reservas' },
-    { path: '/properties', label: 'Propiedades' },
-    { path: '/ses-registration', label: 'Registro SES' }
+    { path: '/dashboard', label: t('dashboard.menu.dashboard') },
+    { path: '/reservations', label: t('dashboard.menu.reservations') },
+    { path: '/properties', label: t('dashboard.menu.properties') },
+    { path: '/ses-registration', label: t('dashboard.menu.registrations') }
   ];
   
   const isActive = (path: string) => {

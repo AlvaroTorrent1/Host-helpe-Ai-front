@@ -177,6 +177,37 @@ export const es = {
     }
   },
   
+  // Dashboard
+  dashboard: {
+    welcome: 'Bienvenido al dashboard',
+    description: 'Esta es una versión preliminar del dashboard para Host Helper AI. Aquí podrás gestionar tus alojamientos, revisar reservas, y acceder a todas las funcionalidades de nuestra plataforma.',
+    notice: 'Estamos trabajando en implementar todas las funcionalidades. Por ahora, este es un demo de la interfaz.',
+    properties: {
+      title: 'Propiedades',
+      total: 'Total de propiedades registradas',
+      view: 'Ver propiedades'
+    },
+    reservations: {
+      title: 'Reservas activas',
+      confirmed: 'Reservas confirmadas y pendientes',
+      view: 'Ver reservas'
+    },
+    registrations: {
+      title: 'Registro SES',
+      pending: 'Pendientes de envío al SES',
+      view: 'Ver registros'
+    },
+    menu: {
+      dashboard: 'Dashboard',
+      properties: 'Propiedades',
+      reservations: 'Reservas',
+      registrations: 'Registro SES',
+      account: 'Mi cuenta',
+      settings: 'Configuración',
+      logout: 'Cerrar sesión'
+    }
+  },
+  
   // Footer
   footer: {
     support: 'Con el apoyo de',

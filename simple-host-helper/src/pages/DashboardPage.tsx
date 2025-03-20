@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import DashboardNavigation from '../components/DashboardNavigation';
+import DashboardLanguageSelector from '../components/DashboardLanguageSelector';
 
 type Property = {
   id: string;
@@ -38,6 +40,7 @@ type Incident = {
 
 const DashboardPage: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -206,13 +209,14 @@ const DashboardPage: React.FC = () => {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
+            <DashboardLanguageSelector />
             <span className="text-gray-700">{user?.email}</span>
             <button
               onClick={handleSignOut}
               disabled={isLoading}
               className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md text-sm transition duration-150 disabled:opacity-70"
             >
-              {isLoading ? 'Cerrando sesión...' : 'Cerrar sesión'}
+              {isLoading ? 'Cerrando sesión...' : t('dashboard.menu.logout')}
             </button>
           </div>
         </div>
@@ -224,10 +228,9 @@ const DashboardPage: React.FC = () => {
       {/* Contenido principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white shadow-sm rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Bienvenido al dashboard</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">{t('dashboard.welcome')}</h2>
           <p className="text-gray-600 mb-4">
-            Esta es una versión preliminar del dashboard para Host Helper AI. Aquí podrás gestionar tus alojamientos,
-            revisar reservas, y acceder a todas las funcionalidades de nuestra plataforma.
+            {t('dashboard.description')}
           </p>
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-yellow-700">
             <div className="flex">
@@ -238,7 +241,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="ml-3">
                 <p className="text-sm">
-                  Estamos trabajando en implementar todas las funcionalidades. Por ahora, este es un demo de la interfaz.
+                  {t('dashboard.notice')}
                 </p>
               </div>
             </div>
@@ -248,38 +251,48 @@ const DashboardPage: React.FC = () => {
         {/* Grid de estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-medium text-gray-900">Propiedades</h3>
-            <p className="mt-2 text-3xl font-bold text-primary-600">{properties.length}</p>
-            <div className="flex justify-between items-center">
-              <p className="text-gray-500 text-sm mt-1">Total de propiedades registradas</p>
-              <Link to="/properties" className="mt-1 text-primary-600 hover:text-primary-700 text-sm">
-                Ver propiedades
-              </Link>
-            </div>
+            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.properties.title')}</h3>
+            <div className="text-3xl font-bold text-gray-900 mb-2">{properties.length}</div>
+            <p className="text-gray-500 text-sm mb-4">{t('dashboard.properties.total')}</p>
+            <Link 
+              to="/dashboard/properties" 
+              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
+            >
+              {t('dashboard.properties.view')}
+              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
           
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-medium text-gray-900">Reservas activas</h3>
-            <p className="mt-2 text-3xl font-bold text-primary-600">
-              {reservations.filter(r => r.status !== 'cancelled').length}
-            </p>
-            <div className="flex justify-between items-center">
-              <p className="text-gray-500 text-sm mt-1">Reservas confirmadas y pendientes</p>
-              <Link to="/reservations" className="mt-1 text-primary-600 hover:text-primary-700 text-sm">
-                Ver reservas
-              </Link>
-            </div>
+            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.reservations.title')}</h3>
+            <div className="text-3xl font-bold text-gray-900 mb-2">{reservations.length}</div>
+            <p className="text-gray-500 text-sm mb-4">{t('dashboard.reservations.confirmed')}</p>
+            <Link 
+              to="/dashboard/reservations" 
+              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
+            >
+              {t('dashboard.reservations.view')}
+              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
           
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-medium text-gray-900">Registro SES</h3>
-            <p className="mt-2 text-3xl font-bold text-primary-600">3</p>
-            <div className="flex justify-between items-center">
-              <p className="text-gray-500 text-sm mt-1">Pendientes de envío al SES</p>
-              <Link to="/ses-registration" className="mt-1 text-primary-600 hover:text-primary-700 text-sm">
-                Ver registros
-              </Link>
-            </div>
+            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.registrations.title')}</h3>
+            <div className="text-3xl font-bold text-gray-900 mb-2">3</div>
+            <p className="text-gray-500 text-sm mb-4">{t('dashboard.registrations.pending')}</p>
+            <Link 
+              to="/dashboard/registrations" 
+              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
+            >
+              {t('dashboard.registrations.view')}
+              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
         </div>
         
