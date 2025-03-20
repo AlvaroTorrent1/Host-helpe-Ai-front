@@ -40,7 +40,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-md py-4 px-6 z-50">
+        <div className="fixed top-20 left-0 right-0 bg-white shadow-md py-4 px-6 z-50 max-h-[80vh] overflow-y-auto">
           <ul className="space-y-3">
             {links.map((link, index) => (
               <li key={index}>

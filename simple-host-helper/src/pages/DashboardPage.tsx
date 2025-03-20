@@ -198,25 +198,25 @@ const DashboardPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       {/* Header con navegación */}
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-4 flex flex-col sm:flex-row justify-between items-center">
+          <div className="flex items-center mb-4 sm:mb-0">
             <Link to="/">
               <img 
                 src="/imagenes/Logo_hosthelper_new.png" 
                 alt="Host Helper AI Logo" 
-                className="h-36" 
+                className="h-16 sm:h-36" 
               />
             </Link>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <DashboardLanguageSelector />
-            <span className="text-gray-700">{user?.email}</span>
+            <span className="text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full">{user?.email}</span>
             <button
               onClick={handleSignOut}
               disabled={isLoading}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md text-sm transition duration-150 disabled:opacity-70"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm transition duration-150 disabled:opacity-70"
             >
-              {isLoading ? 'Cerrando sesión...' : t('dashboard.menu.logout')}
+              {isLoading ? '...' : t('dashboard.menu.logout')}
             </button>
           </div>
         </div>
@@ -226,13 +226,13 @@ const DashboardPage: React.FC = () => {
       <DashboardNavigation />
       
       {/* Contenido principal */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white shadow-sm rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">{t('dashboard.welcome')}</h2>
-          <p className="text-gray-600 mb-4">
+      <main className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="bg-white shadow-sm rounded-lg p-3 sm:p-6 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-4">{t('dashboard.welcome')}</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">
             {t('dashboard.description')}
           </p>
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-yellow-700">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-2 sm:p-4 text-yellow-700">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -240,7 +240,7 @@ const DashboardPage: React.FC = () => {
                 </svg>
               </div>
               <div className="ml-3">
-                <p className="text-sm">
+                <p className="text-xs sm:text-sm">
                   {t('dashboard.notice')}
                 </p>
               </div>
@@ -248,196 +248,202 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         
-        {/* Grid de estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.properties.title')}</h3>
-            <div className="text-3xl font-bold text-gray-900 mb-2">{properties.length}</div>
-            <p className="text-gray-500 text-sm mb-4">{t('dashboard.properties.total')}</p>
-            <Link 
-              to="/dashboard/properties" 
-              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
-            >
-              {t('dashboard.properties.view')}
-              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </Link>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.reservations.title')}</h3>
-            <div className="text-3xl font-bold text-gray-900 mb-2">{reservations.length}</div>
-            <p className="text-gray-500 text-sm mb-4">{t('dashboard.reservations.confirmed')}</p>
-            <Link 
-              to="/dashboard/reservations" 
-              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
-            >
-              {t('dashboard.reservations.view')}
-              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </Link>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-gray-700 font-medium mb-4">{t('dashboard.registrations.title')}</h3>
-            <div className="text-3xl font-bold text-gray-900 mb-2">3</div>
-            <p className="text-gray-500 text-sm mb-4">{t('dashboard.registrations.pending')}</p>
-            <Link 
-              to="/dashboard/registrations" 
-              className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center"
-            >
-              {t('dashboard.registrations.view')}
-              <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-        
-        {/* Sección de acciones rápidas */}
-        <div className="bg-white shadow-sm rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">{t('dashboard.quickActions.title')}</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <Link to="/dashboard/properties" className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150 flex flex-col items-center">
-              <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              <span>{t('dashboard.properties.add')}</span>
-            </Link>
-            <Link to="/dashboard/reservations" className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150 flex flex-col items-center">
-              <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-              </svg>
-              <span>{t('dashboard.reservations.register')}</span>
-            </Link>
-            <button className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150">
-              <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
-                <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
-              </svg>
-              <span>{t('dashboard.quickActions.messages')}</span>
-            </button>
-            <button className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150">
-              <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-              <span>{t('dashboard.quickActions.help')}</span>
-            </button>
-          </div>
-        </div>
-        
-        {/* Incidencias y Registros SES */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Panel de incidencias */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">{t('dashboard.incidents.title')}</h3>
-              <div className="flex space-x-2">
-                <select
-                  className="bg-white border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  value={selectedCategory}
-                  onChange={e => setSelectedCategory(e.target.value as IncidentCategory | 'all')}
+        {/* Grid layout para estadísticas y acciones rápidas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+          {/* Propiedades */}
+          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">{t('dashboard.properties.title')}</h3>
+            <div className="mt-1">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-gray-600">{t('dashboard.properties.total')}</span>
+                <span className="text-lg font-semibold">{properties.length}</span>
+              </div>
+              <div className="space-y-2">
+                <Link
+                  to="/properties"
+                  className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
                 >
-                  {Object.entries(categoryLabels).map(([key, label]) => (
-                    <option key={key} value={key}>{label}</option>
-                  ))}
-                </select>
+                  {t('dashboard.properties.view')}
+                </Link>
+                <Link
+                  to="/properties/add"
+                  className="block text-center text-sm bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md"
+                >
+                  {t('dashboard.properties.add')}
+                </Link>
               </div>
-            </div>
-            
-            {filteredIncidents.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                {t('dashboard.incidents.empty')}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredIncidents.slice(0, 3).map(incident => (
-                  <div key={incident.id} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                    <div className="flex justify-between">
-                      <h4 className="font-medium text-gray-900">{incident.title}</h4>
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        incident.status === 'resolved' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {incident.status === 'resolved' 
-                          ? t('dashboard.incidents.status.resolved') 
-                          : t('dashboard.incidents.status.pending')}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {incident.description || 'Sin descripción'}
-                    </p>
-                    <div className="flex justify-between mt-2 text-xs text-gray-500">
-                      <span>{incident.property_name}</span>
-                      <span>{new Date(incident.date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            <div className="mt-4 text-right">
-              <button className="text-primary-600 hover:text-primary-700 text-sm">
-                {t('dashboard.incidents.viewAll')}
-              </button>
             </div>
           </div>
           
-          {/* Panel de Registro SES */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">{t('dashboard.ses.title')}</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="border-b border-gray-200 pb-4">
-                <div className="flex justify-between">
-                  <h4 className="font-medium text-gray-900">Carlos Rodríguez</h4>
-                  <span className="text-xs px-2 py-1 rounded-full font-medium bg-green-100 text-green-800">
-                    {t('dashboard.ses.status.approved')}
-                  </span>
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-gray-500">
-                  <span>Apartamento Centro</span>
-                  <span>15/04/2025</span>
-                </div>
+          {/* Reservas */}
+          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">{t('dashboard.reservations.title')}</h3>
+            <div className="mt-1">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-2">
+                <span className="text-sm text-gray-600">{t('dashboard.reservations.upcoming')}</span>
+                <span className="text-lg font-semibold">{reservations.filter(r => r.status === 'confirmed').length}</span>
               </div>
-              
-              <div className="border-b border-gray-200 pb-4">
-                <div className="flex justify-between">
-                  <h4 className="font-medium text-gray-900">Laura Martínez</h4>
-                  <span className="text-xs px-2 py-1 rounded-full font-medium bg-yellow-100 text-yellow-800">
-                    {t('dashboard.ses.status.pending')}
-                  </span>
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-gray-500">
-                  <span>Casa de Playa</span>
-                  <span>05/04/2025</span>
-                </div>
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-2">
+                <span className="text-sm text-gray-600">{t('dashboard.reservations.pending')}</span>
+                <span className="text-lg font-semibold">{reservations.filter(r => r.status === 'pending').length}</span>
               </div>
-              
-              <div className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                <div className="flex justify-between">
-                  <h4 className="font-medium text-gray-900">Miguel Fernández</h4>
-                  <span className="text-xs px-2 py-1 rounded-full font-medium bg-red-100 text-red-800">
-                    {t('dashboard.ses.status.error')}
-                  </span>
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-gray-500">
-                  <span>Apartamento Centro</span>
-                  <span>10/04/2025</span>
-                </div>
+              <div className="mt-4">
+                <Link
+                  to="/reservations"
+                  className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
+                >
+                  {t('dashboard.reservations.view')}
+                </Link>
               </div>
             </div>
-            
-            <div className="mt-4 text-right">
-              <Link to="/ses-registration" className="text-primary-600 hover:text-primary-700 text-sm">
-                {t('dashboard.registrations.manage')}
+          </div>
+          
+          {/* Acciones rápidas */}
+          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">{t('dashboard.quickActions.title')}</h3>
+            <div className="mt-1 space-y-2">
+              <Link
+                to="/messages"
+                className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
+              >
+                {t('dashboard.quickActions.messages')}
+              </Link>
+              <Link
+                to="/help"
+                className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
+              >
+                {t('dashboard.quickActions.help')}
               </Link>
             </div>
+          </div>
+        </div>
+        
+        {/* Incidencias */}
+        <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-0">{t('dashboard.incidents.title')}</h3>
+            <div className="flex space-x-2 overflow-x-auto pb-2 sm:pb-0">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                  selectedCategory === 'all'
+                    ? 'bg-primary-100 text-primary-800'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {categoryLabels['all']}
+              </button>
+              {(Object.keys(categoryLabels) as Array<IncidentCategory | 'all'>)
+                .filter(key => key !== 'all')
+                .map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
+                      selectedCategory === category
+                        ? 'bg-primary-100 text-primary-800'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {categoryLabels[category]}
+                  </button>
+                ))}
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">{t('dashboard.incidents.pending')}</span>
+                <span className="text-lg font-semibold">{pendingIncidentsCount}</span>
+              </div>
+            </div>
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">{t('dashboard.incidents.resolutionRate')}</span>
+                <span className="text-lg font-semibold">{resolutionRate}%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {t('dashboard.incidents.table.title')}
+                  </th>
+                  <th scope="col" className="hidden sm:table-cell px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {t('dashboard.incidents.table.property')}
+                  </th>
+                  <th scope="col" className="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {t('dashboard.incidents.table.category')}
+                  </th>
+                  <th scope="col" className="px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {t('dashboard.incidents.table.status')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredIncidents.length > 0 ? (
+                  filteredIncidents.map((incident) => (
+                    <tr key={incident.id}>
+                      <td className="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm">
+                        <div className="truncate max-w-[150px] sm:max-w-full">{incident.title}</div>
+                        <div className="text-xs text-gray-500 sm:hidden">{incident.property_name}</div>
+                      </td>
+                      <td className="hidden sm:table-cell px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm text-gray-500">
+                        {incident.property_name}
+                      </td>
+                      <td className="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-xs">
+                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {categoryLabels[incident.category]}
+                        </span>
+                      </td>
+                      <td className="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-xs">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          incident.status === 'resolved'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {incident.status === 'resolved' ? t('dashboard.incidents.table.resolved') : t('dashboard.incidents.table.pending')}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-2 sm:px-6 py-4 text-center text-sm text-gray-500">
+                      {t('dashboard.incidents.noIncidents')}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        {/* Registro Viajero SES */}
+        <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">{t('dashboard.sesRegistration.title')}</h3>
+          <p className="text-sm text-gray-600 mb-4">
+            {t('dashboard.sesRegistration.description')}
+          </p>
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+            <Link
+              to="/ses-registration"
+              className="text-center text-sm bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md"
+            >
+              {t('dashboard.sesRegistration.register')}
+            </Link>
+            <a
+              href="https://sede.policia.gob.es/portalCiudadano/sede_electronica/extranjeria/EX14.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
+            >
+              {t('dashboard.sesRegistration.downloadForm')}
+            </a>
           </div>
         </div>
       </main>
