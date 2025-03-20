@@ -1,14 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import MobileMenu from '../components/MobileMenu';
+import LanguageSelector from '../components/LanguageSelector';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const LandingPage = () => {
+  const { t } = useLanguage();
+  
   // Navigation links configuration
   const navLinks = [
-    { text: 'Características', href: '#features' },
-    { text: 'Precios', href: '/pricing' },
-    { text: 'Testimonios', href: '/testimonios' },
-    { text: 'Iniciar sesión', href: '/login', isButton: true }
+    { text: t('nav.features'), href: '#features' },
+    { text: t('nav.pricing'), href: '/pricing' },
+    { text: t('nav.testimonials'), href: '/testimonios' },
+    { text: t('nav.login'), href: '/login', isButton: true }
   ];
 
   return (
@@ -49,24 +53,7 @@ const LandingPage = () => {
             </ul>
             
             {/* Language Selector */}
-            <div className="relative group mr-4">
-              <button className="flex items-center space-x-1 text-gray-600 hover:text-primary-500 focus:outline-none">
-                <span>ES</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-              <div className="absolute right-0 mt-2 py-2 w-28 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-100 flex items-center space-x-2">
-                  <span>ES</span>
-                  <span>Español</span>
-                </a>
-                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-100 flex items-center space-x-2">
-                  <span>EN</span>
-                  <span>English</span>
-                </a>
-              </div>
-            </div>
+            <LanguageSelector />
           </nav>
 
           {/* Mobile Menu */}
@@ -81,14 +68,14 @@ const LandingPage = () => {
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
-                  Automatiza la gestión de tus alojamientos turísticos con IA
+                  {t('landing.hero.title')}
                 </h1>
                 <p className="text-lg sm:text-xl text-white opacity-90 mb-8">
-                  Chatbot 24/7, check-in automático, y generación de ingresos adicionales con nuestra plataforma todo en uno.
+                  {t('landing.hero.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
                   <Link to="/register" className="px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors text-center">
-                    Empieza gratis
+                    {t('landing.hero.cta')}
                   </Link>
                 </div>
               </div>
@@ -130,7 +117,7 @@ const LandingPage = () => {
         <section id="features" className="py-12 md:py-20 bg-white w-full">
           <div className="container-limited">
             <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Características principales</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{t('landing.features.title')}</h2>
               <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
                 Todo lo que necesitas para gestionar tus alojamientos turísticos de forma eficiente
               </p>
@@ -146,9 +133,9 @@ const LandingPage = () => {
                   </svg>
                   <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">Chatbot 24/7</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors duration-300">{t('landing.features.chatbot')}</h3>
                 <p className="text-gray-600 relative z-10">
-                  Atención al huésped 24/7 con nuestro chatbot de IA a través de WhatsApp y llamadas. Responde preguntas, proporciona información y soluciona problemas sin tu intervención.
+                  {t('landing.features.chatbotDesc')}
                 </p>
               </div>
               

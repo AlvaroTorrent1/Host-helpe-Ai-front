@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MobileMenu from '../components/MobileMenu';
+import LanguageSelector from '../components/LanguageSelector';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const { t } = useLanguage();
   
   // Navigation links configuration
   const navLinks = [
-    { text: 'Características', href: '#features' },
-    { text: 'Precios', href: '/pricing' },
-    { text: 'Testimonios', href: '/testimonios' },
-    { text: 'Iniciar sesión', href: '/login', isButton: true }
+    { text: t('nav.features'), href: '#features' },
+    { text: t('nav.pricing'), href: '/pricing' },
+    { text: t('nav.testimonials'), href: '/testimonios' },
+    { text: t('nav.login'), href: '/login', isButton: true }
   ];
 
   // Pricing plans
@@ -125,24 +128,7 @@ const Pricing = () => {
             </ul>
             
             {/* Language Selector */}
-            <div className="relative group mr-4">
-              <button className="flex items-center space-x-1 text-gray-600 hover:text-primary-500 focus:outline-none">
-                <span>ES</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-              <div className="absolute right-0 mt-2 py-2 w-28 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-100 flex items-center space-x-2">
-                  <span>ES</span>
-                  <span>Español</span>
-                </a>
-                <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-100 flex items-center space-x-2">
-                  <span>EN</span>
-                  <span>English</span>
-                </a>
-              </div>
-            </div>
+            <LanguageSelector />
           </nav>
 
           {/* Mobile Menu */}

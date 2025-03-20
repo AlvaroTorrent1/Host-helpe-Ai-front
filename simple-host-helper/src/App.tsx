@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import './index.css'
 import './App.css'
 import LoginPage from './pages/auth/LoginPage';
@@ -25,64 +26,66 @@ const LoadingSpinner = () => (
 function App() {
   return (
     <div className="w-full min-h-screen overflow-hidden">
-      <AuthProvider>
-        <Router>
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/testimonios" element={<Testimonios />} />
-            
-            {/* Rutas protegidas */}
-            <Route 
-              path="/" 
-              element={
-                <ProtectedRoute>
-                  <Outlet />
-                </ProtectedRoute>
-              }
-            >
+      <LanguageProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              {/* Rutas públicas */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/testimonios" element={<Testimonios />} />
+              
+              {/* Rutas protegidas */}
               <Route 
-                path="dashboard" 
+                path="/" 
                 element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <DashboardPage />
-                  </Suspense>
-                } 
-              />
-              <Route 
-                path="properties" 
-                element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <PropertyManagementPage />
-                  </Suspense>
-                } 
-              />
-              <Route 
-                path="reservations" 
-                element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ReservationManagementPage />
-                  </Suspense>
-                } 
-              />
-              <Route 
-                path="ses-registration" 
-                element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <SESRegistrationPage />
-                  </Suspense>
-                } 
-              />
-            </Route>
-            
-            {/* Ruta para manejar URLs no encontradas */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
+                  <ProtectedRoute>
+                    <Outlet />
+                  </ProtectedRoute>
+                }
+              >
+                <Route 
+                  path="dashboard" 
+                  element={
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <DashboardPage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="properties" 
+                  element={
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <PropertyManagementPage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="reservations" 
+                  element={
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <ReservationManagementPage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="ses-registration" 
+                  element={
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <SESRegistrationPage />
+                    </Suspense>
+                  } 
+                />
+              </Route>
+              
+              {/* Ruta para manejar URLs no encontradas */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </LanguageProvider>
     </div>
   );
 }
