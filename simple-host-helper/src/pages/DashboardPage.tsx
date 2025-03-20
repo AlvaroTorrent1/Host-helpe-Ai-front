@@ -161,12 +161,12 @@ const DashboardPage: React.FC = () => {
   
   // Mapeo de categorías para mostrar nombres amigables
   const categoryLabels: Record<IncidentCategory | 'all', string> = {
-    'all': 'Todas',
-    'check-in-out': 'Check-in/Check-out',
-    'property-issue': 'Problemas con la propiedad',
-    'tourist-info': 'Información turística',
-    'emergency': 'Emergencias',
-    'other': 'Otros'
+    'all': t('dashboard.incidents.categories.all'),
+    'check-in-out': t('dashboard.incidents.categories.checkInOut'),
+    'property-issue': t('dashboard.incidents.categories.propertyIssue'),
+    'tourist-info': t('dashboard.incidents.categories.touristInfo'),
+    'emergency': t('dashboard.incidents.categories.emergency'),
+    'other': t('dashboard.incidents.categories.other')
   };
 
   // Función para filtrar incidencias según la categoría seleccionada
@@ -188,7 +188,7 @@ const DashboardPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-t-4 border-indigo-500 border-solid rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando...</p>
+          <p className="mt-4 text-gray-600">{t('dashboard.loading')}</p>
         </div>
       </div>
     );
@@ -298,32 +298,32 @@ const DashboardPage: React.FC = () => {
         
         {/* Sección de acciones rápidas */}
         <div className="bg-white shadow-sm rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Acciones rápidas</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">{t('dashboard.quickActions.title')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <Link to="/dashboard/properties" className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150 flex flex-col items-center">
               <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
-              <span>Añadir propiedad</span>
+              <span>{t('dashboard.properties.add')}</span>
             </Link>
             <Link to="/dashboard/reservations" className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150 flex flex-col items-center">
               <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
               </svg>
-              <span>Registrar reserva</span>
+              <span>{t('dashboard.reservations.register')}</span>
             </Link>
             <button className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150">
               <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
                 <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
               </svg>
-              <span>Ver mensajes</span>
+              <span>{t('dashboard.quickActions.messages')}</span>
             </button>
             <button className="bg-primary-50 text-primary-700 hover:bg-primary-100 p-4 rounded-lg text-center transition duration-150">
               <svg className="h-8 w-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
-              <span>Ayuda</span>
+              <span>{t('dashboard.quickActions.help')}</span>
             </button>
           </div>
         </div>
@@ -333,7 +333,7 @@ const DashboardPage: React.FC = () => {
           {/* Panel de incidencias */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Incidencias recientes</h3>
+              <h3 className="text-lg font-medium text-gray-900">{t('dashboard.incidents.title')}</h3>
               <div className="flex space-x-2">
                 <select
                   className="bg-white border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -349,7 +349,7 @@ const DashboardPage: React.FC = () => {
             
             {filteredIncidents.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
-                No hay incidencias que mostrar
+                {t('dashboard.incidents.empty')}
               </div>
             ) : (
               <div className="space-y-4">
@@ -362,7 +362,9 @@ const DashboardPage: React.FC = () => {
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {incident.status === 'resolved' ? 'Resuelto' : 'Pendiente'}
+                        {incident.status === 'resolved' 
+                          ? t('dashboard.incidents.status.resolved') 
+                          : t('dashboard.incidents.status.pending')}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
@@ -379,7 +381,7 @@ const DashboardPage: React.FC = () => {
             
             <div className="mt-4 text-right">
               <button className="text-primary-600 hover:text-primary-700 text-sm">
-                Ver todas las incidencias
+                {t('dashboard.incidents.viewAll')}
               </button>
             </div>
           </div>
@@ -387,7 +389,7 @@ const DashboardPage: React.FC = () => {
           {/* Panel de Registro SES */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Registros SES recientes</h3>
+              <h3 className="text-lg font-medium text-gray-900">{t('dashboard.ses.title')}</h3>
             </div>
             
             <div className="space-y-4">
@@ -395,7 +397,7 @@ const DashboardPage: React.FC = () => {
                 <div className="flex justify-between">
                   <h4 className="font-medium text-gray-900">Carlos Rodríguez</h4>
                   <span className="text-xs px-2 py-1 rounded-full font-medium bg-green-100 text-green-800">
-                    Aprobado
+                    {t('dashboard.ses.status.approved')}
                   </span>
                 </div>
                 <div className="flex justify-between mt-2 text-xs text-gray-500">
@@ -408,7 +410,7 @@ const DashboardPage: React.FC = () => {
                 <div className="flex justify-between">
                   <h4 className="font-medium text-gray-900">Laura Martínez</h4>
                   <span className="text-xs px-2 py-1 rounded-full font-medium bg-yellow-100 text-yellow-800">
-                    Pendiente
+                    {t('dashboard.ses.status.pending')}
                   </span>
                 </div>
                 <div className="flex justify-between mt-2 text-xs text-gray-500">
@@ -421,7 +423,7 @@ const DashboardPage: React.FC = () => {
                 <div className="flex justify-between">
                   <h4 className="font-medium text-gray-900">Miguel Fernández</h4>
                   <span className="text-xs px-2 py-1 rounded-full font-medium bg-red-100 text-red-800">
-                    Error
+                    {t('dashboard.ses.status.error')}
                   </span>
                 </div>
                 <div className="flex justify-between mt-2 text-xs text-gray-500">
@@ -433,7 +435,7 @@ const DashboardPage: React.FC = () => {
             
             <div className="mt-4 text-right">
               <Link to="/ses-registration" className="text-primary-600 hover:text-primary-700 text-sm">
-                Gestionar registros SES
+                {t('dashboard.registrations.manage')}
               </Link>
             </div>
           </div>

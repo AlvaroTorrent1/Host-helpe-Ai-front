@@ -182,20 +182,54 @@ export const en = {
     welcome: 'Welcome to the dashboard',
     description: 'This is a preliminary version of the dashboard for Host Helper AI. Here you can manage your accommodations, review reservations, and access all the features of our platform.',
     notice: 'We are working on implementing all features. For now, this is a demo of the interface.',
+    loading: 'Loading...',
     properties: {
       title: 'Properties',
       total: 'Total registered properties',
-      view: 'View properties'
+      view: 'View properties',
+      add: 'Add property'
     },
     reservations: {
       title: 'Active Reservations',
       confirmed: 'Confirmed and pending reservations',
-      view: 'View reservations'
+      view: 'View reservations',
+      register: 'Register reservation'
     },
     registrations: {
       title: 'SES Registration',
       pending: 'Pending SES submission',
-      view: 'View registrations'
+      view: 'View registrations',
+      manage: 'Manage SES registrations'
+    },
+    quickActions: {
+      title: 'Quick Actions',
+      messages: 'View messages',
+      help: 'Help'
+    },
+    incidents: {
+      title: 'Recent Incidents',
+      empty: 'No incidents to display',
+      viewAll: 'View all incidents',
+      status: {
+        resolved: 'Resolved',
+        pending: 'Pending'
+      },
+      categories: {
+        all: 'All',
+        checkInOut: 'Check-in/Check-out',
+        propertyIssue: 'Property Issues',
+        touristInfo: 'Tourist Information',
+        emergency: 'Emergencies',
+        other: 'Others'
+      }
+    },
+    ses: {
+      title: 'Recent SES Registrations',
+      status: {
+        approved: 'Approved',
+        pending: 'Pending',
+        error: 'Error'
+      }
     },
     menu: {
       dashboard: 'Dashboard',
