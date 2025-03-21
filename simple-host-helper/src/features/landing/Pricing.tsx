@@ -1,3 +1,8 @@
+// Pricing.tsx
+// Este componente gestiona la sección de precios y planes de suscripción.
+// Incluye integración con Stripe para los enlaces de pago y con Calendly para demostraciones.
+// La selección entre planes mensuales o anuales actualiza dinámicamente los enlaces de pago.
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MobileMenu from '@shared/components/MobileMenu';
