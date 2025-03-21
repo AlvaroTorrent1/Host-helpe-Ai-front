@@ -2,11 +2,14 @@ import React, { useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface CalendlyWidgetProps {
-  url: string;
+  url?: string;
   text?: string;
 }
 
-const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({ url, text }) => {
+const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({ 
+  url = "https://calendly.com/hosthelperai-services", 
+  text 
+}) => {
   const { t } = useLanguage();
   
   useEffect(() => {

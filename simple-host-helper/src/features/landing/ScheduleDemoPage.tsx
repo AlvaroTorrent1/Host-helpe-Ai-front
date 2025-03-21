@@ -150,7 +150,7 @@ const ScheduleDemoPage: React.FC = () => {
             <div className="md:w-2/3">
               <div 
                 className="calendly-inline-widget w-full mx-auto shadow-lg rounded-lg overflow-hidden"
-                data-url="https://calendly.com/hosthelperai/demo"
+                data-url="https://calendly.com/hosthelperai-services"
                 style={{ height: '650px' }}
               />
             </div>
