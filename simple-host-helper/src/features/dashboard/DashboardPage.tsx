@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../services/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { useLanguage } from '../contexts/LanguageContext';
-import DashboardNavigation from '../components/DashboardNavigation';
-import DashboardLanguageSelector from '../components/DashboardLanguageSelector';
+import { supabase } from '@services/supabase';
+import { useAuth } from '@shared/contexts/AuthContext';
+import { useLanguage } from '@shared/contexts/LanguageContext';
+import DashboardNavigation from './DashboardNavigation';
+import DashboardLanguageSelector from './DashboardLanguageSelector';
 
 type Property = {
   id: string;
@@ -270,7 +270,7 @@ const DashboardPage: React.FC = () => {
                   className="block text-center text-sm bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md"
                 >
                   {t('dashboard.properties.add')}
-              </Link>
+                </Link>
               </div>
             </div>
           </div>
@@ -293,7 +293,7 @@ const DashboardPage: React.FC = () => {
                   className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
                 >
                   {t('dashboard.reservations.view')}
-              </Link>
+                </Link>
               </div>
             </div>
           </div>
@@ -332,7 +332,7 @@ const DashboardPage: React.FC = () => {
                 }`}
               >
                 {categoryLabels['all']}
-            </button>
+              </button>
               {(Object.keys(categoryLabels) as Array<IncidentCategory | 'all'>)
                 .filter(key => key !== 'all')
                 .map(category => (
@@ -346,11 +346,11 @@ const DashboardPage: React.FC = () => {
                     }`}
                   >
                     {categoryLabels[category]}
-            </button>
+                  </button>
                 ))}
             </div>
-        </div>
-        
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex justify-between items-center">
@@ -398,7 +398,7 @@ const DashboardPage: React.FC = () => {
                       <td className="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-xs">
                         <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                           {categoryLabels[incident.category]}
-                  </span>
+                        </span>
                       </td>
                       <td className="px-2 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-xs">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -407,7 +407,7 @@ const DashboardPage: React.FC = () => {
                             : 'bg-yellow-100 text-yellow-800'
                         }`}>
                           {incident.status === 'resolved' ? t('dashboard.incidents.table.resolved') : t('dashboard.incidents.table.pending')}
-                  </span>
+                        </span>
                       </td>
                     </tr>
                   ))
@@ -420,9 +420,9 @@ const DashboardPage: React.FC = () => {
                 )}
               </tbody>
             </table>
-                </div>
-              </div>
-              
+          </div>
+        </div>
+        
         {/* Registro Viajero SES */}
         <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
           <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">{t('dashboard.sesRegistration.title')}</h3>
@@ -435,7 +435,7 @@ const DashboardPage: React.FC = () => {
               className="text-center text-sm bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md"
             >
               {t('dashboard.sesRegistration.register')}
-              </Link>
+            </Link>
             <a
               href="https://sede.policia.gob.es/portalCiudadano/sede_electronica/extranjeria/EX14.pdf"
               target="_blank"

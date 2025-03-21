@@ -75,7 +75,11 @@ export const en = {
   calendly: {
     title: 'Schedule a personalized demo',
     subtitle: 'Book an appointment with our team to learn how Host Helper AI can help you automate the management of your tourist accommodations',
-    button: 'Book appointment now'
+    button: 'Book appointment now',
+    linkText: 'Schedule a demo',
+    pageTitle: 'Demo Scheduling Calendar',
+    pageSubtitle: 'Select a date and time convenient for you',
+    backToHome: 'Back to home'
   },
   
   // Testimonios

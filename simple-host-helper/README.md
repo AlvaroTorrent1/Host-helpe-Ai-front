@@ -1,6 +1,67 @@
-# Host Helper AI - Gestión Inteligente de Alojamientos
+# Host Helper AI Frontend
 
-Plataforma web para la automatización y gestión de alojamientos turísticos mediante inteligencia artificial.
+## Estructura del Proyecto
+
+El proyecto sigue una arquitectura basada en características (Feature-Based Architecture) que organiza el código según la funcionalidad en lugar de por tipo de archivo. Esto facilita la navegación, escalabilidad y mantenimiento del código.
+
+### Estructura de directorios
+
+```
+src/
+  ├── features/              # Organización basada en características
+  │   ├── auth/              # Todo lo relacionado con autenticación
+  │   │   ├── components/    # Componentes específicos de autenticación
+  │   │   ├── pages/         # Páginas de login/registro
+  │   ├── dashboard/         # Todo lo relacionado con el dashboard
+  │   ├── properties/        # Gestión de propiedades
+  │   ├── reservations/      # Gestión de reservaciones
+  │   ├── ses/               # Registro de viajeros (SES)
+  │   └── landing/           # Páginas públicas (landing, pricing, testimonios)
+  ├── shared/                # Elementos compartidos
+  │   ├── components/        # Componentes reutilizables
+  │   ├── hooks/             # Hooks genéricos
+  │   ├── utils/             # Utilidades generales
+  │   └── contexts/          # Contextos globales
+  ├── translations/          # Traducciones multilenguaje
+  ├── services/              # Servicios de API y externos
+  ├── types/                 # Tipos TypeScript globales
+  └── assets/                # Recursos estáticos
+```
+
+### Beneficios de esta estructura
+
+1. **Cohesión**: El código relacionado se mantiene junto, facilitando entender cómo funciona cada característica.
+2. **Encapsulamiento**: Cada característica puede evolucionar de forma independiente.
+3. **Escalabilidad**: Facilita agregar nuevas características sin afectar las existentes.
+4. **Mantenimiento**: Es más fácil identificar y corregir problemas dentro de una característica específica.
+5. **Colaboración**: Diferentes equipos pueden trabajar en diferentes características simultáneamente.
+
+### Convenciones de naming
+
+- Los nombres de archivos para componentes React usan PascalCase: `LoginPage.tsx`
+- Los nombres de archivos para hooks, utilidades y servicios usan camelCase: `useAuth.ts`
+- Los nombres de directorios usan kebab-case para facilitar la navegación en sistemas case-sensitive
+
+## Tecnologías principales
+
+- React
+- TypeScript
+- React Router
+- Tailwind CSS
+- Supabase (Autenticación, Base de datos)
+
+## Cómo iniciar el proyecto
+
+```bash
+# Instalar dependencias
+npm install
+
+# Iniciar en modo desarrollo
+npm run dev
+
+# Compilar para producción
+npm run build
+```
 
 ## Características Principales
 
@@ -9,32 +70,6 @@ Plataforma web para la automatización y gestión de alojamientos turísticos me
 - **Upselling Inteligente**: Incrementa tus ingresos ofreciendo servicios adicionales.
 - **Dashboard Centralizado**: Gestiona todas tus propiedades desde un solo lugar.
 - **Gestión de Incidencias**: Sistema automatizado para resolver problemas.
-
-## Tecnologías
-
-- **Frontend**: React, TypeScript, Tailwind CSS
-- **Backend**: Supabase (BaaS)
-- **Autenticación**: Supabase Auth
-- **Base de Datos**: PostgreSQL (Supabase)
-
-## Estructura del Proyecto
-
-```
-/src
-  /assets - Recursos estáticos
-  /components - Componentes React reutilizables
-    /auth - Componentes de autenticación
-    /dashboard - Componentes del dashboard
-    /properties - Gestión de propiedades
-    /bookings - Gestión de reservas
-    /common - Componentes comunes (Header, Footer)
-  /contexts - Contextos de React
-  /hooks - Custom hooks
-  /pages - Páginas principales
-  /services - Servicios para APIs
-  /types - Tipos TypeScript
-  /utils - Funciones de utilidad
-```
 
 ## Instalación
 

@@ -75,7 +75,11 @@ export const es = {
   calendly: {
     title: 'Agenda una demostración personalizada',
     subtitle: 'Reserva una cita con nuestro equipo para conocer cómo Host Helper AI puede ayudarte a automatizar la gestión de tus alojamientos turísticos',
-    button: 'Reservar cita ahora'
+    button: 'Reservar cita ahora',
+    linkText: 'Programa una demo',
+    pageTitle: 'Calendario de Demostraciones',
+    pageSubtitle: 'Selecciona una fecha y hora conveniente para ti',
+    backToHome: 'Volver al inicio'
   },
   
   // Testimonios

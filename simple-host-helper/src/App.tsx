@@ -1,20 +1,21 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { AuthProvider } from './shared/contexts/AuthContext';
+import { LanguageProvider } from './shared/contexts/LanguageContext';
 import './index.css'
 import './App.css'
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import LandingPage from './pages/LandingPage';
-import Pricing from './pages/Pricing';
-import Testimonios from './pages/Testimonios';
-import SESRegistrationPage from './pages/SESRegistrationPage';
-import DashboardPage from './pages/DashboardPage';
-import PropertyManagementPage from './pages/PropertyManagementPage';
-import ReservationManagementPage from './pages/ReservationManagementPage';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import NotFoundPage from './pages/NotFoundPage';
+import LoginPage from './features/auth/pages/LoginPage';
+import RegisterPage from './features/auth/pages/RegisterPage';
+import LandingPage from './features/landing/LandingPage';
+import Pricing from './features/landing/Pricing';
+import Testimonios from './features/landing/Testimonios';
+import ScheduleDemoPage from './features/landing/ScheduleDemoPage';
+import SESRegistrationPage from './features/ses/SESRegistrationPage';
+import DashboardPage from './features/dashboard/DashboardPage';
+import PropertyManagementPage from './features/properties/PropertyManagementPage';
+import ReservationManagementPage from './features/reservations/ReservationManagementPage';
+import ProtectedRoute from './features/auth/components/ProtectedRoute';
+import NotFoundPage from './shared/components/NotFoundPage';
 
 // Componente de carga
 const LoadingSpinner = () => (
@@ -36,6 +37,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/testimonios" element={<Testimonios />} />
+              <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
               
               {/* Rutas protegidas */}
               <Route 
