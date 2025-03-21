@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PropertyDocument } from '../../types/property';
+import documentService from '../../services/documentService';
 
 interface PropertyDocumentsFormProps {
+  propertyId: string;
   documents?: PropertyDocument[];
   onChange: (documents: PropertyDocument[]) => void;
+  onAddDocument?: (document: PropertyDocument) => void;
 }
 
-const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ documents = [], onChange }) => {
+const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ 
+  propertyId,
+  documents = [], 
+  onChange,
+  onAddDocument
+}) => {
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [currentDocument, setCurrentDocument] = useState<Partial<PropertyDocument>>({
+  const [isUploading, setIsUploading] = useState(false);
+  const [currentDocument, setCurrentDocument] = useState<{
+    name: string;
+    description: string;
+    type: 'faq' | 'guide' | 'house_rules' | 'inventory' | 'other';
+  }>({
     name: '',
     description: '',
-    type: 'faq',
-    file_type: 'pdf'
+    type: 'faq'
   });
 
-  // Generar un ID único para los nuevos documentos
-  const generateTempId = () => `temp_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+  // Inicializar el servicio de documentos
+  useEffect(() => {
+    documentService.initDocumentService().catch(error => {
+      console.error('Error inicializando servicio de documentos:', error);
+    });
+  }, []);
 
   // Manejar subida de nuevo documento
-  const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !propertyId) return;
     
     // Validar tamaño del archivo
     if (file.size > 10 * 1024 * 1024) { // 10MB
@@ -29,47 +45,57 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ documents
       return;
     }
     
-    // Determinar tipo de archivo
-    let fileType: 'pdf' | 'doc' | 'txt' | 'other' = 'other';
-    if (file.type === 'application/pdf') {
-      fileType = 'pdf';
-    } else if (file.type.includes('word') || file.type.includes('doc')) {
-      fileType = 'doc';
-    } else if (file.type === 'text/plain') {
-      fileType = 'txt';
+    // Validar que haya un nombre
+    if (!currentDocument.name.trim()) {
+      setValidationError('Por favor, proporciona un nombre para el documento');
+      return;
     }
     
-    // Crear URL para el archivo y añadirlo a la lista
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      const newDocument: PropertyDocument = {
-        id: generateTempId(),
-        property_id: 'temp',
-        file_url: result,
-        name: currentDocument.name || file.name,
-        description: currentDocument.description || '',
-        type: currentDocument.type as 'faq' | 'guide' | 'house_rules' | 'inventory' | 'other',
-        file_type: fileType,
-        uploaded_at: new Date().toISOString()
-      };
+    setIsUploading(true);
+    setValidationError(null);
+    
+    try {
+      // Subir documento a Supabase usando el servicio
+      const uploadedDocument = await documentService.uploadDocument(
+        propertyId,
+        file,
+        currentDocument
+      );
       
-      onChange([...documents, newDocument]);
+      // Actualizar el estado local
+      if (onAddDocument) {
+        onAddDocument(uploadedDocument);
+      } else {
+        onChange([...documents, uploadedDocument]);
+      }
+      
+      // Limpiar el formulario
       setCurrentDocument({
         name: '',
         description: '',
-        type: 'faq',
-        file_type: 'pdf'
+        type: 'faq'
       });
-      setValidationError(null);
-    };
-    reader.readAsDataURL(file);
+      
+      // Limpiar el input de archivo
+      e.target.value = '';
+    } catch (error) {
+      console.error('Error subiendo documento:', error);
+      setValidationError('No se pudo subir el documento. Intente nuevamente.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Eliminar un documento
-  const handleRemoveDocument = (id: string) => {
-    const updatedDocuments = documents.filter(doc => doc.id !== id);
-    onChange(updatedDocuments);
+  const handleRemoveDocument = async (id: string) => {
+    try {
+      await documentService.deleteDocument(id);
+      const updatedDocuments = documents.filter(doc => doc.id !== id);
+      onChange(updatedDocuments);
+    } catch (error) {
+      console.error('Error eliminando documento:', error);
+      setValidationError('No se pudo eliminar el documento. Intente nuevamente.');
+    }
   };
 
   // Obtener icono según el tipo de archivo
@@ -207,23 +233,34 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({ documents
           <div className="flex items-center justify-center w-full">
             <label
               htmlFor="document-upload"
-              className="flex flex-col items-center px-4 py-6 bg-white rounded-md shadow-sm border border-gray-300 border-dashed cursor-pointer hover:bg-gray-50 w-full"
+              className={`flex flex-col items-center px-4 py-6 bg-white rounded-md shadow-sm border border-gray-300 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'border-dashed cursor-pointer hover:bg-gray-50'} w-full`}
             >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <p className="mb-2 text-sm text-gray-500">
-                  <span className="font-semibold">Haz clic para subir</span> o arrastra y suelta
-                </p>
-                <p className="text-xs text-gray-500">PDF, Word, TXT (MAX. 10MB)</p>
-              </div>
+              {isUploading ? (
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg className="animate-spin h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <p className="text-sm text-gray-500">Subiendo documento...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="mb-2 text-sm text-gray-500">
+                    <span className="font-semibold">Haz clic para subir</span> o arrastra y suelta
+                  </p>
+                  <p className="text-xs text-gray-500">PDF, Word, TXT (MAX. 10MB)</p>
+                </div>
+              )}
               <input 
                 id="document-upload" 
                 type="file" 
                 accept=".pdf,.doc,.docx,.txt" 
                 className="hidden"
                 onChange={handleDocumentUpload}
+                disabled={isUploading}
               />
             </label>
           </div>

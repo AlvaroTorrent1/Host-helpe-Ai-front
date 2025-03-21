@@ -313,6 +313,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       case 3:
         return (
           <PropertyDocumentsForm
+            propertyId={property?.id || 'temp'}
             documents={formData.documents}
             onChange={handleDocumentsChange}
           />

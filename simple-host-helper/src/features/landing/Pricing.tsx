@@ -8,6 +8,19 @@ const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
   const { t } = useLanguage();
   
+  // Enlaces de Stripe para los diferentes planes
+  const stripeLinks = {
+    basic: {
+      annual: "https://buy.stripe.com/14kaHD96S0lpgdafZ0",
+      monthly: "https://buy.stripe.com/6oEbLH1Eq4BF4us288"
+    },
+    pro: {
+      annual: "https://buy.stripe.com/9AQ8zv1Eq4BFgda6os",
+      monthly: "https://buy.stripe.com/4gw6rn0Am6JN6CAfYZ"
+    },
+    enterprise: "https://hosthelperai.com/schedule-demo"
+  };
+  
   // Navigation links configuration
   const navLinks = [
     { text: t('nav.features'), href: '#features' },
@@ -29,7 +42,8 @@ const Pricing = () => {
         t('pricing.features.basicDataManagement')
       ],
       isPopular: false,
-      cta: t('pricing.cta')
+      cta: t('pricing.cta'),
+      link: isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly
     },
     {
       name: t('pricing.pro'),
@@ -43,7 +57,8 @@ const Pricing = () => {
         t('pricing.features.analyticsReports')
       ],
       isPopular: true,
-      cta: t('pricing.cta')
+      cta: t('pricing.cta'),
+      link: isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly
     },
     {
       name: t('pricing.enterprise'),
@@ -58,7 +73,8 @@ const Pricing = () => {
         t('pricing.features.fullCustomization')
       ],
       isPopular: false,
-      cta: t('pricing.contact')
+      cta: t('pricing.contact'),
+      link: stripeLinks.enterprise
     }
   ];
 
@@ -217,8 +233,10 @@ const Pricing = () => {
                       ))}
                     </ul>
 
-                    <Link
-                      to={plan.name === 'Enterprise' ? '/contacto' : '/register'}
+                    <a
+                      href={plan.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className={`block text-center py-3 px-4 rounded-md font-medium transition-colors ${
                         plan.isPopular 
                           ? 'bg-primary-500 hover:bg-primary-600 text-white' 
@@ -226,7 +244,7 @@ const Pricing = () => {
                       }`}
                     >
                       {plan.cta}
-                    </Link>
+                    </a>
                   </div>
                 </div>
               ))}

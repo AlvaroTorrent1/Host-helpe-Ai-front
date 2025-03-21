@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Property, PropertyImage, PropertyDocument } from '../../types/property';
+import PropertyDocumentManager from './PropertyDocumentManager';
 
 interface PropertyDetailProps {
   property: Property;
@@ -10,6 +11,7 @@ interface PropertyDetailProps {
 const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onEdit, onClose }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'images' | 'documents'>('info');
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
   // Obtener icono según el tipo de archivo
   const getFileIcon = (fileType: string) => {
@@ -203,9 +205,21 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onEdit, onClo
           <div>
             {property.documents && property.documents.length > 0 ? (
               <div className="space-y-6">
-                <p className="text-sm text-gray-500">
-                  Estos documentos contienen información importante sobre la propiedad que ayudará al chatbot a resolver dudas de los turistas.
-                </p>
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-gray-500">
+                    Estos documentos contienen información importante sobre la propiedad que ayudará al chatbot a resolver dudas de los turistas.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsDocumentModalOpen(true)}
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  >
+                    <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Gestionar documentos
+                  </button>
+                </div>
                 <div className="space-y-3">
                   {property.documents.map((doc) => (
                     <div key={doc.id} className="flex items-start p-3 border rounded-md bg-white hover:bg-gray-50 transition">
@@ -227,12 +241,15 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onEdit, onClo
                       </div>
                       {/* En una implementación real, aquí iría un enlace para descargar el documento */}
                       <div className="ml-4 flex-shrink-0">
-                        <button 
+                        <a 
+                          href={doc.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-primary-600 hover:text-primary-800 text-sm font-medium"
-                          title="Ver documento (no implementado en el prototipo)"
+                          title="Ver documento"
                         >
                           Ver
-                        </button>
+                        </a>
                       </div>
                     </div>
                   ))}
@@ -244,7 +261,17 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onEdit, onClo
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <p className="mt-4 text-gray-500">No hay documentos disponibles.</p>
-                <p className="mt-2 text-sm text-gray-400">Puedes añadir documentos como guías, FAQs o reglas al editar la propiedad.</p>
+                <p className="mt-2 text-sm text-gray-400">Haz clic en el botón para añadir documentos como guías, FAQs o reglas.</p>
+                <button
+                  type="button"
+                  onClick={() => setIsDocumentModalOpen(true)}
+                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Añadir documentos
+                </button>
               </div>
             )}
           </div>
@@ -267,6 +294,13 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ property, onEdit, onClo
           </div>
         </div>
       )}
+      
+      {/* Modal del gestor de documentos */}
+      <PropertyDocumentManager
+        propertyId={property.id}
+        isOpen={isDocumentModalOpen}
+        onClose={() => setIsDocumentModalOpen(false)}
+      />
     </div>
   );
 };

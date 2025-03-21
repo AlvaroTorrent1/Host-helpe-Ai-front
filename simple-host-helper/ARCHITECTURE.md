@@ -25,6 +25,8 @@ src/
   │   └── contexts/          # Contextos globales
   ├── translations/          # Traducciones multilenguaje
   ├── services/              # Servicios de API y externos
+  │   ├── supabase.ts        # Cliente y funciones de Supabase
+  │   └── mediaService.ts    # Servicio de gestión de medios
   ├── types/                 # Tipos TypeScript globales
   └── assets/                # Recursos estáticos
 ```
@@ -78,6 +80,30 @@ Distinguimos entre:
 - **Componentes Presentacionales**: Se enfocan en la UI, reciben props y renderizan el contenido
 - **Componentes Contenedores**: Manejan lógica y estado, y pasan datos a componentes presentacionales
 
+## Arquitectura de Medios Escalable
+
+Hemos implementado una arquitectura especializada para la gestión escalable de medios (imágenes y videos):
+
+### 1. Almacenamiento Distribuido
+- **Metadatos**: Almacenados en PostgreSQL (tabla `media`)
+- **Archivos Binarios**: Almacenados en Supabase Storage
+- **Entrega**: Servidos a través de CDN global para baja latencia
+
+### 2. Características Principales
+- Carga asíncrona de archivos mediante drag & drop
+- Procesamiento de medios optimizado para múltiples dispositivos
+- Gestión eficiente de colecciones grandes mediante paginación
+- Generación automática de thumbnails para videos
+- Optimización de imágenes bajo demanda
+
+### 3. Componentes
+- **mediaService.ts**: Servicio centralizado para operaciones CRUD de medios
+- **MediaGallery.tsx**: Componente para visualización y gestión de galerías
+- **Tabla media**: Almacena metadatos y relaciones con propiedades
+- **Bucket property-media**: Almacena archivos físicos organizados por propiedad
+
+Para más detalles, consulte [docs/MEDIA_ARCHITECTURE.md](./docs/MEDIA_ARCHITECTURE.md).
+
 ## Convenciones de Nomenclatura
 
 - **Archivos de componentes**: `PascalCase.tsx` (ej. `LoginPage.tsx`)
@@ -108,3 +134,11 @@ La arquitectura basada en características permite:
 1. **Lazy loading de características**: Cargar código solo cuando sea necesario
 2. **Micro-frontends**: Potencialmente migrar a una arquitectura de micro-frontends donde cada característica es una aplicación independiente
 3. **Feature flags**: Habilitar/deshabilitar características para diferentes usuarios o entornos 
+
+### Expansión Cloud y Kubernetes
+
+A medida que la aplicación crezca, estamos preparados para:
+
+1. **Microservicios especializados**: Migrar funcionalidades específicas a microservicios independientes
+2. **Orquestación con Kubernetes**: Desplegar servicios en contenedores para escalado horizontal
+3. **Procesamiento asíncrono**: Implementar colas de trabajo para tareas intensivas como procesamiento de video 

@@ -8,7 +8,7 @@ const CalendlyLink: React.FC = () => {
   return (
     <Link 
       to="/schedule-demo" 
-      className="inline-flex items-center px-4 py-2 font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600 transition-colors duration-300 shadow-md hover:shadow-lg group"
+      className="inline-flex items-center px-4 py-2 font-medium text-primary-500 bg-white border-2 border-primary-500 rounded-md hover:bg-gray-50 transition-colors duration-300 shadow-md hover:shadow-lg group"
     >
       <span className="mr-2 flex items-center justify-center">
         <svg 
@@ -22,7 +22,7 @@ const CalendlyLink: React.FC = () => {
           <path 
             d="M19.25 11.5C19.25 16.0593 15.5593 19.75 11 19.75C6.44065 19.75 2.75 16.0593 2.75 11.5C2.75 6.94065 6.44065 3.25 11 3.25C15.5593 3.25 19.25 6.94065 19.25 11.5Z" 
             fill="#ECA408" 
-            stroke="white" 
+            stroke="#ECA408" 
             strokeWidth="1.5"
           />
           <path 
@@ -34,7 +34,7 @@ const CalendlyLink: React.FC = () => {
           />
           <path 
             d="M21.25 11.5C21.25 17.2132 16.7132 21.75 11 21.75C5.28679 21.75 0.75 17.2132 0.75 11.5C0.75 5.78679 5.28679 1.25 11 1.25C16.7132 1.25 21.25 5.78679 21.25 11.5Z" 
-            stroke="white" 
+            stroke="#ECA408" 
             strokeWidth="0.5" 
             strokeDasharray="1 3"
           />

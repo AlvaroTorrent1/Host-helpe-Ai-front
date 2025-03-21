@@ -24,126 +24,132 @@ const PropertyManagementPage: React.FC = () => {
       setIsLoading(true);
       try {
         // En una implementación real, esto sería una llamada a Supabase:
-        // const { data, error } = await supabase.from('properties').select('*').eq('user_id', user?.id);
+        const { data, error } = await supabase.from('properties').select('*').eq('user_id', user?.id);
         
-        // Por ahora, usamos datos simulados
-        const mockProperties: Property[] = [
-          {
-            id: '1',
-            name: 'Apartamento Centro',
-            address: 'Calle Mayor 10, Madrid',
-            image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-            status: 'active',
-            description: 'Hermoso apartamento en el centro de Madrid, cerca de todas las atracciones turísticas.',
-            amenities: ['WiFi', 'Cocina', 'TV', 'Aire acondicionado'],
-            created_at: '2025-02-15T12:00:00Z',
-            additional_images: [
-              {
-                id: 'img1',
-                property_id: '1',
-                file_url: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                description: 'Zona de trabajo con escritorio amplio y vista a la calle',
-                uploaded_at: '2025-02-15T12:30:00Z'
-              },
-              {
-                id: 'img2',
-                property_id: '1',
-                file_url: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                description: 'Cocina completamente equipada con todos los utensilios necesarios',
-                uploaded_at: '2025-02-15T12:35:00Z'
-              }
-            ],
-            documents: [
-              {
-                id: 'doc1',
-                property_id: '1',
-                type: 'faq',
-                name: 'Preguntas frecuentes',
-                file_url: '#',
-                description: 'Respuestas a las preguntas más comunes sobre el apartamento, como instrucciones para el wifi, recomendaciones locales y servicios cercanos.',
-                uploaded_at: '2025-02-15T14:00:00Z',
-                file_type: 'pdf'
-              },
-              {
-                id: 'doc2',
-                property_id: '1',
-                type: 'house_rules',
-                name: 'Reglas de la casa',
-                file_url: '#',
-                description: 'Normas del edificio, horarios de silencio, instrucciones para la recogida de basuras y normas de convivencia.',
-                uploaded_at: '2025-02-15T14:10:00Z',
-                file_type: 'doc'
-              }
-            ]
-          },
-          {
-            id: '2',
-            name: 'Casa de Playa',
-            address: 'Paseo Marítimo 23, Barcelona',
-            image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-            status: 'active',
-            description: 'Bonita casa frente al mar en Barcelona, perfecta para familias.',
-            amenities: ['WiFi', 'Cocina', 'Piscina', 'Parking'],
-            created_at: '2025-01-20T10:30:00Z',
-            additional_images: [
-              {
-                id: 'img3',
-                property_id: '2',
-                file_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                description: 'Vista panorámica de la playa desde la terraza',
-                uploaded_at: '2025-01-20T11:00:00Z'
-              },
-              {
-                id: 'img4',
-                property_id: '2',
-                file_url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                description: 'Piscina privada con tumbonas y sombrillas',
-                uploaded_at: '2025-01-20T11:05:00Z'
-              },
-              {
-                id: 'img5',
-                property_id: '2',
-                file_url: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                description: 'Instrucciones para usar la barbacoa exterior',
-                uploaded_at: '2025-01-20T11:10:00Z'
-              }
-            ],
-            documents: [
-              {
-                id: 'doc3',
-                property_id: '2',
-                type: 'guide',
-                name: 'Guía de la casa',
-                file_url: '#',
-                description: 'Instrucciones detalladas sobre el funcionamiento de los electrodomésticos, sistema de calefacción, aire acondicionado, y otros equipamientos de la casa.',
-                uploaded_at: '2025-01-20T12:00:00Z',
-                file_type: 'pdf'
-              },
-              {
-                id: 'doc4',
-                property_id: '2',
-                type: 'faq',
-                name: 'Preguntas frecuentes',
-                file_url: '#',
-                description: 'Respuestas a consultas habituales sobre restaurantes cercanos, actividades en la zona, transporte público y servicios médicos.',
-                uploaded_at: '2025-01-20T12:15:00Z',
-                file_type: 'doc'
-              },
-              {
-                id: 'doc5',
-                property_id: '2',
-                type: 'inventory',
-                name: 'Inventario completo',
-                file_url: '#',
-                description: 'Listado detallado de todos los muebles, equipamiento de cocina, ropa de cama y otros elementos disponibles para los huéspedes.',
-                uploaded_at: '2025-01-20T12:30:00Z',
-                file_type: 'txt'
-              }
-            ]
-          }
-        ];
+        if (error) throw error;
         
-        setProperties(mockProperties);
+        if (data && data.length > 0) {
+          setProperties(data);
+        } else {
+          // Usar datos simulados si no hay datos en Supabase
+          const mockProperties: Property[] = [
+            {
+              id: '1',
+              name: 'Apartamento Centro',
+              address: 'Calle Mayor 10, Madrid',
+              image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+              status: 'active',
+              description: 'Hermoso apartamento en el centro de Madrid, cerca de todas las atracciones turísticas.',
+              amenities: ['WiFi', 'Cocina', 'TV', 'Aire acondicionado'],
+              created_at: '2025-02-15T12:00:00Z',
+              additional_images: [
+                {
+                  id: 'img1',
+                  property_id: '1',
+                  file_url: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                  description: 'Zona de trabajo con escritorio amplio y vista a la calle',
+                  uploaded_at: '2025-02-15T12:30:00Z'
+                },
+                {
+                  id: 'img2',
+                  property_id: '1',
+                  file_url: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                  description: 'Cocina completamente equipada con todos los utensilios necesarios',
+                  uploaded_at: '2025-02-15T12:35:00Z'
+                }
+              ],
+              documents: [
+                {
+                  id: 'doc1',
+                  property_id: '1',
+                  type: 'faq',
+                  name: 'Preguntas frecuentes',
+                  file_url: '#',
+                  description: 'Respuestas a las preguntas más comunes sobre el apartamento, como instrucciones para el wifi, recomendaciones locales y servicios cercanos.',
+                  uploaded_at: '2025-02-15T14:00:00Z',
+                  file_type: 'pdf'
+                },
+                {
+                  id: 'doc2',
+                  property_id: '1',
+                  type: 'house_rules',
+                  name: 'Reglas de la casa',
+                  file_url: '#',
+                  description: 'Normas del edificio, horarios de silencio, instrucciones para la recogida de basuras y normas de convivencia.',
+                  uploaded_at: '2025-02-15T14:10:00Z',
+                  file_type: 'doc'
+                }
+              ]
+            },
+            {
+              id: '2',
+              name: 'Casa de Playa',
+              address: 'Paseo Marítimo 23, Barcelona',
+              image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+              status: 'active',
+              description: 'Bonita casa frente al mar en Barcelona, perfecta para familias.',
+              amenities: ['WiFi', 'Cocina', 'Piscina', 'Parking'],
+              created_at: '2025-01-20T10:30:00Z',
+              additional_images: [
+                {
+                  id: 'img3',
+                  property_id: '2',
+                  file_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                  description: 'Vista panorámica de la playa desde la terraza',
+                  uploaded_at: '2025-01-20T11:00:00Z'
+                },
+                {
+                  id: 'img4',
+                  property_id: '2',
+                  file_url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                  description: 'Piscina privada con tumbonas y sombrillas',
+                  uploaded_at: '2025-01-20T11:05:00Z'
+                },
+                {
+                  id: 'img5',
+                  property_id: '2',
+                  file_url: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                  description: 'Instrucciones para usar la barbacoa exterior',
+                  uploaded_at: '2025-01-20T11:10:00Z'
+                }
+              ],
+              documents: [
+                {
+                  id: 'doc3',
+                  property_id: '2',
+                  type: 'guide',
+                  name: 'Guía de la casa',
+                  file_url: '#',
+                  description: 'Instrucciones detalladas sobre el funcionamiento de los electrodomésticos, sistema de calefacción, aire acondicionado, y otros equipamientos de la casa.',
+                  uploaded_at: '2025-01-20T12:00:00Z',
+                  file_type: 'pdf'
+                },
+                {
+                  id: 'doc4',
+                  property_id: '2',
+                  type: 'faq',
+                  name: 'Preguntas frecuentes',
+                  file_url: '#',
+                  description: 'Respuestas a consultas habituales sobre restaurantes cercanos, actividades en la zona, transporte público y servicios médicos.',
+                  uploaded_at: '2025-01-20T12:15:00Z',
+                  file_type: 'doc'
+                },
+                {
+                  id: 'doc5',
+                  property_id: '2',
+                  type: 'inventory',
+                  name: 'Inventario completo',
+                  file_url: '#',
+                  description: 'Listado detallado de todos los muebles, equipamiento de cocina, ropa de cama y otros elementos disponibles para los huéspedes.',
+                  uploaded_at: '2025-01-20T12:30:00Z',
+                  file_type: 'txt'
+                }
+              ]
+            }
+          ];
+          
+          setProperties(mockProperties);
+        }
       } catch (error) {
         console.error('Error al cargar propiedades:', error);
       } finally {
@@ -198,41 +204,41 @@ const PropertyManagementPage: React.FC = () => {
     try {
       if (currentProperty) {
         // Actualizar propiedad existente
-        // En una implementación real:
-        // const { data, error } = await supabase.from('properties').update(propertyData).eq('id', currentProperty.id);
+        const { data, error } = await supabase
+          .from('properties')
+          .update(propertyData)
+          .eq('id', currentProperty.id)
+          .select();
         
-        // Simulación de actualización
-        const updatedProperty = {
-          ...propertyData,
-          id: currentProperty.id,
-          updated_at: new Date().toISOString()
-        };
+        if (error) throw error;
         
-        setProperties(prev => 
-          prev.map(p => p.id === currentProperty.id ? updatedProperty : p)
-        );
+        if (data && data.length > 0) {
+          setProperties(prev => 
+            prev.map(p => p.id === currentProperty.id ? data[0] : p)
+          );
+        }
       } else {
         // Crear nueva propiedad
-        // En una implementación real:
-        // const { data, error } = await supabase.from('properties').insert({
-        //   ...propertyData,
-        //   user_id: user?.id,
-        //   created_at: new Date().toISOString()
-        // });
+        const { data, error } = await supabase
+          .from('properties')
+          .insert({
+            ...propertyData,
+            user_id: user?.id,
+            created_at: new Date().toISOString()
+          })
+          .select();
         
-        // Simulación de creación
-        const newProperty: Property = {
-          ...propertyData,
-          id: Math.random().toString(36).substring(2, 11), // ID aleatorio
-          created_at: new Date().toISOString()
-        };
+        if (error) throw error;
         
-        setProperties(prev => [...prev, newProperty]);
+        if (data && data.length > 0) {
+          setProperties(prev => [...prev, data[0]]);
+        }
       }
       
       setModalOpen(false);
     } catch (error) {
       console.error('Error al guardar propiedad:', error);
+      alert('Hubo un error al guardar la propiedad. Por favor, intenta de nuevo.');
     } finally {
       setIsSubmitting(false);
     }
