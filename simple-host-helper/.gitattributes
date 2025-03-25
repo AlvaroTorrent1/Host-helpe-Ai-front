@@ -1,0 +1,39 @@
+# Definir comportamiento por defecto para los archivos de texto
+* text=auto eol=lf
+
+# Establecer archivos específicos como texto con fin de línea LF (Unix)
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Archivos binarios
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Excluir archivos de documentación del cálculo de lenguaje en GitHub
+*.md linguist-documentation
+*.txt linguist-documentation
+LICENSE linguist-documentation
+
+# Marcar archivos de prueba
+**/__tests__/** linguist-detectable=true
+**/*.test.js linguist-detectable=true
+**/*.test.jsx linguist-detectable=true
+**/*.test.ts linguist-detectable=true
+**/*.test.tsx linguist-detectable=true 
