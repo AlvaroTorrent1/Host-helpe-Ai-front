@@ -1,0 +1,386 @@
+/* Importación de fuentes según la guía */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap');
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS para el tema */
+:root {
+  --primary-color: #ECA408;
+  --text-color: #333333;
+  --background-color: #FFFFFF;
+  --secondary-background: #F8F9FA;
+  --border-color: #E9ECEF;
+  --accent-color: #3498DB; 
+  --transition-standard: all 0.3s ease;
+  --border-radius-standard: 8px;
+  --box-shadow-standard: 0 5px 15px rgba(0, 0, 0, 0.05);
+  
+  /* Configuración básica */
+  font-family: 'Montserrat', 'Open Sans', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Tema claro por defecto */
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
+
+/* Reset completo para garantizar el ancho completo */
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos base para elementos de texto */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-color);
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-top: 0;
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Estilos para botones */
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: #fff;
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius-standard);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-standard);
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: var(--primary-color);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Para botones con iconos */
+.primary-button i, .primary-button svg {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.primary-button:hover i, .primary-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* Estilos para tarjetas/cards */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--box-shadow-standard);
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para inputs */
+.input-field {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-standard);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(236, 164, 8, 0.2);
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: var(--background-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.navbar-brand img {
+  height: auto;
+  width: auto;
+  max-width: 300px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: var(--primary-color);
+}
+
+/* Sección Hero */
+.hero-section {
+  padding: 5rem 0;
+  background-color: var(--primary-color);
+  text-align: center;
+  width: 100%;
+  position: relative;
+  color: white;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: white;
+  transform: skewY(-2deg);
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Container limited - Updated for better responsiveness */
+.container-limited {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Enhanced responsive containers */
+@media (max-width: 640px) {
+  .container-limited {
+    padding: 0 0.75rem;
+  }
+  
+  h1 {
+    font-size: 1.875rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Responsive images */
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive spacing utilities */
+.responsive-spacing {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .responsive-spacing {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .responsive-spacing {
+    padding: 1rem;
+  }
+}
+
+/* Desktop-only content */
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* Mobile-only content */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
+/* Flexible grid system */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section {
+  padding: 5rem 0;
+  width: 100%;
+}
+
+/* Fix for small screens */
+@media (max-width: 480px) {
+  .section {
+    padding: 3rem 0;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* Animaciones de iconos */
+.icon-animation {
+  transition: transform 0.3s ease;
+}
+
+.icon-animation:hover {
+  transform: translateY(-3px);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--secondary-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color);
+}
