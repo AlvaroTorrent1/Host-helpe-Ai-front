@@ -8,7 +8,7 @@ const CalendlyLink: React.FC = () => {
   return (
     <Link 
       to="/schedule-demo" 
-      className="inline-flex items-center px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg group text-center"
+      className="inline-flex items-center justify-center px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg group text-center w-full sm:w-auto"
     >
       <span className="mr-2 flex items-center justify-center">
         <svg 

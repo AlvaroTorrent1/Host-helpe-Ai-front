@@ -17,6 +17,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const firstItemRef = useRef<HTMLAnchorElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   // Manejar cierre del menú al pulsar ESC
   useEffect(() => {
@@ -48,8 +49,35 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
     };
   }, [isOpen]);
 
+  // Detectar clics fuera del menú
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        isOpen && 
+        menuRef.current && 
+        menuButtonRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !menuButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside as EventListener);
+    document.addEventListener('touchstart', handleClickOutside as EventListener);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside as EventListener);
+      document.removeEventListener('touchstart', handleClickOutside as EventListener);
+    };
+  }, [isOpen]);
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -74,46 +102,56 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
       </button>
 
       {isOpen && (
-        <div 
-          id="mobile-menu"
-          ref={menuRef}
-          className="fixed top-20 left-0 right-0 bg-white shadow-md py-4 px-6 z-50 max-h-[80vh] overflow-y-auto"
-          role="navigation"
-          aria-label="Menú móvil"
-        >
-          <ul className="space-y-3">
-            {links.map((link, index) => (
-              <li key={index}>
-                {link.href.startsWith('/') ? (
-                  <Link
-                    to={link.href}
-                    className={link.isButton
-                      ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md inline-block w-full text-center focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                      : "text-gray-600 hover:text-primary-500 block px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    }
-                    onClick={() => setIsOpen(false)}
-                    ref={index === 0 ? firstItemRef : null}
-                  >
-                    {link.text}
-                  </Link>
-                ) : (
-                  <a
-                    href={link.href}
-                    className="text-gray-600 hover:text-primary-500 block px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    onClick={() => setIsOpen(false)}
-                    ref={index === 0 ? firstItemRef : null}
-                    rel="noopener noreferrer"
-                  >
-                    {link.text}
-                  </a>
-                )}
-              </li>
-            ))}
-            
-            {/* Language Selector */}
-            <LanguageSelector isMobile={true} />
-          </ul>
-        </div>
+        <>
+          {/* Overlay para facilitar el cierre del menú */}
+          <div 
+            ref={overlayRef}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
+            onClick={closeMenu}
+            aria-hidden="true"
+          />
+          
+          <div 
+            id="mobile-menu"
+            ref={menuRef}
+            className="fixed top-20 left-0 right-0 bg-white shadow-md py-4 px-6 z-50 max-h-[80vh] overflow-y-auto transition-transform duration-300 ease-in-out"
+            role="navigation"
+            aria-label="Menú móvil"
+          >
+            <ul className="space-y-3">
+              {links.map((link, index) => (
+                <li key={index}>
+                  {link.href.startsWith('/') ? (
+                    <Link
+                      to={link.href}
+                      className={link.isButton
+                        ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md inline-block w-full text-center focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                        : "text-gray-600 hover:text-primary-500 block px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      }
+                      onClick={() => setIsOpen(false)}
+                      ref={index === 0 ? firstItemRef : null}
+                    >
+                      {link.text}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-gray-600 hover:text-primary-500 block px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      onClick={() => setIsOpen(false)}
+                      ref={index === 0 ? firstItemRef : null}
+                      rel="noopener noreferrer"
+                    >
+                      {link.text}
+                    </a>
+                  )}
+                </li>
+              ))}
+              
+              {/* Language Selector */}
+              <LanguageSelector isMobile={true} />
+            </ul>
+          </div>
+        </>
       )}
     </div>
   );

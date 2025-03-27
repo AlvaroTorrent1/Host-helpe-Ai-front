@@ -84,9 +84,9 @@ const LandingPage = () => {
                 <p className="text-lg sm:text-xl text-white opacity-90 mb-8">
                   {t('landing.hero.subtitle')}
                 </p>
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
+                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <CalendlyLink />
-                  <Link to="/register" className="px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg text-center">
+                  <Link to="/register" className="inline-flex items-center justify-center px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg text-center w-full sm:w-auto">
                     {t('landing.hero.cta')}
                   </Link>
                 </div>
@@ -149,7 +149,14 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="group">
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">{t('landing.features.chatbot')}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
+                    <Link to="/chatbot" className="text-gray-900 hover:text-primary-600 transition-colors inline-flex items-center">
+                      {t('landing.features.chatbot')}
+                      <svg className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </Link>
+                  </h3>
                 </div>
                 <p className="text-gray-600 mb-4">
                   {t('landing.features.chatbotDesc')}
@@ -167,7 +174,14 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="group">
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">{t('landing.features.checkIn')}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
+                    <Link to="/checkin" className="text-gray-900 hover:text-primary-600 transition-colors inline-flex items-center">
+                      {t('landing.features.checkIn')}
+                      <svg className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </Link>
+                  </h3>
                 </div>
                 <p className="text-gray-600 mb-4">
                   {t('landing.features.checkInDesc')}
@@ -187,7 +201,14 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="group">
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">{t('landing.features.upselling')}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
+                    <Link to="/upselling" className="text-gray-900 hover:text-primary-600 transition-colors inline-flex items-center">
+                      {t('landing.features.upselling')}
+                      <svg className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </Link>
+                  </h3>
                 </div>
                 <p className="text-gray-600 mb-4">
                   {t('landing.features.upsellingDesc')}
@@ -334,7 +355,7 @@ const LandingPage = () => {
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/logo_eoi.jpg" 
+                  src="/imagenes/Eoi logo.png" 
                   alt="Escuela de Organización Industrial" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
@@ -344,12 +365,12 @@ const LandingPage = () => {
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/logo-incibe.png" 
+                  src="/imagenes/logo incibe.png" 
                   alt="Incibe" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/andalucia lab.jpg" 
+                  src="/imagenes/Andalucia Lab.png" 
                   alt="Andalucía Lab" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />

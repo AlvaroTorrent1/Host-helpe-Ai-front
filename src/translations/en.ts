@@ -71,6 +71,201 @@ export const en = {
     }
   },
   
+  // ChatbotPage
+  chatbotPage: {
+    meta: {
+      title: 'Intelligent Chatbots for Accommodations | Host Helper AI',
+      description: 'Our advanced AI chatbots assist your guests 24/7, resolve questions, optimize check-ins, and generate additional income through personalized recommendations.'
+    },
+    hero: {
+      title: 'Intelligent Chatbots',
+      subtitle: 'Benefits of Our Chatbots',
+      description: 'Our intelligent chatbots combine the best of AI technology with specific knowledge about your accommodation to provide an exceptional experience for your guests.'
+    },
+    benefits: {
+      availability: {
+        title: 'Available 24/7',
+        description: 'Your guests receive immediate attention any time of day, any day of the week. No more unanswered messages or frustrated guests waiting.'
+      },
+      income: {
+        title: 'Additional Income',
+        description: 'Generate extra commissions by recommending tours, activities and nearby services to your guests. Our chatbots suggest personalized experiences.'
+      },
+      experience: {
+        title: 'Better Experience',
+        description: 'Your guests get immediate, accurate, and personalized answers, improving their overall experience and increasing positive ratings.'
+      }
+    },
+    features: {
+      title: 'Features and Capabilities',
+      subtitle: 'Advanced technology',
+      description: 'Our chatbots are specifically designed for the tourist accommodation industry with features that automate your processes and improve your guests\' experience.',
+      multilingual: {
+        title: 'Multilingual',
+        description: 'Our chatbots can communicate in more than 10 languages, automatically adapting to the language used by the guest.'
+      },
+      sesAutomation: {
+        title: 'SES Automation',
+        description: 'Automatically manages the mandatory registration process for the Ministry of the Interior, complying with Spanish regulations.'
+      },
+      incidentResolution: {
+        title: 'Incident Resolution',
+        description: 'Solves common problems such as WiFi, air conditioning or appliances with specific instructions for your property.'
+      },
+      localRecommendations: {
+        title: 'Local Recommendations',
+        description: 'Offers valuable information about nearby restaurants, attractions and activities, with the possibility of generating commissions.'
+      },
+      conversionRate: {
+        title: 'Resolution rate',
+        value: '+80%',
+        description: 'of queries without human intervention'
+      }
+    },
+    demo: {
+      title: 'A virtual assistant that really solves problems',
+      subtitle: 'See in action',
+      description: 'Our chatbots are trained specifically with information about your accommodation: rules, instructions, local recommendations and answers to the most common questions from your guests.',
+      capabilities: {
+        instructions: 'Customized check-in and check-out instructions',
+        technicalProblems: 'Resolution of technical issues like WiFi or appliances',
+        recommendations: 'Recommendations for nearby restaurants and activities',
+        transportation: 'Information about public transport and mobility options'
+      },
+      videoPlaceholder: 'Chatbot Demo Video'
+    }
+  },
+  
+  // CheckinPage
+  checkinPage: {
+    meta: {
+      title: 'Check-in Automation and SES Registration | Host Helper AI',
+      description: 'Automate traveler registration according to Spanish regulations (SES) and simplify the check-in process for your guests and for you.'
+    },
+    hero: {
+      title: 'Check-in Automation',
+      subtitle: 'Benefits of Automated Registration',
+      description: 'Simplify traveler registration according to Spanish regulations (SES) and optimize the check-in process, saving time for your guests and reducing your administrative burden.'
+    },
+    benefits: {
+      compliance: {
+        title: 'Legal Compliance',
+        description: 'Automatically comply with Spanish traveler registration regulations (SES) without worries or risk of penalties for non-compliance.'
+      },
+      timeSaving: {
+        title: 'Time Saving',
+        description: 'Reduce management time by up to 90%. The registration process that used to take hours is now completed in minutes without your intervention.'
+      },
+      experience: {
+        title: 'Better Experience',
+        description: 'Provide your guests with a modern and smooth digital experience that they can complete before arrival, facilitating a hassle-free check-in.'
+      }
+    },
+    features: {
+      title: 'Features and Capabilities',
+      subtitle: 'Advanced technology',
+      description: 'Our check-in automation system is specifically designed to comply with Spanish regulations and optimize the management of tourist accommodations.',
+      sesIntegration: {
+        title: 'SES Integration',
+        description: 'Direct connection with the Interior Ministry\'s SES system, ensuring compliance with Spanish traveler registration regulations.'
+      },
+      customForms: {
+        title: 'Customizable Forms',
+        description: 'Adapt registration forms to your brand and style, including all mandatory fields according to current regulations.'
+      },
+      documentCapture: {
+        title: 'Document Capture',
+        description: 'Allows guests to securely upload photographs of their identity documents before arrival.'
+      },
+      reservationManagement: {
+        title: 'Reservation Management',
+        description: 'Manual creation or automatic import of reservations from Airbnb, Booking and other platforms, keeping all data synchronized.'
+      },
+      registrationTime: {
+        title: 'Average registration time',
+        value: '< 2 min',
+        description: 'per guest'
+      }
+    },
+    demo: {
+      title: 'Simplified Check-in Process',
+      subtitle: 'See in action',
+      description: 'Our system automates the entire traveler registration process, from data collection to SES submission, saving you time and avoiding errors.',
+      capabilities: {
+        dataCollection: 'Automatic data collection from reservations on Airbnb, Booking and other platforms',
+        links: 'Sending personalized links to guests to complete their registration',
+        validation: 'Automatic validation of data and identity documents',
+        transmission: 'Secure and direct transmission of information to the SES system'
+      },
+      videoPlaceholder: 'Check-in System Demo Video'
+    }
+  },
+  
+  // UpsellingPage
+  upsellingPage: {
+    meta: {
+      title: 'Upselling and Additional Income Generation | Host Helper AI',
+      description: 'Increase your revenue with our cross-selling system that recommends additional services to your guests while improving their experience.'
+    },
+    hero: {
+      title: 'Upselling and Commissions',
+      subtitle: 'Increase Your Revenue',
+      description: 'Generate additional income by recommending relevant services and experiences to your guests, enhancing their stay while increasing your profitability.'
+    },
+    benefits: {
+      passiveIncome: {
+        title: 'Passive Income',
+        description: 'Earn commissions for each service contracted through your recommendations, creating an additional income stream without extra effort.'
+      },
+      betterExperience: {
+        title: 'Better Experience',
+        description: 'Your guests value personalized recommendations, which improves their overall experience and increases positive ratings.'
+      },
+      totalControl: {
+        title: 'Total Control',
+        description: 'Access detailed reports on generated commissions, most popular services, and conversion rates to optimize your strategies.'
+      }
+    },
+    features: {
+      title: 'Features and Possibilities',
+      subtitle: 'Intelligent system',
+      description: 'Our upselling system is designed to maximize your additional income while providing real value to your guests with relevant recommendations.',
+      utmLinks: {
+        title: 'Personalized UTM Links',
+        description: 'Automatically generate tracking links for each recommendation, allowing precise tracking of conversions and commissions.'
+      },
+      smartRecommendations: {
+        title: 'Smart Recommendations',
+        description: 'The system analyzes your guests\' preferences and behaviors to offer personalized, high-conversion suggestions.'
+      },
+      localIntegration: {
+        title: 'Local Provider Integration',
+        description: 'Connect with high-quality services in your area: from tours and activities to transfers and dining services.'
+      },
+      dashboard: {
+        title: 'Commission Dashboard',
+        description: 'Visualize your commission income in real time, with detailed reports by service type, season, and properties.'
+      },
+      incomeIncrease: {
+        title: 'Average increase',
+        value: '+15%',
+        description: 'in monthly income'
+      }
+    },
+    demo: {
+      title: 'How the Commission System Works',
+      subtitle: 'See in action',
+      description: 'Our system integrates with your current operations without complexity, generating additional income while improving your guests\' experience.',
+      process: {
+        recommendations: 'Chatbots recommend relevant services and experiences to your guests',
+        tracking: 'The system generates personalized tracking links (UTM) for each recommendation',
+        commissions: 'Each reservation or purchase made through these links automatically generates a commission',
+        dashboard: 'Commissions accumulate in your account and you can track them in real time on your dashboard'
+      },
+      videoPlaceholder: 'Upselling System Demo Video'
+    }
+  },
+  
   // Calendly Widget
   calendly: {
     title: 'Schedule a personalized demo',

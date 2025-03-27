@@ -278,7 +278,7 @@ const Testimonios = () => {
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/logo_eoi.jpg" 
+                  src="/imagenes/Eoi logo.png" 
                   alt="Escuela de Organización Industrial" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
@@ -288,12 +288,12 @@ const Testimonios = () => {
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/logo-incibe.png" 
+                  src="/imagenes/logo incibe.png" 
                   alt="Incibe" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />
                 <img 
-                  src="/imagenes/andalucia lab.jpg" 
+                  src="/imagenes/Andalucia Lab.png" 
                   alt="Andalucía Lab" 
                   className="max-h-[3.25rem] w-auto object-contain"
                 />

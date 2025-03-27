@@ -7,6 +7,9 @@ import './App.css'
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import LandingPage from './features/landing/LandingPage';
+import ChatbotPage from './features/landing/ChatbotPage';
+import CheckinPage from './features/landing/CheckinPage';
+import UpsellingPage from './features/landing/UpsellingPage';
 import Pricing from './features/landing/Pricing';
 import Testimonios from './features/landing/Testimonios';
 import ScheduleDemoPage from './features/landing/ScheduleDemoPage';
@@ -40,6 +43,9 @@ function App() {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/testimonios" element={<Testimonios />} />
                 <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
+                <Route path="/chatbot" element={<ChatbotPage />} />
+                <Route path="/checkin" element={<CheckinPage />} />
+                <Route path="/upselling" element={<UpsellingPage />} />
                 
                 {/* Rutas protegidas */}
                 <Route 
