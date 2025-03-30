@@ -5,6 +5,26 @@
     <link rel="icon" type="image/png" href="/imagenes/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Host Helper AI</title>
+    <script type="text/javascript">
+      // Redirigir navegación de hash fragmentos a rutas adecuadas
+      (function() {
+        // Verificar si estamos siendo redirigidos desde 404.html con una URL hash
+        const location = window.location;
+        const hash = location.hash;
+        
+        // Si hay un hash que parece una ruta (comienza con #/)
+        if (hash && hash.startsWith('#/')) {
+          // Convertir el hash a una ruta real usando history API
+          const route = hash.slice(1); // Remover el # inicial
+          window.history.replaceState(null, '', route);
+        } 
+        // Si hay un hash pero no comienza con '/', añadirle el '/'
+        else if (hash && !hash.startsWith('#/') && hash !== '#' && !hash.startsWith('#!')) {
+          const newRoute = '#/' + hash.slice(1);
+          window.location.hash = newRoute;
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
