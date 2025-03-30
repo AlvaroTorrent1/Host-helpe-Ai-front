@@ -37,6 +37,7 @@
     "@babel/core": "^7.24.0",
     "@babel/traverse": "^7.24.0",
     "@eslint/js": "^8.57.0",
+    "@heroicons/react": "^2.2.0",
     "@types/node": "^20.11.28",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

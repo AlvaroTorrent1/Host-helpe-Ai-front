@@ -15,42 +15,8 @@ interface SESSubmission {
 const SESStatusPanel: React.FC = () => {
   const { t } = useLanguage();
   
-  // Mock data para demostración
-  const [submissions] = useState<SESSubmission[]>([
-    {
-      id: "1",
-      property_name: t("mockData.properties.apartment.name"),
-      guest_name: t("mockData.guests.guest1"),
-      check_in_date: "2025-04-15",
-      status: "approved",
-      submission_date: "2025-04-12T10:30:00Z",
-      confirmation_code: "SES-2025-04120001",
-    },
-    {
-      id: "2",
-      property_name: t("mockData.properties.beach.name"),
-      guest_name: t("mockData.guests.guest2"),
-      check_in_date: "2025-04-05",
-      status: "pending",
-    },
-    {
-      id: "3",
-      property_name: t("mockData.properties.apartment.name"),
-      guest_name: "Miguel Fernández",
-      check_in_date: "2025-04-10",
-      status: "error",
-      submission_date: "2025-04-07T14:22:00Z",
-      error_message: "Error en el formato del documento",
-    },
-    {
-      id: "4",
-      property_name: t("mockData.properties.beach.name"),
-      guest_name: "Ana López",
-      check_in_date: "2025-04-18",
-      status: "submitted",
-      submission_date: "2025-04-15T09:45:00Z",
-    },
-  ]);
+  // Array vacío en lugar de mock data
+  const [submissions] = useState<SESSubmission[]>([]);
 
   // Función para mostrar el estado de manera amigable
   const renderStatus = (status: string) => {
@@ -131,83 +97,89 @@ const SESStatusPanel: React.FC = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.property")}
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.guest")}
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.checkInDate")}
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.status")}
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.submissionDate")}
-              </th>
-              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
-                {t("dashboard.ses.statusPanel.actions")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {submissions.map((submission, index) => (
-              <tr 
-                key={submission.id} 
-                className={index % 2 === 0 ? "bg-white border-b border-gray-100" : "bg-gray-50 border-b border-gray-100"}
-              >
-                <td className="py-4 pr-4 text-sm text-gray-900 text-left">
-                  {submission.property_name}
-                </td>
-                <td className="py-4 pr-4 text-sm text-gray-900 text-left">
-                  {submission.guest_name}
-                </td>
-                <td className="py-4 pr-4 text-sm text-gray-500 text-left">
-                  {new Date(submission.check_in_date).toLocaleDateString()}
-                </td>
-                <td className="py-4 pr-4 text-left">
-                  {renderStatus(submission.status)}
-                </td>
-                <td className="py-4 pr-4 text-sm text-gray-500 text-left">
-                  {submission.submission_date
-                    ? new Date(submission.submission_date).toLocaleString()
-                    : "—"}
-                </td>
-                <td className="py-4 text-sm text-gray-500 text-left">
-                  {submission.status === "error" && (
-                    <button
-                      onClick={() => handleRetry(submission.id)}
-                      className="text-primary-600 hover:text-primary-900 mr-2"
-                    >
-                      {t("dashboard.ses.statusPanel.retry")}
-                    </button>
-                  )}
-
-                  {submission.status === "pending" && (
-                    <button
-                      onClick={() => handleGenerateLink(submission.id)}
-                      className="text-primary-600 hover:text-primary-900"
-                    >
-                      {t("dashboard.ses.statusPanel.generateLink")}
-                    </button>
-                  )}
-
-                  {submission.confirmation_code && (
-                    <span className="text-xs text-gray-500 block mt-1">
-                      {t("common.referenceCode")}: {submission.confirmation_code}
-                    </span>
-                  )}
-                </td>
+      {submissions.length === 0 ? (
+        <div className="py-8 text-center text-gray-500">
+          {t("dashboard.ses.statusPanel.noSubmissions")}
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead>
+              <tr>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.property")}
+                </th>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.guest")}
+                </th>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.checkInDate")}
+                </th>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.status")}
+                </th>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.submissionDate")}
+                </th>
+                <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                  {t("dashboard.ses.statusPanel.actions")}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {submissions.map((submission, index) => (
+                <tr 
+                  key={submission.id} 
+                  className={index % 2 === 0 ? "bg-white border-b border-gray-100" : "bg-gray-50 border-b border-gray-100"}
+                >
+                  <td className="py-4 pr-4 text-sm text-gray-900 text-left">
+                    {submission.property_name}
+                  </td>
+                  <td className="py-4 pr-4 text-sm text-gray-900 text-left">
+                    {submission.guest_name}
+                  </td>
+                  <td className="py-4 pr-4 text-sm text-gray-500 text-left">
+                    {new Date(submission.check_in_date).toLocaleDateString()}
+                  </td>
+                  <td className="py-4 pr-4 text-left">
+                    {renderStatus(submission.status)}
+                  </td>
+                  <td className="py-4 pr-4 text-sm text-gray-500 text-left">
+                    {submission.submission_date
+                      ? new Date(submission.submission_date).toLocaleString()
+                      : "—"}
+                  </td>
+                  <td className="py-4 text-sm text-gray-500 text-left">
+                    {submission.status === "error" && (
+                      <button
+                        onClick={() => handleRetry(submission.id)}
+                        className="text-primary-600 hover:text-primary-900 mr-2"
+                      >
+                        {t("dashboard.ses.statusPanel.retry")}
+                      </button>
+                    )}
+
+                    {submission.status === "pending" && (
+                      <button
+                        onClick={() => handleGenerateLink(submission.id)}
+                        className="text-primary-600 hover:text-primary-900"
+                      >
+                        {t("dashboard.ses.statusPanel.generateLink")}
+                      </button>
+                    )}
+
+                    {submission.confirmation_code && (
+                      <span className="text-xs text-gray-500 block mt-1">
+                        {t("common.referenceCode")}: {submission.confirmation_code}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

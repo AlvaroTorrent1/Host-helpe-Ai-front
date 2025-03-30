@@ -9,8 +9,7 @@ import ReservationDetail from "./ReservationDetail";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import { useLanguage } from "@shared/contexts/LanguageContext";
-import { PlusIcon, CheckCircleIcon, XCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import Spinner from "@shared/components/Spinner";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 // Definimos un enum para el estado de las reservas
 enum ReservationStatus {
@@ -51,103 +50,18 @@ const ReservationManagementPage: React.FC = () => {
       // Simulamos una carga de datos desde una API
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Datos de prueba
-      const mockProperties: Property[] = [
-        {
-          id: "prop1",
-          name: t("mockData.properties.apartment.name"),
-          address: t("mockData.properties.apartment.address"),
-          status: "active",
-          image:
-            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2000",
-        },
-        {
-          id: "prop2",
-          name: t("mockData.properties.beach.name"),
-          address: t("mockData.properties.beach.address"),
-          status: "active",
-          image:
-            "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2000",
-        },
-      ];
-
-      const mockGuests: Guest[] = [
-        {
-          id: "guest1",
-          firstName: t("mockData.guests.charles.firstName"),
-          lastName: t("mockData.guests.charles.lastName"),
-          email: "charles@example.com",
-          phone: "+34612345678",
-          documentType: "dni",
-          documentNumber: "12345678A",
-          birthDate: "1985-05-15",
-          nationality: "ES",
-          sesSent: true,
-          sesResponseCode: "OK123",
-        },
-        {
-          id: "guest2",
-          firstName: t("mockData.guests.laura.firstName"),
-          lastName: t("mockData.guests.laura.lastName"),
-          email: "laura@example.com",
-          phone: "+34687654321",
-          documentType: "passport",
-          documentNumber: "CD789012",
-          birthDate: "1988-12-10",
-          nationality: "IT",
-        },
-      ];
-
-      const mockReservations: Reservation[] = [
-        {
-          id: "res1",
-          propertyId: "prop1",
-          guests: [mockGuests[0]],
-          mainGuestId: "guest1",
-          checkInDate: "2025-06-10",
-          checkOutDate: "2025-06-15",
-          status: ReservationStatus.CONFIRMED,
-          totalGuests: 1,
-          totalAmount: 560,
-          paymentStatus: "paid",
-          bookingSource: "airbnb",
-          bookingSourceReference: "AIR12345",
-          notes: t("reservations.mockNotes.confirmed"),
-          createdAt: "2025-01-15T10:30:00Z",
-          updatedAt: "2025-01-16T15:20:00Z",
-        },
-        {
-          id: "res2",
-          propertyId: "prop2",
-          guests: [mockGuests[1]],
-          mainGuestId: "guest2",
-          checkInDate: "2025-07-05",
-          checkOutDate: "2025-07-12",
-          status: ReservationStatus.PENDING,
-          totalGuests: 1,
-          totalAmount: 840,
-          paymentStatus: "partial",
-          bookingSource: "booking",
-          bookingSourceReference: "BOO98765",
-          createdAt: "2025-02-01T09:15:00Z",
-        },
-      ];
+      // Datos vacíos para propiedades y reservas
+      const mockProperties: Property[] = [];
+      const mockGuests: Guest[] = [];
+      const mockReservations: Reservation[] = [];
 
       setProperties(mockProperties);
       setReservations(mockReservations);
 
-      // Si hay un ID de reserva en la URL, mostrar los detalles
+      // Si hay un ID de reserva en la URL, mostrar un mensaje de error
       if (reservationId) {
-        const reservation = mockReservations.find(
-          (r) => r.id === reservationId,
-        );
-        if (reservation) {
-          setCurrentReservation(reservation);
-          setViewMode(ViewMode.DETAIL);
-        } else {
-          setErrorMessage("La reserva solicitada no existe");
-          navigate("/dashboard/reservations");
-        }
+        setErrorMessage(t("reservations.errors.reservationNotFound"));
+        navigate("/dashboard/reservations");
       }
     } catch (error) {
       console.error("Error al cargar los datos:", error);
@@ -573,12 +487,33 @@ const ReservationManagementPage: React.FC = () => {
         ) : (
           <>
             {viewMode === ViewMode.LIST && (
-              <ReservationList
-                reservations={reservations}
-                properties={properties}
-                onViewDetails={handleViewReservation}
-                onAddReservation={handleAddReservation}
-              />
+              <>
+                {reservations.length === 0 ? (
+                  <div className="bg-white shadow rounded-lg p-10 text-center">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      {t("dashboard.reservations.emptyState")}
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                      {t("dashboard.notice")}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleAddReservation}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    >
+                      <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
+                      {t("dashboard.reservations.actions.create")}
+                    </button>
+                  </div>
+                ) : (
+                  <ReservationList
+                    reservations={reservations}
+                    properties={properties}
+                    onViewDetails={handleViewReservation}
+                    onAddReservation={handleAddReservation}
+                  />
+                )}
+              </>
             )}
 
             {viewMode === ViewMode.DETAIL && currentReservation && (
