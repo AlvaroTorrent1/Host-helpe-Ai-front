@@ -1,5 +1,5 @@
 /* Importación de fuentes según la guía */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap");
 
 /* Tailwind CSS */
 @tailwind base;
@@ -8,32 +8,34 @@
 
 /* Variables CSS para el tema */
 :root {
-  --primary-color: #ECA408;
+  --primary-color: #eca408;
   --text-color: #333333;
-  --background-color: #FFFFFF;
-  --secondary-background: #F8F9FA;
-  --border-color: #E9ECEF;
-  --accent-color: #3498DB; 
+  --background-color: #ffffff;
+  --secondary-background: #f8f9fa;
+  --border-color: #e9ecef;
+  --accent-color: #3498db;
   --transition-standard: all 0.3s ease;
   --border-radius-standard: 8px;
   --box-shadow-standard: 0 5px 15px rgba(0, 0, 0, 0.05);
-  
+
   /* Configuración básica */
-  font-family: 'Montserrat', 'Open Sans', system-ui, sans-serif;
+  font-family: "Montserrat", "Open Sans", system-ui, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   /* Tema claro por defecto */
   color: var(--text-color);
   background-color: var(--background-color);
 }
 
 /* Reset completo para garantizar el ancho completo */
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -47,8 +49,13 @@ html, body, #root {
 }
 
 /* Estilos base para elementos de texto */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif;
   font-weight: 600;
   line-height: 1.2;
   color: var(--text-color);
@@ -95,7 +102,9 @@ body {
   box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -113,7 +122,7 @@ body {
   font-weight: 600;
   text-decoration: none;
   transition: var(--transition-standard);
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   cursor: pointer;
 }
 
@@ -124,12 +133,14 @@ body {
 }
 
 /* Para botones con iconos */
-.primary-button i, .primary-button svg {
+.primary-button i,
+.primary-button svg {
   font-size: 0.9rem;
   transition: transform 0.3s ease;
 }
 
-.primary-button:hover i, .primary-button:hover svg {
+.primary-button:hover i,
+.primary-button:hover svg {
   transform: translateX(4px);
 }
 
@@ -139,7 +150,9 @@ body {
   border-radius: 12px;
   box-shadow: var(--box-shadow-standard);
   padding: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -153,9 +166,11 @@ body {
   padding: 0.8rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-standard);
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .input-field:focus {
@@ -167,7 +182,7 @@ body {
 /* Barra de navegación */
 .navbar {
   background-color: var(--background-color);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   height: 70px;
   display: flex;
   align-items: center;
@@ -224,7 +239,7 @@ body {
 }
 
 .hero-section::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -50px;
   left: 0;
@@ -266,15 +281,15 @@ body {
   .container-limited {
     padding: 0 0.75rem;
   }
-  
+
   h1 {
     font-size: 1.875rem;
   }
-  
+
   h2 {
     font-size: 1.5rem;
   }
-  
+
   h3 {
     font-size: 1.25rem;
   }
@@ -348,11 +363,11 @@ body {
   .section {
     padding: 3rem 0;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }

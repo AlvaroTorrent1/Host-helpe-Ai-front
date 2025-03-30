@@ -1,6 +1,18 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase, signIn, signUp, signOut, getCurrentUser } from '../services/supabase';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { User } from "@supabase/supabase-js";
+import {
+  supabase,
+  signIn,
+  signUp,
+  signOut,
+  getCurrentUser,
+} from "../services/supabase";
 
 // Definición del tipo para el contexto
 type AuthContextType = {
@@ -18,7 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth debe ser usado dentro de un AuthProvider');
+    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
   }
   return context;
 };
@@ -36,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { data } = await getCurrentUser();
         setUser(data.user);
       } catch (error) {
-        console.error('Error al cargar el usuario:', error);
+        console.error("Error al cargar el usuario:", error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
-      }
+      },
     );
 
     // Limpiar el listener al desmontar
@@ -69,4 +81,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export default AuthContext; 
+export default AuthContext;

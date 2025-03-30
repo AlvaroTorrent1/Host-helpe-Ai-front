@@ -1,109 +1,140 @@
-# Simple Host Helper
+# Host Helper AI
 
-## Descripción
-Una aplicación para gestionar propiedades y reservas de alojamientos, optimizando la comunicación con huéspedes mediante automatizaciones.
+An application for managing property rentals, guests, and reservations with modern web technologies.
 
-## Nueva estructura del proyecto
-El proyecto ahora sigue una estructura estándar de aplicación React/TypeScript:
+## 🚀 Features
 
-### Estructura de directorios
+- Property management (add, edit, delete properties)
+- Document management for properties (upload, organize, access)
+- Media gallery for property photos and videos
+- Guest management
+- Reservation tracking and management
+- Multilingual support (English and Spanish)
+- Responsive interface for desktop and mobile
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React with TypeScript
+- **Backend**: Supabase (PostgreSQL + APIs)
+- **Storage**: Supabase Storage
+- **Authentication**: Supabase Auth
+- **State Management**: React Query and Context API
+- **UI Components**: Custom components with modern design
+- **Styling**: CSS/SCSS modules
+- **Testing**: Vitest for unit tests
+
+## 📂 Project Structure
 
 ```
-src/
-  ├── features/              # Organización basada en características
-  │   ├── auth/              # Todo lo relacionado con autenticación
-  │   │   ├── components/    # Componentes específicos de autenticación
-  │   │   ├── pages/         # Páginas de login/registro
-  │   ├── dashboard/         # Todo lo relacionado con el dashboard
-  │   ├── properties/        # Gestión de propiedades
-  │   ├── reservations/      # Gestión de reservaciones
-  │   ├── ses/               # Registro de viajeros (SES)
-  │   └── landing/           # Páginas públicas (landing, pricing, testimonios)
-  ├── shared/                # Elementos compartidos
-  │   ├── components/        # Componentes reutilizables
-  │   ├── hooks/             # Hooks genéricos
-  │   ├── utils/             # Utilidades generales
-  │   └── contexts/          # Contextos globales
-  ├── translations/          # Traducciones multilenguaje
-  ├── services/              # Servicios de API y externos
-  ├── types/                 # Tipos TypeScript globales
-  └── assets/                # Recursos estáticos
+host-helper-ai/
+├── src/
+│   ├── components/        # Reusable UI components
+│   ├── config/            # Configuration files and environment variables
+│   ├── features/          # Feature-specific components and logic
+│   ├── hooks/             # Custom React hooks
+│   ├── i18n/              # Internationalization system
+│   ├── layouts/           # Page layout components
+│   ├── pages/             # Page components
+│   ├── services/          # API and external service integrations
+│   ├── types/             # TypeScript type definitions
+│   ├── utils/             # Utility functions
+│   └── App.tsx            # Main application component
+├── public/                # Static assets
+└── docs/                  # Documentation files
 ```
 
-### Beneficios de esta estructura
+## 🔧 Environment Setup
 
-1. **Cohesión**: El código relacionado se mantiene junto, facilitando entender cómo funciona cada característica.
-2. **Encapsulamiento**: Cada característica puede evolucionar de forma independiente.
-3. **Escalabilidad**: Facilita agregar nuevas características sin afectar las existentes.
-4. **Mantenimiento**: Es más fácil identificar y corregir problemas dentro de una característica específica.
-5. **Colaboración**: Diferentes equipos pueden trabajar en diferentes características simultáneamente.
-
-### Convenciones de naming
-
-- Los nombres de archivos para componentes React usan PascalCase: `LoginPage.tsx`
-- Los nombres de archivos para hooks, utilidades y servicios usan camelCase: `useAuth.ts`
-- Los nombres de directorios usan kebab-case para facilitar la navegación en sistemas case-sensitive
-
-## Tecnologías principales
-
-- React
-- TypeScript
-- React Router
-- Tailwind CSS
-- Supabase (Autenticación, Base de datos)
-
-## Cómo iniciar el proyecto
+1. Clone the repository
+2. Copy `.env.example` to `.env` and update the values
+3. Install dependencies:
 
 ```bash
-# Instalar dependencias
 npm install
-
-# Iniciar en modo desarrollo
-npm run dev
-
-# Compilar para producción
-npm run build
 ```
 
-## Características Principales
+4. Start the development server:
 
-- **Chatbot 24/7**: Atención al cliente automatizada para huéspedes a cualquier hora del día.
-- **Check-in Automatizado**: Simplifica el proceso de registro de huéspedes.
-- **Upselling Inteligente**: Incrementa tus ingresos ofreciendo servicios adicionales.
-- **Dashboard Centralizado**: Gestiona todas tus propiedades desde un solo lugar.
-- **Gestión de Incidencias**: Sistema automatizado para resolver problemas.
+```bash
+npm run dev
+```
 
-## Instalación
+## 🧪 Running Tests
 
-1. Clona el repositorio
-2. Instala las dependencias:
-   ```
-   npm install
-   ```
-3. Configura las variables de entorno:
-   - Copia el archivo `.env.example` a un nuevo archivo llamado `.env`:
-     ```
-     cp .env.example .env
-     ```
-   - Edita el archivo `.env` y reemplaza los valores de marcador con tus credenciales reales de Supabase:
-     ```
-     VITE_SUPABASE_URL=tu-url-de-supabase
-     VITE_SUPABASE_ANON_KEY=tu-clave-anonima-de-supabase
-     ```
-   - **⚠️ IMPORTANTE**: Nunca añadas el archivo `.env` al control de versiones. Contiene información sensible.
-   - Para obtener tus credenciales, visita [Supabase Dashboard](https://app.supabase.io) → Proyecto → Settings → API.
+```bash
+npm test
+```
 
-4. Inicia el servidor de desarrollo:
-   ```
-   npm run dev
-   ```
+## 🌐 Internationalization
 
-## Seguridad
+The application supports multiple languages through our custom i18n system. To add or modify translations, update the translation files in `src/i18n/`.
 
-- **Variables de entorno**: Siempre utiliza el archivo `.env` para tus credenciales y nunca lo añadas al control de versiones.
-- **Rotación de credenciales**: Si sospechas que tus credenciales han sido expuestas, rótalas inmediatamente desde el panel de Supabase.
-- **Entornos de producción**: En entornos de producción, configura las variables de entorno directamente en tu proveedor de hosting (Vercel, Netlify, etc.) en lugar de usar archivos `.env`.
+## 🧰 Utilities
 
-## Licencia
+The project includes several utility modules that handle common tasks:
 
-Todos los derechos reservados © 2025 Host Helper AI.
+- **commonUtils**: General-purpose utilities like debouncing, throttling, error handling
+- **dateUtils**: Date formatting and manipulation
+- **validation**: Form validation and data checks
+- **formatting**: Number and text formatting
+- **textUtils**: Text processing utilities
+- **animationUtils**: Handling animations and transitions
+- **storageUtils**: Local storage and cache management
+
+## 📚 Documentation
+
+Additional documentation is available in the `docs/` directory:
+
+- [API Documentation](docs/API.md)
+- [Best Practices](docs/BEST_PRACTICES.md)
+
+## 🏗️ Recent Improvements
+
+1. **Code Organization**:
+   - Reorganized service files for better separation of concerns
+   - Extracted utilities into specialized modules
+   - Centralized configuration in environment variables
+
+2. **Internationalization**:
+   - Added support for English and Spanish
+   - Created a flexible translation system
+   - Implemented locale-aware formatting
+
+3. **Error Handling**:
+   - Implemented consistent error handling with tryCatch utilities
+   - Added better error reporting and fallbacks
+   - Improved error recovery
+
+4. **Type Safety**:
+   - Enhanced TypeScript types throughout the application
+   - Eliminated unsafe type assertions
+   - Fixed linting issues
+
+5. **Performance**:
+   - Added debouncing for intensive operations
+   - Implemented caching for expensive calculations
+   - Optimized media loading and processing
+
+## 📜 License
+
+MIT License - See [LICENSE](LICENSE) for details.
+
+## Supabase Authentication Configuration
+
+For the authentication system to work properly in production, you need to configure the following:
+
+1. **Supabase Dashboard**:
+   - Log in to your Supabase dashboard
+   - Go to Authentication > URL Configuration
+   - Set the Site URL to: `https://hosthelperai.com`
+   - Add additional redirect URLs if needed (for development/staging environments)
+
+2. **Environment Variables**:
+   - In development, set `VITE_SITE_URL=http://localhost:4004` in your `.env` file
+   - In production, set `VITE_SITE_URL=https://hosthelperai.com` 
+   - The GitHub Actions workflow has been configured to use the production URL
+
+3. **Email Templates**:
+   - If you've customized the email templates in Supabase, ensure they use `{{ .RedirectTo }}` instead of `{{ .SiteURL }}` where appropriate
+
+This configuration ensures that authentication emails (registration confirmation, password reset, etc.) will contain the correct domain in their links rather than "localhost".

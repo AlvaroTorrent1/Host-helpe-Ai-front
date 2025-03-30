@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const NotFoundPage = () => {
   return (
@@ -7,7 +7,9 @@ const NotFoundPage = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
           <h2 className="text-6xl font-extrabold text-primary-600 mb-2">404</h2>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Página no encontrada</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Página no encontrada
+          </h1>
           <p className="text-gray-600 mb-8">
             Lo sentimos, la página que buscas no existe o ha sido movida.
           </p>
@@ -31,4 +33,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage; 
+export default NotFoundPage;

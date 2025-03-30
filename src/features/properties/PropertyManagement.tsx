@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Property, PropertyDocument } from '../../types/property';
-import propertyService from '../../services/propertyService';
-import { updateTempDocumentsPropertyId } from '../../services/documentService';
-import PropertyForm from './PropertyForm';
-import { toast } from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Property, PropertyDocument } from "../../types/property";
+import propertyService from "../../services/propertyService";
+import { updateTempDocumentsPropertyId } from "../../services/documentService";
+import PropertyForm from "./PropertyForm";
+import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
-interface PropertyFormData extends Omit<Property, 'id'> {
+interface PropertyFormData extends Omit<Property, "id"> {
   documents?: PropertyDocument[];
   city?: string;
   state?: string;
@@ -27,7 +27,7 @@ interface PropertyManagementProps {
 
 // Mock del contexto de usuario si no existe
 const useUser = () => {
-  return { id: 'current-user' };
+  return { id: "current-user" };
 };
 
 // Mock simplificado de supabase para evitar errores de tipo
@@ -36,19 +36,22 @@ const supabase = {
     update: (_data: Record<string, unknown>) => ({
       eq: (_field: string, _value: string) => ({
         select: () => ({
-          single: () => Promise.resolve({ data: {}, error: null })
-        })
-      })
+          single: () => Promise.resolve({ data: {}, error: null }),
+        }),
+      }),
     }),
     insert: (_data: Record<string, unknown>) => ({
       select: () => ({
-        single: () => Promise.resolve({ data: {}, error: null })
-      })
-    })
-  })
+        single: () => Promise.resolve({ data: {}, error: null }),
+      }),
+    }),
+  }),
 };
 
-const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onSaved }) => {
+const PropertyManagement: React.FC<PropertyManagementProps> = ({
+  propertyId,
+  onSaved,
+}) => {
   const [property, setProperty] = useState<Property | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -66,13 +69,14 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
       setIsLoading(true);
       setError(null);
 
-      propertyService.getPropertyById(propertyId)
-        .then(fetchedProperty => {
+      propertyService
+        .getPropertyById(propertyId)
+        .then((fetchedProperty) => {
           setProperty(fetchedProperty);
         })
-        .catch(err => {
-          console.error('Error cargando propiedad:', err);
-          setError('No se pudo cargar la propiedad. Intente nuevamente.');
+        .catch((err) => {
+          console.error("Error cargando propiedad:", err);
+          setError("No se pudo cargar la propiedad. Intente nuevamente.");
         })
         .finally(() => {
           setIsLoading(false);
@@ -85,13 +89,13 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
     try {
       setIsSubmitting(true);
       setSaveError(null);
-      
+
       let savedProperty: Property;
-      
+
       // Modo edición: actualizar propiedad existente
       if (property && property.id) {
         const { data, error } = await supabase
-          .from('properties')
+          .from("properties")
           .update({
             name: propertyData.name,
             address: propertyData.address,
@@ -103,20 +107,20 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
             num_bedrooms: propertyData.num_bedrooms,
             num_bathrooms: propertyData.num_bathrooms,
             max_guests: propertyData.max_guests,
-            description: propertyData.description || '',
-            updated_at: new Date().toISOString()
+            description: propertyData.description || "",
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', property.id)
+          .eq("id", property.id)
           .select()
           .single();
-        
+
         if (error) throw error;
         savedProperty = data as unknown as Property;
-      } 
+      }
       // Modo creación: crear nueva propiedad
       else {
         const { data, error } = await supabase
-          .from('properties')
+          .from("properties")
           .insert({
             user_id: user?.id,
             name: propertyData.name,
@@ -129,57 +133,65 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
             num_bedrooms: propertyData.num_bedrooms,
             num_bathrooms: propertyData.num_bathrooms,
             max_guests: propertyData.max_guests,
-            description: propertyData.description || '',
+            description: propertyData.description || "",
             created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .select()
           .single();
-        
+
         if (error) throw error;
         savedProperty = data as unknown as Property;
       }
-      
+
       // Procesar documentos temporales si existen
-      if (propertyData.documents && propertyData.documents.some((doc: PropertyDocument) => doc.property_id === 'temp')) {
-        const updatedDocs = await updateTempDocumentsPropertyId(savedProperty.id);
-        
+      if (
+        propertyData.documents &&
+        propertyData.documents.some(
+          (doc: PropertyDocument) => doc.property_id === "temp",
+        )
+      ) {
+        const updatedDocs = await updateTempDocumentsPropertyId(
+          savedProperty.id,
+        );
+
         if (updatedDocs.length > 0) {
           // Combinar los documentos existentes con los nuevos
           const allDocuments = [
             ...(savedProperty.documents || []),
-            ...updatedDocs
+            ...updatedDocs,
           ];
-          
+
           // Actualizar la propiedad con los nuevos documentos
           const { data: updatedProperty, error: updateError } = await supabase
-            .from('properties')
+            .from("properties")
             .update({
-              documents: allDocuments
+              documents: allDocuments,
             })
-            .eq('id', savedProperty.id)
+            .eq("id", savedProperty.id)
             .select()
             .single();
-          
+
           if (updateError) throw updateError;
           savedProperty = updatedProperty as unknown as Property;
         }
       }
-      
+
       // Guardar la propiedad actualizada en el estado
       setProperty(savedProperty);
-      
+
       // Mostrar mensaje de éxito
-      toast.success(t('properties.saveSuccess'));
-      
+      toast.success(t("properties.saveSuccess"));
+
       // Redireccionar después de un breve retraso
       setTimeout(() => {
-        navigate('/properties');
+        navigate("/properties");
       }, 1500);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       setSaveError(errorMessage);
-      toast.error(t('properties.saveError'));
+      toast.error(t("properties.saveError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -190,7 +202,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
     if (onSaved) {
       onSaved(property as Property);
     } else {
-      navigate('/properties');
+      navigate("/properties");
     }
   };
 
@@ -205,15 +217,15 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">
-        {isEditing ? 'Editar propiedad' : 'Añadir propiedad'}
+        {isEditing ? "Editar propiedad" : "Añadir propiedad"}
       </h2>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
           {error}
         </div>
       )}
-      
+
       <PropertyForm
         property={property}
         onSubmit={handleSaveProperty}
@@ -224,4 +236,4 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({ propertyId, onS
   );
 };
 
-export default PropertyManagement; 
+export default PropertyManagement;

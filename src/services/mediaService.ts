@@ -1,119 +1,150 @@
-import supabase from './supabase';
-import { v4 as uuidv4 } from 'uuid';
+/**
+ * src/services/mediaService.ts
+ * Service for managing media files: uploads, retrieval, and deletion
+ */
 
-// Tipos para el sistema de medios
+import supabase from "./supabase";
+import { v4 as uuidv4 } from "uuid";
+import { storageConfig, fileTypes } from "../config/environment";
+import { tryCatch } from "../utils/commonUtils";
+import { formatFileSize } from "../utils";
+
+// Media bucket name
+const BUCKET_NAME = storageConfig.mediaBucket;
+
+/**
+ * Media item interface
+ */
 export interface MediaItem {
   id: string;
   propertyId: string;
   fileName: string;
-  fileType: 'image' | 'video';
+  fileType: string;
   url: string;
   thumbnailUrl?: string;
   size: number;
+  formattedSize: string;
   dimensions?: {
     width: number;
     height: number;
   };
   createdAt: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
 }
 
+/**
+ * Pagination options
+ */
 export interface PaginationOptions {
   page?: number;
   limit?: number;
 }
 
+/**
+ * Media gallery result with pagination
+ */
 export interface MediaGallery {
   items: MediaItem[];
   totalCount: number;
   hasMore: boolean;
 }
 
-export interface Dimensions {
-  width: number;
-  height: number;
-}
-
-const BUCKET_NAME = 'property-media';
-const CDN_URL = 'https://blxngmtmknkdmikaflen.supabase.co/storage/v1/object/public/';
-
-// Asegurar que el bucket existe
-const ensureBucket = async () => {
-  const { data: buckets } = await supabase.storage.listBuckets();
-  if (!buckets?.find(bucket => bucket.name === BUCKET_NAME)) {
-    await supabase.storage.createBucket(BUCKET_NAME, {
-      public: true,
-      fileSizeLimit: 100 * 1024 * 1024, // 100MB limite
-    });
-  }
+/**
+ * Ensure the media bucket exists
+ */
+const ensureBucket = async (): Promise<void> => {
+  return tryCatch(async () => {
+    const { data: buckets } = await supabase.storage.listBuckets();
+    if (!buckets?.find((bucket) => bucket.name === BUCKET_NAME)) {
+      await supabase.storage.createBucket(BUCKET_NAME, {
+        public: true,
+        fileSizeLimit: storageConfig.imageSizeLimit,
+      });
+    }
+  }, undefined);
 };
 
-// Inicializar el servicio (llamar durante la inicialización de la app)
-export const initMediaService = async () => {
+/**
+ * Initialize media service (should be called during app initialization)
+ */
+export const initMediaService = async (): Promise<void> => {
   await ensureBucket();
 };
 
 /**
- * Sube múltiples archivos para una propiedad
+ * Upload multiple media files
+ * @param propertyId ID of the property to associate media with
+ * @param files Array of files to upload
+ * @param onProgress Optional callback for upload progress
+ * @returns Array of uploaded media items
  */
-export const uploadMediaFiles = async (propertyId: string, files: File[]): Promise<MediaItem[]> => {
+export const uploadMediaFiles = async (
+  propertyId: string,
+  files: File[],
+  onProgress?: (progress: number) => void
+): Promise<MediaItem[]> => {
   await ensureBucket();
   
-  const results: MediaItem[] = [];
-  
-  for (const file of files) {
-    try {
-      // Generar un nombre único para el archivo
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${propertyId}/${uuidv4()}.${fileExt}`;
+  return tryCatch(async () => {
+    const results: MediaItem[] = [];
+    
+    // Process each file
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       
-      // Subir el archivo a Supabase Storage
-      const { data: _, error } = await supabase.storage
+      // Skip unsupported file types
+      if (!fileTypes.image.includes(file.type)) {
+        continue;
+      }
+      
+      // Create unique file name
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const fileName = `${propertyId}/${Date.now()}_${uuidv4()}.${fileExt}`;
+      
+      // Upload the file to Supabase storage
+      const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
-        .upload(fileName, file, { 
-          cacheControl: '3600',
-          upsert: false 
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: false,
         });
       
-      if (error) throw error;
-      
-      // Crear entrada de metadatos
-      const fileType = file.type.startsWith('image/') ? 'image' : 'video';
-      const url = `${CDN_URL}${BUCKET_NAME}/${fileName}`;
-      
-      // Crear un thumbnail para video si es necesario
-      let thumbnailUrl;
-      if (fileType === 'video') {
-        thumbnailUrl = await generateVideoThumbnail(url);
+      if (error) {
+        console.error("Error uploading media:", error);
+        continue; // Skip this file and continue with others
       }
       
-      // Obtener dimensiones para imagenes
-      let dimensions;
-      if (fileType === 'image') {
-        dimensions = await getImageDimensions(file);
-      }
+      // Calculate image dimensions (optional - can be expanded)
+      const dimensions = await getImageDimensions(file);
       
-      // Guardar metadatos en la base de datos
+      // Create a public URL for the uploaded file
+      const publicUrl = data?.path
+        ? supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path).data.publicUrl
+        : "";
+        
+      // Create the media item in the database
       const { data: mediaData, error: mediaError } = await supabase
-        .from('media')
+        .from("media")
         .insert({
           property_id: propertyId,
-          file_name: fileName,
-          file_type: fileType,
-          url: url,
-          thumbnail_url: thumbnailUrl,
+          file_name: file.name,
+          file_type: file.type,
+          url: publicUrl,
           size: file.size,
-          dimensions: dimensions,
+          formatted_size: formatFileSize(file.size),
+          dimensions: dimensions ? JSON.stringify(dimensions) : null,
           created_at: new Date().toISOString(),
-          metadata: { originalName: file.name }
         })
         .select()
         .single();
       
-      if (mediaError) throw mediaError;
+      if (mediaError) {
+        console.error("Error saving media metadata:", mediaError);
+        continue;
+      }
       
-      // Convertir de snake_case a camelCase
-      const mediaItem: MediaItem = {
+      // Add to results
+      results.push({
         id: mediaData.id,
         propertyId: mediaData.property_id,
         fileName: mediaData.file_name,
@@ -121,150 +152,241 @@ export const uploadMediaFiles = async (propertyId: string, files: File[]): Promi
         url: mediaData.url,
         thumbnailUrl: mediaData.thumbnail_url,
         size: mediaData.size,
-        dimensions: mediaData.dimensions,
+        formattedSize: mediaData.formatted_size || formatFileSize(mediaData.size),
+        dimensions: mediaData.dimensions ? JSON.parse(mediaData.dimensions) : undefined,
         createdAt: mediaData.created_at,
-        metadata: mediaData.metadata
-      };
+        metadata: mediaData.metadata,
+      });
       
-      results.push(mediaItem);
-    } catch (error) {
-      console.error('Error subiendo archivo:', error);
-      // Continuar con el siguiente archivo en caso de error
+      // Report progress
+      if (onProgress) {
+        onProgress(((i + 1) / files.length) * 100);
+      }
     }
-  }
-  
-  return results;
+    
+    return results;
+  }, [] as MediaItem[]);
 };
 
 /**
- * Obtiene todos los medios asociados a una propiedad con paginación
+ * Get media items for a property
+ * @param propertyId ID of the property
+ * @param options Pagination options
+ * @returns Media gallery with pagination
  */
 export const getMediaByProperty = async (
-  propertyId: string, 
-  options: PaginationOptions = {}
+  propertyId: string,
+  options: PaginationOptions = {},
 ): Promise<MediaGallery> => {
   const { page = 1, limit = 20 } = options;
   const offset = (page - 1) * limit;
-  
-  // Obtener total de elementos
-  const { count } = await supabase
-    .from('media')
-    .select('id', { count: 'exact', head: true })
-    .eq('property_id', propertyId);
-  
-  // Obtener elementos para esta página
-  const { data, error } = await supabase
-    .from('media')
-    .select('*')
-    .eq('property_id', propertyId)
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1);
-  
-  if (error) throw error;
-  
-  // Convertir de snake_case a camelCase
-  const items: MediaItem[] = data.map(item => ({
-    id: item.id,
-    propertyId: item.property_id,
-    fileName: item.file_name,
-    fileType: item.file_type,
-    url: item.url,
-    thumbnailUrl: item.thumbnail_url,
-    size: item.size,
-    dimensions: item.dimensions,
-    createdAt: item.created_at,
-    metadata: item.metadata
-  }));
-  
-  return {
-    items,
-    totalCount: count || 0,
-    hasMore: (count || 0) > offset + items.length
-  };
+
+  try {
+    // Get total count
+    const { count } = await supabase
+      .from("media")
+      .select("id", { count: "exact", head: true })
+      .eq("property_id", propertyId);
+
+    // Get items for this page
+    const { data, error } = await supabase
+      .from("media")
+      .select("*")
+      .eq("property_id", propertyId)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) throw error;
+
+    // Convert to MediaItem model
+    const items: MediaItem[] = data.map((item) => ({
+      id: item.id,
+      propertyId: item.property_id,
+      fileName: item.file_name,
+      fileType: item.file_type,
+      url: item.url,
+      thumbnailUrl: item.thumbnail_url,
+      size: item.size,
+      formattedSize: item.formatted_size || formatFileSize(item.size),
+      dimensions: item.dimensions ? JSON.parse(item.dimensions) : undefined,
+      createdAt: item.created_at,
+      metadata: item.metadata,
+    }));
+
+    return {
+      items,
+      totalCount: count || 0,
+      hasMore: (count || 0) > offset + items.length,
+    };
+  } catch (error) {
+    console.error("Error fetching media:", error);
+    return { items: [], totalCount: 0, hasMore: false };
+  }
 };
 
 /**
- * Elimina un medio específico
+ * Get a single media item by ID
+ * @param mediaId The ID of the media item to retrieve
+ * @returns The media item or null if not found
  */
-export const deleteMedia = async (mediaId: string): Promise<void> => {
-  const { data, error } = await supabase
-    .from('media')
-    .select('file_name')
-    .eq('id', mediaId)
-    .single();
-  
-  if (error) throw error;
-  
-  // Eliminar archivo de Storage
-  const { error: storageError } = await supabase.storage
-    .from(BUCKET_NAME)
-    .remove([data.file_name]);
-  
-  if (storageError) throw storageError;
-  
-  // Eliminar entrada de la base de datos
-  const { error: dbError } = await supabase
-    .from('media')
-    .delete()
-    .eq('id', mediaId);
-  
-  if (dbError) throw dbError;
+export const getMediaById = async (mediaId: string): Promise<MediaItem | null> => {
+  return tryCatch(async () => {
+    const { data, error } = await supabase
+      .from("media")
+      .select("*")
+      .eq("id", mediaId)
+      .single();
+    
+    if (error) throw error;
+    if (!data) return null;
+    
+    return {
+      id: data.id,
+      propertyId: data.property_id,
+      fileName: data.file_name,
+      fileType: data.file_type,
+      url: data.url,
+      thumbnailUrl: data.thumbnail_url,
+      size: data.size,
+      formattedSize: data.formatted_size || formatFileSize(data.size),
+      dimensions: data.dimensions ? JSON.parse(data.dimensions) : undefined,
+      createdAt: data.created_at,
+      metadata: data.metadata,
+    };
+  }, null);
 };
 
 /**
- * Optimiza una imagen para renderizar con dimensiones específicas
+ * Delete a media item
+ * @param mediaId The ID of the media item to delete
+ * @returns True if successful, false otherwise
  */
-export const optimizeImage = async (imageUrl: string, dimensions?: Dimensions): Promise<string> => {
-  // Si no hay dimensiones, devolver URL original
-  if (!dimensions) return imageUrl;
-  
-  // Supabase tiene transformaciones de imágenes incorporadas
-  // Format: [URL]?width=300&height=300&resize=contain
-  const { width, height } = dimensions;
-  return `${imageUrl}?width=${width}&height=${height}&resize=contain`;
+export const deleteMedia = async (mediaId: string): Promise<boolean> => {
+  return tryCatch(async () => {
+    // First get the file path
+    const { data, error } = await supabase
+      .from("media")
+      .select("url")
+      .eq("id", mediaId)
+      .single();
+    
+    if (error) throw error;
+    
+    // Extract the file path from the URL
+    const url = data.url;
+    const path = url.split('/').slice(-2).join('/'); // Get last 2 segments
+    
+    // Delete from storage
+    const { error: storageError } = await supabase.storage
+      .from(BUCKET_NAME)
+      .remove([path]);
+    
+    if (storageError) {
+      console.warn("Could not delete file from storage:", storageError);
+      // Continue anyway to delete the database entry
+    }
+    
+    // Delete from database
+    const { error: dbError } = await supabase
+      .from("media")
+      .delete()
+      .eq("id", mediaId);
+    
+    if (dbError) throw dbError;
+    
+    return true;
+  }, false);
 };
 
 /**
- * Genera un thumbnail para un video
- * Nota: Esta es una implementación parcial, en producción se implementaría
- * un servicio de procesamiento de video separado
+ * Helper to get image dimensions
+ * @param file The image file
+ * @returns Promise resolving to dimensions object or undefined
  */
-export const generateVideoThumbnail = async (videoUrl: string): Promise<string> => {
-  // En una implementación real, esto enviaría un trabajo a un procesador de video
-  // Por ahora, devolvemos una URL simulada al thumbnail
-  const thumbnailUrl = videoUrl.replace(/\.\w+$/, '_thumbnail.jpg');
-  return thumbnailUrl;
-};
-
-/**
- * Obtiene dimensiones de una imagen a partir del archivo
- */
-const getImageDimensions = async (file: File): Promise<Dimensions | undefined> => {
+const getImageDimensions = async (
+  file: File
+): Promise<{ width: number; height: number } | undefined> => {
   return new Promise((resolve) => {
+    if (!file.type.startsWith("image/")) {
+      resolve(undefined);
+      return;
+    }
+    
     const img = new Image();
     img.onload = () => {
       resolve({
         width: img.width,
-        height: img.height
+        height: img.height,
       });
-      URL.revokeObjectURL(img.src);
+      URL.revokeObjectURL(img.src); // Clean up
     };
+    
     img.onerror = () => {
       resolve(undefined);
-      URL.revokeObjectURL(img.src);
+      URL.revokeObjectURL(img.src); // Clean up
     };
+    
     img.src = URL.createObjectURL(file);
   });
 };
 
-// Exportar todas las funciones
+/**
+ * Optimize an image (dummy implementation - would connect to a real service)
+ * @param mediaId The ID of the media to optimize
+ * @returns True if successful, false otherwise
+ */
+export const optimizeImage = async (mediaId: string): Promise<boolean> => {
+  // This could connect to a real image optimization service
+  // For now, just a placeholder
+  return tryCatch(async () => {
+    const { data } = await supabase
+      .from("media")
+      .select("url")
+      .eq("id", mediaId)
+      .single();
+    
+    if (!data) return false;
+    
+    // Simulating optimization process
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Update record to indicate optimization
+    await supabase
+      .from("media")
+      .update({
+        metadata: { optimized: true, optimizedAt: new Date().toISOString() }
+      })
+      .eq("id", mediaId);
+    
+    return true;
+  }, false);
+};
+
+// Debounced version of optimize image for UI performance
+export const debouncedOptimizeImage = (() => {
+  const timeouts: Record<string, NodeJS.Timeout> = {};
+  
+  return (mediaId: string, delay = 500): void => {
+    if (timeouts[mediaId]) {
+      clearTimeout(timeouts[mediaId]);
+    }
+    
+    timeouts[mediaId] = setTimeout(() => {
+      optimizeImage(mediaId);
+      delete timeouts[mediaId];
+    }, delay);
+  };
+})();
+
+// Export service as a unified object
 const mediaService = {
   initMediaService,
   uploadMediaFiles,
   getMediaByProperty,
+  getMediaById,
   deleteMedia,
   optimizeImage,
-  generateVideoThumbnail
+  debouncedOptimizeImage
 };
 
-export default mediaService; 
+export default mediaService;

@@ -1,31 +1,64 @@
-import supabase from './supabase';
-import { v4 as uuidv4 } from 'uuid';
-import { PropertyDocument } from '../types/property';
+/**
+ * src/services/documentService.ts
+ * Service for managing property documents: uploads, retrieval, and deletion
+ */
 
-const BUCKET_NAME = 'property-documents';
-const CDN_URL = 'https://blxngmtmknkdmikaflen.supabase.co/storage/v1/object/public/';
+import supabase from "./supabase";
+import { v4 as uuidv4 } from "uuid";
+import { PropertyDocument } from "../types/property";
+import { tryCatch, formatFileSize } from "../utils";
+import { storageConfig, fileTypes } from "../config/environment";
 
-// Almacén temporal para documentos cuando no hay propertyId válido
+// Document bucket name
+const BUCKET_NAME = storageConfig.documentsBucket;
+
+// Temporary store for documents when there's no valid propertyId
 const tempDocumentsStore: Record<string, PropertyDocument> = {};
 
-// Asegurar que el bucket existe
-const ensureBucket = async () => {
-  const { data: buckets } = await supabase.storage.listBuckets();
-  if (!buckets?.find(bucket => bucket.name === BUCKET_NAME)) {
-    await supabase.storage.createBucket(BUCKET_NAME, {
-      public: true,
-      fileSizeLimit: 10 * 1024 * 1024, // 10MB límite
-    });
-  }
+/**
+ * Ensure storage bucket exists
+ */
+const ensureBucket = async (): Promise<void> => {
+  await tryCatch(async () => {
+    const { data: buckets } = await supabase.storage.listBuckets();
+    if (!buckets?.find((bucket) => bucket.name === BUCKET_NAME)) {
+      await supabase.storage.createBucket(BUCKET_NAME, {
+        public: true,
+        fileSizeLimit: storageConfig.documentSizeLimit,
+      });
+    }
+  }, undefined);
 };
 
-// Inicializar el servicio (llamar durante la inicialización de la app)
-export const initDocumentService = async () => {
+/**
+ * Initialize the document service (call during app initialization)
+ */
+export const initDocumentService = async (): Promise<void> => {
   await ensureBucket();
 };
 
 /**
- * Sube un documento y guarda sus metadatos
+ * Determine file type based on MIME type
+ * @param file The file to check
+ * @returns The determined file type
+ */
+const getFileType = (file: File): "pdf" | "doc" | "txt" | "other" => {
+  if (file.type === "application/pdf") {
+    return "pdf";
+  } else if (file.type.includes("word") || file.type.includes("doc")) {
+    return "doc";
+  } else if (file.type === "text/plain") {
+    return "txt";
+  }
+  return "other";
+};
+
+/**
+ * Uploads a document and saves its metadata
+ * @param propertyId The property ID to associate with the document
+ * @param file The file to upload
+ * @param documentData The document metadata
+ * @returns The created document object
  */
 export const uploadDocument = async (
   propertyId: string,
@@ -33,253 +66,303 @@ export const uploadDocument = async (
   documentData: {
     name: string;
     description?: string;
-    type: 'faq' | 'guide' | 'house_rules' | 'inventory' | 'other';
-  }
-): Promise<PropertyDocument> => {
+    type: "faq" | "guide" | "house_rules" | "inventory" | "other";
+  },
+): Promise<PropertyDocument | null> => {
   await ensureBucket();
   
-  try {
-    // Determinar tipo de archivo
-    let fileType: 'pdf' | 'doc' | 'txt' | 'other' = 'other';
-    if (file.type === 'application/pdf') {
-      fileType = 'pdf';
-    } else if (file.type.includes('word') || file.type.includes('doc')) {
-      fileType = 'doc';
-    } else if (file.type === 'text/plain') {
-      fileType = 'txt';
-    }
-    
-    // Generar un nombre único para el archivo
-    const fileExt = file.name.split('.').pop();
+  // Handle temporary properties
+  if (propertyId === "temp") {
+    return await handleTempPropertyDocument(file, documentData);
+  }
+  
+  // For regular properties, upload to Supabase
+  return await tryCatch(async () => {
+    // Determine file type and generate unique name
+    const fileType = getFileType(file);
+    const fileExt = file.name.split(".").pop() || "";
     const docId = uuidv4();
-    
-    // Verificar si estamos trabajando con una propiedad temporal
-    if (propertyId === 'temp') {
-      // Para propiedades temporales, generamos una estructura de documento sin subir el archivo
-      const reader = new FileReader();
-      
-      return new Promise((resolve, reject) => {
-        reader.onload = () => {
-          try {
-            const result = reader.result as string;
-            const tempDocument: PropertyDocument = {
-              id: docId,
-              property_id: 'temp',
-              name: documentData.name,
-              description: documentData.description || '',
-              type: documentData.type,
-              file_url: result, // Guardamos el contenido como data URL
-              file_type: fileType,
-              uploaded_at: new Date().toISOString()
-            };
-            
-            // Almacenar en la memoria temporal
-            tempDocumentsStore[docId] = tempDocument;
-            
-            resolve(tempDocument);
-          } catch (error) {
-            reject(error);
-          }
-        };
-        
-        reader.onerror = () => {
-          reject(new Error('Error al leer el archivo'));
-        };
-        
-        reader.readAsDataURL(file);
-      });
-    }
-    
-    // Para propiedades reales, continuamos con el proceso normal
     const fileName = `${propertyId}/${docId}.${fileExt}`;
     
-    // Subir el archivo a Supabase Storage
-    const { data: _, error } = await supabase.storage
+    // Upload file to Supabase Storage
+    const { error } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(fileName, file, { 
-        cacheControl: '3600',
-        upsert: false 
+        cacheControl: "3600",
+        upsert: false,
       });
     
     if (error) throw error;
     
-    // Crear URL pública
-    const url = `${CDN_URL}${BUCKET_NAME}/${fileName}`;
+    // Get the public URL from the config
+    const storageUrl = supabase.storageUrl ?? "";
+    const url = `${storageUrl}${BUCKET_NAME}/${fileName}`;
     
-    // Guardar metadatos en la base de datos
+    // Save metadata to database
     const { data: docData, error: docError } = await supabase
-      .from('property_documents')
+      .from("property_documents")
       .insert({
         property_id: propertyId,
         name: documentData.name,
-        description: documentData.description || '',
+        description: documentData.description || "",
         type: documentData.type,
         file_url: url,
         file_type: fileType,
         file_name: fileName,
-        uploaded_at: new Date().toISOString()
+        size: file.size,
+        formatted_size: formatFileSize(file.size),
+        uploaded_at: new Date().toISOString(),
       })
       .select()
       .single();
     
     if (docError) throw docError;
     
-    // Convertir de snake_case a camelCase si es necesario
-    return docData as unknown as PropertyDocument;
-  } catch (error) {
-    console.error('Error subiendo documento:', error);
-    throw error;
-  }
+    return docData as PropertyDocument;
+  }, null);
 };
 
 /**
- * Obtiene todos los documentos de una propiedad
+ * Handle document for temporary property
+ * @param file The file to process
+ * @param documentData The document metadata
+ * @returns The temporary document object
  */
-export const getDocumentsByProperty = async (propertyId: string): Promise<PropertyDocument[]> => {
-  // Si es una propiedad temporal, devolvemos los documentos del almacén temporal
-  if (propertyId === 'temp') {
-    return Object.values(tempDocumentsStore).filter(doc => doc.property_id === 'temp');
+const handleTempPropertyDocument = async (
+  file: File,
+  documentData: {
+    name: string;
+    description?: string;
+    type: "faq" | "guide" | "house_rules" | "inventory" | "other";
+  }
+): Promise<PropertyDocument | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = () => {
+      try {
+        const result = reader.result as string;
+        const fileSize = file.size;
+        const tempDocument: PropertyDocument = {
+          id: uuidv4(),
+          property_id: "temp",
+          name: documentData.name,
+          description: documentData.description || "",
+          type: documentData.type,
+          file_url: result, // Store content as data URL
+          file_type: getFileType(file),
+          size: fileSize,
+          formatted_size: formatFileSize(fileSize),
+          uploaded_at: new Date().toISOString(),
+        };
+        
+        // Store in temporary memory
+        tempDocumentsStore[tempDocument.id] = tempDocument;
+        
+        resolve(tempDocument);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    
+    reader.onerror = () => {
+      reject(new Error("Error reading file"));
+    };
+    
+    reader.readAsDataURL(file);
+  });
+};
+
+/**
+ * Gets all documents for a property
+ * @param propertyId The property ID to get documents for
+ * @returns Array of property documents
+ */
+export const getDocumentsByProperty = async (
+  propertyId: string,
+): Promise<PropertyDocument[]> => {
+  // If it's a temporary property, return documents from temporary store
+  if (propertyId === "temp") {
+    return Object.values(tempDocumentsStore).filter(
+      (doc) => doc.property_id === "temp",
+    );
   }
   
-  try {
+  return tryCatch(async () => {
     const { data, error } = await supabase
-      .from('property_documents')
-      .select('*')
-      .eq('property_id', propertyId)
-      .order('uploaded_at', { ascending: false });
+      .from("property_documents")
+      .select("*")
+      .eq("property_id", propertyId)
+      .order("uploaded_at", { ascending: false });
     
     if (error) throw error;
     
-    return data as unknown as PropertyDocument[];
-  } catch (error) {
-    console.error('Error cargando documentos:', error);
-    throw error;
-  }
+    return data.map(doc => ({
+      ...doc,
+      formatted_size: doc.formatted_size || formatFileSize(doc.size || 0)
+    })) as PropertyDocument[];
+  }, [] as PropertyDocument[]);
 };
 
 /**
- * Elimina un documento
+ * Gets a document by ID
+ * @param documentId The document ID to retrieve
+ * @returns The document or null if not found
+ */
+export const getDocumentById = async (
+  documentId: string
+): Promise<PropertyDocument | null> => {
+  // Check if it's in the temporary store
+  if (tempDocumentsStore[documentId]) {
+    return tempDocumentsStore[documentId];
+  }
+  
+  return tryCatch(async () => {
+    const { data, error } = await supabase
+      .from("property_documents")
+      .select("*")
+      .eq("id", documentId)
+      .single();
+    
+    if (error) throw error;
+    if (!data) return null;
+    
+    return {
+      ...data,
+      formatted_size: data.formatted_size || formatFileSize(data.size || 0)
+    } as PropertyDocument;
+  }, null);
+};
+
+/**
+ * Deletes a document
+ * @param documentId The document ID to delete
  */
 export const deleteDocument = async (documentId: string): Promise<void> => {
-  // Verificar si es un documento temporal
+  // Check if it's a temporary document
   if (tempDocumentsStore[documentId]) {
     delete tempDocumentsStore[documentId];
     return;
   }
   
-  try {
+  return tryCatch(async () => {
     const { data, error } = await supabase
-      .from('property_documents')
-      .select('file_name')
-      .eq('id', documentId)
+      .from("property_documents")
+      .select("file_name")
+      .eq("id", documentId)
       .single();
     
     if (error) throw error;
     
-    // Eliminar archivo de Storage
+    // Delete file from Storage
     const { error: storageError } = await supabase.storage
       .from(BUCKET_NAME)
       .remove([data.file_name]);
     
     if (storageError) throw storageError;
     
-    // Eliminar entrada de la base de datos
+    // Delete entry from database
     const { error: dbError } = await supabase
-      .from('property_documents')
+      .from("property_documents")
       .delete()
-      .eq('id', documentId);
+      .eq("id", documentId);
     
     if (dbError) throw dbError;
-  } catch (error) {
-    console.error('Error eliminando documento:', error);
-    throw error;
-  }
+  }, undefined);
 };
 
 /**
- * Actualiza los IDs de propiedad de los documentos temporales cuando se guarda la propiedad
+ * Updates property ID of temporary documents when the property is saved
+ * @param newPropertyId The new property ID to update documents with
+ * @returns Array of updated documents
  */
-export const updateTempDocumentsPropertyId = async (newPropertyId: string): Promise<PropertyDocument[]> => {
+export const updateTempDocumentsPropertyId = async (
+  newPropertyId: string,
+): Promise<PropertyDocument[]> => {
   const tempDocs = Object.values(tempDocumentsStore).filter(
-    doc => doc.property_id === 'temp'
+    (doc) => doc.property_id === "temp",
   );
-  
+
   if (tempDocs.length === 0) {
     return [];
   }
   
   const updatedDocs: PropertyDocument[] = [];
-  
+
   for (const doc of tempDocs) {
-    try {
-      // Crear un nuevo documento para la propiedad
+    await tryCatch(async () => {
+      // Create a new document for the property
       const fileData = doc.file;
       if (!fileData) {
-        continue;
+        return;
       }
       
-      // Generar nombre de archivo seguro
-      const fileExt = doc.name.split('.').pop() || '';
+      // Generate safe file name
+      const fileExt = doc.name.split(".").pop() || "";
       const fileName = `${doc.type.toLowerCase()}_${newPropertyId}_${Date.now()}.${fileExt}`;
-      
-      // Determinar el tipo de contenido para la subida
-      let contentType = 'application/pdf';
-      if (typeof doc.file_type === 'string' && doc.file_type.includes('image')) {
+
+      // Determine content type for upload
+      let contentType = "application/pdf";
+      if (
+        typeof doc.file_type === "string" &&
+        doc.file_type.includes("image")
+      ) {
         contentType = doc.file_type;
       }
-      
-      // Subir a Supabase Storage
+
+      // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('property-documents')
+        .from(BUCKET_NAME)
         .upload(`${newPropertyId}/${fileName}`, fileData, {
-          cacheControl: '3600',
+          cacheControl: "3600",
           upsert: false,
-          contentType
+          contentType,
         });
       
       if (uploadError) {
-        throw new Error(`Error al subir archivo: ${uploadError.message}`);
+        throw new Error(`Error uploading file: ${uploadError.message}`);
       }
       
-      // Guardar metadatos en la base de datos
+      // Save metadata to database
       const { data: savedDoc, error: dbError } = await supabase
-        .from('property_documents')
+        .from("property_documents")
         .insert({
           property_id: newPropertyId,
           name: doc.name,
           file_type: doc.file_type,
-          file_path: uploadData?.path || '',
-          description: doc.description || '',
-          type: doc.type, // Use el campo type existente en vez de document_type
+          file_path: uploadData?.path || "",
+          description: doc.description || "",
+          type: doc.type,
+          size: doc.size || 0,
+          formatted_size: doc.formatted_size || formatFileSize(doc.size || 0),
           uploaded_at: new Date().toISOString(),
         })
         .select()
         .single();
       
       if (dbError) {
-        throw new Error(`Error al guardar metadatos: ${dbError.message}`);
+        throw new Error(`Error saving metadata: ${dbError.message}`);
       }
       
-      // Agregar a la lista de documentos actualizados
+      // Add to list of updated documents
       updatedDocs.push(savedDoc);
       
-      // Eliminar del almacén temporal
+      // Remove from temporary store
       delete tempDocumentsStore[doc.id];
-    } catch {
-      // Se mantiene un error silencioso para permitir continuar con otros documentos
-    }
+    }, null);
   }
   
   return updatedDocs;
 };
 
-// Exportar todas las funciones
+// Export service as a unified object
 const documentService = {
   initDocumentService,
   uploadDocument,
   getDocumentsByProperty,
+  getDocumentById,
   deleteDocument,
-  updateTempDocumentsPropertyId
+  updateTempDocumentsPropertyId,
 };
 
 export default documentService; 

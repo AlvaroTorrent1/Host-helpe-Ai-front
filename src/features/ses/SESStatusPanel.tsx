@@ -1,79 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 
 interface SESSubmission {
   id: string;
   property_name: string;
   guest_name: string;
   check_in_date: string;
-  status: 'pending' | 'submitted' | 'approved' | 'error';
+  status: "pending" | "submitted" | "approved" | "error";
   submission_date?: string;
   confirmation_code?: string;
   error_message?: string;
 }
 
 const SESStatusPanel: React.FC = () => {
+  const { t } = useLanguage();
+  
   // Mock data para demostración
   const [submissions] = useState<SESSubmission[]>([
     {
-      id: '1',
-      property_name: 'Apartamento Centro',
-      guest_name: 'Carlos Rodríguez',
-      check_in_date: '2025-04-15',
-      status: 'approved',
-      submission_date: '2025-04-12T10:30:00Z',
-      confirmation_code: 'SES-2025-04120001'
+      id: "1",
+      property_name: t("mockData.properties.apartment.name"),
+      guest_name: t("mockData.guests.guest1"),
+      check_in_date: "2025-04-15",
+      status: "approved",
+      submission_date: "2025-04-12T10:30:00Z",
+      confirmation_code: "SES-2025-04120001",
     },
     {
-      id: '2',
-      property_name: 'Casa de Playa',
-      guest_name: 'Laura Martínez',
-      check_in_date: '2025-04-05',
-      status: 'pending'
+      id: "2",
+      property_name: t("mockData.properties.beach.name"),
+      guest_name: t("mockData.guests.guest2"),
+      check_in_date: "2025-04-05",
+      status: "pending",
     },
     {
-      id: '3',
-      property_name: 'Apartamento Centro',
-      guest_name: 'Miguel Fernández',
-      check_in_date: '2025-04-10',
-      status: 'error',
-      submission_date: '2025-04-07T14:22:00Z',
-      error_message: 'Formato de documento inválido'
+      id: "3",
+      property_name: t("mockData.properties.apartment.name"),
+      guest_name: "Miguel Fernández",
+      check_in_date: "2025-04-10",
+      status: "error",
+      submission_date: "2025-04-07T14:22:00Z",
+      error_message: "Error en el formato del documento",
     },
     {
-      id: '4',
-      property_name: 'Casa de Playa',
-      guest_name: 'Ana López',
-      check_in_date: '2025-04-18',
-      status: 'submitted',
-      submission_date: '2025-04-15T09:45:00Z'
-    }
+      id: "4",
+      property_name: t("mockData.properties.beach.name"),
+      guest_name: "Ana López",
+      check_in_date: "2025-04-18",
+      status: "submitted",
+      submission_date: "2025-04-15T09:45:00Z",
+    },
   ]);
-  
+
   // Función para mostrar el estado de manera amigable
   const renderStatus = (status: string) => {
     switch (status) {
-      case 'approved':
+      case "approved":
         return (
           <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-            Aprobado
+            {t("dashboard.ses.status.approved")}
           </span>
         );
-      case 'submitted':
+      case "submitted":
         return (
           <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-            Enviado
+            {t("dashboard.ses.status.submitted")}
           </span>
         );
-      case 'pending':
+      case "pending":
         return (
           <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
-            Pendiente
+            {t("dashboard.ses.status.pending")}
           </span>
         );
-      case 'error':
+      case "error":
         return (
           <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
-            Error
+            {t("dashboard.ses.status.error")}
           </span>
         );
       default:
@@ -82,90 +85,121 @@ const SESStatusPanel: React.FC = () => {
   };
 
   const handleRetry = (id: string) => {
-    alert(`Retrying submission with ID: ${id}`);
+    alert(t("dashboard.ses.statusPanel.retrySuccess"));
   };
 
   const handleGenerateLink = (id: string) => {
-    alert(`Generating link for guest registration: ${id}`);
+    alert(t("dashboard.ses.statusPanel.linkGenerated"));
   };
+
+  // Contador de registros pendientes
+  const pendingCount = submissions.filter(s => s.status === "pending" || s.status === "error").length;
+  // Tasa de aprobación
+  const approvedCount = submissions.filter(s => s.status === "approved").length;
+  const submittedCount = submissions.filter(s => s.status !== "pending").length;
+  const approvalRate = submittedCount > 0 ? Math.round((approvedCount / submittedCount) * 100) : 0;
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Registro de Viajeros (SES)</h2>
-        <button 
-          className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-md transition duration-150"
-        >
-          Actualizar
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">
+        {t("dashboard.ses.statusPanel.title")}
+      </h2>
+
+      <div className="flex justify-between mb-4">
+        <div>
+          <span className="text-gray-700">{t("dashboard.ses.statusPanel.pending")}</span>
+          <span className="ml-2 text-xl font-semibold">{pendingCount}</span>
+        </div>
+        <div>
+          <span className="text-gray-700">{t("dashboard.ses.statusPanel.approvalRate")}</span>
+          <span className="ml-2 text-xl font-semibold">{approvalRate}%</span>
+        </div>
+      </div>
+
+      <div className="mb-4 flex space-x-2">
+        <button className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+          {t("dashboard.ses.statusPanel.all")}
+        </button>
+        <button className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+          {t("dashboard.ses.status.pending")}
+        </button>
+        <button className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+          {t("dashboard.ses.status.approved")}
+        </button>
+        <button className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+          {t("dashboard.ses.status.error")}
         </button>
       </div>
-      
+
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full">
+          <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Propiedad
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.property")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Huésped
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.guest")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha Check-in
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.checkInDate")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Estado
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.status")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fecha Envío
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.submissionDate")}
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Acciones
+              <th className="text-left font-medium text-gray-500 uppercase tracking-wider py-3">
+                {t("dashboard.ses.statusPanel.actions")}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {submissions.map((submission) => (
-              <tr key={submission.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+          <tbody>
+            {submissions.map((submission, index) => (
+              <tr 
+                key={submission.id} 
+                className={index % 2 === 0 ? "bg-white border-b border-gray-100" : "bg-gray-50 border-b border-gray-100"}
+              >
+                <td className="py-4 pr-4 text-sm text-gray-900 text-left">
                   {submission.property_name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="py-4 pr-4 text-sm text-gray-900 text-left">
                   {submission.guest_name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="py-4 pr-4 text-sm text-gray-500 text-left">
                   {new Date(submission.check_in_date).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="py-4 pr-4 text-left">
                   {renderStatus(submission.status)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {submission.submission_date 
-                    ? new Date(submission.submission_date).toLocaleString() 
-                    : '—'}
+                <td className="py-4 pr-4 text-sm text-gray-500 text-left">
+                  {submission.submission_date
+                    ? new Date(submission.submission_date).toLocaleString()
+                    : "—"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {submission.status === 'error' && (
+                <td className="py-4 text-sm text-gray-500 text-left">
+                  {submission.status === "error" && (
                     <button
                       onClick={() => handleRetry(submission.id)}
                       className="text-primary-600 hover:text-primary-900 mr-2"
                     >
-                      Reintentar
+                      {t("dashboard.ses.statusPanel.retry")}
                     </button>
                   )}
-                  
-                  {submission.status === 'pending' && (
+
+                  {submission.status === "pending" && (
                     <button
                       onClick={() => handleGenerateLink(submission.id)}
                       className="text-primary-600 hover:text-primary-900"
                     >
-                      Generar enlace
+                      {t("dashboard.ses.statusPanel.generateLink")}
                     </button>
                   )}
-                  
+
                   {submission.confirmation_code && (
                     <span className="text-xs text-gray-500 block mt-1">
-                      Ref: {submission.confirmation_code}
+                      {t("common.referenceCode")}: {submission.confirmation_code}
                     </span>
                   )}
                 </td>
@@ -178,4 +212,4 @@ const SESStatusPanel: React.FC = () => {
   );
 };
 
-export default SESStatusPanel; 
+export default SESStatusPanel;

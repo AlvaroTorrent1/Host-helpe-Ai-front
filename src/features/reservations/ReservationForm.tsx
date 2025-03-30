@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Reservation, ReservationCreateData, Guest, ReservationStatus } from '../../types/reservation';
-import { Property } from '../../types/property';
+import React, { useState, useEffect } from "react";
+import {
+  Reservation,
+  ReservationCreateData,
+  Guest,
+  ReservationStatus,
+} from "../../types/reservation";
+import { Property } from "../../types/property";
 
 interface ReservationFormProps {
   reservation?: Reservation;
@@ -15,51 +20,57 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   properties,
   onSubmit,
   onCancel,
-  isSubmitting
+  isSubmitting,
 }) => {
   // Estado para los datos del formulario
   const [formData, setFormData] = useState<ReservationCreateData>({
-    propertyId: '',
+    propertyId: "",
     mainGuest: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      documentType: 'dni',
-      documentNumber: '',
-      birthDate: '',
-      nationality: 'ES'
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      documentType: "dni",
+      documentNumber: "",
+      birthDate: "",
+      nationality: "ES",
     },
     guests: [],
-    mainGuestId: '',
-    checkInDate: '',
-    checkOutDate: '',
-    status: 'pending',
+    mainGuestId: "",
+    checkInDate: "",
+    checkOutDate: "",
+    status: "pending",
     totalGuests: 1,
-    bookingSource: 'direct'
+    bookingSource: "direct",
   });
 
   // Estado para manejar errores de validación
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   // Estado para manejar huéspedes adicionales
-  const [additionalGuests, setAdditionalGuests] = useState<Omit<Guest, 'id'>[]>([]);
+  const [additionalGuests, setAdditionalGuests] = useState<Omit<Guest, "id">[]>(
+    [],
+  );
 
   // Cargar datos si estamos en modo edición
   useEffect(() => {
     if (reservation) {
-      const mainGuest = reservation.guests.find(g => g.id === reservation.mainGuestId);
-      const otherGuests = reservation.guests.filter(g => g.id !== reservation.mainGuestId).map(g => ({
-        firstName: g.firstName,
-        lastName: g.lastName,
-        email: g.email,
-        phone: g.phone || '',
-        documentType: g.documentType,
-        documentNumber: g.documentNumber,
-        birthDate: g.birthDate,
-        nationality: g.nationality
-      }));
-      
+      const mainGuest = reservation.guests.find(
+        (g) => g.id === reservation.mainGuestId,
+      );
+      const otherGuests = reservation.guests
+        .filter((g) => g.id !== reservation.mainGuestId)
+        .map((g) => ({
+          firstName: g.firstName,
+          lastName: g.lastName,
+          email: g.email,
+          phone: g.phone || "",
+          documentType: g.documentType,
+          documentNumber: g.documentNumber,
+          birthDate: g.birthDate,
+          nationality: g.nationality,
+        }));
+
       if (mainGuest) {
         setFormData({
           ...reservation,
@@ -67,43 +78,47 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             firstName: mainGuest.firstName,
             lastName: mainGuest.lastName,
             email: mainGuest.email,
-            phone: mainGuest.phone || '',
+            phone: mainGuest.phone || "",
             documentType: mainGuest.documentType,
             documentNumber: mainGuest.documentNumber,
             birthDate: mainGuest.birthDate,
-            nationality: mainGuest.nationality
+            nationality: mainGuest.nationality,
           },
-          additionalGuests: otherGuests
+          additionalGuests: otherGuests,
         });
-        
+
         setAdditionalGuests(otherGuests);
       }
     }
   }, [reservation]);
 
   // Manejar cambios en el formulario principal
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    
-    if (name.startsWith('mainGuest.')) {
-      const field = name.replace('mainGuest.', '');
+
+    if (name.startsWith("mainGuest.")) {
+      const field = name.replace("mainGuest.", "");
       setFormData({
         ...formData,
         mainGuest: {
           ...formData.mainGuest,
-          [field]: value
-        }
+          [field]: value,
+        },
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
-    
+
     // Limpiar error si se corrige
     if (errors[name]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
@@ -112,11 +127,15 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   };
 
   // Manejar cambios en los huéspedes adicionales
-  const handleGuestChange = (index: number, field: keyof Guest, value: string) => {
+  const handleGuestChange = (
+    index: number,
+    field: keyof Guest,
+    value: string,
+  ) => {
     const updatedGuests = [...additionalGuests];
     updatedGuests[index] = {
       ...updatedGuests[index],
-      [field]: value
+      [field]: value,
     };
     setAdditionalGuests(updatedGuests);
   };
@@ -126,21 +145,21 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
     setAdditionalGuests([
       ...additionalGuests,
       {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        documentType: 'dni',
-        documentNumber: '',
-        birthDate: '',
-        nationality: 'ES'
-      }
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        documentType: "dni",
+        documentNumber: "",
+        birthDate: "",
+        nationality: "ES",
+      },
     ]);
-    
+
     // Actualizar el total de huéspedes
     setFormData({
       ...formData,
-      totalGuests: formData.totalGuests + 1
+      totalGuests: formData.totalGuests + 1,
     });
   };
 
@@ -149,82 +168,91 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
     const updatedGuests = [...additionalGuests];
     updatedGuests.splice(index, 1);
     setAdditionalGuests(updatedGuests);
-    
+
     // Actualizar el total de huéspedes
     setFormData({
       ...formData,
-      totalGuests: formData.totalGuests - 1
+      totalGuests: formData.totalGuests - 1,
     });
   };
 
   // Validar el formulario
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     // Validar propiedad
     if (!formData.propertyId) {
-      newErrors['propertyId'] = 'Debes seleccionar una propiedad';
+      newErrors["propertyId"] = "Debes seleccionar una propiedad";
     }
-    
+
     // Validar fechas
     if (!formData.checkInDate) {
-      newErrors['checkInDate'] = 'La fecha de entrada es obligatoria';
+      newErrors["checkInDate"] = "La fecha de entrada es obligatoria";
     }
-    
+
     if (!formData.checkOutDate) {
-      newErrors['checkOutDate'] = 'La fecha de salida es obligatoria';
+      newErrors["checkOutDate"] = "La fecha de salida es obligatoria";
     }
-    
-    if (formData.checkInDate && formData.checkOutDate && formData.checkInDate >= formData.checkOutDate) {
-      newErrors['checkOutDate'] = 'La fecha de salida debe ser posterior a la de entrada';
+
+    if (
+      formData.checkInDate &&
+      formData.checkOutDate &&
+      formData.checkInDate >= formData.checkOutDate
+    ) {
+      newErrors["checkOutDate"] =
+        "La fecha de salida debe ser posterior a la de entrada";
     }
-    
+
     // Validar huésped principal
     if (!formData.mainGuest.firstName.trim()) {
-      newErrors['mainGuest.firstName'] = 'El nombre es obligatorio';
+      newErrors["mainGuest.firstName"] = "El nombre es obligatorio";
     }
-    
+
     if (!formData.mainGuest.lastName.trim()) {
-      newErrors['mainGuest.lastName'] = 'El apellido es obligatorio';
+      newErrors["mainGuest.lastName"] = "El apellido es obligatorio";
     }
-    
+
     if (!formData.mainGuest.email.trim()) {
-      newErrors['mainGuest.email'] = 'El email es obligatorio';
+      newErrors["mainGuest.email"] = "El email es obligatorio";
     } else if (!/\S+@\S+\.\S+/.test(formData.mainGuest.email)) {
-      newErrors['mainGuest.email'] = 'El email no es válido';
+      newErrors["mainGuest.email"] = "El email no es válido";
     }
-    
+
     if (!formData.mainGuest.documentNumber.trim()) {
-      newErrors['mainGuest.documentNumber'] = 'El número de documento es obligatorio';
+      newErrors["mainGuest.documentNumber"] =
+        "El número de documento es obligatorio";
     }
-    
+
     if (!formData.mainGuest.birthDate) {
-      newErrors['mainGuest.birthDate'] = 'La fecha de nacimiento es obligatoria';
+      newErrors["mainGuest.birthDate"] =
+        "La fecha de nacimiento es obligatoria";
     }
-    
+
     if (!formData.mainGuest.nationality.trim()) {
-      newErrors['mainGuest.nationality'] = 'La nacionalidad es obligatoria';
+      newErrors["mainGuest.nationality"] = "La nacionalidad es obligatoria";
     }
-    
+
     // Validar huéspedes adicionales
     additionalGuests.forEach((guest, index) => {
       if (!guest.firstName.trim()) {
-        newErrors[`guest[${index}].firstName`] = 'El nombre es obligatorio';
+        newErrors[`guest[${index}].firstName`] = "El nombre es obligatorio";
       }
-      
+
       if (!guest.lastName.trim()) {
-        newErrors[`guest[${index}].lastName`] = 'El apellido es obligatorio';
+        newErrors[`guest[${index}].lastName`] = "El apellido es obligatorio";
       }
-      
+
       if (!guest.documentNumber.trim()) {
-        newErrors[`guest[${index}].documentNumber`] = 'El número de documento es obligatorio';
+        newErrors[`guest[${index}].documentNumber`] =
+          "El número de documento es obligatorio";
       }
-      
+
       if (!guest.birthDate) {
-        newErrors[`guest[${index}].birthDate`] = 'La fecha de nacimiento es obligatoria';
+        newErrors[`guest[${index}].birthDate`] =
+          "La fecha de nacimiento es obligatoria";
       }
     });
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -232,12 +260,12 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   // Manejar envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
       // Preparar datos para enviar
       onSubmit({
         ...formData,
-        additionalGuests: additionalGuests
+        additionalGuests: additionalGuests,
       });
     }
   };
@@ -249,18 +277,18 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
   // Opciones para el estado de la reserva
   const statusOptions: { value: ReservationStatus; label: string }[] = [
-    { value: 'pending', label: 'Pendiente' },
-    { value: 'confirmed', label: 'Confirmada' },
-    { value: 'cancelled', label: 'Cancelada' },
-    { value: 'completed', label: 'Completada' },
+    { value: "pending", label: "Pendiente" },
+    { value: "confirmed", label: "Confirmada" },
+    { value: "cancelled", label: "Cancelada" },
+    { value: "completed", label: "Completada" },
   ];
 
   // Opciones para el origen de la reserva
   const bookingSourceOptions = [
-    { value: 'direct', label: 'Directa' },
-    { value: 'airbnb', label: 'Airbnb' },
-    { value: 'booking', label: 'Booking.com' },
-    { value: 'other', label: 'Otro' },
+    { value: "direct", label: "Directa" },
+    { value: "airbnb", label: "Airbnb" },
+    { value: "booking", label: "Booking.com" },
+    { value: "other", label: "Otro" },
   ];
 
   return (
@@ -268,11 +296,16 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       <div className="space-y-6">
         {/* Sección: Información de la reserva */}
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Información de la reserva</h3>
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            Información de la reserva
+          </h3>
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             {/* Selección de propiedad */}
             <div className="sm:col-span-3">
-              <label htmlFor="propertyId" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="propertyId"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Propiedad *
               </label>
               <select
@@ -281,7 +314,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.propertyId}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('propertyId') ? 'border-red-300' : ''
+                  getError("propertyId") ? "border-red-300" : ""
                 }`}
               >
                 <option value="">Selecciona una propiedad</option>
@@ -291,14 +324,19 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   </option>
                 ))}
               </select>
-              {getError('propertyId') && (
-                <p className="mt-2 text-sm text-red-600">{getError('propertyId')}</p>
+              {getError("propertyId") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("propertyId")}
+                </p>
               )}
             </div>
 
             {/* Estado de la reserva */}
             <div className="sm:col-span-3">
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Estado
               </label>
               <select
@@ -308,7 +346,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               >
-                {statusOptions.map(option => (
+                {statusOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -318,7 +356,10 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
             {/* Fecha de entrada */}
             <div className="sm:col-span-3">
-              <label htmlFor="checkInDate" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="checkInDate"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Fecha de entrada *
               </label>
               <input
@@ -328,17 +369,22 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.checkInDate}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('checkInDate') ? 'border-red-300' : ''
+                  getError("checkInDate") ? "border-red-300" : ""
                 }`}
               />
-              {getError('checkInDate') && (
-                <p className="mt-2 text-sm text-red-600">{getError('checkInDate')}</p>
+              {getError("checkInDate") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("checkInDate")}
+                </p>
               )}
             </div>
 
             {/* Fecha de salida */}
             <div className="sm:col-span-3">
-              <label htmlFor="checkOutDate" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="checkOutDate"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Fecha de salida *
               </label>
               <input
@@ -348,27 +394,32 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.checkOutDate}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('checkOutDate') ? 'border-red-300' : ''
+                  getError("checkOutDate") ? "border-red-300" : ""
                 }`}
               />
-              {getError('checkOutDate') && (
-                <p className="mt-2 text-sm text-red-600">{getError('checkOutDate')}</p>
+              {getError("checkOutDate") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("checkOutDate")}
+                </p>
               )}
             </div>
 
             {/* Origen de la reserva */}
             <div className="sm:col-span-3">
-              <label htmlFor="bookingSource" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="bookingSource"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Origen de la reserva
               </label>
               <select
                 id="bookingSource"
                 name="bookingSource"
-                value={formData.bookingSource || 'direct'}
+                value={formData.bookingSource || "direct"}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               >
-                {bookingSourceOptions.map(option => (
+                {bookingSourceOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -377,9 +428,12 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             </div>
 
             {/* Referencia externa si no es directa */}
-            {formData.bookingSource && formData.bookingSource !== 'direct' && (
+            {formData.bookingSource && formData.bookingSource !== "direct" && (
               <div className="sm:col-span-3">
-                <label htmlFor="bookingSourceReference" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="bookingSourceReference"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Referencia
                 </label>
                 <input
@@ -387,9 +441,11 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   name="bookingSourceReference"
                   id="bookingSourceReference"
                   placeholder={`ID de ${
-                    bookingSourceOptions.find(o => o.value === formData.bookingSource)?.label || 'la plataforma'
+                    bookingSourceOptions.find(
+                      (o) => o.value === formData.bookingSource,
+                    )?.label || "la plataforma"
                   }`}
-                  value={formData.bookingSourceReference || ''}
+                  value={formData.bookingSourceReference || ""}
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                 />
@@ -398,14 +454,17 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
             {/* Notas */}
             <div className="sm:col-span-6">
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="notes"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Notas
               </label>
               <textarea
                 id="notes"
                 name="notes"
                 rows={3}
-                value={formData.notes || ''}
+                value={formData.notes || ""}
                 onChange={handleChange}
                 placeholder="Información adicional sobre la reserva..."
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
@@ -416,11 +475,16 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
         {/* Sección: Huésped principal */}
         <div>
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Huésped principal</h3>
+          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            Huésped principal
+          </h3>
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             {/* Nombre */}
             <div className="sm:col-span-3">
-              <label htmlFor="mainGuest.firstName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.firstName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Nombre *
               </label>
               <input
@@ -430,17 +494,22 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.firstName}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.firstName') ? 'border-red-300' : ''
+                  getError("mainGuest.firstName") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.firstName') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.firstName')}</p>
+              {getError("mainGuest.firstName") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.firstName")}
+                </p>
               )}
             </div>
 
             {/* Apellidos */}
             <div className="sm:col-span-3">
-              <label htmlFor="mainGuest.lastName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.lastName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Apellidos *
               </label>
               <input
@@ -450,17 +519,22 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.lastName}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.lastName') ? 'border-red-300' : ''
+                  getError("mainGuest.lastName") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.lastName') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.lastName')}</p>
+              {getError("mainGuest.lastName") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.lastName")}
+                </p>
               )}
             </div>
 
             {/* Email */}
             <div className="sm:col-span-3">
-              <label htmlFor="mainGuest.email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email *
               </label>
               <input
@@ -470,24 +544,29 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.email}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.email') ? 'border-red-300' : ''
+                  getError("mainGuest.email") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.email') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.email')}</p>
+              {getError("mainGuest.email") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.email")}
+                </p>
               )}
             </div>
 
             {/* Teléfono */}
             <div className="sm:col-span-3">
-              <label htmlFor="mainGuest.phone" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.phone"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Teléfono
               </label>
               <input
                 type="tel"
                 name="mainGuest.phone"
                 id="mainGuest.phone"
-                value={formData.mainGuest.phone || ''}
+                value={formData.mainGuest.phone || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               />
@@ -495,7 +574,10 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
             {/* Tipo de documento */}
             <div className="sm:col-span-2">
-              <label htmlFor="mainGuest.documentType" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.documentType"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Tipo de documento *
               </label>
               <select
@@ -513,7 +595,10 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
             {/* Número de documento */}
             <div className="sm:col-span-2">
-              <label htmlFor="mainGuest.documentNumber" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.documentNumber"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Número de documento *
               </label>
               <input
@@ -523,17 +608,22 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.documentNumber}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.documentNumber') ? 'border-red-300' : ''
+                  getError("mainGuest.documentNumber") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.documentNumber') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.documentNumber')}</p>
+              {getError("mainGuest.documentNumber") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.documentNumber")}
+                </p>
               )}
             </div>
 
             {/* Nacionalidad */}
             <div className="sm:col-span-2">
-              <label htmlFor="mainGuest.nationality" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.nationality"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Nacionalidad *
               </label>
               <input
@@ -543,17 +633,22 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.nationality}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.nationality') ? 'border-red-300' : ''
+                  getError("mainGuest.nationality") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.nationality') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.nationality')}</p>
+              {getError("mainGuest.nationality") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.nationality")}
+                </p>
               )}
             </div>
 
             {/* Fecha de nacimiento */}
             <div className="sm:col-span-3">
-              <label htmlFor="mainGuest.birthDate" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mainGuest.birthDate"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Fecha de nacimiento *
               </label>
               <input
@@ -563,11 +658,13 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 value={formData.mainGuest.birthDate}
                 onChange={handleChange}
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError('mainGuest.birthDate') ? 'border-red-300' : ''
+                  getError("mainGuest.birthDate") ? "border-red-300" : ""
                 }`}
               />
-              {getError('mainGuest.birthDate') && (
-                <p className="mt-2 text-sm text-red-600">{getError('mainGuest.birthDate')}</p>
+              {getError("mainGuest.birthDate") && (
+                <p className="mt-2 text-sm text-red-600">
+                  {getError("mainGuest.birthDate")}
+                </p>
               )}
             </div>
           </div>
@@ -576,33 +673,62 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         {/* Sección: Huéspedes adicionales */}
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Huéspedes adicionales</h3>
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Huéspedes adicionales
+            </h3>
             <button
               type="button"
               onClick={addGuest}
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
-              <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <svg
+                className="-ml-1 mr-2 h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
               Añadir huésped
             </button>
           </div>
 
           {additionalGuests.length === 0 ? (
-            <p className="text-sm text-gray-500 italic mb-4">No hay huéspedes adicionales</p>
+            <p className="text-sm text-gray-500 italic mb-4">
+              No hay huéspedes adicionales
+            </p>
           ) : (
             additionalGuests.map((guest, index) => (
-              <div key={index} className="mb-6 p-4 border border-gray-200 rounded-md">
+              <div
+                key={index}
+                className="mb-6 p-4 border border-gray-200 rounded-md"
+              >
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-md font-medium text-gray-900">Huésped {index + 1}</h4>
+                  <h4 className="text-md font-medium text-gray-900">
+                    Huésped {index + 1}
+                  </h4>
                   <button
                     type="button"
                     onClick={() => removeGuest(index)}
                     className="text-red-600 hover:text-red-900"
                   >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -610,42 +736,66 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                   {/* Nombre */}
                   <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-gray-700">Nombre *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Nombre *
+                    </label>
                     <input
                       type="text"
                       value={guest.firstName}
-                      onChange={e => handleGuestChange(index, 'firstName', e.target.value)}
+                      onChange={(e) =>
+                        handleGuestChange(index, "firstName", e.target.value)
+                      }
                       className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].firstName`) ? 'border-red-300' : ''
+                        getError(`guest[${index}].firstName`)
+                          ? "border-red-300"
+                          : ""
                       }`}
                     />
                     {getError(`guest[${index}].firstName`) && (
-                      <p className="mt-2 text-sm text-red-600">{getError(`guest[${index}].firstName`)}</p>
+                      <p className="mt-2 text-sm text-red-600">
+                        {getError(`guest[${index}].firstName`)}
+                      </p>
                     )}
                   </div>
 
                   {/* Apellidos */}
                   <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-gray-700">Apellidos *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Apellidos *
+                    </label>
                     <input
                       type="text"
                       value={guest.lastName}
-                      onChange={e => handleGuestChange(index, 'lastName', e.target.value)}
+                      onChange={(e) =>
+                        handleGuestChange(index, "lastName", e.target.value)
+                      }
                       className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].lastName`) ? 'border-red-300' : ''
+                        getError(`guest[${index}].lastName`)
+                          ? "border-red-300"
+                          : ""
                       }`}
                     />
                     {getError(`guest[${index}].lastName`) && (
-                      <p className="mt-2 text-sm text-red-600">{getError(`guest[${index}].lastName`)}</p>
+                      <p className="mt-2 text-sm text-red-600">
+                        {getError(`guest[${index}].lastName`)}
+                      </p>
                     )}
                   </div>
 
                   {/* Tipo de documento */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Tipo de documento *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Tipo de documento *
+                    </label>
                     <select
                       value={guest.documentType}
-                      onChange={e => handleGuestChange(index, 'documentType', e.target.value as 'dni' | 'passport' | 'other')}
+                      onChange={(e) =>
+                        handleGuestChange(
+                          index,
+                          "documentType",
+                          e.target.value as "dni" | "passport" | "other",
+                        )
+                      }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     >
                       <option value="dni">DNI</option>
@@ -656,44 +806,68 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
                   {/* Número de documento */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Número de documento *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Número de documento *
+                    </label>
                     <input
                       type="text"
                       value={guest.documentNumber}
-                      onChange={e => handleGuestChange(index, 'documentNumber', e.target.value)}
+                      onChange={(e) =>
+                        handleGuestChange(
+                          index,
+                          "documentNumber",
+                          e.target.value,
+                        )
+                      }
                       className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].documentNumber`) ? 'border-red-300' : ''
+                        getError(`guest[${index}].documentNumber`)
+                          ? "border-red-300"
+                          : ""
                       }`}
                     />
                     {getError(`guest[${index}].documentNumber`) && (
-                      <p className="mt-2 text-sm text-red-600">{getError(`guest[${index}].documentNumber`)}</p>
+                      <p className="mt-2 text-sm text-red-600">
+                        {getError(`guest[${index}].documentNumber`)}
+                      </p>
                     )}
                   </div>
 
                   {/* Nacionalidad */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Nacionalidad *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Nacionalidad *
+                    </label>
                     <input
                       type="text"
                       value={guest.nationality}
-                      onChange={e => handleGuestChange(index, 'nationality', e.target.value)}
+                      onChange={(e) =>
+                        handleGuestChange(index, "nationality", e.target.value)
+                      }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     />
                   </div>
 
                   {/* Fecha de nacimiento */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Fecha de nacimiento *</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Fecha de nacimiento *
+                    </label>
                     <input
                       type="date"
                       value={guest.birthDate}
-                      onChange={e => handleGuestChange(index, 'birthDate', e.target.value)}
+                      onChange={(e) =>
+                        handleGuestChange(index, "birthDate", e.target.value)
+                      }
                       className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].birthDate`) ? 'border-red-300' : ''
+                        getError(`guest[${index}].birthDate`)
+                          ? "border-red-300"
+                          : ""
                       }`}
                     />
                     {getError(`guest[${index}].birthDate`) && (
-                      <p className="mt-2 text-sm text-red-600">{getError(`guest[${index}].birthDate`)}</p>
+                      <p className="mt-2 text-sm text-red-600">
+                        {getError(`guest[${index}].birthDate`)}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -717,11 +891,15 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           disabled={isSubmitting}
           className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
         >
-          {isSubmitting ? 'Guardando...' : reservation ? 'Actualizar reserva' : 'Crear reserva'}
+          {isSubmitting
+            ? "Guardando..."
+            : reservation
+              ? "Actualizar reserva"
+              : "Crear reserva"}
         </button>
       </div>
     </form>
   );
 };
 
-export default ReservationForm; 
+export default ReservationForm;

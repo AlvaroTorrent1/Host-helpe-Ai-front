@@ -1,7 +1,11 @@
 // src/types/reservation.ts
-import { Property } from './property';
+import { Property } from "./property";
 
-export type ReservationStatus = 'confirmed' | 'pending' | 'cancelled' | 'completed';
+export type ReservationStatus =
+  | "confirmed"
+  | "pending"
+  | "cancelled"
+  | "completed";
 
 export interface Guest {
   id: string;
@@ -9,7 +13,7 @@ export interface Guest {
   lastName: string;
   email: string;
   phone?: string;
-  documentType: 'dni' | 'passport' | 'other';
+  documentType: "dni" | "passport" | "other";
   documentNumber: string;
   birthDate: string; // formato ISO: YYYY-MM-DD
   nationality: string;
@@ -28,8 +32,8 @@ export interface Reservation {
   status: ReservationStatus;
   totalGuests: number;
   totalAmount?: number; // Importe total de la reserva
-  paymentStatus?: 'paid' | 'partial' | 'pending';
-  bookingSource?: 'direct' | 'airbnb' | 'booking' | 'other';
+  paymentStatus?: "paid" | "partial" | "pending";
+  bookingSource?: "direct" | "airbnb" | "booking" | "other";
   bookingSourceReference?: string; // Referencia externa (ej. ID en Airbnb)
   notes?: string;
   createdAt: string; // formato ISO
@@ -39,14 +43,17 @@ export interface Reservation {
 // Filtros para la búsqueda de reservas
 export interface ReservationFilters {
   propertyId?: string;
-  status?: ReservationStatus | 'all';
+  status?: ReservationStatus | "all";
   startDate?: string; // fecha desde
   endDate?: string; // fecha hasta
   searchTerm?: string; // búsqueda por nombre/email del huésped, etc.
 }
 
 // Datos necesarios para crear una nueva reserva
-export type ReservationCreateData = Omit<Reservation, 'id' | 'createdAt' | 'updatedAt' | 'property'> & {
-  mainGuest: Omit<Guest, 'id'>; // Datos del huésped principal
-  additionalGuests?: Omit<Guest, 'id'>[]; // Datos de huéspedes adicionales
-}; 
+export type ReservationCreateData = Omit<
+  Reservation,
+  "id" | "createdAt" | "updatedAt" | "property"
+> & {
+  mainGuest: Omit<Guest, "id">; // Datos del huésped principal
+  additionalGuests?: Omit<Guest, "id">[]; // Datos de huéspedes adicionales
+};

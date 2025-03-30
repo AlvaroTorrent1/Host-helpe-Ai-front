@@ -1,13 +1,16 @@
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@shared/contexts/AuthContext';
+import { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@shared/contexts/AuthContext";
 
 type ProtectedRouteProps = {
   children: ReactNode;
   adminOnly?: boolean;
 };
 
-const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) => {
+const ProtectedRoute = ({
+  children,
+  adminOnly = false,
+}: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
 
   // Mientras verificamos el estado de autenticación, podríamos mostrar un spinner
@@ -35,4 +38,4 @@ const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) =>
   return <>{children}</>;
 };
 
-export default ProtectedRoute; 
+export default ProtectedRoute;

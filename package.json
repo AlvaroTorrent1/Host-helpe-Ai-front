@@ -6,18 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
-    "lint:errors": "eslint src --ext ts,tsx --report-unused-disable-directives --quiet",
+    "lint": "eslint src --report-unused-disable-directives",
+    "lint:errors": "eslint src --report-unused-disable-directives --quiet",
     "preview": "vite preview",
-    "lint:fix": "eslint src --ext ts,tsx --fix --max-warnings=0",
+    "lint:fix": "eslint src --fix --max-warnings=0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "deploy": "npm run build && npm run preview",
-    "fix:all": "eslint src --ext ts,tsx --fix && prettier --write src",
-    "fix:imports": "eslint src --ext ts,tsx --fix --rule '@typescript-eslint/no-unused-vars: error'",
-    "fix:any": "eslint src --ext ts,tsx --fix --rule '@typescript-eslint/no-explicit-any: error'",
-    "fix:hooks": "eslint src --ext ts,tsx --fix --rule 'react-hooks/exhaustive-deps: error'"
+    "fix:all": "eslint src --fix && prettier --write src",
+    "fix:imports": "eslint src --fix --rule \"@typescript-eslint/no-unused-vars: error\"",
+    "fix:any": "eslint src --fix --rule \"@typescript-eslint/no-explicit-any: error\"",
+    "fix:hooks": "eslint src --fix --rule \"react-hooks/exhaustive-deps: error\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
@@ -48,6 +48,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "globals": "^14.0.0",
     "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2",
     "typescript-eslint": "^7.2.0",

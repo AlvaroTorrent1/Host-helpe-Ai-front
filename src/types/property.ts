@@ -4,7 +4,7 @@ export interface Property {
   name: string;
   address: string;
   image?: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   // Campos adicionales según el PRD
   description?: string;
   amenities?: string[];
@@ -27,14 +27,17 @@ export interface PropertyImage {
 export interface PropertyDocument {
   id: string;
   property_id: string;
-  type: 'house_rules' | 'inventory' | 'faq' | 'guide' | 'other';
+  type: "house_rules" | "inventory" | "faq" | "guide" | "other";
   name: string;
   file_url: string;
-  description: string; 
+  description: string;
   uploaded_at: string;
-  file_type: 'pdf' | 'doc' | 'txt' | 'other' | string;
+  file_type: "pdf" | "doc" | "txt" | "other" | string;
   // Propiedades adicionales para documentos temporales
   file?: Blob | File;
   document_type?: string;
   file_path?: string;
-} 
+  // Propiedades para el tamaño del archivo
+  size?: number;
+  formatted_size?: string;
+}
