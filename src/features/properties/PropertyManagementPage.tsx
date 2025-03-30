@@ -9,6 +9,7 @@ import PropertyForm from "./PropertyForm";
 import Modal from "@shared/components/Modal";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
+import documentService from "../../services/documentService";
 
 const PropertyManagementPage: React.FC = () => {
   const { user } = useAuth();
@@ -24,6 +25,12 @@ const PropertyManagementPage: React.FC = () => {
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(
     null,
   );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Limpiar el mensaje de error cuando se abre o cierra el modal
+  useEffect(() => {
+    setErrorMessage(null);
+  }, [modalOpen]);
 
   // Cargar datos de simulación para el MVP
   useEffect(() => {
@@ -218,45 +225,99 @@ const PropertyManagementPage: React.FC = () => {
   // Manejar envío del formulario (crear/actualizar)
   const handleSubmitProperty = async (propertyData: Omit<Property, "id">) => {
     setIsSubmitting(true);
+    
+    // --- DEBUGGING --- 
+    console.log('Data being sent to Supabase:', JSON.stringify(propertyData, null, 2));
+    // --- END DEBUGGING ---
+
     try {
+      // Extraer additional_images y documents ya que son relaciones y no columnas directas
+      const { additional_images, documents, ...propertyDataToSend } = propertyData;
+      
       if (currentProperty) {
         // Actualizar propiedad existente
+        console.log(`Attempting to update property ID: ${currentProperty.id}`);
         const { data, error } = await supabase
           .from("properties")
-          .update(propertyData)
+          .update(propertyDataToSend)
           .eq("id", currentProperty.id)
           .select();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase update error:', error);
+          setErrorMessage(`Error al actualizar la propiedad: ${error.message}`);
+          setIsSubmitting(false);
+          return;
+        }
+        console.log('Supabase update success:', data);
 
         if (data && data.length > 0) {
+          // Si hay documentos temporales, actualizar sus IDs con el ID real de la propiedad
+          if (documents && documents.length > 0 && 
+              documents.some(doc => doc.property_id === 'temp')) {
+            
+            await documentService.updateTempDocumentsPropertyId(currentProperty.id);
+            console.log('Updated temporary documents with real property ID');
+          }
+
+          // Actualizar la lista de propiedades
           setProperties((prev) =>
-            prev.map((p) => (p.id === currentProperty.id ? data[0] : p)),
+            prev.map((p) =>
+              p.id === currentProperty.id ? { ...p, ...propertyData } : p,
+            ),
           );
         }
       } else {
         // Crear nueva propiedad
+        console.log('Attempting to insert new property');
+        const propertyToInsert = {
+          ...propertyDataToSend,
+          user_id: user?.id,
+          created_at: new Date().toISOString(),
+        };
+        
         const { data, error } = await supabase
           .from("properties")
-          .insert({
-            ...propertyData,
-            user_id: user?.id,
-            created_at: new Date().toISOString(),
-          })
+          .insert(propertyToInsert)
           .select();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase insert error:', error);
+          setErrorMessage(`Error al crear la propiedad: ${error.message}`);
+          setIsSubmitting(false);
+          return;
+        }
+
+        console.log('Supabase insert success:', data);
 
         if (data && data.length > 0) {
-          setProperties((prev) => [...prev, data[0]]);
+          const newPropertyId = data[0].id;
+          
+          // Si hay documentos temporales, actualizar sus IDs con el ID real de la propiedad
+          if (documents && documents.length > 0 && 
+              documents.some(doc => doc.property_id === 'temp')) {
+            
+            await documentService.updateTempDocumentsPropertyId(newPropertyId);
+            console.log('Updated temporary documents with real property ID');
+          }
+
+          // Añadir la nueva propiedad a la lista
+          setProperties((prev) => [
+            { ...data[0], ...propertyData, id: newPropertyId },
+            ...prev,
+          ]);
         }
       }
-
       setModalOpen(false);
+      setCurrentProperty(undefined);
+      setIsSubmitting(false);
     } catch (error) {
       console.error(t("errors.saveProperty"), error);
-      alert(t("errors.savePropertyAlert"));
-    } finally {
+      if (error instanceof Error) {
+        setErrorMessage(`Error: ${error.message}`);
+      } else {
+        setErrorMessage("Se produjo un error desconocido al guardar la propiedad");
+      }
       setIsSubmitting(false);
     }
   };
@@ -317,6 +378,28 @@ const PropertyManagementPage: React.FC = () => {
         title={currentProperty ? t("properties.modal.edit") : t("properties.modal.add")}
         size="lg"
       >
+        {errorMessage && (
+          <div className="mb-4 rounded-md bg-red-50 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-red-800">{errorMessage}</p>
+              </div>
+            </div>
+          </div>
+        )}
         <PropertyForm
           property={currentProperty}
           onSubmit={handleSubmitProperty}

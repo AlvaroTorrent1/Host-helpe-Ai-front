@@ -55,7 +55,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
   // Manejar subida de documentos
   const handleUpload = async () => {
     if (
-      !currentDocument.file ||
+      !selectedFile ||
       !currentDocument.name ||
       !currentDocument.type
     ) {
@@ -69,7 +69,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
     try {
       const uploadedDocument = await documentService.uploadDocument(
         propertyId || "temp",
-        currentDocument.file,
+        selectedFile,
         {
           name: currentDocument.name,
           description: currentDocument.description,
@@ -77,23 +77,28 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
         },
       );
 
-      // Agregar documento a la lista
-      if (onAddDocument) {
-        onAddDocument(uploadedDocument);
+      // Agregar documento a la lista si se subió correctamente
+      if (uploadedDocument) {
+        if (onAddDocument) {
+          onAddDocument(uploadedDocument);
+        } else {
+          onChange([...documents, uploadedDocument]);
+        }
+
+        // Resetear formulario
+        setCurrentDocument({
+          name: "",
+          description: "",
+          type: "other",
+        });
+        setSelectedFile(null);
       } else {
-        onChange([...documents, uploadedDocument]);
+        throw new Error("No se pudo subir el documento");
       }
 
-      // Resetear formulario
-      setCurrentDocument({
-        file: undefined,
-        name: "",
-        description: "",
-        type: "other",
-      });
-
       setIsUploading(false);
-    } catch {
+    } catch (error) {
+      console.error("Error al subir documento:", error);
       setValidationError("Error al subir documento. Intente nuevamente.");
       setIsUploading(false);
     }

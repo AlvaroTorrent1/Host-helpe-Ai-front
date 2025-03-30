@@ -163,6 +163,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Solo proceder con la validación y envío cuando se hace clic en el botón de guardar
     if (validateForm()) {
       try {
         // Enviar formulario - los documentos temporales se procesarán en PropertyManagement
@@ -189,8 +190,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }));
   };
 
-  // Navegar a siguiente paso
+  // Navegar a siguiente paso con validación de paso actual
   const handleNextStep = () => {
+    // Para el paso 1, validar campos requeridos
+    if (currentStep === 1) {
+      if (!formData.name.trim()) {
+        setValidationErrors(prev => ({ ...prev, name: t("properties.form.validation.nameRequired") }));
+        return;
+      }
+      if (!formData.address.trim()) {
+        setValidationErrors(prev => ({ ...prev, address: t("properties.form.validation.addressRequired") }));
+        return;
+      }
+    }
+    
     setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
@@ -387,34 +400,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Indicador de pasos */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-full">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-500">
-              {t("properties.form.steps.step")} {currentStep} {t("properties.form.steps.of")} {totalSteps}
-            </div>
-            <div className="text-xs font-medium text-gray-500">
-              {currentStep === 1
-                ? t("properties.form.steps.basicInfo")
-                : currentStep === 2
-                  ? t("properties.form.steps.additionalImages")
-                  : t("properties.form.steps.documents")}
-            </div>
-          </div>
-          <div className="overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-primary-600"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {renderCurrentStep()}
-
+  // Dividir el renderizado del botón final para evitar confusiones
+  const renderActionButtons = () => {
+    return (
       <div className="pt-5 border-t border-gray-200 flex justify-between items-center">
         <div>
           {currentStep > 1 && (
@@ -445,7 +433,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             </button>
           ) : (
             <button
-              type="submit"
+              type="button" 
+              onClick={handleSubmit}
               disabled={isSubmitting}
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
             >
@@ -454,6 +443,38 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           )}
         </div>
       </div>
+    );
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Indicador de pasos */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs font-medium text-gray-500">
+              {t("properties.form.steps.step")} {currentStep} {t("properties.form.steps.of")} {totalSteps}
+            </div>
+            <div className="text-xs font-medium text-gray-500">
+              {currentStep === 1
+                ? t("properties.form.steps.basicInfo")
+                : currentStep === 2
+                  ? t("properties.form.steps.additionalImages")
+                  : t("properties.form.steps.documents")}
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-full bg-gray-200">
+            <div
+              className="h-2 rounded-full bg-primary-600"
+              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {renderCurrentStep()}
+
+      {renderActionButtons()}
     </form>
   );
 };

@@ -94,9 +94,10 @@ export const uploadDocument = async (
     
     if (error) throw error;
     
-    // Get the public URL from the config
-    const storageUrl = supabase.storageUrl ?? "";
-    const url = `${storageUrl}${BUCKET_NAME}/${fileName}`;
+    // Get the public URL from getPublicUrl
+    const { data: publicUrlData } = supabase.storage
+      .from(BUCKET_NAME)
+      .getPublicUrl(fileName);
     
     // Save metadata to database
     const { data: docData, error: docError } = await supabase
@@ -106,7 +107,7 @@ export const uploadDocument = async (
         name: documentData.name,
         description: documentData.description || "",
         type: documentData.type,
-        file_url: url,
+        file_url: publicUrlData.publicUrl,
         file_type: fileType,
         file_name: fileName,
         size: file.size,
@@ -290,38 +291,45 @@ export const updateTempDocumentsPropertyId = async (
   const updatedDocs: PropertyDocument[] = [];
 
   for (const doc of tempDocs) {
-    await tryCatch(async () => {
-      // Create a new document for the property
-      const fileData = doc.file;
-      if (!fileData) {
-        return;
+    try {
+      console.log(`Processing temporary document: ${doc.name} with ID: ${doc.id}`);
+      
+      // Extract the data URL from the file_url
+      const dataUrl = doc.file_url;
+      
+      // Skip if not a data URL
+      if (!dataUrl.startsWith('data:')) {
+        console.error(`Document ${doc.id} does not have a valid data URL`);
+        continue;
       }
       
-      // Generate safe file name
-      const fileExt = doc.name.split(".").pop() || "";
-      const fileName = `${doc.type.toLowerCase()}_${newPropertyId}_${Date.now()}.${fileExt}`;
-
-      // Determine content type for upload
-      let contentType = "application/pdf";
-      if (
-        typeof doc.file_type === "string" &&
-        doc.file_type.includes("image")
-      ) {
-        contentType = doc.file_type;
-      }
-
+      // Convert data URL to Blob
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      
+      // Create a File object
+      const fileExt = doc.file_type || 'pdf';
+      const filePath = `${newPropertyId}/${doc.id}.${fileExt}`;
+      const file = new File([blob], filePath, { type: blob.type });
+      
+      console.log(`Converted data URL to file: ${filePath}, size: ${file.size} bytes`);
+      
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from(BUCKET_NAME)
-        .upload(`${newPropertyId}/${fileName}`, fileData, {
+        .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: false,
-          contentType,
+          upsert: true
         });
       
       if (uploadError) {
         throw new Error(`Error uploading file: ${uploadError.message}`);
       }
+      
+      // Get the public URL
+      const { data: publicUrlData } = supabase.storage
+        .from(BUCKET_NAME)
+        .getPublicUrl(filePath);
       
       // Save metadata to database
       const { data: savedDoc, error: dbError } = await supabase
@@ -329,10 +337,11 @@ export const updateTempDocumentsPropertyId = async (
         .insert({
           property_id: newPropertyId,
           name: doc.name,
-          file_type: doc.file_type,
-          file_path: uploadData?.path || "",
           description: doc.description || "",
           type: doc.type,
+          file_url: publicUrlData.publicUrl, // Use the publicUrl from the response
+          file_type: doc.file_type,
+          file_name: filePath,
           size: doc.size || 0,
           formatted_size: doc.formatted_size || formatFileSize(doc.size || 0),
           uploaded_at: new Date().toISOString(),
@@ -341,15 +350,19 @@ export const updateTempDocumentsPropertyId = async (
         .single();
       
       if (dbError) {
-        throw new Error(`Error saving metadata: ${dbError.message}`);
+        throw new Error(`Error saving document metadata: ${dbError.message}`);
       }
+      
+      console.log(`Successfully updated document: ${doc.name} with new property ID: ${newPropertyId}`);
       
       // Add to list of updated documents
       updatedDocs.push(savedDoc);
       
       // Remove from temporary store
       delete tempDocumentsStore[doc.id];
-    }, null);
+    } catch (error) {
+      console.error(`Error processing document ${doc.id}:`, error);
+    }
   }
   
   return updatedDocs;
