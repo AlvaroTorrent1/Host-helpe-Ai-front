@@ -1,21 +1,24 @@
 import { createClient } from "@supabase/supabase-js";
-import { supabaseConfig } from "@/config/environment";
+import { supabaseConfig, environment } from "@/config/environment";
 
 // Estas variables de entorno deberán ser agregadas al archivo .env
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 const siteUrl = supabaseConfig.siteUrl;
 const authRedirectUrl = supabaseConfig.authRedirectUrl;
+const currentEnvironment = environment.current;
 
+// Validación de la configuración necesaria
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
     "Faltan las variables de entorno de Supabase. Por favor, crea un archivo .env con VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.",
   );
 }
 
-if (!siteUrl) {
+// Verificación más estricta de la URL del sitio en producción
+if (!siteUrl && !environment.development) {
   console.error(
-    "Falta la variable de entorno VITE_SITE_URL. Por favor, configúrala en el archivo .env."
+    "CRÍTICO: Falta la variable de entorno VITE_SITE_URL en producción. Esto causará problemas con los enlaces de autenticación."
   );
 }
 
@@ -23,12 +26,12 @@ const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'ser
 const isDevelopment = import.meta.env.DEV;
 
 // Log detailed information about the Supabase configuration
-console.log(`Initializing Supabase client with:`, {
-  environment: isDevelopment ? 'development' : 'production',
+console.log(`Inicializando cliente Supabase en entorno ${currentEnvironment}:`, {
+  environment: currentEnvironment,
   supabaseUrl,
   siteUrl,
   authRedirectUrl,
-  currentOrigin: currentUrl,
+  currentOrigin: typeof window !== 'undefined' ? window.location.origin : 'server-side',
   viteMode: import.meta.env.MODE,
 });
 
@@ -48,12 +51,17 @@ export const signIn = async (email: string, password: string) => {
 };
 
 export const signUp = async (email: string, password: string) => {
-  // Determine if we're in development
-  const redirectUrl = isDevelopment 
-    ? `${currentUrl}/auth/callback` 
-    : authRedirectUrl;
+  // Usar SIEMPRE la URL de redirección configurada en environment.ts
+  // Esto asegura consistencia entre desarrollo y producción
+  const redirectUrl = authRedirectUrl;
   
-  console.log(`Sign up with redirectTo: ${redirectUrl}`);
+  console.log(`Registro con redirectTo: ${redirectUrl} (entorno: ${currentEnvironment})`);
+  
+  if (!redirectUrl) {
+    console.error("ERROR: URL de redirección no definida. La autenticación por correo electrónico fallará.");
+  } else if (redirectUrl.includes('localhost') && environment.production) {
+    console.error("ADVERTENCIA: La URL de redirección contiene 'localhost' en producción. Los correos de confirmación no funcionarán correctamente.");
+  }
   
   // Use redirectTo to ensure email confirmation links use the correct domain
   return await supabase.auth.signUp({ 
@@ -61,6 +69,12 @@ export const signUp = async (email: string, password: string) => {
     password,
     options: {
       emailRedirectTo: redirectUrl,
+      // Datos de debug para ayudar a identificar problemas
+      data: {
+        signup_origin: typeof window !== 'undefined' ? window.location.origin : 'unknown',
+        environment: currentEnvironment,
+        timestamp: new Date().toISOString(),
+      }
     }
   });
 };

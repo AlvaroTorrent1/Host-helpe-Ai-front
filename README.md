@@ -148,3 +148,31 @@ For the authentication system to work properly in production, you need to config
      - The application now includes enhanced debugging in auth callback page to help diagnose issues
 
 This configuration ensures that authentication emails (registration confirmation, password reset, etc.) will contain the correct domain in their links rather than "localhost".
+
+## Configuración de Entornos
+
+Host Helper AI soporta múltiples entornos de configuración:
+
+- **Desarrollo**: Para trabajo local (`npm run dev`)
+- **Producción**: Para despliegue y prueba de producción (`npm run build`, `npm run dev:prod`)
+
+Para más detalles sobre cómo configurar y utilizar los entornos, consulta [doc/ENVIRONMENTS.md](doc/ENVIRONMENTS.md).
+
+### Configuración Rápida
+
+1. Para desarrollo local:
+   ```bash
+   # Usa la configuración de desarrollo
+   npm run dev
+   ```
+
+2. Para simular producción localmente:
+   ```bash
+   # Usa la configuración de producción
+   npm run dev:prod
+   ```
+
+3. Para construir para producción:
+   ```bash
+   npm run build
+   ```

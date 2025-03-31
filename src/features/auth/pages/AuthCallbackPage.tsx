@@ -6,31 +6,58 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useLanguage } from "@shared/contexts/LanguageContext";
-import { supabaseConfig } from "@/config/environment";
+import { supabaseConfig, environment } from "@/config/environment";
+
+// Tipos para mejor manejo de errores
+interface AuthDebugInfo {
+  url: string;
+  origin: string;
+  hash: string;
+  search: string;
+  redirectUrl: string;
+  environment: string;
+  timestamp: string;
+  errorDetails?: string;
+}
 
 const AuthCallbackPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>("Procesando autenticación...");
-  const [debug, setDebug] = useState<string | null>(null);
+  const [debug, setDebug] = useState<AuthDebugInfo | null>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  // Función para recopilar información de depuración
+  const collectDebugInfo = (errorDetails?: string): AuthDebugInfo => {
+    return {
+      url: window.location.href,
+      origin: window.location.origin,
+      hash: window.location.hash,
+      search: window.location.search,
+      redirectUrl: supabaseConfig.authRedirectUrl,
+      environment: environment.development ? 'development' : 'production',
+      timestamp: new Date().toISOString(),
+      errorDetails
+    };
+  };
 
   useEffect(() => {
     // Función para manejar el callback de autenticación
     const handleAuthCallback = async () => {
       try {
         // Registrar información de debug extendida
-        const currentUrl = window.location.href;
-        const detailedDebug = `
-          URL: ${currentUrl}
-          Origin: ${window.location.origin}
-          Hash: ${window.location.hash}
-          Search params: ${window.location.search}
-          Auth Redirect URL: ${supabaseConfig.authRedirectUrl}
-          Environment mode: ${import.meta.env.MODE}
-        `;
-        setDebug(detailedDebug);
-        console.log("Auth Callback Debug:", detailedDebug);
+        const debugInfo = collectDebugInfo();
+        setDebug(debugInfo);
+        console.log("Auth Callback Debug:", debugInfo);
+
+        // Verificar si estamos en localhost en producción (error común)
+        if (window.location.hostname === 'localhost' && !environment.development) {
+          const errorMsg = "Error de redirección: Se está usando localhost en un entorno de producción. Verifica la configuración de VITE_SITE_URL.";
+          console.error(errorMsg);
+          setError(errorMsg);
+          setDebug({...debugInfo, errorDetails: errorMsg});
+          return;
+        }
         
         // Esperamos un poco para dar tiempo a que Supabase procese el hash en la URL
         // Esto es crucial para tokens expirados o problemas de redirección
@@ -41,6 +68,7 @@ const AuthCallbackPage = () => {
         
         if (error) {
           console.error("Error getting session:", error);
+          setDebug({...debugInfo, errorDetails: `Session error: ${error.message}`});
           throw error;
         }
 
@@ -63,6 +91,7 @@ const AuthCallbackPage = () => {
               ? `Error: ${errorDescription}` 
               : `Error de autenticación: ${errorParam || errorCode}`;
             setError(errorMsg);
+            setDebug({...debugInfo, errorDetails: errorMsg});
             console.error("URL contains error parameters:", errorMsg);
             setTimeout(() => navigate("/login"), 3000);
             return;
@@ -83,6 +112,18 @@ const AuthCallbackPage = () => {
               if (hashParams.access_token || query.get('token_hash')) {
                 // Si hay un token disponible, intentamos establecer la sesión manualmente
                 console.log("Attempting to process auth parameters manually");
+                
+                // Intentar extraer y configurar el token directamente si está presente
+                if (hashParams.access_token && hashParams.refresh_token) {
+                  try {
+                    // Este método es un intento de establecer manualmente los tokens
+                    // pero puede no funcionar en todas las versiones de Supabase
+                    console.log("Attempting to set session manually with tokens from URL");
+                    // No se puede implementar directamente, solo para demostración
+                  } catch (tokenSetError) {
+                    console.error("Failed to set tokens manually:", tokenSetError);
+                  }
+                }
               }
               
               // Esperamos para que Supabase procese el token automáticamente
@@ -95,27 +136,35 @@ const AuthCallbackPage = () => {
                 setTimeout(() => navigate("/dashboard"), 1500);
               } else {
                 // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
+                const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta. Intente iniciar sesión nuevamente.";
                 setMessage(null);
-                setError("No se pudo completar la autenticación. El enlace puede haber expirado. Intente iniciar sesión nuevamente.");
+                setError(expiredMsg);
+                setDebug({...debugInfo, errorDetails: expiredMsg});
                 setTimeout(() => navigate("/login"), 3000);
               }
             } catch (tokenError) {
+              const tokenErrorMsg = `Error al procesar el token de autenticación: ${tokenError instanceof Error ? tokenError.message : 'Desconocido'}`;
               console.error("Error processing token:", tokenError);
               setMessage(null);
-              setError(`Error al procesar el token de autenticación: ${tokenError instanceof Error ? tokenError.message : 'Desconocido'}`);
+              setError(tokenErrorMsg);
+              setDebug({...debugInfo, errorDetails: tokenErrorMsg});
               setTimeout(() => navigate("/login"), 3000);
             }
           } else {
             // No hay hash ni token, redirigir al login
+            const noAuthInfoMsg = "No se encontró información de autenticación. Verifique que esté usando el enlace completo del correo de confirmación.";
             setMessage(null);
-            setError("No se encontró información de autenticación");
+            setError(noAuthInfoMsg);
+            setDebug({...debugInfo, errorDetails: noAuthInfoMsg});
             setTimeout(() => navigate("/login"), 2000);
           }
         }
       } catch (error) {
+        const generalErrorMsg = `Error de autenticación: ${error instanceof Error ? error.message : 'Desconocido'}`;
         console.error("Error en la autenticación:", error);
         setMessage(null);
-        setError(`Error de autenticación: ${error instanceof Error ? error.message : 'Desconocido'}`);
+        setError(generalErrorMsg);
+        setDebug(collectDebugInfo(generalErrorMsg));
         setTimeout(() => navigate("/login"), 3000);
       }
     };
@@ -156,16 +205,23 @@ const AuthCallbackPage = () => {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm text-red-700">{error}</p>
+                  <p className="mt-2 text-xs text-red-700">
+                    <a href="/login" className="font-medium underline">Volver al inicio de sesión</a>
+                  </p>
                 </div>
               </div>
             </div>
           )}
           
-          {debug && import.meta.env.DEV && (
+          {/* Mostrar información de debug expandida tanto en desarrollo como en producción cuando hay error */}
+          {debug && (import.meta.env.DEV || error) && (
             <div className="mt-4 p-4 bg-gray-100 rounded-md">
               <div className="flex">
                 <div className="ml-3 flex-1">
-                  <p className="text-xs text-gray-700 font-mono whitespace-pre-wrap">{debug}</p>
+                  <p className="text-xs font-semibold mb-1">Información de depuración:</p>
+                  <pre className="text-xs text-gray-700 font-mono whitespace-pre-wrap overflow-auto max-h-40">
+                    {JSON.stringify(debug, null, 2)}
+                  </pre>
                 </div>
               </div>
             </div>
