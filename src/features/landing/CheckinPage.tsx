@@ -314,15 +314,34 @@ const CheckinPage = () => {
               {/* Columna derecha - Imagen o animación */}
               <div className="relative">
                 <div className="aspect-w-16 aspect-h-9 bg-white rounded-xl shadow-lg overflow-hidden">
-                  {/* Placeholder para una imagen o animación mostrando el proceso de check-in */}
+                  {/* Imagen con fallback a imagen genérica */}
                   <img
                     src="/imagenes/checkin-features.jpg"
                     alt="Características del sistema de check-in"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src =
-                        "https://via.placeholder.com/800x450?text=Check-in+Automatizado";
+                      // Usar una imagen de fallback local en lugar de un servicio externo
+                      target.src = "/imagenes/default-feature-image.jpg";
+                      // Si también falla la imagen de fallback, mostrar un div con gradiente
+                      target.onerror = () => {
+                        if (target.parentElement) {
+                          // Crear un elemento div con gradiente para reemplazar la imagen
+                          const div = document.createElement('div');
+                          div.className = 'w-full h-full bg-gradient-to-br from-primary-100 to-primary-300 flex items-center justify-center';
+                          div.innerHTML = `<div class="text-center p-6">
+                            <svg class="w-12 h-12 text-primary-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p class="text-primary-700 font-medium">Registro automatizado de huéspedes</p>
+                          </div>`;
+                          
+                          // Reemplazar la imagen con el div
+                          if (target.parentElement) {
+                            target.parentElement.replaceChild(div, target);
+                          }
+                        }
+                      };
                     }}
                   />
                 </div>

@@ -53,7 +53,7 @@ Las siguientes variables son críticas para el funcionamiento correcto de la aut
 
 | Variable | Descripción | Ejemplo Desarrollo | Ejemplo Producción |
 |----------|-------------|-------------------|-------------------|
-| `VITE_SITE_URL` | URL base para autenticación | `http://localhost:4001` | `https://hosthelperai.com` |
+| `VITE_SITE_URL` | URL base para autenticación | `http://localhost:4000` | `https://hosthelperai.com` |
 | `VITE_SUPABASE_URL` | URL del proyecto Supabase | `https://tu-proyecto.supabase.co` | `https://tu-proyecto.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Clave anónima de Supabase | `tu-clave-anonima` | `tu-clave-anonima` |
 | `VITE_ENVIRONMENT` | Entorno actual | `development` | `production` |
@@ -65,7 +65,7 @@ Para que la autenticación funcione correctamente, debes configurar en el dashbo
 1. **URL Configuration** en la sección **Authentication**:
    - **Site URL**: URL de producción (`https://hosthelperai.com`)
    - **Redirect URLs**:
-     - URL de desarrollo (`http://localhost:4001/auth/callback`)
+     - URL de desarrollo (`http://localhost:4000/auth/callback`)
      - URL de producción (`https://hosthelperai.com/auth/callback`)
 
 2. **Email Templates** en la sección **Authentication**:
