@@ -69,6 +69,11 @@ export const ROUTES: Record<string, AppRoute> = {
     componentName: "TestimoniosPage",
     authRequired: false,
   },
+  SCHEDULE_DEMO: {
+    path: "/schedule-demo",
+    componentName: "ScheduleDemoPage",
+    authRequired: false,
+  },
 
   // Rutas protegidas
   DASHBOARD: {

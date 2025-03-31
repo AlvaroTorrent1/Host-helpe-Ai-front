@@ -1,15 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 
 const ScheduleDemoPage: React.FC = () => {
   const { t } = useLanguage();
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    // Verificar si ya está cargado el script
+    if (document.getElementById('calendly-script')) {
+      console.log('Script de Calendly ya cargado');
+      setIsScriptLoaded(true);
+      return;
+    }
+
     // Load Calendly script
     const script = document.createElement("script");
+    script.id = 'calendly-script';
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
+    
+    script.onload = () => {
+      console.log('Script de Calendly cargado correctamente');
+      setIsScriptLoaded(true);
+    };
+    
+    script.onerror = (error) => {
+      console.error('Error al cargar el script de Calendly:', error);
+      setHasError(true);
+    };
+    
     document.body.appendChild(script);
 
     return () => {
@@ -19,6 +40,8 @@ const ScheduleDemoPage: React.FC = () => {
       }
     };
   }, []);
+
+  const calendlyUrl = "https://calendly.com/hosthelperai-services";
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -151,11 +174,31 @@ const ScheduleDemoPage: React.FC = () => {
             </div>
 
             <div className="md:w-2/3">
-              <div
-                className="calendly-inline-widget w-full mx-auto shadow-lg rounded-lg overflow-hidden"
-                data-url="https://calendly.com/hosthelperai-services"
-                style={{ height: "650px" }}
-              />
+              {hasError ? (
+                <div className="bg-red-50 p-6 rounded-lg text-center">
+                  <p className="text-red-600 mb-2">No se pudo cargar el calendario de citas.</p>
+                  <p className="text-gray-700">Por favor, intenta visitando directamente:</p>
+                  <a 
+                    href={calendlyUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary-600 hover:underline mt-2 inline-block"
+                  >
+                    {calendlyUrl}
+                  </a>
+                </div>
+              ) : !isScriptLoaded ? (
+                <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                  <p className="text-gray-600">Cargando calendario de citas...</p>
+                  <div className="mt-4 w-8 h-8 border-t-2 border-primary-500 border-solid rounded-full animate-spin mx-auto"></div>
+                </div>
+              ) : (
+                <div
+                  className="calendly-inline-widget w-full mx-auto shadow-lg rounded-lg overflow-hidden"
+                  data-url={calendlyUrl}
+                  style={{ height: "650px" }}
+                />
+              )}
             </div>
           </div>
         </div>
