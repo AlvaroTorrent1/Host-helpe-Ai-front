@@ -5,6 +5,7 @@ import { supabaseConfig } from "@/config/environment";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 const siteUrl = supabaseConfig.siteUrl;
+const authRedirectUrl = supabaseConfig.authRedirectUrl;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
@@ -12,10 +13,34 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-console.log(`Initializing Supabase client with site URL: ${siteUrl}`);
+if (!siteUrl) {
+  console.error(
+    "Falta la variable de entorno VITE_SITE_URL. Por favor, configúrala en el archivo .env."
+  );
+}
 
-// Initialize the Supabase client with standard options
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const currentUrl = typeof window !== 'undefined' ? window.location.origin : 'server-side';
+const isDevelopment = import.meta.env.DEV;
+
+// Log detailed information about the Supabase configuration
+console.log(`Initializing Supabase client with:`, {
+  environment: isDevelopment ? 'development' : 'production',
+  supabaseUrl,
+  siteUrl,
+  authRedirectUrl,
+  currentOrigin: currentUrl,
+  viteMode: import.meta.env.MODE,
+});
+
+// Initialize the Supabase client with improved options
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  }
+});
 
 // Funciones de autenticación
 export const signIn = async (email: string, password: string) => {
@@ -23,12 +48,19 @@ export const signIn = async (email: string, password: string) => {
 };
 
 export const signUp = async (email: string, password: string) => {
+  // Determine if we're in development
+  const redirectUrl = isDevelopment 
+    ? `${currentUrl}/auth/callback` 
+    : authRedirectUrl;
+  
+  console.log(`Sign up with redirectTo: ${redirectUrl}`);
+  
   // Use redirectTo to ensure email confirmation links use the correct domain
   return await supabase.auth.signUp({ 
     email, 
     password,
     options: {
-      emailRedirectTo: `${siteUrl}/auth/callback`, 
+      emailRedirectTo: redirectUrl,
     }
   });
 };

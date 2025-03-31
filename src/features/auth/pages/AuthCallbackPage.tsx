@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useLanguage } from "@shared/contexts/LanguageContext";
+import { supabaseConfig } from "@/config/environment";
 
 const AuthCallbackPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>("Procesando autenticación...");
+  const [debug, setDebug] = useState<string | null>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -17,10 +19,28 @@ const AuthCallbackPage = () => {
     // Función para manejar el callback de autenticación
     const handleAuthCallback = async () => {
       try {
+        // Registrar información de debug extendida
+        const currentUrl = window.location.href;
+        const detailedDebug = `
+          URL: ${currentUrl}
+          Origin: ${window.location.origin}
+          Hash: ${window.location.hash}
+          Search params: ${window.location.search}
+          Auth Redirect URL: ${supabaseConfig.authRedirectUrl}
+          Environment mode: ${import.meta.env.MODE}
+        `;
+        setDebug(detailedDebug);
+        console.log("Auth Callback Debug:", detailedDebug);
+        
+        // Esperamos un poco para dar tiempo a que Supabase procese el hash en la URL
+        // Esto es crucial para tokens expirados o problemas de redirección
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         // Intenta obtener información de la sesión actual
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
+          console.error("Error getting session:", error);
           throw error;
         }
 
@@ -32,22 +52,59 @@ const AuthCallbackPage = () => {
           // Si no hay sesión, verificar si hay un hash en la URL (para confirmación de correo)
           const hash = window.location.hash;
           const query = new URLSearchParams(window.location.search);
+          const errorParam = query.get('error');
+          const errorCode = query.get('error_code');
+          const errorDescription = query.get('error_description');
           
-          if (hash || query.get('token_hash')) {
+          // Si hay un error en los parámetros de la URL, mostrarlo
+          if (errorParam || errorCode) {
+            setMessage(null);
+            const errorMsg = errorDescription 
+              ? `Error: ${errorDescription}` 
+              : `Error de autenticación: ${errorParam || errorCode}`;
+            setError(errorMsg);
+            console.error("URL contains error parameters:", errorMsg);
+            setTimeout(() => navigate("/login"), 3000);
+            return;
+          }
+          
+          // Comprobar si hay un token o hash para procesar
+          if (hash || query.get('token_hash') || query.get('type') === 'recovery') {
             setMessage("Verificando autenticación...");
-            // El hash o token está presente, Supabase Auth se encargará de procesar esto
-            // Solo esperamos un poco para darle tiempo a procesar
-            setTimeout(async () => {
+            try {
+              // Intenta procesar manualmente el hash para recuperar la sesión
+              // Esto es útil cuando el token ha expirado o cuando hay problemas con la redirección
+              const hashParams = hash?.substring(1).split('&').reduce((params, param) => {
+                const [key, value] = param.split('=');
+                if (key && value) params[key] = decodeURIComponent(value);
+                return params;
+              }, {} as Record<string, string>) || {};
+              
+              if (hashParams.access_token || query.get('token_hash')) {
+                // Si hay un token disponible, intentamos establecer la sesión manualmente
+                console.log("Attempting to process auth parameters manually");
+              }
+              
+              // Esperamos para que Supabase procese el token automáticamente
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              
+              // Volvemos a verificar si ya hay una sesión
               const { data: sessionData } = await supabase.auth.getSession();
               if (sessionData?.session) {
                 setMessage("Correo confirmado. Redirigiendo al dashboard...");
                 setTimeout(() => navigate("/dashboard"), 1500);
               } else {
+                // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
                 setMessage(null);
-                setError("No se pudo completar la autenticación. Intente iniciar sesión nuevamente.");
+                setError("No se pudo completar la autenticación. El enlace puede haber expirado. Intente iniciar sesión nuevamente.");
                 setTimeout(() => navigate("/login"), 3000);
               }
-            }, 2000);
+            } catch (tokenError) {
+              console.error("Error processing token:", tokenError);
+              setMessage(null);
+              setError(`Error al procesar el token de autenticación: ${tokenError instanceof Error ? tokenError.message : 'Desconocido'}`);
+              setTimeout(() => navigate("/login"), 3000);
+            }
           } else {
             // No hay hash ni token, redirigir al login
             setMessage(null);
@@ -99,6 +156,16 @@ const AuthCallbackPage = () => {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {debug && import.meta.env.DEV && (
+            <div className="mt-4 p-4 bg-gray-100 rounded-md">
+              <div className="flex">
+                <div className="ml-3 flex-1">
+                  <p className="text-xs text-gray-700 font-mono whitespace-pre-wrap">{debug}</p>
                 </div>
               </div>
             </div>

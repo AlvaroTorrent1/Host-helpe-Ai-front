@@ -127,14 +127,24 @@ For the authentication system to work properly in production, you need to config
    - Log in to your Supabase dashboard
    - Go to Authentication > URL Configuration
    - Set the Site URL to: `https://hosthelperai.com`
-   - Add additional redirect URLs if needed (for development/staging environments)
+   - Add the following redirect URLs:
+     - `https://hosthelperai.com/auth/callback` (production)
+     - `http://localhost:4000/auth/callback` (development)
 
 2. **Environment Variables**:
-   - In development, set `VITE_SITE_URL=http://localhost:4004` in your `.env` file
+   - In development, set `VITE_SITE_URL=http://localhost:4000` in your `.env` file
    - In production, set `VITE_SITE_URL=https://hosthelperai.com` 
    - The GitHub Actions workflow has been configured to use the production URL
 
 3. **Email Templates**:
    - If you've customized the email templates in Supabase, ensure they use `{{ .RedirectTo }}` instead of `{{ .SiteURL }}` where appropriate
+
+4. **Troubleshooting Authentication Issues**:
+   - If users receive "Email link is invalid or has expired" errors:
+     - Verify that the Supabase Dashboard Site URL matches your production URL
+     - Check that all redirect URLs are properly configured
+     - Ensure the port number in development mode matches your Vite server port (4000)
+     - Try clearing browser cache and cookies if testing authentication
+     - The application now includes enhanced debugging in auth callback page to help diagnose issues
 
 This configuration ensures that authentication emails (registration confirmation, password reset, etc.) will contain the correct domain in their links rather than "localhost".

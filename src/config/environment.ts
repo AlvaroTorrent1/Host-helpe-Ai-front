@@ -12,6 +12,14 @@ export const environment = {
   test: import.meta.env.MODE === 'test',
 };
 
+// Helper function to get current origin for auth redirects dynamically
+const getCurrentOrigin = () => {
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  return import.meta.env.VITE_SITE_URL || '';
+};
+
 /**
  * Supabase configuration
  */
@@ -20,7 +28,16 @@ export const supabaseConfig = {
   anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
   serviceRole: import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '',
   storageUrl: import.meta.env.VITE_SUPABASE_STORAGE_URL || 'https://blxngmtmknkdmikaflen.supabase.co/storage/v1/object/public/',
-  siteUrl: import.meta.env.VITE_SITE_URL || 'https://hosthelperai.com', // Default to production URL if not specified
+  siteUrl: import.meta.env.VITE_SITE_URL || (environment.development ? getCurrentOrigin() : ''),
+  // Dynamic redirect URL that works in both development and production
+  get authRedirectUrl() {
+    // For development, use the current origin
+    if (environment.development) {
+      return `${getCurrentOrigin()}/auth/callback`;
+    }
+    // For production, use the configured site URL
+    return `${import.meta.env.VITE_SITE_URL || ''}/auth/callback`;
+  }
 };
 
 /**
