@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 
@@ -6,12 +6,57 @@ const ScheduleDemoPage: React.FC = () => {
   const { t } = useLanguage();
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<string>("");
+  const widgetRef = useRef<HTMLDivElement>(null);
+  
+  // La URL de Calendly debe estar correcta y activa
+  const calendlyUrl = "https://calendly.com/hosthelperai-services/30min";
+
+  // Función para inicializar explícitamente el widget después de cargar el script
+  const initCalendly = () => {
+    if (typeof window.Calendly !== 'undefined' && widgetRef.current) {
+      console.log('Inicializando widget de Calendly manualmente');
+      try {
+        // Limpiar el contenedor antes de inicializar
+        while (widgetRef.current.firstChild) {
+          widgetRef.current.removeChild(widgetRef.current.firstChild);
+        }
+        
+        // Inicializar Calendly manualmente
+        window.Calendly.initInlineWidget({
+          url: calendlyUrl,
+          parentElement: widgetRef.current,
+          prefill: {},
+          utm: {}
+        });
+      } catch (err) {
+        console.error('Error al inicializar Calendly:', err);
+        setErrorDetails(`Error de inicialización: ${err instanceof Error ? err.message : 'Desconocido'}`);
+        setHasError(true);
+      }
+    } else {
+      console.error('API de Calendly no disponible o contenedor no encontrado');
+      setErrorDetails('API de Calendly no disponible o contenedor no encontrado');
+      setHasError(true);
+    }
+  };
 
   useEffect(() => {
+    // Definir el objeto global Calendly para TypeScript
+    if (typeof window !== 'undefined' && !window.Calendly) {
+      window.Calendly = {} as any;
+    }
+    
     // Verificar si ya está cargado el script
     if (document.getElementById('calendly-script')) {
       console.log('Script de Calendly ya cargado');
       setIsScriptLoaded(true);
+      
+      // Si el script ya está cargado, intentar inicializar directamente
+      setTimeout(() => {
+        initCalendly();
+      }, 500);
+      
       return;
     }
 
@@ -24,10 +69,16 @@ const ScheduleDemoPage: React.FC = () => {
     script.onload = () => {
       console.log('Script de Calendly cargado correctamente');
       setIsScriptLoaded(true);
+      
+      // Esperar un poco para que el script se inicialice completamente
+      setTimeout(() => {
+        initCalendly();
+      }, 1000);
     };
     
     script.onerror = (error) => {
       console.error('Error al cargar el script de Calendly:', error);
+      setErrorDetails('No se pudo cargar el script de Calendly');
       setHasError(true);
     };
     
@@ -40,8 +91,6 @@ const ScheduleDemoPage: React.FC = () => {
       }
     };
   }, []);
-
-  const calendlyUrl = "https://calendly.com/hosthelperai-services";
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -177,6 +226,7 @@ const ScheduleDemoPage: React.FC = () => {
               {hasError ? (
                 <div className="bg-red-50 p-6 rounded-lg text-center">
                   <p className="text-red-600 mb-2">No se pudo cargar el calendario de citas.</p>
+                  <p className="text-gray-700 mb-2">Error: {errorDetails}</p>
                   <p className="text-gray-700">Por favor, intenta visitando directamente:</p>
                   <a 
                     href={calendlyUrl} 
@@ -193,11 +243,23 @@ const ScheduleDemoPage: React.FC = () => {
                   <div className="mt-4 w-8 h-8 border-t-2 border-primary-500 border-solid rounded-full animate-spin mx-auto"></div>
                 </div>
               ) : (
-                <div
-                  className="calendly-inline-widget w-full mx-auto shadow-lg rounded-lg overflow-hidden"
-                  data-url={calendlyUrl}
-                  style={{ height: "650px" }}
-                />
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+                  <div
+                    ref={widgetRef}
+                    className="w-full mx-auto"
+                    style={{ height: "650px", minWidth: "320px" }}
+                  ></div>
+                  
+                  {/* Botón de reinicio en caso de problemas */}
+                  <div className="p-4 border-t border-gray-100 text-center">
+                    <button 
+                      onClick={() => initCalendly()}
+                      className="text-sm text-primary-600 hover:text-primary-700"
+                    >
+                      ↻ Reiniciar calendario si no se muestra correctamente
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -212,5 +274,12 @@ const ScheduleDemoPage: React.FC = () => {
     </div>
   );
 };
+
+// Añadir tipado para el objeto global Calendly
+declare global {
+  interface Window {
+    Calendly: any;
+  }
+}
 
 export default ScheduleDemoPage;
