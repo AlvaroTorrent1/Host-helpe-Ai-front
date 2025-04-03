@@ -1,0 +1,47 @@
+{
+  "ses": {
+    "history": {
+      "title": "Historial de Envíos SES",
+      "filters": {
+        "all": "Todos",
+        "pending": "Pendientes",
+        "submitted": "Enviados",
+        "error": "Con Error"
+      },
+      "table": {
+        "guest": "Huésped",
+        "property": "Propiedad",
+        "document": "Documento",
+        "date": "Fecha",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "documentTypes": {
+        "dni": "DNI",
+        "passport": "Pasaporte",
+        "other": "Otro"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "submitted": "Enviado",
+        "error": "Error"
+      },
+      "actions": {
+        "retry": "Reintentar"
+      },
+      "noSubmissions": "No se encontraron envíos"
+    }
+  },
+  "common": {
+    "pagination": {
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "first": "Primera",
+      "last": "Última"
+    }
+  }
+} 

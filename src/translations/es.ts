@@ -452,6 +452,15 @@ export const es = {
     notice:
       "Estamos trabajando en la implementación de todas las funcionalidades. Por ahora, esto es una demo de la interfaz.",
     loading: "Cargando...",
+    stats: {
+      properties: "Propiedades",
+      pendingReservations: "Reservas Pendientes",
+      incidents: "Incidencias",
+      activePropertiesFooter: "Propiedades activas",
+      pendingReservationsFooter: "Porcentaje: {{percent}}%",
+      noReservations: "Sin reservas",
+      resolutionRate: "Tasa de resolución: {{rate}}%"
+    },
     properties: {
       title: "Tus Propiedades",
       subtitle: "Gestiona todas tus propiedades desde aquí",

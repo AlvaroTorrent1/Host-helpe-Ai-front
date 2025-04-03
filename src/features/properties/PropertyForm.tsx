@@ -166,9 +166,24 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     // Solo proceder con la validación y envío cuando se hace clic en el botón de guardar
     if (validateForm()) {
       try {
+        // Log detallado de los documentos antes de enviar
+        console.log("Enviando formulario con los siguientes datos:");
+        console.log(`Total de documentos: ${formData.documents?.length || 0}`);
+        if (formData.documents && formData.documents.length > 0) {
+          formData.documents.forEach((doc, index) => {
+            console.log(`Documento ${index + 1}:`);
+            console.log(`- ID: ${doc.id}`);
+            console.log(`- Nombre: ${doc.name}`);
+            console.log(`- Tipo: ${doc.type}`);
+            console.log(`- Property ID: ${doc.property_id}`);
+            console.log(`- Es temporal: ${doc.property_id === 'temp'}`);
+          });
+        }
+        
         // Enviar formulario - los documentos temporales se procesarán en PropertyManagement
         onSubmit(formData);
-      } catch {
+      } catch (error) {
+        console.error("Error al enviar formulario:", error);
         // Manejar el error de manera silenciosa para no interrumpir el flujo
       }
     }

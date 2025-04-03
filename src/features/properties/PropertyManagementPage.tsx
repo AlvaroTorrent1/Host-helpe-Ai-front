@@ -10,6 +10,7 @@ import Modal from "@shared/components/Modal";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import documentService from "../../services/documentService";
+import { toast } from "react-hot-toast";
 
 const PropertyManagementPage: React.FC = () => {
   const { user } = useAuth();
@@ -40,13 +41,19 @@ const PropertyManagementPage: React.FC = () => {
         // En una implementación real, esto sería una llamada a Supabase:
         const { data, error } = await supabase
           .from("properties")
-          .select("*")
+          .select("*, property_documents(*), property_images(*)")
           .eq("user_id", user?.id);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          setProperties(data);
+          // Mapear los datos para que coincidan con la estructura esperada
+          const mappedProperties = data.map(property => ({
+            ...property,
+            documents: property.property_documents || [],
+            additional_images: property.property_images || [],
+          }));
+          setProperties(mappedProperties);
         } else {
           // Usar datos simulados si no hay datos en Supabase
           const mockProperties: Property[] = [
@@ -208,15 +215,19 @@ const PropertyManagementPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // En una implementación real:
-      // await supabase.from('properties').delete().eq('id', propertyToDelete.id);
-
-      // Simulación de borrado
+      // Eliminación real de la base de datos
+      await supabase.from('properties').delete().eq('id', propertyToDelete.id);
+      
+      // Actualizar el estado local
       setProperties((prev) => prev.filter((p) => p.id !== propertyToDelete.id));
       setDeleteModalOpen(false);
       setPropertyToDelete(null);
+      
+      // Mostrar mensaje de éxito
+      toast.success(t("properties.deleteSuccess") || "Propiedad eliminada con éxito");
     } catch (error) {
       console.error(t("errors.deleteProperty"), error);
+      toast.error(t("errors.deleteProperty") || "Error al eliminar la propiedad");
     } finally {
       setIsSubmitting(false);
     }
@@ -256,8 +267,15 @@ const PropertyManagementPage: React.FC = () => {
           if (documents && documents.length > 0 && 
               documents.some(doc => doc.property_id === 'temp')) {
             
-            await documentService.updateTempDocumentsPropertyId(currentProperty.id);
-            console.log('Updated temporary documents with real property ID');
+            console.log(`Encontrados ${documents.filter(doc => doc.property_id === 'temp').length} documentos temporales para actualizar`);
+            
+            try {
+              const updatedDocs = await documentService.updateTempDocumentsPropertyId(currentProperty.id);
+              console.log(`Actualizados ${updatedDocs.length} documentos temporales con ID de propiedad real`);
+            } catch (error) {
+              console.error('Error al actualizar documentos temporales:', error);
+              // Continuar con el flujo aunque haya error en los documentos
+            }
           }
 
           // Actualizar la lista de propiedades
@@ -297,8 +315,15 @@ const PropertyManagementPage: React.FC = () => {
           if (documents && documents.length > 0 && 
               documents.some(doc => doc.property_id === 'temp')) {
             
-            await documentService.updateTempDocumentsPropertyId(newPropertyId);
-            console.log('Updated temporary documents with real property ID');
+            console.log(`Encontrados ${documents.filter(doc => doc.property_id === 'temp').length} documentos temporales para actualizar con ID: ${newPropertyId}`);
+            
+            try {
+              const updatedDocs = await documentService.updateTempDocumentsPropertyId(newPropertyId);
+              console.log(`Actualizados ${updatedDocs.length} documentos temporales con ID de propiedad real`);
+            } catch (error) {
+              console.error('Error al actualizar documentos temporales:', error);
+              // Continuar con el flujo aunque haya error en los documentos
+            }
           }
 
           // Añadir la nueva propiedad a la lista

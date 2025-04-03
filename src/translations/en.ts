@@ -449,6 +449,15 @@ export const en = {
     notice:
       "We are working on implementing all the features. For now, this is a demo of the interface.",
     loading: "Loading...",
+    stats: {
+      properties: "Properties",
+      pendingReservations: "Pending Reservations",
+      incidents: "Incidents",
+      activePropertiesFooter: "Active properties",
+      pendingReservationsFooter: "Percentage: {{percent}}%",
+      noReservations: "No reservations",
+      resolutionRate: "Resolution rate: {{rate}}%"
+    },
     properties: {
       title: "Your Properties",
       subtitle: "Manage all your properties from here",

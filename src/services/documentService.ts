@@ -69,37 +69,65 @@ export const uploadDocument = async (
     type: "faq" | "guide" | "house_rules" | "inventory" | "other";
   },
 ): Promise<PropertyDocument | null> => {
-  await ensureBucket();
-  
-  // Handle temporary properties
-  if (propertyId === "temp") {
-    return await handleTempPropertyDocument(file, documentData);
-  }
-  
-  // For regular properties, upload to Supabase
-  return await tryCatch(async () => {
-    // Determine file type and generate unique name
+  try {
+    await ensureBucket();
+    
+    // Si es una propiedad temporal, usar el método temporal directamente sin intentar guardar en DB
+    if (propertyId === "temp") {
+      console.log("Propiedad temporal detectada, guardando documento en memoria");
+      return await handleTempPropertyDocument(file, documentData);
+    }
+    
+    // Verificar autenticación primero
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) {
+      console.error("Error: Usuario no autenticado al intentar subir documento");
+      // Si el usuario no está autenticado, usar el método temporal como fallback
+      console.warn("Usando método de documento temporal como fallback");
+      return await handleTempPropertyDocument(file, documentData);
+    }
+    
+    // Determinar file type y generar nombre único
     const fileType = getFileType(file);
     const fileExt = file.name.split(".").pop() || "";
     const docId = uuidv4();
     const fileName = `${propertyId}/${docId}.${fileExt}`;
     
-    // Upload file to Supabase Storage
-    const { error } = await supabase.storage
+    console.log(`Intentando subir documento a ${BUCKET_NAME}/${fileName}`);
+    
+    // Subir archivo a Supabase Storage
+    const { error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(fileName, file, { 
         cacheControl: "3600",
-        upsert: false,
+        upsert: true,  // Cambiado a true para sobreescribir si existe
       });
     
-    if (error) throw error;
+    if (uploadError) {
+      console.error("Error al subir documento a Supabase Storage:", uploadError);
+      
+      if (uploadError.message?.includes("authentication") || 
+          uploadError.message?.includes("auth")) {
+        console.warn("Error de autenticación, usando método temporal como fallback");
+        return await handleTempPropertyDocument(file, documentData);
+      }
+      
+      throw uploadError;
+    }
     
-    // Get the public URL from getPublicUrl
+    // Obtener la URL pública
     const { data: publicUrlData } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(fileName);
     
-    // Save metadata to database
+    if (!publicUrlData?.publicUrl) {
+      console.error("No se pudo obtener URL pública para el documento");
+      return await handleTempPropertyDocument(file, documentData);
+    }
+    
+    console.log(`Documento subido exitosamente: ${publicUrlData.publicUrl}`);
+    
+    // Guardar metadatos en la base de datos
     const { data: docData, error: docError } = await supabase
       .from("property_documents")
       .insert({
@@ -109,18 +137,29 @@ export const uploadDocument = async (
         type: documentData.type,
         file_url: publicUrlData.publicUrl,
         file_type: fileType,
-        file_name: fileName,
-        size: file.size,
-        formatted_size: formatFileSize(file.size),
         uploaded_at: new Date().toISOString(),
       })
       .select()
       .single();
     
-    if (docError) throw docError;
+    if (docError) {
+      console.error("Error al guardar metadatos del documento:", docError);
+      console.error("Detalles completos del error:", JSON.stringify(docError));
+      
+      // Si falla al guardar en la base de datos, intentamos eliminar el archivo que subimos
+      await supabase.storage.from(BUCKET_NAME).remove([fileName]);
+      
+      // Usar documento temporal como fallback
+      return await handleTempPropertyDocument(file, documentData);
+    }
     
     return docData as PropertyDocument;
-  }, null);
+  } catch (error) {
+    console.error("Error inesperado al subir documento:", error);
+    
+    // Último recurso: si todo falla, al menos guardamos localmente
+    return await handleTempPropertyDocument(file, documentData);
+  }
 };
 
 /**
@@ -153,7 +192,6 @@ const handleTempPropertyDocument = async (
           file_url: result, // Store content as data URL
           file_type: getFileType(file),
           size: fileSize,
-          formatted_size: formatFileSize(fileSize),
           uploaded_at: new Date().toISOString(),
         };
         
@@ -198,10 +236,7 @@ export const getDocumentsByProperty = async (
     
     if (error) throw error;
     
-    return data.map(doc => ({
-      ...doc,
-      formatted_size: doc.formatted_size || formatFileSize(doc.size || 0)
-    })) as PropertyDocument[];
+    return data as PropertyDocument[];
   }, [] as PropertyDocument[]);
 };
 
@@ -228,10 +263,7 @@ export const getDocumentById = async (
     if (error) throw error;
     if (!data) return null;
     
-    return {
-      ...data,
-      formatted_size: data.formatted_size || formatFileSize(data.size || 0)
-    } as PropertyDocument;
+    return data as PropertyDocument;
   }, null);
 };
 
@@ -239,26 +271,33 @@ export const getDocumentById = async (
  * Deletes a document
  * @param documentId The document ID to delete
  */
-export const deleteDocument = async (documentId: string): Promise<void> => {
-  // Check if it's a temporary document
+export const deleteDocument = async (
+  documentId: string,
+): Promise<void> => {
+  // Check if it's in the temporary store
   if (tempDocumentsStore[documentId]) {
     delete tempDocumentsStore[documentId];
     return;
   }
   
   return tryCatch(async () => {
+    // Get the document data first
     const { data, error } = await supabase
       .from("property_documents")
-      .select("file_name")
+      .select("*")
       .eq("id", documentId)
       .single();
     
     if (error) throw error;
+    if (!data) throw new Error("Document not found");
     
-    // Delete file from Storage
+    // Delete file from Storage - use file_url to extract path if file_name is not available
+    const fileUrl = data.file_url;
+    const storagePath = fileUrl.split('/').slice(-2).join('/');
+    
     const { error: storageError } = await supabase.storage
       .from(BUCKET_NAME)
-      .remove([data.file_name]);
+      .remove([storagePath]);
     
     if (storageError) throw storageError;
     
@@ -280,10 +319,13 @@ export const deleteDocument = async (documentId: string): Promise<void> => {
 export const updateTempDocumentsPropertyId = async (
   newPropertyId: string,
 ): Promise<PropertyDocument[]> => {
+  console.log(`Iniciando actualización de documentos temporales a propiedad: ${newPropertyId}`);
   const tempDocs = Object.values(tempDocumentsStore).filter(
     (doc) => doc.property_id === "temp",
   );
 
+  console.log(`Encontrados ${tempDocs.length} documentos temporales para actualizar`);
+  
   if (tempDocs.length === 0) {
     return [];
   }
@@ -323,13 +365,22 @@ export const updateTempDocumentsPropertyId = async (
         });
       
       if (uploadError) {
+        console.error(`Error detallado al subir archivo:`, JSON.stringify(uploadError));
         throw new Error(`Error uploading file: ${uploadError.message}`);
       }
+      
+      console.log(`Archivo subido exitosamente a ${BUCKET_NAME}/${filePath}`);
       
       // Get the public URL
       const { data: publicUrlData } = supabase.storage
         .from(BUCKET_NAME)
         .getPublicUrl(filePath);
+        
+      console.log(`URL pública obtenida: ${publicUrlData?.publicUrl}`);
+      
+      if (!publicUrlData?.publicUrl) {
+        throw new Error("No se pudo obtener URL pública para el documento");
+      }
       
       // Save metadata to database
       const { data: savedDoc, error: dbError } = await supabase
@@ -341,15 +392,13 @@ export const updateTempDocumentsPropertyId = async (
           type: doc.type,
           file_url: publicUrlData.publicUrl, // Use the publicUrl from the response
           file_type: doc.file_type,
-          file_name: filePath,
-          size: doc.size || 0,
-          formatted_size: doc.formatted_size || formatFileSize(doc.size || 0),
           uploaded_at: new Date().toISOString(),
         })
         .select()
         .single();
       
       if (dbError) {
+        console.error(`Error detallado al guardar documento ${doc.id}:`, JSON.stringify(dbError));
         throw new Error(`Error saving document metadata: ${dbError.message}`);
       }
       

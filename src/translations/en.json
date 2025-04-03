@@ -1,0 +1,47 @@
+{
+  "ses": {
+    "history": {
+      "title": "SES Submission History",
+      "filters": {
+        "all": "All",
+        "pending": "Pending",
+        "submitted": "Submitted",
+        "error": "Error"
+      },
+      "table": {
+        "guest": "Guest",
+        "property": "Property",
+        "document": "Document",
+        "date": "Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "documentTypes": {
+        "dni": "ID Card",
+        "passport": "Passport",
+        "other": "Other"
+      },
+      "status": {
+        "pending": "Pending",
+        "submitted": "Submitted",
+        "error": "Error"
+      },
+      "actions": {
+        "retry": "Retry"
+      },
+      "noSubmissions": "No submissions found"
+    }
+  },
+  "common": {
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results",
+      "previous": "Previous",
+      "next": "Next",
+      "first": "First",
+      "last": "Last"
+    }
+  }
+} 

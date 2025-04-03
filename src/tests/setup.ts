@@ -4,12 +4,31 @@
  */
 
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { expect, afterEach, vi } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
 
-// Mock window.matchMedia
-window.matchMedia =
-  window.matchMedia ||
-  ((query: string) => ({
+// Extender los matchers de Vitest con los de @testing-library/jest-dom
+expect.extend(matchers);
+
+// Limpiar después de cada test
+afterEach(() => {
+  cleanup();
+});
+
+// Mock de ResizeObserver
+const ResizeObserverMock = vi.fn(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
+
+// Mock de window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -18,17 +37,8 @@ window.matchMedia =
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
-  }));
-
-// Mock ResizeObserver
-class ResizeObserverMock {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
-}
-
-// Assign global mocks
-window.ResizeObserver = ResizeObserverMock;
+  })),
+});
 
 // Mock Intersection Observer
 const mockIntersectionObserver = vi.fn();

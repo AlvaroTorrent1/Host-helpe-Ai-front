@@ -108,7 +108,7 @@ export const ROUTES: Record<string, AppRoute> = {
   },
   SES: {
     path: "/ses",
-    componentName: "SesPage",
+    componentName: "SESRegistrationPage",
     authRequired: true,
   },
   NOT_FOUND: {

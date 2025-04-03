@@ -1,20 +1,32 @@
-import { defineConfig } from 'vitest/config';
+/// <reference types="vitest" />
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths()],
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.ts'],
-    include: ['**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
+    include: ['./src/tests/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
-      reporter: ['text', 'html'],
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
       exclude: [
-        'node_modules/',
-        'src/tests/',
+        'coverage/**',
+        'dist/**',
+        '**/[.]**',
+        'packages/*/test{,s}/**',
+        '**/*.d.ts',
+        'test{,s}/**',
+        'test{,-*}.{js,cjs,mjs,ts,tsx,jsx}',
+        '**/*{.,-}test.{js,cjs,mjs,ts,tsx,jsx}',
+        '**/*{.,-}spec.{js,cjs,mjs,ts,tsx,jsx}',
+        '**/__tests__/**',
+        '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress}.config.*',
+        '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
       ],
     },
   },

@@ -5,26 +5,7 @@
  * to verify that the testing framework is properly installed.
  */
 
-// Import testing functions conditionally to prevent TypeScript errors
-let describe: any;
-let it: any;
-let expect: any;
-
-try {
-  // This will work after vitest is installed
-  const vitest = require('vitest');
-  describe = vitest.describe;
-  it = vitest.it;
-  expect = vitest.expect;
-} catch (e) {
-  // Fallback for when vitest is not installed
-  describe = (name: string, fn: Function) => { console.log(`Test suite: ${name}`); };
-  it = (name: string, fn: Function) => { console.log(`  Test: ${name}`); };
-  expect = (value: any) => ({
-    toBe: (expected: any) => console.log(`    Expected: ${expected}, Actual: ${value}`),
-    toContain: (substring: string) => console.log(`    Expected to contain: ${substring}, Actual: ${value}`)
-  });
-}
+import { describe, it, expect } from 'vitest';
 
 /**
  * A simple utility function to test
@@ -42,6 +23,14 @@ function greet(name: string): string {
 
 // Basic test suite
 describe('Example Tests', () => {
+  it('should pass', () => {
+    expect(true).toBe(true);
+  });
+
+  it('should add numbers correctly', () => {
+    expect(1 + 1).toBe(2);
+  });
+
   // Simple numeric test
   it('adds two numbers correctly', () => {
     expect(add(1, 2)).toBe(3);

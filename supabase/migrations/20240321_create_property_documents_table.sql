@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS public.property_documents (
   description TEXT,
   type TEXT NOT NULL CHECK (type IN ('faq', 'guide', 'house_rules', 'inventory', 'other')),
   file_url TEXT NOT NULL,
-  file_name TEXT NOT NULL,
   file_type TEXT NOT NULL CHECK (file_type IN ('pdf', 'doc', 'txt', 'other')),
   uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -68,7 +67,6 @@ COMMENT ON COLUMN public.property_documents.name IS 'Nombre descriptivo del docu
 COMMENT ON COLUMN public.property_documents.description IS 'Descripción del contenido del documento';
 COMMENT ON COLUMN public.property_documents.type IS 'Tipo de documento: faq, guía, reglas, inventario u otro';
 COMMENT ON COLUMN public.property_documents.file_url IS 'URL pública del archivo';
-COMMENT ON COLUMN public.property_documents.file_name IS 'Nombre del archivo en el storage';
 COMMENT ON COLUMN public.property_documents.file_type IS 'Tipo de archivo: pdf, doc, txt u otro';
 COMMENT ON COLUMN public.property_documents.uploaded_at IS 'Fecha de subida';
 COMMENT ON COLUMN public.property_documents.created_at IS 'Fecha de creación en la base de datos'; 

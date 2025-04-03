@@ -6,6 +6,7 @@ import { useLanguage } from "@shared/contexts/LanguageContext";
 import DashboardNavigation from "./DashboardNavigation";
 import DashboardLanguageSelector from "./DashboardLanguageSelector";
 import DashboardHeader from "@shared/components/DashboardHeader";
+import DashboardStats from "./DashboardStats";
 
 type Property = {
   id: string;
@@ -249,39 +250,147 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Grid layout para estadísticas y acciones rápidas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          {/* Propiedades */}
-          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
+        {/* Panel de estadísticas */}
+        <div className="mb-4 sm:mb-6">
+          <DashboardStats 
+            activeProperties={properties.length}
+            pendingReservations={reservations.filter(r => r.status === "pending").length}
+            totalReservations={reservations.length}
+            pendingIncidents={incidents.filter(i => i.status === "pending").length}
+            resolutionRate={resolutionRate}
+          />
+        </div>
+
+        {/* Propiedades */}
+        <div className="mb-4 sm:mb-6">
+          <div className="flex justify-between items-center mb-3 sm:mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">
               {t("dashboard.properties.title")}
-            </h3>
-            <div className="mt-1">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">
-                  {t("dashboard.properties.total")}
-                </span>
-                <span className="text-lg font-semibold">
-                  {properties.length}
-                </span>
+            </h2>
+            <Link
+              to="/properties/add"
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs sm:text-sm font-medium rounded-md shadow-sm text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              <svg
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              {t("dashboard.properties.add")}
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {properties.map((property) => (
+              <div
+                key={property.id}
+                className="bg-white shadow-sm rounded-lg overflow-hidden flex flex-col sm:flex-row h-full"
+              >
+                <div className="w-full sm:w-1/3 h-40 sm:h-auto">
+                  {property.image ? (
+                    <img
+                      src={property.image}
+                      alt={property.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <svg
+                        className="h-12 w-12 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M9 22V12h6v10"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <Link
+                      to={`/properties/${property.id}`}
+                      className="block text-base font-semibold text-gray-800 hover:text-primary-500 mb-1"
+                    >
+                      {property.name}
+                    </Link>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      {property.address}
+                    </p>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        property.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {property.status === "active"
+                        ? t("dashboard.properties.statusActive")
+                        : t("dashboard.properties.statusInactive")}
+                    </span>
+                    <Link
+                      to={`/properties/${property.id}`}
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200"
+                    >
+                      {t("dashboard.properties.manage")}
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Link
-                  to="/properties"
-                  className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
-                >
-                  {t("dashboard.properties.view")}
-                </Link>
+            ))}
+
+            {properties.length === 0 && (
+              <div className="col-span-full bg-white shadow-sm rounded-lg p-4 text-center">
+                <p className="text-gray-500 text-sm sm:text-base mb-3">
+                  {t("dashboard.properties.empty")}
+                </p>
                 <Link
                   to="/properties/add"
-                  className="block text-center text-sm bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md"
+                  className="inline-flex items-center px-3 py-2 border border-transparent text-xs sm:text-sm font-medium rounded-md shadow-sm text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
-                  {t("dashboard.properties.add")}
+                  <svg
+                    className="h-4 w-4 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                  {t("dashboard.properties.addFirst")}
                 </Link>
               </div>
-            </div>
+            )}
           </div>
+        </div>
 
+        {/* Grid layout para estadísticas y acciones rápidas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Reservas */}
           <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">

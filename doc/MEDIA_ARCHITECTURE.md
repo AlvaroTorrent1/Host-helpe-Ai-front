@@ -20,12 +20,95 @@ El sistema utiliza una arquitectura distribuida que separa metadatos de archivos
 └───────────────┘         └───────────────┘        └───────────────┘
 ```
 
+## Implementación Actual
+
+### 1. Configuración
+
+La configuración del sistema de medios está definida en `src/config/environment.ts`:
+
+```typescript
+export const storageConfig = {
+  mediaBucket: 'media',
+  documentsBucket: 'property-documents',
+  profilesBucket: 'profiles',
+  maxUploadSizeMB: 10, // 10MB
+  imageSizeLimit: 5 * 1024 * 1024, // 5MB
+  documentSizeLimit: 10 * 1024 * 1024, // 10MB
+};
+```
+
+Esta configuración establece:
+- Nombres de buckets para diferentes tipos de contenido
+- Límites de tamaño para diferentes tipos de archivos
+- Constantes globales para el manejo de medios
+
+### 2. Servicio de Medios
+
+El sistema utiliza un servicio centralizado `mediaService.ts` que proporciona una API unificada para todas las operaciones de medios:
+
+```typescript
+// Export service as a unified object
+const mediaService = {
+  initMediaService,
+  uploadMediaFiles,
+  getMediaByProperty,
+  getMediaById,
+  deleteMedia,
+  optimizeImage,
+  debouncedOptimizeImage
+};
+```
+
+#### Inicialización
+
+El servicio verifica y crea automáticamente el bucket de almacenamiento si no existe:
+
+```typescript
+const ensureBucket = async (): Promise<void> => {
+  return tryCatch(async () => {
+    const { data: buckets } = await supabase.storage.listBuckets();
+    if (!buckets?.find((bucket) => bucket.name === BUCKET_NAME)) {
+      await supabase.storage.createBucket(BUCKET_NAME, {
+        public: true,
+        fileSizeLimit: storageConfig.imageSizeLimit,
+      });
+    }
+  }, undefined);
+};
+```
+
+#### Estructura de Datos
+
+Los metadatos de medios se manejan a través de la siguiente interfaz:
+
+```typescript
+export interface MediaItem {
+  id: string;
+  propertyId: string;
+  fileName: string;
+  fileType: string;
+  url: string;
+  thumbnailUrl?: string;
+  size: number;
+  formattedSize: string;
+  dimensions?: {
+    width: number;
+    height: number;
+  };
+  createdAt: string;
+  metadata?: Record<string, any>;
+}
+```
+
 ## Componentes Principales
 
 ### 1. Almacenamiento de Medios
 - **Supabase Storage**: Almacenamiento de objetos basado en S3
-- **Estructura de Buckets**: Un bucket principal `property-media` organizado por ID de propiedad
+- **Estructura de Buckets**: Un bucket principal `media` organizado por ID de propiedad
 - **Nombres de Archivo**: Generados con UUIDs para evitar colisiones
+  ```typescript
+  const fileName = `${propertyId}/${Date.now()}_${uuidv4()}.${fileExt}`;
+  ```
 
 ### 2. Base de Datos de Metadatos
 - **Tabla `media`**: Almacena metadatos separados de los archivos físicos
@@ -35,11 +118,126 @@ El sistema utiliza una arquitectura distribuida que separa metadatos de archivos
 ### 3. Capa de Servicio
 - **mediaService.ts**: API unificada para todas las operaciones de medios
 - **Operaciones asíncronas**: Subida, eliminación y consulta de medios optimizadas
+- **Manejo de errores robusto**: Utilizando un patrón `tryCatch` para gestionar errores de forma elegante:
+  ```typescript
+  return tryCatch(async () => {
+    // Operaciones de medios
+  }, defaultValue);
+  ```
 
 ### 4. Componentes de UI
 - **MediaGallery**: Componente React para visualización y gestión de medios
+  ```typescript
+  import { useDropzone } from "react-dropzone";
+  import mediaService, { MediaItem } from "../../../services/mediaService";
+  
+  interface MediaGalleryProps {
+    propertyId: string;
+    editable?: boolean;
+  }
+  ```
 - **Dropzone**: Sistema de arrastrar y soltar archivos para carga intuitiva
 - **Carga por lotes**: Soporte para subida de múltiples archivos simultáneamente
+
+## Flujo de Subida de Archivos
+
+```typescript
+export const uploadMediaFiles = async (
+  propertyId: string,
+  files: File[],
+  onProgress?: (progress: number) => void
+): Promise<MediaItem[]> => {
+  await ensureBucket();
+  
+  return tryCatch(async () => {
+    const results: MediaItem[] = [];
+    
+    // Procesar cada archivo
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      
+      // Validación de tipos de archivo
+      if (!fileTypes.image.includes(file.type)) {
+        continue;
+      }
+      
+      // Crear nombre único
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const fileName = `${propertyId}/${Date.now()}_${uuidv4()}.${fileExt}`;
+      
+      // Subir archivo a Supabase Storage
+      const { data, error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+      
+      // Obtener dimensiones (para imágenes)
+      const dimensions = await getImageDimensions(file);
+      
+      // Crear URL pública
+      const publicUrl = data?.path
+        ? supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path).data.publicUrl
+        : "";
+        
+      // Guardar metadatos en la base de datos
+      const { data: mediaData } = await supabase
+        .from("media")
+        .insert({
+          property_id: propertyId,
+          file_name: file.name,
+          file_type: file.type,
+          url: publicUrl,
+          size: file.size,
+          dimensions: dimensions ? JSON.stringify(dimensions) : null,
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+      
+      // Reportar progreso
+      if (onProgress) {
+        onProgress(((i + 1) / files.length) * 100);
+      }
+    }
+    
+    return results;
+  }, [] as MediaItem[]);
+};
+```
+
+## Eliminación de Medios
+
+```typescript
+export const deleteMedia = async (mediaId: string): Promise<boolean> => {
+  return tryCatch(async () => {
+    // Obtener ruta del archivo
+    const { data } = await supabase
+      .from("media")
+      .select("url")
+      .eq("id", mediaId)
+      .single();
+    
+    // Extraer ruta del archivo desde la URL
+    const url = data.url;
+    const path = url.split('/').slice(-2).join('/');
+    
+    // Eliminar de Storage
+    await supabase.storage
+      .from(BUCKET_NAME)
+      .remove([path]);
+    
+    // Eliminar de la base de datos
+    await supabase
+      .from("media")
+      .delete()
+      .eq("id", mediaId);
+    
+    return true;
+  }, false);
+};
+```
 
 ## Beneficios de la Arquitectura
 
@@ -49,8 +247,30 @@ El sistema utiliza una arquitectura distribuida que separa metadatos de archivos
 - Carga y procesamiento asíncrono para mejor experiencia de usuario
 
 ### Rendimiento
-- Optimización automática de imágenes mediante parámetros de URL
-- Generación de thumbnails para videos
+- Obtención de dimensiones de imagen durante la carga:
+  ```typescript
+  const getImageDimensions = async (
+    file: File
+  ): Promise<{ width: number; height: number } | undefined> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith("image/")) {
+        resolve(undefined);
+        return;
+      }
+      
+      const img = new Image();
+      img.onload = () => {
+        resolve({
+          width: img.width,
+          height: img.height,
+        });
+        URL.revokeObjectURL(img.src);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+  ```
 - Carga perezosa (lazy loading) de imágenes
 - Paginación para manejo eficiente de grandes colecciones
 
@@ -59,30 +279,62 @@ El sistema utiliza una arquitectura distribuida que separa metadatos de archivos
 - Validación de tipos de archivo
 - Límites de tamaño configurables
 
-## Implementación
-
-### Estructura de la Base de Datos
+## Estructura de la Base de Datos
 ```sql
 CREATE TABLE public.media (
-  id UUID PRIMARY KEY,
-  property_id UUID NOT NULL,
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
   file_name TEXT NOT NULL,
   file_type TEXT NOT NULL,
   url TEXT NOT NULL,
   thumbnail_url TEXT,
   size BIGINT NOT NULL,
+  formatted_size TEXT,
   dimensions JSONB,
-  created_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   metadata JSONB
 );
+
+-- Políticas RLS
+CREATE POLICY "Los usuarios pueden ver sus propios medios"
+  ON public.media
+  FOR SELECT
+  USING (auth.uid() = (
+    SELECT user_id FROM properties WHERE id = property_id
+  ));
+
+CREATE POLICY "Los usuarios pueden subir sus propios medios"
+  ON public.media
+  FOR INSERT
+  WITH CHECK (auth.uid() = (
+    SELECT user_id FROM properties WHERE id = property_id
+  ));
 ```
 
-### Flujo de Datos
-1. El usuario selecciona archivos para cargar
-2. El cliente procesa los archivos localmente (validación, extracción de metadatos)
-3. Los archivos se cargan al almacenamiento de Supabase
-4. Los metadatos se almacenan en la tabla `media`
-5. Los archivos se sirven desde la CDN de Supabase con optimizaciones on-demand
+## Manejo de Errores
+
+El servicio de medios implementa un manejo de errores robusto que permite a la aplicación continuar funcionando incluso cuando algunas operaciones fallan:
+
+```typescript
+// Patrón tryCatch para manejo elegante de errores
+const tryCatch = async <T>(
+  fn: () => Promise<T>,
+  defaultValue: T
+): Promise<T> => {
+  try {
+    return await fn();
+  } catch (error) {
+    console.error("Media service error:", error);
+    return defaultValue;
+  }
+};
+```
+
+Este enfoque permite:
+1. Centralizar el manejo de errores
+2. Proporcionar valores por defecto cuando ocurre un error
+3. Registrar errores de manera consistente
+4. Evitar que los errores en operaciones de medios afecten al resto de la aplicación
 
 ## Futuras Mejoras
 
@@ -95,10 +347,11 @@ CREATE TABLE public.media (
 - Microservicio dedicado de procesamiento de medios en Kubernetes
 - Integración con servicios de IA para análisis automático de contenido
 - Implementación de streaming adaptativo para videos
+- Sistemas avanzados de búsqueda y filtrado de medios
 
 ## Conclusión
 
-Esta arquitectura proporciona una base sólida para el manejo de medios escalable, permitiendo a Host Helper AI gestionar eficientemente grandes cantidades de imágenes y videos para las propiedades, con una experiencia de usuario óptima y un rendimiento excelente. 
+La arquitectura implementada proporciona una base sólida para el manejo de medios escalable, permitiendo a Host Helper AI gestionar eficientemente grandes cantidades de imágenes y videos para las propiedades, con una experiencia de usuario óptima y un rendimiento excelente. 
 
 ## Error Handling en Operaciones de Medios
 

@@ -30,14 +30,11 @@ export interface PropertyDocument {
   type: "house_rules" | "inventory" | "faq" | "guide" | "other";
   name: string;
   file_url: string;
-  description: string;
+  description?: string;
   uploaded_at: string;
   file_type: "pdf" | "doc" | "txt" | "other" | string;
   // Propiedades adicionales para documentos temporales
   file?: Blob | File;
   document_type?: string;
   file_path?: string;
-  // Propiedades para el tamaño del archivo
-  size?: number;
-  formatted_size?: string;
 }

@@ -76,44 +76,35 @@ function Button({ text, onClick, variant = 'primary' }: ButtonProps) {
 
 // Button component tests
 describe('Button Component', () => {
-  it('renders with correct text', () => {
-    // This test will only run properly after installing dependencies
-    try {
-      render(<Button text="Click me" onClick={() => {}} />);
-      expect(screen.getByText('Click me')).toBeInTheDocument();
-    } catch (e) {
-      console.log('    [Mock Test] Button renders with correct text');
-    }
+  it('renders correctly with default props', () => {
+    render(<Button>Click me</Button>);
+    const button = screen.getByText('Click me');
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveClass('bg-indigo-600');
   });
-  
-  it('calls onClick when clicked', () => {
-    // This test will only run properly after installing dependencies
-    try {
-      const handleClick = vi.fn();
-      render(<Button text="Click me" onClick={handleClick} />);
-      
-      const button = screen.getByTestId('test-button');
-      fireEvent.click(button);
-      
-      expect(handleClick).toHaveBeenCalledTimes(1);
-    } catch (e) {
-      console.log('    [Mock Test] Button calls onClick when clicked');
-    }
+
+  it('renders with custom className', () => {
+    render(<Button className="custom-class">Custom Button</Button>);
+    const button = screen.getByText('Custom Button');
+    expect(button).toHaveClass('custom-class');
   });
-  
-  it('applies variant styles correctly', () => {
-    // This test will only run properly after installing dependencies
-    try {
-      render(<Button text="Primary" onClick={() => {}} variant="primary" />);
-      const primaryButton = screen.getByTestId('test-button');
-      expect(primaryButton.className).toContain('bg-blue-500');
-      
-      render(<Button text="Secondary" onClick={() => {}} variant="secondary" />);
-      const secondaryButton = screen.getByTestId('test-button');
-      expect(secondaryButton.className).toContain('bg-gray-200');
-    } catch (e) {
-      console.log('    [Mock Test] Button applies variant styles correctly');
-    }
+
+  it('calls onClick handler when clicked', () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    
+    const button = screen.getByText('Click me');
+    fireEvent.click(button);
+    
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('is disabled when disabled prop is true', () => {
+    render(<Button disabled>Disabled Button</Button>);
+    const button = screen.getByText('Disabled Button');
+    
+    expect(button).toBeDisabled();
+    expect(button).toHaveClass('opacity-50');
   });
 });
 

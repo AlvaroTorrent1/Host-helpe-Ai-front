@@ -23,7 +23,7 @@ const RegisterPage = lazy(() => import("./features/auth/pages/RegisterPage"));
 const AuthCallbackPage = lazy(() => import("./features/auth/pages/AuthCallbackPage"));
 const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
-const SesPageComponent = lazy(() => import('./features/sespage/SesPage.tsx'));
+const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
 
 function App() {
   // Obtenemos las rutas públicas y protegidas
@@ -80,8 +80,8 @@ function App() {
                           }
                           
                           // Para la página SES, usar la ruta específica
-                          if (componentName === 'SesPage') {
-                            return import(/* @vite-ignore */ './features/sespage/SesPage.tsx');
+                          if (componentName === 'SESRegistrationPage') {
+                            return import(/* @vite-ignore */ './features/ses/SESRegistrationPage.tsx');
                           }
                           
                           // Para otros componentes, usar la estructura general
@@ -100,18 +100,6 @@ function App() {
                         />
                       );
                     })}
-
-                  {/* Ruta adicional para SES Registration */}
-                  <Route
-                    path="/ses-registration"
-                    element={
-                      <ProtectedRoute>
-                        <Suspense fallback={<LoadingScreen />}>
-                          <SesPageComponent />
-                        </Suspense>
-                      </ProtectedRoute>
-                    }
-                  />
 
                   {/* Ruta 404 para cualquier otra URL */}
                   <Route path="*" element={<NotFoundPage />} />
