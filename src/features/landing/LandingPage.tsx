@@ -26,6 +26,19 @@ const LandingPage = () => {
     { text: t("nav.login"), href: "/login", isButton: true },
   ];
 
+  // Ejemplo de uso directo de logEvent con importación dinámica
+  const handleHeroInteraction = () => {
+    import('@services/analytics').then(({ logEvent }) => {
+      try {
+        logEvent('Landing', 'Hero Interaction', 'User clicked on hero image');
+      } catch (error) {
+        console.error('Error al registrar evento:', error);
+      }
+    }).catch(error => {
+      console.error('Error al importar servicio de analytics:', error);
+    });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -100,11 +113,12 @@ const LandingPage = () => {
               </div>
               <div className="md:w-1/2">
                 <div
-                  className="group relative w-3/5 h-56 md:h-64 mx-auto overflow-hidden shadow-xl"
+                  className="group relative w-3/5 h-56 md:h-64 mx-auto overflow-hidden shadow-xl cursor-pointer"
                   style={{
                     clipPath:
                       "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)",
                   }}
+                  onClick={handleHeroInteraction}
                 >
                   <style>
                     {`
@@ -160,7 +174,7 @@ const LandingPage = () => {
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
                       src="/imagenes/link_registro.jpg"
-                      alt="Chatbot 24/7"
+                      alt="Agentes IA 24/7"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </div>
