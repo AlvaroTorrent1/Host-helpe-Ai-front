@@ -1,0 +1,23 @@
+{
+    "name": "Host Helper AI",
+    "short_name": "Host Helper",
+    "icons": [
+      {
+        "src": "/imagenes/logo.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/imagenes/logo.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ECA408",
+    "theme_color": "#ECA408",
+    "description": "Automatiza la gestión de tus propiedades turísticas"
+  }
