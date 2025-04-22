@@ -28,9 +28,9 @@ const LandingPage = () => {
 
   // Ejemplo de uso directo de logEvent con importación dinámica
   const handleHeroInteraction = () => {
-    import('@services/analytics').then(({ logEvent }) => {
+    import('@services/analytics').then(async ({ logEvent }) => {
       try {
-        logEvent('Landing', 'Hero Interaction', 'User clicked on hero image');
+        await logEvent('Landing', 'Hero Interaction', 'User clicked on hero image');
       } catch (error) {
         console.error('Error al registrar evento:', error);
       }
