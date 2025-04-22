@@ -18,17 +18,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
 
   return (
     <header className="bg-white shadow-sm w-full">
-      <div className="container-limited py-4 flex justify-between items-center">
-        <div className="flex items-center">
+      <div className="container-limited py-4 flex flex-col md:flex-row md:justify-between md:items-center">
+        <div className="flex justify-center md:justify-start mb-3 md:mb-0">
           <Link to="/">
             <img
               src="/imagenes/Logo_hosthelper_new.png"
               alt="Host Helper AI Logo"
-              className="h-20 sm:h-36 responsive-img"
+              className="h-14 sm:h-20 md:h-36 responsive-img"
             />
           </Link>
         </div>
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex justify-center md:justify-end items-center space-x-2 sm:space-x-4">
           <DashboardLanguageSelector />
           <span className="text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full">
             {user?.email}

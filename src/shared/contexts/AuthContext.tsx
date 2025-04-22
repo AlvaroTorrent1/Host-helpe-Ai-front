@@ -56,6 +56,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setLoading(true);
         const { data } = await getCurrentUser();
         setUser(data.user);
+        
+        // Registrar usuario en Google Analytics (de forma anónima)
+        if (data.user) {
+          import('@services/analytics').then(({ setUser: setAnalyticsUser }) => {
+            try {
+              // Usamos un hash del ID de usuario para mantener privacidad
+              const hashedUserId = `user-${btoa(data.user.id).substring(0, 10)}`;
+              setAnalyticsUser(hashedUserId);
+            } catch (error) {
+              console.error('Error al establecer usuario de analytics:', error);
+            }
+          }).catch(error => {
+            console.error('Error al importar servicio de analytics:', error);
+          });
+        }
       } catch (error) {
         console.error("Error al cargar el usuario:", error);
       } finally {
@@ -68,7 +83,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Configurar el listener para cambios de autenticación
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        
+        // Actualizar usuario en Google Analytics cuando cambia el estado de autenticación
+        if (currentUser) {
+          import('@services/analytics').then(({ setUser: setAnalyticsUser, logEvent }) => {
+            try {
+              const hashedUserId = `user-${btoa(currentUser.id).substring(0, 10)}`;
+              setAnalyticsUser(hashedUserId);
+              
+              // Registrar evento de inicio de sesión
+              if (event === 'SIGNED_IN') {
+                logEvent('Auth', 'Login', 'User signed in');
+              } else if (event === 'USER_UPDATED') {
+                logEvent('Auth', 'Profile Updated', 'User profile updated');
+              }
+            } catch (error) {
+              console.error('Error al rastrear evento de autenticación:', error);
+            }
+          }).catch(error => {
+            console.error('Error al importar servicio de analytics:', error);
+          });
+        } else if (event === 'SIGNED_OUT') {
+          // Registrar evento de cierre de sesión
+          import('@services/analytics').then(({ logEvent }) => {
+            try {
+              logEvent('Auth', 'Logout', 'User signed out');
+            } catch (error) {
+              console.error('Error al rastrear evento de cierre de sesión:', error);
+            }
+          }).catch(error => {
+            console.error('Error al importar servicio de analytics:', error);
+          });
+        }
       },
     );
 

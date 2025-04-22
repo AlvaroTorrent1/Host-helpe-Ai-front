@@ -12,7 +12,11 @@ import DashboardHeader from "@shared/components/DashboardHeader";
 import documentService from "../../services/documentService";
 import { toast } from "react-hot-toast";
 
-const PropertyManagementPage: React.FC = () => {
+interface PropertyManagementPageProps {
+  onSignOut?: () => void;
+}
+
+const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignOut }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
@@ -350,7 +354,7 @@ const PropertyManagementPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header con navegación */}
-      <DashboardHeader />
+      <DashboardHeader onSignOut={onSignOut} />
 
       {/* Navegación secundaria */}
       <DashboardNavigation />

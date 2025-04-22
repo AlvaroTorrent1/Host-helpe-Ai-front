@@ -4,107 +4,76 @@
  * En un entorno de producción real, se conectaría con el servicio de Google Analytics
  */
 
+import ReactGA from "react-ga4";
+
+// === Configuración interna ===
 let isInitialized = false;
-let analyticsId = '';
 
 /**
- * Inicializa el servicio de analytics
- * @param measurementId - ID de medición (formato G-XXXXXXXX)
+ * Inicializa Google Analytics 4 si estamos en producción o si VITE_ENABLE_GA=true.
+ * Evita doble inicialización.
  */
-export const initGA = async (measurementId: string) => {
-  if (import.meta.env.PROD || import.meta.env.VITE_ENABLE_GA === 'true') {
-    isInitialized = true;
-    analyticsId = measurementId;
-    console.log('Analytics inicializado con ID:', measurementId);
-  } else {
-    console.log('Analytics no inicializado (solo en producción)');
+export const initGA = (measurementId: string): void => {
+  if (isInitialized) return;
+
+  if (!measurementId) {
+    console.warn("[GA] measurementId no proporcionado; se omite GA");
+    return;
   }
+
+  if (!(import.meta.env.PROD || import.meta.env.VITE_ENABLE_GA === "true")) {
+    // En dev sin habilitación explícita no se rastrea.
+    console.info("[GA] Deshabilitado en modo desarrollo");
+    return;
+  }
+
+  ReactGA.initialize(measurementId);
+  isInitialized = true;
+  console.info("[GA] Inicializado", measurementId);
 };
 
 /**
- * Registra una página vista
- * @param page - Ruta de la página (opcional, usa window.location.pathname por defecto)
+ * Registra una vista de página.
  */
-export const logPageView = async (page?: string) => {
-  if (!shouldTrack()) return;
-  
+export const logPageView = (page?: string): void => {
+  if (!isInitialized) return;
+
   const path = page || window.location.pathname + window.location.search;
-  console.log('[Analytics] Página vista:', path);
-  
-  // Aquí se conectaría con GA4 en una implementación real
-  sendToAnalyticsService({
-    type: 'pageview',
-    page: path
-  });
+  ReactGA.send({ hitType: "pageview", page: path });
+  if (import.meta.env.DEV) console.debug("[GA] pageview", path);
 };
 
 /**
- * Registra un evento personalizado
- * @param category - Categoría del evento
- * @param action - Acción específica
- * @param label - Etiqueta descriptiva (opcional)
- * @param value - Valor numérico (opcional)
+ * Envía un evento personalizado.
  */
-export const logEvent = async (
+export const logEvent = (
   category: string,
   action: string,
   label?: string,
-  value?: number
-) => {
-  if (!shouldTrack()) return;
-  
-  console.log('[Analytics] Evento:', { category, action, label, value });
-  
-  // Aquí se conectaría con GA4 en una implementación real
-  sendToAnalyticsService({
-    type: 'event',
-    category,
-    action,
-    label,
-    value
-  });
+  value?: number,
+): void => {
+  if (!isInitialized) return;
+
+  ReactGA.event({ category, action, label, value });
+  if (import.meta.env.DEV)
+    console.debug("[GA] event", { category, action, label, value });
 };
 
-/**
- * Registra un error como un evento
- * @param description - Descripción del error
- * @param fatal - Indica si el error es fatal
- */
-export const logError = async (description: string, fatal: boolean = false) => {
-  if (!shouldTrack()) return;
-  
-  console.log('[Analytics] Error:', { description, fatal });
-  
-  // Aquí se conectaría con GA4 en una implementación real
-  sendToAnalyticsService({
-    type: 'event',
-    category: 'Error',
-    action: fatal ? 'Fatal Error' : 'Error',
-    label: description
-  });
+/** Registra un error como evento */
+export const logError = (description: string, fatal = false): void => {
+  logEvent("Error", fatal ? "Fatal" : "Non‑fatal", description);
 };
 
-/**
- * Establece el ID de usuario
- * @param userId - ID único del usuario
- */
-export const setUser = async (userId: string) => {
-  if (!shouldTrack()) return;
-  
-  console.log('[Analytics] Usuario establecido:', userId);
-  
-  // Aquí se conectaría con GA4 en una implementación real
-  sendToAnalyticsService({
-    type: 'user',
-    userId
-  });
+/** Asigna un identificador de usuario */
+export const setUser = (userId: string): void => {
+  if (!isInitialized) return;
+  ReactGA.set({ user_id: userId });
+  if (import.meta.env.DEV) console.debug("[GA] set user", userId);
 };
 
-/**
- * Comprueba si se debe realizar el seguimiento
- */
+// Utilidad interna para saber si debería rastrear – quedó como referencia, pero no usada.
 function shouldTrack(): boolean {
-  return isInitialized && (import.meta.env.PROD || import.meta.env.VITE_ENABLE_GA === 'true');
+  return isInitialized;
 }
 
 /**

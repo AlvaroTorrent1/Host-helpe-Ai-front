@@ -1,23 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
-import SESStatusPanel from "./SESStatusPanel";
-import TravelerRegistrationForm from "./TravelerRegistrationForm";
 import { useAuth } from "@shared/contexts/AuthContext";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import { useLanguage } from "@shared/contexts/LanguageContext";
-import SESSubmissionHistory from './SESSubmissionHistory';
-import { supabase } from '@services/supabase';
-
-interface TravelerFormData {
-  firstName: string;
-  lastName: string;
-  documentType: "dni" | "nie" | "passport";
-  documentNumber: string;
-  documentCountry: string;
-  birthDate: string;
-  nationality: string;
-}
 
 interface SESRegistrationPageProps {
   className?: string;
@@ -26,86 +12,20 @@ interface SESRegistrationPageProps {
 const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '' }) => {
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
-  const [isLoading, setIsLoading] = useState(true);
-  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const [submissions, setSubmissions] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadSubmissions();
-  }, []);
-
-  const loadSubmissions = async () => {
-    try {
-      setIsLoading(true);
-      // TODO: Implementar la carga real desde Supabase
-      // Por ahora usamos datos de ejemplo
-      const mockSubmissions = [
-        {
-          id: '1',
-          propertyId: 'prop1',
-          propertyName: 'Beach House',
-          guestName: 'John Doe',
-          documentType: 'passport',
-          documentNumber: 'AB123456',
-          submissionDate: new Date().toISOString(),
-          status: 'pending'
-        },
-        {
-          id: '2',
-          propertyId: 'prop2',
-          propertyName: 'Mountain Cabin',
-          guestName: 'Jane Smith',
-          documentType: 'dni',
-          documentNumber: '12345678X',
-          submissionDate: new Date(Date.now() - 86400000).toISOString(),
-          status: 'submitted'
-        },
-        {
-          id: '3',
-          propertyId: 'prop3',
-          propertyName: 'City Apartment',
-          guestName: 'Robert Johnson',
-          documentType: 'passport',
-          documentNumber: 'CD789012',
-          submissionDate: new Date(Date.now() - 172800000).toISOString(),
-          status: 'error',
-          errorMessage: 'Error de conexión con el servidor SES'
-        }
-      ];
-      setSubmissions(mockSubmissions);
-    } catch (error) {
-      console.error('Error loading submissions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmissionRetry = async (submissionId: string) => {
-    try {
-      // TODO: Implementar el reintento de envío
-      console.log('Retrying submission:', submissionId);
-      await loadSubmissions(); // Recargar la lista después del reintento
-    } catch (error) {
-      console.error('Error retrying submission:', error);
-    }
+  // Fallback text in case translations are missing
+  const fallbackText = {
+    workInProgress: "We are working on this functionality. The page will be ready soon.",
+    importantNotice: "Traveler registration in the SES system is mandatory for all tourist accommodations in Spain.",
+    backToDashboard: "Back to Dashboard"
   };
 
   const handleSignOut = async () => {
-    setIsLoading(true);
     try {
       await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
-    } finally {
-      setIsLoading(false);
     }
-  };
-
-  const handleTravelerSubmit = (data: TravelerFormData) => {
-    // En una implementación real, aquí enviaríamos los datos al backend
-    console.log("Datos del viajero:", data);
-    alert(t("dashboard.ses.travelerRegistered"));
-    setShowRegistrationForm(false);
   };
 
   return (
@@ -118,36 +38,21 @@ const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '
 
       {/* Contenido principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          <div className="mb-6 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">
+        <div className="bg-white shadow-sm rounded-lg p-8 text-center">
+          <div className="mb-6">
+            <svg className="w-16 h-16 text-primary-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {t("dashboard.ses.title")}
-            </h1>
-            <button
-              onClick={() => setShowRegistrationForm(true)}
-              className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md transition duration-150"
-            >
-              {t("dashboard.ses.newRegistration")}
-            </button>
+            </h2>
           </div>
 
-          {showRegistrationForm ? (
-            <TravelerRegistrationForm
-              onSubmit={async (data) => {
-                // TODO: Implementar el envío real
-                console.log('Form submitted:', data);
-                await loadSubmissions(); // Recargar la lista después del envío
-              }}
-              onCancel={() => setShowRegistrationForm(false)}
-            />
-          ) : (
-            <>
-              <div className="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                  {t("dashboard.ses.relevantInfo.title")}
-                </h2>
+          <p className="text-lg text-gray-600 mb-6">
+            {t("dashboard.ses.workInProgress") || fallbackText.workInProgress}
+          </p>
 
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-yellow-700">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-yellow-700 mb-6 inline-block mx-auto text-left">
                   <div className="flex">
                     <div className="flex-shrink-0">
                       <svg
@@ -164,52 +69,18 @@ const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '
                     </div>
                     <div className="ml-3">
                       <p>
-                        <strong>{t("common.important")}:</strong> {t("dashboard.ses.relevantInfo.content")}
+                  <strong>{t("common.important")}:</strong> {t("dashboard.ses.importantNotice") || fallbackText.importantNotice}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-800 mb-2">
-                      {t("dashboard.ses.sections.mandatory.title")}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t("dashboard.ses.sections.mandatory.description")}
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-800 mb-2">
-                      {t("dashboard.ses.sections.optional.title")}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t("dashboard.ses.sections.optional.description")}
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-800 mb-2">
-                      {t("common.documentation")}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t("common.sesDocumentationDesc")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <SESStatusPanel />
-
-              {/* Historial de envíos */}
-              <SESSubmissionHistory
-                submissions={submissions}
-                isLoading={isLoading}
-                onRetry={handleSubmissionRetry}
-              />
-            </>
-          )}
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            {t("dashboard.ses.backToDashboard") || fallbackText.backToDashboard}
+          </Link>
         </div>
       </main>
     </div>

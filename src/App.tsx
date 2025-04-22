@@ -1,5 +1,5 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./shared/contexts/AuthContext";
 import { LanguageProvider } from "./shared/contexts/LanguageContext";
 import "./index.css";
@@ -25,9 +25,44 @@ const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
 const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
 
+// Componente para rastrear navegación
+const RouteTracker = () => {
+  const location = useLocation();
+  
+  // Registrar cambio de página
+  useEffect(() => {
+    // Uso de importación dinámica para evitar problemas
+    import('./services/analytics').then(({ logPageView }) => {
+      try {
+        logPageView(location.pathname + location.search);
+      } catch (error) {
+        console.error('Error al registrar vista de página:', error);
+      }
+    }).catch(error => {
+      console.error('Error al importar servicio de analytics:', error);
+    });
+  }, [location]);
+  
+  return null;
+};
+
 function App() {
   // Obtenemos las rutas públicas y protegidas
   const protectedRoutes = getProtectedRoutes();
+
+  // Inicializar Google Analytics
+  useEffect(() => {
+    // Obtener ID de medición del entorno
+    const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+    if (measurementId) {
+      // Importación dinámica para evitar problemas de Server-Side Rendering
+      import('./services/analytics').then(({ initGA }) => {
+        initGA(measurementId);
+      });
+    } else {
+      console.warn('ID de medición de Google Analytics no configurado en las variables de entorno');
+    }
+  }, []);
 
   return (
     <div className="w-full min-h-screen overflow-hidden">
@@ -35,6 +70,7 @@ function App() {
         <LanguageProvider>
           <AuthProvider>
             <Router>
+              <RouteTracker />
               <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                   {/* Rutas públicas */}

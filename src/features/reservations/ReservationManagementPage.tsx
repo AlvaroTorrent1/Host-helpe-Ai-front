@@ -24,7 +24,11 @@ enum ViewMode {
   FORM,
 }
 
-const ReservationManagementPage: React.FC = () => {
+interface ReservationManagementPageProps {
+  onSignOut?: () => void;
+}
+
+const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ onSignOut }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { reservationId } = useParams<{ reservationId?: string }>();
@@ -331,7 +335,7 @@ const ReservationManagementPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <DashboardHeader />
+      <DashboardHeader onSignOut={onSignOut} />
 
       {/* Navegación secundaria */}
       <DashboardNavigation />

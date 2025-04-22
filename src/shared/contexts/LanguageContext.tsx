@@ -32,16 +32,22 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  // Intentar obtener el idioma guardado en localStorage, o usar 'es' por defecto
-  const [language, setLanguage] = useState<LanguageCode>(() => {
-    const savedLanguage = localStorage.getItem("language");
-    return (savedLanguage as LanguageCode) || "es";
-  });
+  // Forzar idioma español por defecto
+  const [language, setLanguage] = useState<LanguageCode>("es");
 
-  // Guardar el idioma en localStorage cuando cambie
+  // Efecto para limpiar localStorage al iniciar y establecer español
+  useEffect(() => {
+    // Limpiamos cualquier preferencia guardada anteriormente
+    localStorage.removeItem("language");
+    // Establecemos explícitamente el idioma en español
+    localStorage.setItem("language", "es");
+    document.documentElement.lang = "es";
+  }, []);
+
+  // Guardar el idioma en localStorage cuando cambie después de la inicialización
   useEffect(() => {
     localStorage.setItem("language", language);
-    document.documentElement.lang = language; // Actualizar atributo lang del HTML
+    document.documentElement.lang = language;
   }, [language]);
 
   // Función para traducir textos con soporte para variables

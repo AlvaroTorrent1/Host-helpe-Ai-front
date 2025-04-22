@@ -22,7 +22,7 @@ export const en = {
       title: "Main Features",
       subtitle:
         "Everything you need to efficiently manage your tourist accommodations",
-      chatbot: "Chatbot 24/7",
+      chatbot: "AI Agents 24/7",
       chatbotDesc:
         "Virtual assistant for guests that resolves queries in real time",
       registration: "Automated Registration",
@@ -553,6 +553,9 @@ export const en = {
       title: "Traveler Registration",
       newRegistration: "New SES registration",
       travelerRegistered: "Traveler registered successfully",
+      workInProgress: "We are working on this functionality. The page will be ready soon.",
+      importantNotice: "Traveler registration in the SES system is mandatory for all tourist accommodations in Spain.",
+      backToDashboard: "Back to Dashboard",
       relevantInfo: {
         title: "Relevant Information",
         content: "The Security Entry System (SES) is mandatory for all accommodations in Spain. All adult travelers must be registered."

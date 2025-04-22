@@ -1,14 +1,27 @@
 import React from "react";
+import { useAuth } from "@shared/contexts/AuthContext";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 import PropertyManagementPage from "../properties/PropertyManagementPage";
 
 /**
  * PropertiesPage Component
  *
- * Un componente que simplemente redirige a PropertyManagementPage
- * para mantener la compatibilidad con la estructura de rutas
+ * Un componente que proporciona la página de gestión de propiedades
+ * con funcionalidad para cerrar sesión en vez del botón de Dashboard
  */
 const PropertiesPage: React.FC = () => {
-  return <PropertyManagementPage />;
+  const { signOut } = useAuth();
+  const { t } = useLanguage();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error(t("errors.signOut"), error);
+    }
+  };
+
+  return <PropertyManagementPage onSignOut={handleSignOut} />;
 };
 
 export default PropertiesPage; 

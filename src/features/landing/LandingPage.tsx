@@ -409,7 +409,7 @@ const LandingPage = () => {
           {/* Video de fondo */}
           <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
             <iframe
-              src="https://www.youtube.com/embed/Z_OPaMzxGzk?autoplay=1&mute=1&loop=1&playlist=Z_OPaMzxGzk&controls=0"
+              src="https://www.youtube.com/embed/-WDQlVH614M?autoplay=1&mute=1&loop=1&playlist=-WDQlVH614M&controls=0"
               className="absolute w-full h-full object-cover"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

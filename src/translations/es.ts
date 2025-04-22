@@ -22,7 +22,7 @@ export const es = {
       title: "Características Principales",
       subtitle:
         "Todo lo que necesitas para gestionar tus alojamientos turísticos de forma eficiente",
-      chatbot: "Chatbot 24/7",
+      chatbot: "Agentes IA 24/7",
       chatbotDesc:
         "Asistente virtual para huéspedes que resuelve consultas en tiempo real",
       registration: "Registro Automatizado",
@@ -628,6 +628,9 @@ export const es = {
       title: "Registro de Viajeros",
       newRegistration: "Nuevo registro SES",
       travelerRegistered: "Viajero registrado correctamente",
+      workInProgress: "Estamos trabajando en esta funcionalidad. La página estará lista en breve.",
+      importantNotice: "El registro de viajeros en el sistema SES es obligatorio para todos los alojamientos turísticos en España.",
+      backToDashboard: "Volver al Dashboard",
       relevantInfo: {
         title: "Información Relevante",
         content: "El Sistema de Entrada de Seguridad (SES) es obligatorio para todos los alojamientos en España. Todos los viajeros mayores de edad deben ser registrados."
