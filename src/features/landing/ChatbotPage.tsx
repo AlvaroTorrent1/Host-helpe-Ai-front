@@ -316,7 +316,7 @@ const ChatbotPage = () => {
                 <div className="aspect-w-16 aspect-h-9 bg-white rounded-xl shadow-lg overflow-hidden">
                   {/* Placeholder para una imagen o animación mostrando el chatbot en acción */}
                   <img
-                    src="/imagenes/chatbot-features.jpg"
+                    src="/imagenes/phoneCall.png"
                     alt="Características del chatbot"
                     className="w-full h-full object-cover"
                     onError={(e) => {

@@ -325,7 +325,7 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent z-10"></div>
                   <img
-                    src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80"
+                    src="/imagenes/CasaMarbella.png"
                     alt="Registro y añadir propiedad"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                   />
@@ -443,6 +443,15 @@ const LandingPage = () => {
             >
               {t("landing.cta.button")}
             </Link>
+          </div>
+        </section>
+
+        {/* ElevenLabs Convai Widget */}
+        <section className="py-8 bg-white">
+          <div className="container-limited">
+            <div dangerouslySetInnerHTML={{ 
+              __html: '<elevenlabs-convai agent-id="NWSYeahhc7b5XrxzO7eU"></elevenlabs-convai>' 
+            }} />
           </div>
         </section>
       </main>

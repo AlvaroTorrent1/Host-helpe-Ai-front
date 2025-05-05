@@ -319,7 +319,7 @@ const UpsellingPage = () => {
                 <div className="aspect-w-16 aspect-h-9 bg-white rounded-xl shadow-lg overflow-hidden">
                   {/* Placeholder para una imagen o animación mostrando el sistema de upselling */}
                   <img
-                    src="/imagenes/upselling-features.jpg"
+                    src="/imagenes/comisions.jpg"
                     alt="Características del sistema de upselling"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -336,7 +336,7 @@ const UpsellingPage = () => {
 
                 {/* Elemento flotante con un dato estadístico */}
                 <div
-                  className="absolute -bottom-8 -right-8 bg-white rounded-lg shadow-xl p-4 w-64 transform rotate-3 animate-float"
+                  className="absolute bottom-8 right-4 bg-white rounded-lg shadow-xl p-4 w-64 transform rotate-2 animate-float"
                   style={{ animationDuration: "5s" }}
                 >
                   <div className="flex items-center">
@@ -392,135 +392,6 @@ const UpsellingPage = () => {
           `}
         </style>
 
-        {/* Demo Section */}
-        <section className="py-20 bg-white">
-          <div className="container-limited">
-            <div className="flex flex-col lg:flex-row items-center">
-              <div className="lg:w-1/2 mb-10 lg:mb-0">
-                <span className="inline-block px-4 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-medium mb-4">
-                  {t("upsellingPage.demo.subtitle")}
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-                  {t("upsellingPage.demo.title")}
-                </h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  {t("upsellingPage.demo.description")}
-                </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start">
-                    <svg
-                      className="w-6 h-6 text-primary-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span className="ml-3 text-gray-600">
-                      {t("upsellingPage.demo.process.recommendations")}
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-6 h-6 text-primary-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span className="ml-3 text-gray-600">
-                      {t("upsellingPage.demo.process.tracking")}
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-6 h-6 text-primary-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span className="ml-3 text-gray-600">
-                      {t("upsellingPage.demo.process.commissions")}
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-6 h-6 text-primary-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span className="ml-3 text-gray-600">
-                      {t("upsellingPage.demo.process.dashboard")}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div className="lg:w-1/2 lg:pl-16">
-                {/* Placeholder para una demo interactiva o video */}
-                <div className="aspect-w-16 aspect-h-9 bg-gray-100 rounded-xl shadow-lg overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                    {/* Aquí podría ir un iframe o componente de video */}
-                    <div className="text-center p-8">
-                      <svg
-                        className="w-16 h-16 text-primary-300 mx-auto mb-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                        ></path>
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                      </svg>
-                      <p className="text-gray-500">
-                        {t("upsellingPage.demo.videoPlaceholder")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Footer - Same as LandingPage */}
