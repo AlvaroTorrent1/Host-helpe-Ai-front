@@ -403,6 +403,7 @@ export const en = {
     billedAnnually: "Billed annually",
     mostPopular: "Most popular",
     customPrice: "Custom",
+    scheduleDemo: "Schedule demo",
     features: {
       support247: "24/7 Support",
       basicDataManagement: "Basic data management",
@@ -677,6 +678,17 @@ export const en = {
       noAuthInfo: "No authentication information found",
       error: "Authentication error: {error}"
     }
+  },
+  
+  // Payments
+  payment: {
+    processing: "Processing payment",
+    verifying: "We're verifying your subscription. This may take a moment...",
+    success: "Payment completed successfully!",
+    error: "An error has occurred",
+    thankYou: "Thank you for subscribing to Host Helper AI. You can now start using all features.",
+    goToDashboard: "Go to Dashboard",
+    backToPricing: "Back to Pricing"
   },
   
   // Footer

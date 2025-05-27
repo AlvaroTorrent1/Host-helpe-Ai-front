@@ -73,9 +73,9 @@ const AuthCallbackPage = () => {
         }
 
         if (data?.session) {
-          // Si hay una sesión activa, redirigir al dashboard
+          // Si hay una sesión activa, redirigir a la página de precios
           setMessage("Autenticación exitosa. Redirigiendo...");
-          setTimeout(() => navigate("/dashboard"), 1500);
+          setTimeout(() => navigate("/pricing"), 1500);
         } else {
           // Si no hay sesión, verificar si hay un hash en la URL (para confirmación de correo)
           const hash = window.location.hash;
@@ -132,8 +132,8 @@ const AuthCallbackPage = () => {
               // Volvemos a verificar si ya hay una sesión
               const { data: sessionData } = await supabase.auth.getSession();
               if (sessionData?.session) {
-                setMessage("Correo confirmado. Redirigiendo al dashboard...");
-                setTimeout(() => navigate("/dashboard"), 1500);
+                setMessage("Correo confirmado. Redirigiendo a la página de precios...");
+                setTimeout(() => navigate("/pricing"), 1500);
               } else {
                 // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
                 const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta. Intente iniciar sesión nuevamente.";

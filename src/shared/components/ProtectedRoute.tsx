@@ -8,6 +8,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { securityService } from "../../services/security.service";
 import { ROUTES } from "../../config/constants";
 import LoadingScreen from "./LoadingScreen";
+import { useSubscription } from "@shared/hooks/useSubscription";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -18,11 +19,13 @@ interface ProtectedRouteProps {
  * Componente que protege las rutas que requieren autenticación
  * Redirige a la página de inicio de sesión si el usuario no está autenticado
  * También puede verificar roles específicos si se especifica requiredRole
+ * Además, verifica si el usuario tiene una suscripción activa, si no, redirige a la página de precios
  */
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasRequiredRole, setHasRequiredRole] = useState(true);
+  const { hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
   const location = useLocation();
 
   useEffect(() => {
@@ -49,8 +52,8 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     checkAuth();
   }, [requiredRole]);
 
-  // Mientras verifica la autenticación, mostrar una pantalla de carga
-  if (isLoading) {
+  // Mientras verifica la autenticación o la suscripción, mostrar una pantalla de carga
+  if (isLoading || subscriptionLoading) {
     return <LoadingScreen />;
   }
 
@@ -64,7 +67,12 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/access-denied" replace />;
   }
 
-  // Si está autenticado y tiene el rol requerido (o no se requiere rol), mostrar el contenido
+  // Si está autenticado pero no tiene suscripción activa, redirigir a la página de precios
+  if (!hasActiveSubscription) {
+    return <Navigate to="/pricing" state={{ from: location }} replace />;
+  }
+
+  // Si está autenticado, tiene el rol requerido (o no se requiere rol) y tiene suscripción activa, mostrar el contenido
   return <>{children}</>;
 };
 

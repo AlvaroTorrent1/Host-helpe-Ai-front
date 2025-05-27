@@ -1,0 +1,21 @@
+{
+  "name": "dev-server-stripe",
+  "version": "1.0.0",
+  "description": "Servidor de desarrollo para manejar pagos de Stripe sin Docker",
+  "main": "dev-server.js",
+  "scripts": {
+    "start": "node dev-server.js",
+    "dev": "nodemon dev-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "stripe": "^14.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+} 

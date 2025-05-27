@@ -50,6 +50,31 @@ export const signIn = async (email: string, password: string) => {
   return await supabase.auth.signInWithPassword({ email, password });
 };
 
+// Función para iniciar sesión con Google
+export const signInWithGoogle = async () => {
+  // Construir la URL de redirección correcta basada en la ubicación actual
+  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4000';
+  const redirectTo = `${currentOrigin}/auth/callback`;
+  
+  console.log('Iniciando autenticación con Google:', {
+    redirectTo, 
+    configuredRedirectTo: authRedirectUrl,
+    origin: currentOrigin,
+    environment: currentEnvironment
+  });
+  
+  return await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: redirectTo,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
+    },
+  });
+};
+
 export const signUp = async (email: string, password: string) => {
   // Usar SIEMPRE la URL de redirección configurada en environment.ts
   // Esto asegura consistencia entre desarrollo y producción

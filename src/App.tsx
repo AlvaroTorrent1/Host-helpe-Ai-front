@@ -22,6 +22,7 @@ const LoginPage = lazy(() => import("./features/auth/pages/LoginPage"));
 const RegisterPage = lazy(() => import("./features/auth/pages/RegisterPage"));
 const AuthCallbackPage = lazy(() => import("./features/auth/pages/AuthCallbackPage"));
 const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
+const PaymentSuccessPage = lazy(() => import("./features/payment/PaymentSuccess"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
 const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
 
@@ -84,6 +85,7 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
 
                   {/* Rutas protegidas */}
                   <Route

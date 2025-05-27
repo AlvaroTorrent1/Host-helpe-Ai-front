@@ -3,17 +3,50 @@
 // Incluye integración con Stripe para los enlaces de pago y con Calendly para demostraciones.
 // La selección entre planes mensuales o anuales actualiza dinámicamente los enlaces de pago.
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
 import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useAuth } from "@shared/contexts/AuthContext";
+import { useSubscription } from "@shared/hooks/useSubscription";
+import RegisterModal from "@shared/components/RegisterModal";
+import toast from "react-hot-toast";
+
+// Función para agregar metadatos a URLs de Stripe
+const createStripeLink = (baseUrl: string, planId: string, clientId?: string) => {
+  // Crear un ID único para la sesión si no existe uno
+  const sessionId = clientId || uuidv4();
+  
+  // Almacenar en localStorage para recuperarlo después
+  localStorage.setItem('pending_session_id', sessionId);
+  localStorage.setItem('pending_plan_id', planId);
+  
+  // Añadir parámetros a la URL de Stripe
+  const url = new URL(baseUrl);
+  
+  // Añadir client_reference_id como parámetro para identificar al cliente
+  url.searchParams.append('client_reference_id', sessionId);
+  
+  // Añadir metadata para el plan
+  url.searchParams.append('metadata[plan_id]', planId);
+  
+  return url.toString();
+};
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
-  const { t } = useLanguage();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{id: string; name: string; price: number} | null>(null);
+  const [pendingStripeUrl, setPendingStripeUrl] = useState<string | null>(null);
   
-  // Enlaces de Stripe para los diferentes planes
+  const { t } = useLanguage();
+  const { user, signIn } = useAuth();
+  const { hasActiveSubscription } = useSubscription();
+  const navigate = useNavigate();
+  
+  // Enlaces base de Stripe para los diferentes planes
   const stripeLinks = {
     basic: {
       annual: "https://buy.stripe.com/14kaHD96S0lpgdafZ0",
@@ -34,9 +67,65 @@ const Pricing = () => {
     { text: t("nav.login"), href: "/login", isButton: true },
   ];
 
+  // Función para manejar el clic en los botones de los planes
+  const handlePlanClick = (planId: string, baseUrl: string, planName: string, planPrice: number | null) => {
+    // Si el usuario ya está autenticado y tiene una suscripción activa, redireccionar directamente a dashboard
+    if (user && hasActiveSubscription) {
+      navigate('/dashboard');
+      return;
+    }
+    
+    // Para todos los demás casos (no autenticados o sin suscripción activa), mostrar el modal de registro
+    setSelectedPlan({
+      id: planId,
+      name: planName,
+      price: planPrice 
+        ? (isAnnual ? planPrice : planPrice * 1.25) // Precio mensual es aproximadamente 25% más
+        : 0 // Para el plan enterprise, que no tiene precio fijo
+    });
+    
+    // Guardar la URL de Stripe para usarla después del registro
+    const stripeUrl = createStripeLink(baseUrl, planId, user?.id);
+    setPendingStripeUrl(stripeUrl);
+    
+    // Abrir el modal
+    setIsModalOpen(true);
+  };
+  
+  // Función para manejar el registro exitoso
+  const handleRegistrationSuccess = async (email: string, password: string) => {
+    toast.success("Registro exitoso! Redirigiendo al pago...");
+    
+    // Cerrar el modal
+    setIsModalOpen(false);
+    
+    try {
+      // Intentar iniciar sesión automáticamente
+      const { error } = await signIn(email, password);
+      
+      if (error) {
+        console.error("Error al iniciar sesión automáticamente:", error);
+        // A pesar del error, continuamos con la redirección a Stripe
+      }
+      
+      // Redireccionar a Stripe si tenemos la URL
+      if (pendingStripeUrl) {
+        window.location.href = pendingStripeUrl;
+      } else {
+        // Si por alguna razón no tenemos la URL, redireccionar a la página de pricing
+        navigate('/pricing');
+      }
+    } catch (error) {
+      console.error("Error en el proceso:", error);
+      toast.error("Hubo un problema al procesar tu solicitud");
+      navigate('/pricing');
+    }
+  };
+
   // Pricing plans
   const plans = [
     {
+      id: "basic",
       name: t("pricing.basic"),
       monthlyPrice: 9.99,
       annualPrice: 7.99,
@@ -48,9 +137,10 @@ const Pricing = () => {
       ],
       isPopular: false,
       cta: t("pricing.cta"),
-      link: isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly,
+      baseLink: isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly,
     },
     {
+      id: "pro",
       name: t("pricing.pro"),
       monthlyPrice: 29.99,
       annualPrice: 23.99,
@@ -63,9 +153,10 @@ const Pricing = () => {
       ],
       isPopular: true,
       cta: t("pricing.cta"),
-      link: isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly,
+      baseLink: isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly,
     },
     {
+      id: "enterprise",
       name: t("pricing.enterprise"),
       monthlyPrice: null,
       annualPrice: null,
@@ -79,7 +170,7 @@ const Pricing = () => {
       ],
       isPopular: false,
       cta: t("pricing.contact"),
-      link: stripeLinks.enterprise,
+      baseLink: stripeLinks.enterprise,
     },
   ];
 
@@ -172,6 +263,12 @@ const Pricing = () => {
               <p className="text-xl text-white opacity-90 max-w-2xl mx-auto">
                 {t("pricing.subtitle")}
               </p>
+              <Link 
+                to="/schedule-demo" 
+                className="mt-6 inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
+              >
+                {t("pricing.scheduleDemo") || "Agendar demo"}
+              </Link>
             </div>
           </div>
         </section>
@@ -263,18 +360,32 @@ const Pricing = () => {
                       ))}
                     </ul>
 
-                    <a
-                      href={plan.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`block text-center py-3 px-4 rounded-md font-medium transition-colors ${
-                        plan.isPopular 
-                          ? "bg-primary-500 hover:bg-primary-600 text-white"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                      }`}
-                    >
-                      {plan.cta}
-                    </a>
+                    {plan.id !== "enterprise" ? (
+                      <button
+                        onClick={() => handlePlanClick(
+                          plan.id, 
+                          plan.baseLink, 
+                          plan.name, 
+                          isAnnual ? plan.annualPrice : plan.monthlyPrice
+                        )}
+                        className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
+                          plan.isPopular 
+                            ? "bg-primary-500 hover:bg-primary-600 text-white"
+                            : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {plan.cta}
+                      </button>
+                    ) : (
+                      <a
+                        href={plan.baseLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`block text-center py-3 px-4 rounded-md font-medium transition-colors bg-gray-100 hover:bg-gray-200 text-gray-800`}
+                      >
+                        {plan.cta}
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
@@ -312,10 +423,10 @@ const Pricing = () => {
               {t("pricing.ctaSection.subtitle")}
             </p>
             <Link 
-              to="/register" 
+              to="/schedule-demo" 
               className="inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
             >
-              {t("pricing.ctaSection.button")}
+              {t("pricing.scheduleDemo") || "Agendar demo"}
             </Link>
           </div>
         </section>
@@ -484,6 +595,14 @@ const Pricing = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Modal de registro */}
+      <RegisterModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={handleRegistrationSuccess}
+        selectedPlan={selectedPlan || undefined}
+      />
     </div>
   );
 };

@@ -104,7 +104,7 @@ const LandingPage = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                   <CalendlyLink />
                   <Link
-                    to="/register"
+                    to="/pricing"
                     className="inline-flex items-center justify-center px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg text-center w-full sm:w-auto"
                   >
                     {t("landing.hero.cta")}
@@ -359,9 +359,9 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary-600/30 to-transparent z-10"></div>
                   <img
-                    src="/imagenes/link_registro.jpg"
+                    src="/imagenes/wall-e2.4.jpeg"
                     alt="Configuración del asistente virtual"
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                   />
                   <div className="absolute -bottom-10 left-0 w-32 h-32 bg-primary-600 rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-all duration-500"></div>
                 </div>
@@ -393,7 +393,7 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-transparent z-10"></div>
                   <img
-                    src="/imagenes/turistas.jpg"
+                    src="/imagenes/turist_phone.jpg"
                     alt="Compartir enlace con huéspedes"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                   />
@@ -438,10 +438,10 @@ const LandingPage = () => {
               {t("landing.cta.subtitle")}
             </p>
             <Link
-              to="/register"
+              to="/pricing"
               className="inline-block px-6 py-3 sm:px-8 sm:py-4 bg-white/30 backdrop-blur-sm text-white font-medium rounded-md border border-white/20 hover:bg-white/40 transition-colors shadow-lg text-lg"
             >
-              {t("landing.cta.button")}
+              Comenzar ahora
             </Link>
           </div>
         </section>

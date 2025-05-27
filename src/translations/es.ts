@@ -80,7 +80,7 @@ export const es = {
       title: "Únete a los propietarios que están automatizando su gestión",
       subtitle:
         "Ahorra tiempo, aumenta tus ingresos y mejora la satisfacción de tus huéspedes.",
-      button: "Empieza tu prueba gratuita",
+      button: "Comenzar ahora",
     },
   },
 
@@ -328,7 +328,7 @@ export const es = {
     subtitle:
       "Reserva una cita con nuestro equipo para conocer cómo Host Helper AI puede ayudarte a automatizar la gestión de tus alojamientos turísticos",
     button: "Reservar cita ahora",
-    linkText: "Programa una demo",
+    linkText: "Agendar demo",
     pageTitle: "Calendario de Demostraciones",
     pageSubtitle: "Selecciona una fecha y hora conveniente para ti",
     backToHome: "Volver al inicio",
@@ -406,6 +406,7 @@ export const es = {
     billedAnnually: "Facturado anualmente",
     mostPopular: "Más popular",
     customPrice: "Personalizado",
+    scheduleDemo: "Agendar demo",
     features: {
       support247: "Soporte 24/7",
       basicDataManagement: "Gestión básica de datos",
@@ -753,6 +754,17 @@ export const es = {
       noAuthInfo: "No se encontró información de autenticación",
       error: "Error de autenticación: {error}"
     }
+  },
+  
+  // Pagos
+  payment: {
+    processing: "Procesando pago",
+    verifying: "Estamos verificando tu suscripción. Esto puede tomar unos momentos...",
+    success: "¡Pago completado con éxito!",
+    error: "Ha ocurrido un error",
+    thankYou: "Gracias por tu suscripción a Host Helper AI. Ya puedes comenzar a utilizar todas las funcionalidades.",
+    goToDashboard: "Ir al Dashboard",
+    backToPricing: "Volver a Precios"
   },
   
   // Footer

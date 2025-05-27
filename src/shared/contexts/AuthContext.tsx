@@ -12,6 +12,7 @@ import {
   signUp,
   signOut,
   getCurrentUser,
+  signInWithGoogle,
 } from "@services/supabase";
 
 // Interfaces para los tipos de retorno de autenticación
@@ -30,6 +31,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signUp: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<{ error: AuthError | null }>;
+  signInWithGoogle: () => Promise<any>;
 };
 
 // Creación del contexto
@@ -133,6 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signIn,
     signUp,
     signOut,
+    signInWithGoogle,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
