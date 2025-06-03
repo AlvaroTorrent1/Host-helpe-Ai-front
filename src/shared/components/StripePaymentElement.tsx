@@ -1,5 +1,5 @@
-// src/shared/components/StripePaymentElement.tsx - Componente de Pago Stripe para Producción
-// Solo funcionalidad de producción - sin código de desarrollo o simulaciones
+// src/shared/components/StripePaymentElement.tsx - Componente de Pago Stripe para MODO TEST
+// Funcionalidad de test - usando claves de prueba de Stripe
 
 import React, { useEffect, useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -19,20 +19,18 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   const elements = useElements();
   
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [loadError, setLoadError] = useState(false);
+  const [message, setMessage] = useState<string>('');
+  const [isPaymentElementReady, setIsPaymentElementReady] = useState(false);
   
-  console.log('✅ StripePaymentElement iniciado para producción:', {
+  console.log('✅ StripePaymentElement iniciado para MODO TEST:', {
     clientSecret: clientSecret?.substring(0, 20) + '...',
     stripeLoaded: !!stripe,
-    elementsLoaded: !!elements
+    elementsLoaded: !!elements,
+    environment: import.meta.env.MODE || 'development'
   });
 
-  // Verificar estado de Stripe y validar client_secret
+  // Efecto simple para verificar estado
   useEffect(() => {
-    console.log('🔍 Verificando configuración de Stripe...');
-    
     if (!stripe) {
       console.log('⏳ Esperando carga de Stripe.js...');
       return;
@@ -40,201 +38,165 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
     
     if (!clientSecret) {
       console.error('❌ No se proporcionó client_secret válido');
-      setErrorMessage('Error de configuración: No hay información de pago válida');
-      setLoadError(true);
-      return;
-    }
-    
-    // Validar formato del client_secret
-    if (!clientSecret.startsWith('pi_') || !clientSecret.includes('_secret_')) {
-      console.error('❌ Formato de client_secret inválido');
-      setErrorMessage('Error de configuración: Información de pago inválida');
-      setLoadError(true);
+      setMessage('Error: No hay información de pago válida');
       return;
     }
     
     console.log('✅ Stripe.js y client_secret configurados correctamente');
-  }, [stripe, clientSecret]);
+    
+    // Timeout para detectar si PaymentElement no se carga en 10 segundos
+    const timeout = setTimeout(() => {
+      if (!isPaymentElementReady) {
+        console.error('❌ Timeout: PaymentElement no se cargó en 10 segundos');
+        setMessage('Error: El formulario de pago tardó demasiado en cargar. Verifica la configuración de Stripe o recarga la página.');
+      }
+    }, 10000);
+    
+    return () => clearTimeout(timeout);
+  }, [stripe, clientSecret, isPaymentElementReady]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      const errorMsg = !stripe ? "Stripe.js no está cargado" : "Elements no está disponible";
-      console.error('❌', errorMsg);
-      setErrorMessage(`${errorMsg}. Por favor, recarga la página e intenta de nuevo.`);
+      setMessage('Error: Sistema de pago no está listo');
       return;
     }
 
-    if (!clientSecret) {
-      console.error('❌ No hay client_secret disponible');
-      setErrorMessage('Error: No se puede procesar el pago sin información válida');
+    // Verificar que el PaymentElement esté completamente montado
+    const paymentElement = elements.getElement('payment');
+    if (!paymentElement) {
+      setMessage('Error: El formulario de pago no está listo. Espera un momento e intenta de nuevo.');
+      console.error('❌ PaymentElement no está montado');
       return;
     }
 
     setIsProcessing(true);
-    setPaymentStatus('processing');
-    setErrorMessage('');
+    setMessage('');
 
     try {
       console.log('🔄 Iniciando confirmación de pago...');
+      console.log('✅ PaymentElement está montado correctamente');
+
+      // Enviar el formulario primero
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+        console.error('❌ Error al enviar formulario:', submitError);
+        setMessage(submitError.message || 'Error al enviar el formulario');
+        onError(submitError.message || 'Error al enviar formulario');
+      return;
+    }
+
+      console.log('✅ Formulario enviado correctamente, confirmando pago...');
       
-      // Enviar formulario de pago
-      const { error: submitError } = await elements.submit();
-      if (submitError) {
-        throw new Error(submitError.message || 'Error al enviar el formulario de pago');
-      }
-
-      // Confirmar el pago con Stripe
+      // Confirmar pago SIN redirección - todo se maneja en el modal
       const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/payment-success`,
-        },
+      elements,
+        // NO incluir confirmParams con return_url
         redirect: 'if_required'
-      });
+    });
 
-      if (error) {
+    if (error) {
         console.error('❌ Error al confirmar el pago:', error);
-        
-        // Manejar errores específicos de Stripe con mensajes más claros
-        let userMessage = '';
-        
-        switch (error.type) {
-          case 'card_error':
-            userMessage = `Error de tarjeta: ${error.message}`;
-            break;
-          case 'validation_error':
-            userMessage = `Error de validación: ${error.message}`;
-            break;
-          case 'authentication_error':
-            userMessage = 'Error de autenticación. Por favor, verifica tus datos.';
-            break;
-          case 'rate_limit_error':
-            userMessage = 'Demasiados intentos. Espera un momento e intenta de nuevo.';
-            break;
-          case 'api_connection_error':
-            userMessage = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
-            break;
-          case 'api_error':
-            userMessage = 'Error del servidor. Intenta de nuevo en unos minutos.';
-            break;
-          default:
-            userMessage = `Error al procesar el pago: ${error.message || 'Error desconocido'}`;
-        }
-        
-        setErrorMessage(userMessage);
-        setPaymentStatus('error');
+        setMessage(error.message || 'Error al procesar el pago');
         onError(error.message || 'Error desconocido');
+      } else if (paymentIntent) {
+        console.log('✅ Pago procesado, paymentIntent completo:', paymentIntent);
+        console.log('✅ Pago procesado exitosamente (resumen):', {
+          paymentIntentId: paymentIntent.id,
+          status: paymentIntent.status,
+          next_action: paymentIntent.next_action || null,
+          client_secret: paymentIntent.client_secret?.substring(0,15) + '...'
+        });
         
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('✅ Pago procesado exitosamente:', paymentIntent.id);
-        setPaymentStatus('success');
-        onSuccess();
-        
-      } else {
-        console.log('⚠️ Pago en estado:', paymentIntent?.status);
-        // El pago puede estar pendiente o requerir acción adicional
-        if (paymentIntent?.status === 'processing') {
-          setErrorMessage('El pago está siendo procesado. Te notificaremos cuando se complete.');
+        if (paymentIntent.status === 'succeeded') {
+          console.log('🎉 ¡PAGO COMPLETADO CON ÉXITO EN EL MODAL!');
+          onSuccess();
+          // Detener cualquier posible evento subsiguiente o comportamiento por defecto
+          if (e && typeof e.preventDefault === 'function') {
+            e.preventDefault();
+          }
+          if (e && typeof e.stopPropagation === 'function') {
+            e.stopPropagation();
+          }
+          return; // Salir explícitamente de la función aquí
         } else {
-          setErrorMessage('El pago requiere verificación adicional. Revisa tu email.');
+          setMessage(`Pago en estado: ${paymentIntent.status}`);
         }
+      } else {
+        console.log('✅ Pago procesado sin errores');
+        onSuccess();
       }
       
     } catch (error: any) {
-      console.error('❌ Error inesperado durante el pago:', error);
-      
-      let userMessage = 'Error inesperado al procesar el pago.';
-      
-      if (error.message?.includes('network') || error.message?.includes('fetch')) {
-        userMessage = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
-      } else if (error.message?.includes('timeout')) {
-        userMessage = 'La operación tardó demasiado. Intenta de nuevo.';
-      } else if (error.message) {
-        userMessage = error.message;
-      }
-      
-      setErrorMessage(userMessage);
-      setPaymentStatus('error');
-      onError(userMessage);
-      
+      console.error('❌ Error inesperado:', error);
+      setMessage('Error inesperado al procesar el pago');
+      onError(error.message || 'Error inesperado');
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Error de carga - mostrar mensaje de error limpio
-  if (loadError) {
-    return (
-      <div className="p-4 text-red-700 bg-red-100 rounded-md">
-        <h3 className="font-bold mb-2">❌ Error al cargar el formulario de pago</h3>
-        <p>{errorMessage}</p>
-        <p className="text-sm mt-2">Por favor, recarga la página e intenta de nuevo.</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-        >
-          Recargar página
-        </button>
-      </div>
-    );
-  }
-
-  // Estado de carga mientras Stripe.js se inicializa
+  // Mostrar loading mientras Stripe se inicializa
   if (!stripe || !elements) {
-    return (
-      <div className="space-y-4">
-        <div className="animate-pulse">
-          <div className="h-12 bg-gray-200 rounded mb-4"></div>
-          <div className="h-12 bg-gray-200 rounded mb-4"></div>
-          <div className="h-10 bg-gray-200 rounded"></div>
+  return (
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Cargando sistema de pago...</p>
+        <p className="text-sm text-gray-500 mt-2">Inicializando Stripe en modo TEST</p>
+        <div className="mt-4 text-xs text-gray-400">
+          <p>Client Secret: {clientSecret ? '✅ Válido' : '❌ No disponible'}</p>
+          <p>Stripe: {stripe ? '✅ Cargado' : '❌ No cargado'}</p>
+          <p>Elements: {elements ? '✅ Cargado' : '❌ No cargado'}</p>
         </div>
-        <p className="text-gray-600 text-center">🔄 Cargando formulario de pago seguro...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Mostrar errores de pago */}
-      {errorMessage && (
+    <div className="space-y-6">
+      {/* Mostrar mensajes */}
+      {message && (
         <div className="p-4 text-red-700 bg-red-100 rounded-md border border-red-200">
-          <div className="flex items-start">
-            <span className="mr-2">❌</span>
-            <div>
-              <p className="font-medium">{errorMessage}</p>
-              <p className="text-sm mt-1">Si el problema persiste, contacta con soporte.</p>
-            </div>
-          </div>
+          <p>{message}</p>
         </div>
       )}
 
       {/* Formulario de pago */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="p-4 border border-gray-200 rounded-lg bg-white">
           <PaymentElement 
             options={{
-              layout: 'tabs',
-              business: {
-                name: 'Host Helper - Suscripción Premium'
-              },
-              paymentMethodOrder: ['card', 'paypal', 'apple_pay', 'google_pay']
+              layout: 'tabs'
+            }}
+            onReady={() => {
+              console.log('✅ PaymentElement está listo y montado');
+              setIsPaymentElementReady(true);
+            }}
+            onLoadError={(error) => {
+              console.error('❌ Error cargando PaymentElement:', error);
+              setMessage('Error cargando el formulario de pago. Verifica la configuración de Stripe.');
+              setIsPaymentElementReady(false);
+            }}
+            onChange={(event) => {
+              // Limpiar mensaje si el elemento está completo
+              if (event.complete) {
+                setMessage('');
+              }
             }}
           />
-        </div>
-        
-        <button
-          type="submit"
-          disabled={isProcessing || !stripe || !clientSecret}
-          className={`w-full py-3 px-4 rounded-md font-medium transition-all duration-200 ${
-            isProcessing || !stripe || !clientSecret
-              ? 'bg-gray-400 cursor-not-allowed opacity-60'
-              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg'
+      </div>
+      
+      <button
+        type="submit"
+          disabled={isProcessing || !stripe || !isPaymentElementReady}
+          className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
+            isProcessing || !stripe || !isPaymentElementReady
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
-        >
-          {isProcessing ? (
+      >
+        {isProcessing ? (
             <span className="flex items-center justify-center">
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -242,29 +204,43 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
               </svg>
               Procesando pago...
             </span>
-          ) : (
-            '🔒 Completar pago seguro'
-          )}
-        </button>
-      </form>
+          ) : !isPaymentElementReady ? (
+            '⏳ Preparando formulario...'
+        ) : (
+            '💳 Completar pago'
+        )}
+      </button>
+    </form>
 
-      {/* Estado de éxito */}
-      {paymentStatus === 'success' && (
-        <div className="p-4 text-green-700 bg-green-100 rounded-md border border-green-200">
-          <div className="flex items-center">
-            <span className="mr-2">✅</span>
-            <div>
-              <p className="font-medium">¡Pago completado exitosamente!</p>
-              <p className="text-sm">Tu suscripción ha sido activada.</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
       {/* Información de seguridad */}
       <div className="text-xs text-gray-500 text-center">
-        <p>🔒 Tu información está protegida con encriptación SSL</p>
-        <p>Procesado de forma segura por Stripe</p>
+        <p>🔒 Modo de prueba - usar tarjetas de test</p>
+        <p>Tarjeta: 4242 4242 4242 4242</p>
+        <p className="mt-1 text-green-600">✅ El pago se procesa completamente en este modal</p>
+        
+        {/* Botón de diagnóstico si hay problemas */}
+        {!isPaymentElementReady && (
+          <button 
+            onClick={() => {
+              console.log('🔍 Diagnóstico de configuración:');
+              console.log('- Stripe cargado:', !!stripe);
+              console.log('- Elements cargado:', !!elements);
+              console.log('- Client Secret:', clientSecret?.substring(0, 20) + '...');
+              console.log('- PaymentElement ready:', isPaymentElementReady);
+              
+              // Intentar obtener el payment element
+              try {
+                const paymentEl = elements?.getElement('payment');
+                console.log('- PaymentElement encontrado:', !!paymentEl);
+              } catch (e) {
+                console.log('- Error obteniendo PaymentElement:', e);
+              }
+            }}
+            className="mt-2 px-3 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
+          >
+            🔍 Diagnóstico
+          </button>
+        )}
       </div>
     </div>
   );

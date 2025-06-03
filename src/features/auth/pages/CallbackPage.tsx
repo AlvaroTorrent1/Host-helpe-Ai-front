@@ -21,15 +21,25 @@ export const CallbackPage = () => {
         }
         
         if (data?.session) {
-          console.log('Autenticación exitosa, redirigiendo a dashboard');
-          // Verificar si hay un plan seleccionado en localStorage
+          console.log('Autenticación exitosa, verificando contexto...');
+          
+          // 🎯 NUEVO: Verificar si viene del flujo de modal de pago
+          const isModalPaymentFlow = localStorage.getItem('modalPaymentFlow') === 'true';
           const selectedPlanId = localStorage.getItem('selectedPlanId');
           
+          if (isModalPaymentFlow && selectedPlanId) {
+            console.log('🔄 Callback: Usuario viene del modal de pago, volviendo a pricing con modal');
+            // Mantener los flags para que el modal se reabra automáticamente
+            navigate('/pricing');
+            return;
+          }
+          
+          // Flujo normal: verificar si hay un plan seleccionado
           if (selectedPlanId) {
-            // Redirigir al proceso de pago si venía de selección de plan
+            console.log('🔄 Callback: Plan seleccionado encontrado, redirigiendo a checkout');
             navigate('/checkout');
           } else {
-            // Redirigir al dashboard normalmente
+            console.log('🔄 Callback: Sin plan seleccionado, redirigiendo a dashboard');
             navigate('/dashboard');
           }
         } else {

@@ -1,42 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@shared/contexts/AuthContext';
 import { useLanguage } from '@shared/contexts/LanguageContext';
+import { usePaymentFlow } from '@shared/contexts/PaymentFlowContext';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import supabase from '@/services/supabase';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import StripePaymentElement from './StripePaymentElement';
+import SimpleStripeTest from './SimpleStripeTest';
 import { createPaymentIntent } from '@/services/stripeApi';
+import { useNavigate } from 'react-router-dom';
+import { useSubscription } from '@shared/hooks/useSubscription';
 
-// Configuración de Stripe para PRODUCCIÓN
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_live_51QNuzlKpVJd2j1yPFx0LzTWN0c6J7kmw6NsdjJ6z4g5Ki1xnEBWs4uxzSwHcoswuwfNbhWXJTKHWJW2bxcWjOuNd009GmX21J4';
-console.log('RegisterModal: Usando clave pública de Stripe:', STRIPE_PUBLIC_KEY?.substring(0, 15) + '...');
+// Configuración de Stripe - Se adapta automáticamente según las variables de entorno
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ';
+
+// Detectar automáticamente si estamos en modo producción o test
+const isProductionMode = STRIPE_PUBLIC_KEY.startsWith('pk_live_');
+const stripeMode = isProductionMode ? 'PRODUCCIÓN' : 'TEST';
+
+console.log(`RegisterModal: Usando clave pública de Stripe en modo ${stripeMode}:`, STRIPE_PUBLIC_KEY?.substring(0, 15) + '...');
 
 // Verificar que la clave pública tenga un formato válido
 if (!STRIPE_PUBLIC_KEY || !STRIPE_PUBLIC_KEY.startsWith('pk_')) {
   console.error('¡ADVERTENCIA! La clave pública de Stripe no es válida:', STRIPE_PUBLIC_KEY);
 } else {
-  console.log('RegisterModal: Clave pública de Stripe válida detectada');
+  console.log(`RegisterModal: Clave pública de Stripe ${stripeMode} válida detectada`);
 }
 
 // Cargar Stripe fuera del componente para evitar recreaciones
 let stripePromise: Promise<any> | null = null;
 
+// Función para limpiar el estado de Stripe
+const clearStripePromise = () => {
+  stripePromise = null;
+  console.log('RegisterModal: Stripe promise limpiada para reinicialización');
+};
+
 // Función para inicializar Stripe de forma segura
 const getStripePromise = () => {
   if (!stripePromise && STRIPE_PUBLIC_KEY && STRIPE_PUBLIC_KEY.startsWith('pk_')) {
-    console.log('RegisterModal: Inicializando Stripe.js con clave:', STRIPE_PUBLIC_KEY?.substring(0, 15) + '...');
+    console.log(`RegisterModal: Inicializando Stripe.js en modo ${stripeMode}:`, STRIPE_PUBLIC_KEY?.substring(0, 15) + '...');
     stripePromise = loadStripe(STRIPE_PUBLIC_KEY).then(stripe => {
       if (stripe) {
-        console.log('RegisterModal: Stripe.js cargado exitosamente');
+        console.log(`RegisterModal: Stripe.js ${stripeMode} cargado exitosamente`);
       } else {
         console.error('RegisterModal: Error - Stripe.js devolvió null');
       }
       return stripe;
     }).catch(error => {
       console.error('RegisterModal: Error cargando Stripe.js:', error);
-      // En caso de error, devolver null para que el componente maneje el error
+      // Limpiar la promesa para permitir reintentos
+      stripePromise = null;
       return null;
     });
   }
@@ -74,6 +90,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   onSuccess, 
   selectedPlan 
 }) => {
+  const navigate = useNavigate();
   // Estados para el formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -88,17 +105,89 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   const [paymentStep, setPaymentStep] = useState<'register' | 'payment' | 'success'>('register');
   const [userId, setUserId] = useState<string | null>(null);
   
+  // 🔧 NUEVO: Estado para confirmar cuenta después de Google OAuth
+  const [showAccountConfirmation, setShowAccountConfirmation] = useState(false);
+  
   const { signUp, user, signInWithGoogle } = useAuth();
   const { t } = useLanguage();
+  const { refetchSubscription } = useSubscription();
+  const { clearFlow } = usePaymentFlow();
   
-  // Si el usuario ya está autenticado, pasamos directamente al proceso de pago
-  const handleAlreadyAuthenticated = async () => {
+  // Cuando se abre el modal, verificar si el usuario ya está autenticado
+  useEffect(() => {
+    if (isOpen) {
+      // Limpiar estado de Stripe al abrir el modal para evitar errores de versión
+      clearStripePromise();
+      
+      // Resetear estados de confirmación
+      setShowAccountConfirmation(false);
+      
+      console.log('📝 Modal: Modal abierto, verificando estado de autenticación');
+      
+      // Si el usuario ya está autenticado, mostrar confirmación en lugar de proceder automáticamente
+      if (user && selectedPlan) {
+        console.log('🔍 Modal: Usuario ya autenticado, mostrando confirmación de cuenta');
+        setShowAccountConfirmation(true);
+      }
+    }
+  }, [isOpen, user, selectedPlan]);
+
+  // Detectar retorno de Google OAuth y mostrar confirmación
+  useEffect(() => {
+    const awaitingConfirmation = localStorage.getItem('awaitingAccountConfirmation') === 'true';
+    
+    // Si tenemos usuario, plan seleccionado, y estamos esperando confirmación
+    if (user && selectedPlan && awaitingConfirmation && isOpen) {
+      console.log('🔄 Modal: Usuario retornó de Google OAuth, mostrando confirmación de cuenta');
+      
+      // Limpiar el flag y mostrar confirmación
+      localStorage.removeItem('awaitingAccountConfirmation');
+      setShowAccountConfirmation(true);
+    }
+  }, [user, selectedPlan, isOpen]);
+
+  // Función para manejar el inicio de sesión con Google
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+      
+      // Si hay un plan seleccionado, guardarlo en localStorage antes de redirigir
+      if (selectedPlan) {
+        localStorage.setItem("selectedPlanId", selectedPlan.id);
+        localStorage.setItem("selectedPlanName", selectedPlan.name);
+        localStorage.setItem("selectedPlanPrice", selectedPlan.price.toString());
+      }
+      
+      // Marcar que esperamos confirmación después de OAuth
+      localStorage.setItem('awaitingAccountConfirmation', 'true');
+      
+      // Iniciar el flujo de autenticación con Google
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        setError(error.message);
+        localStorage.removeItem('awaitingAccountConfirmation');
+      }
+      // No necesitamos manejar el caso de éxito aquí, ya que se redirigirá al usuario
+    } catch (err: any) {
+      console.error("Error durante la autenticación con Google:", err);
+      setError("Error al iniciar sesión con Google. Inténtalo de nuevo.");
+      localStorage.removeItem('awaitingAccountConfirmation');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Función para proceder al pago después de confirmar la cuenta
+  const proceedToPayment = async () => {
     if (user && selectedPlan) {
       try {
         setIsLoading(true);
         setError("");
+        setShowAccountConfirmation(false); // Ocultar confirmación
         
-        console.log("Iniciando proceso de pago para usuario autenticado:", {
+        console.log("Iniciando proceso de pago para usuario confirmado:", {
           userId: user.id,
           planId: selectedPlan.id,
           email: user.email,
@@ -134,7 +223,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           }
           
           console.log("Payment intent creado correctamente, obtenido client_secret");
-          
+        
           // Guardar información para el flujo de pago
           setUserId(user.id);
           
@@ -151,7 +240,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           localStorage.setItem("selectedPlanId", selectedPlan.id);
           localStorage.setItem("selectedPlanName", selectedPlan.name);
           localStorage.setItem("selectedPlanPrice", selectedPlan.price.toString());
-          
+            
           // Establecer el estado de pago y el client secret en el orden correcto
           setPaymentStep('payment');
           
@@ -191,59 +280,120 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         }
         
         setIsLoading(false);
+        setShowAccountConfirmation(true); // Volver a mostrar confirmación en caso de error
       }
-    }
-  };
-  
-  // Cuando se abre el modal, verificar si el usuario ya está autenticado
-  useEffect(() => {
-    if (isOpen && user && selectedPlan) {
-      // Si el usuario ya está autenticado cuando se abre el modal, iniciar proceso de pago
-      handleAlreadyAuthenticated();
-    }
-  }, [isOpen, user, selectedPlan]);
-
-  // Función para manejar el inicio de sesión con Google
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-      
-      // Si hay un plan seleccionado, guardarlo en localStorage antes de redirigir
-      if (selectedPlan) {
-        localStorage.setItem("selectedPlanId", selectedPlan.id);
-        localStorage.setItem("selectedPlanName", selectedPlan.name);
-        localStorage.setItem("selectedPlanPrice", selectedPlan.price.toString());
-      }
-      
-      // Iniciar el flujo de autenticación con Google
-      const { error } = await signInWithGoogle();
-      
-      if (error) {
-        setError(error.message);
-      }
-      // No necesitamos manejar el caso de éxito aquí, ya que se redirigirá al usuario
-    } catch (err: any) {
-      console.error("Error durante la autenticación con Google:", err);
-      setError("Error al iniciar sesión con Google. Inténtalo de nuevo.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   // Si el modal no está abierto, no renderizar nada
   if (!isOpen) return null;
   
-  // Manejador para el éxito del pago
-  const handlePaymentSuccess = () => {
+  // Manejador para el éxito del pago y navegación
+  const handlePaymentSuccessAndNavigate = async () => {
+    console.log('🎉 Modal: Pago exitoso, preparando para navegar al dashboard...');
     setPaymentStep('success');
-    toast.success("¡Pago completado con éxito!");
+    toast.success("¡Suscripción activada! Redirigiendo al dashboard...");
     
-    // Esperar un poco y cerrar el modal
+    // SOLUCIÓN TEMPORAL DE RESPALDO: Actualizar directamente el status a 'active'
+    // Esto asegura que funcione mientras verificamos el webhook
+    if (userId && selectedPlan) {
+      console.log('🔄 Modal: Aplicando solución de respaldo - Actualizando suscripción a ACTIVE directamente...');
+      try {
+        const { data: updateResult, error: updateError } = await supabase
+          .from('customer_subscriptions')
+          .update({
+            status: 'active',
+            current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          })
+          .eq('user_id', userId)
+          .eq('plan_id', selectedPlan.id)
+          .eq('status', 'pending')
+          .select();
+          
+        if (updateError) {
+          console.error('❌ Modal: Error en solución de respaldo:', updateError);
+        } else {
+          console.log('✅ Modal: Solución de respaldo aplicada - Suscripción actualizada a ACTIVE:', updateResult);
+          
+          // FORZAR REFETCH de la suscripción antes de navegar
+          console.log('🔄 Modal: Forzando refetch de suscripción...');
+          try {
+            await refetchSubscription();
+            console.log('✅ Modal: Refetch completado');
+            
+            // Esperar un poco más para asegurar que el estado se actualice
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Verificar una vez más que la suscripción esté activa
+            const verificationStatus = await checkCurrentSubscriptionStatus();
+            console.log('🔍 Modal: Estado de verificación final:', verificationStatus);
+            
+          } catch (refetchError) {
+            console.error('❌ Modal: Error en refetch:', refetchError);
+          }
+          
+          // NAVEGACIÓN DIRECTA después del update exitoso
+          console.log('🎉 Modal: Navegando directamente al dashboard...');
     setTimeout(() => {
-      // Llamar al callback de éxito con email y password vacíos ya que el usuario ya está autenticado
+            // 🚀 NUEVO: Limpiar el flujo de pago del contexto global
+            clearFlow();
+            onSuccess("", "");
+            navigate('/dashboard');
+          }, 2000); // 2 segundos para mostrar el mensaje de éxito
+          return; // Salir aquí, no hacer polling
+        }
+      } catch (error) {
+        console.error('❌ Modal: Error en solución de respaldo:', error);
+      }
+    }
+    
+    // Solo hacer polling si la actualización directa falló
+    console.log('⚠️ Modal: Actualización directa falló, iniciando polling de verificación...');
+    
+    const pollForActiveSubscription = async (maxAttempts = 5, intervalMs = 2000) => {
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        console.log(`Modal: Intento ${attempt}/${maxAttempts} - Verificando suscripción...`);
+        
+        try {
+          await refetchSubscription();
+          
+          // Check if subscription is now active
+          const currentSubscriptionStatus = await checkCurrentSubscriptionStatus();
+          
+          if (currentSubscriptionStatus === 'active') {
+            console.log('🎉 Modal: ¡Suscripción activa encontrada! Navegando al dashboard...');
+            // 🚀 NUEVO: Limpiar el flujo de pago del contexto global
+            clearFlow();
+            onSuccess("", "");
+            navigate('/dashboard');
+            return true; // Success
+          }
+          
+          console.log(`Modal: Intento ${attempt} - Suscripción aún no activa. Esperando ${intervalMs}ms...`);
+          
+          if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, intervalMs));
+          }
+        } catch (error) {
+          console.error(`Modal: Error en intento ${attempt}:`, error);
+          if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, intervalMs));
+          }
+        }
+      }
+      
+      // If we get here, polling failed - navigate anyway
+      console.warn('Modal: Timeout esperando suscripción activa. Navegando al dashboard...');
+      toast.success("Pago completado. Accediendo al dashboard...");
+      // 🚀 NUEVO: Limpiar el flujo de pago del contexto global
+      clearFlow();
       onSuccess("", "");
-    }, 2000);
+      navigate('/dashboard');
+      return false;
+    };
+    
+    // Start polling only if direct update failed
+    await pollForActiveSubscription();
   };
   
   // Manejador para los errores de pago
@@ -258,7 +408,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
     
     // Si el usuario ya está autenticado, saltamos al proceso de pago
     if (user) {
-      handleAlreadyAuthenticated();
+      proceedToPayment();
       return;
     }
     
@@ -290,57 +440,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
       } else {
         // Si el registro es exitoso y tenemos un plan seleccionado, procedemos al pago
         if (data?.user && selectedPlan) {
-          try {
-            // Crear un registro pendiente de suscripción (estado "pending")
-            await supabase.from('customer_subscriptions').insert({
-              user_id: data.user.id,
-              plan_id: selectedPlan.id,
-              status: 'pending', // Esta será actualizada cuando complete el pago
-              current_period_end: null,
-            });
-            
-            // Limpiar completamente el estado anterior
-            setClientSecret(null);
-            setPaymentStep('register');
-            
-            // Esperar un tick para que React procese la limpieza del estado
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
-            // Crear un payment intent
-            const { clientSecret } = await createPaymentIntent({
-              amount: selectedPlan.price * 100, // Convertir a centavos
-              currency: 'eur',
-              user_id: data.user.id,
-              plan_id: selectedPlan.id,
-              email
-            });
-            
-            // Actualizar estado para mostrar el formulario de pago
-            setUserId(data.user.id);
-            setPaymentStep('payment');
-            
-            // Pequeña demora para asegurar que el componente esté listo
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            setClientSecret(clientSecret);
-          } catch (err) {
-            console.error("Error preparando pago:", err);
-            
-            // Mostrar un mensaje de error más específico
-            if (err instanceof Error) {
-              if (err.message.includes('client_secret')) {
-                setError("Error al crear el pago: No se pudo generar la información de pago");
-              } else if (err.message.includes('conexión')) {
-                setError("Error de conexión: No se pudo conectar con el servidor de pagos");
-              } else if (err.message.includes('CORS')) {
-                setError("Error de conexión: El servidor rechazó la solicitud (CORS)");
-              } else {
-                setError(`Error API: ${err.message}`);
-              }
-            } else {
-              setError("Error al preparar el pago. Por favor, inténtalo de nuevo.");
-            }
-          }
+          proceedToPayment();
         } else {
           // Si no hay plan seleccionado o no tenemos datos del usuario, simplemente cerramos el modal
           onSuccess(email, password);
@@ -356,6 +456,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   
   // Título del modal según el paso actual
   const getModalTitle = () => {
+    if (showAccountConfirmation) {
+      return "Confirmar cuenta";
+    }
+    
     switch (paymentStep) {
       case 'register':
         return selectedPlan ? `Suscripción a ${selectedPlan.name}` : "Crear cuenta";
@@ -367,7 +471,42 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         return "Crear cuenta";
     }
   };
-
+  
+  // Helper function to check current subscription status
+  const checkCurrentSubscriptionStatus = async () => {
+    if (!user) {
+      console.log('❌ Modal: No user found for subscription check');
+      return null;
+    }
+    
+    try {
+      // Query for this specific user's active subscriptions
+      const { data: userAnyData, error: userAnyError } = await supabase
+        .from('customer_subscriptions')
+        .select('*')
+        .eq('user_id', user.id);
+        
+      if (userAnyError) {
+        console.error('❌ Modal: User query failed:', userAnyError);
+        return null;
+      }
+      
+      if (userAnyData && userAnyData.length > 0) {
+        // Look for active subscription
+        const activeSubscription = userAnyData.find(sub => sub.status === 'active');
+        if (activeSubscription) {
+          console.log('✅ Modal: Found active subscription:', activeSubscription);
+          return 'active';
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('❌ Modal: Exception during subscription check:', error);
+      return null;
+    }
+  };
+  
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -390,7 +529,22 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             <button
               type="button"
               className="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none"
-              onClick={onClose}
+              onClick={() => {
+                // Limpiar completamente el estado de Stripe al cerrar
+                clearStripePromise();
+                setClientSecret(null);
+                setPaymentStep('register');
+                setError('');
+                
+                // Limpiar flags de confirmación
+                setShowAccountConfirmation(false);
+                localStorage.removeItem('awaitingAccountConfirmation');
+                
+                // 🚀 NUEVO: Limpiar el flujo de pago del contexto global
+                clearFlow();
+                
+                onClose();
+              }}
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
@@ -403,81 +557,81 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               </h3>
               
               {/* Mostrar errores */}
-              {error && (
+            {error && (
                 <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-md">
-                  {error}
-                </div>
-              )}
-
+                {error}
+              </div>
+            )}
+            
               {/* Step: Registro */}
-              {paymentStep === 'register' && (
+              {paymentStep === 'register' && !showAccountConfirmation && (
                 <>
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Nombre completo */}
-                    <div>
+                  <div>
                       <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                        Nombre completo
-                      </label>
-                      <input
+                      Nombre completo
+                    </label>
+                    <input
                         id="fullName"
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                         placeholder="Tu nombre completo"
-                      />
-                    </div>
-                    
+                    />
+                  </div>
+                  
                     {/* Email */}
-                    <div>
+                  <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Correo electrónico
-                      </label>
-                      <input
+                      Correo electrónico
+                    </label>
+                    <input
                         id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                         placeholder="tu@correo.com"
-                      />
-                    </div>
-                    
+                    />
+                  </div>
+                  
                     {/* Contraseña */}
-                    <div>
+                  <div>
                       <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                        Contraseña
-                      </label>
-                      <input
+                      Contraseña
+                    </label>
+                    <input
                         id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        minLength={6}
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                         placeholder="Mínimo 6 caracteres"
-                      />
-                    </div>
-                    
+                    />
+                  </div>
+                  
                     {/* Confirmar contraseña */}
-                    <div>
+                  <div>
                       <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                        Confirmar contraseña
-                      </label>
-                      <input
+                      Confirmar contraseña
+                    </label>
+                    <input
                         id="confirmPassword"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
                         className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                         placeholder="Repite tu contraseña"
-                      />
-                    </div>
-                    
+                    />
+                  </div>
+                  
                     {/* Mostrar resumen del plan seleccionado */}
                     {selectedPlan && (
                       <div className="p-4 mt-4 border border-gray-200 rounded-md bg-gray-50">
@@ -520,9 +674,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       </div>
                       
                       {/* Botón de registro manual - SECUNDARIO */}
-                      <button
-                        type="submit"
-                        disabled={isLoading}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
                         className="w-full px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
                       >
                         {isLoading ? (
@@ -536,10 +690,103 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         ) : (
                           "Crear cuenta con email"
                         )}
-                      </button>
+                  </button>
                     </div>
-                  </form>
+                </form>
                 </>
+              )}
+
+              {/* Step: Confirmación de cuenta (después de Google OAuth) */}
+              {showAccountConfirmation && user && selectedPlan && (
+                <div className="space-y-6 py-2">
+                  <div className="text-center">
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                      <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">
+                      ¡Autenticación exitosa!
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-6">
+                      Has iniciado sesión correctamente con tu cuenta de Google.
+                    </p>
+                  </div>
+                  
+                  {/* Información de la cuenta seleccionada */}
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <h4 className="text-sm font-medium text-blue-900 mb-2">
+                      📧 Cuenta seleccionada:
+                    </h4>
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {user.email?.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-blue-900">
+                          {user.email}
+                        </p>
+                        {user.user_metadata?.full_name && (
+                          <p className="text-xs text-blue-700">
+                            {user.user_metadata.full_name}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Resumen del plan seleccionado */}
+                  <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">
+                      📋 Plan seleccionado:
+                    </h4>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-700">{selectedPlan.name}</span>
+                      <span className="text-lg font-bold text-gray-900">{selectedPlan.price}€</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      El pago se asociará a la cuenta mostrada arriba
+                    </p>
+                  </div>
+                  
+                  {/* Botones de acción */}
+                  <div className="flex flex-col space-y-3">
+                    <button
+                      onClick={proceedToPayment}
+                      disabled={isLoading}
+                      className="w-full px-4 py-3 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
+                    >
+                      {isLoading ? (
+                        <>
+                          <span className="mr-2">Preparando pago...</span>
+                          <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        </>
+                      ) : (
+                        "✅ Continuar al pago"
+                      )}
+                    </button>
+                    
+                    <button
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        setShowAccountConfirmation(false);
+                        setError('');
+                        toast.success('Sesión cerrada. Puedes elegir otra cuenta.');
+                      }}
+                      disabled={isLoading}
+                      className="w-full px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed text-sm"
+                    >
+                      🔄 Usar otra cuenta de Google
+                    </button>
+                  </div>
+                </div>
               )}
 
               {/* Step: Pago */}
@@ -559,32 +806,19 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                     </div>
                   )}
                   
-                  {/* Verificar que tenemos tanto Stripe como clientSecret antes de renderizar Elements */}
+                                    {/* Renderizar Elements de forma más simple */}
                   {stripe && clientSecret ? (
                     <Elements 
                       stripe={stripe} 
                       options={{ 
-                        clientSecret, 
-                        appearance: {
-                          theme: 'stripe',
-                          variables: {
-                            colorPrimary: '#4f46e5',
-                          }
-                        },
-                        // Configuraciones adicionales para evitar problemas
-                        fonts: [
-                          {
-                            cssSrc: 'https://fonts.googleapis.com/css?family=Roboto'
-                          }
-                        ],
-                        loader: 'auto'
+                        clientSecret,
+                        appearance: { theme: 'stripe' }
                       }}
-                      // Clave única basada en clientSecret y timestamp para forzar recreación
-                      key={`elements-${clientSecret.substring(0, 10)}-${Date.now()}`}
+                      key={clientSecret} // Clave única basada en clientSecret
                     >
                       <StripePaymentElement 
                         clientSecret={clientSecret}
-                        onSuccess={handlePaymentSuccess}
+                        onSuccess={handlePaymentSuccessAndNavigate}
                         onError={handlePaymentError}
                       />
                     </Elements>
@@ -599,7 +833,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                           className="mx-auto block px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
                         >
                           Recargar página
-                        </button>
+                    </button>
                         <p className="text-xs text-gray-400">
                           Si el problema persiste, contacta con soporte
                         </p>
@@ -615,7 +849,24 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                     <div className="text-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
                       <p className="mt-4 text-gray-600">Inicializando sistema de pago...</p>
-                      <p className="text-sm text-gray-500">Cargando Stripe.js...</p>
+                      <p className="text-sm text-gray-500">Cargando Stripe.js en modo {stripeMode}...</p>
+                      {/* Botón de reintento si hay problemas */}
+                      <button 
+                        onClick={() => {
+                          // Limpiar estado y reiniciar
+                          clearStripePromise();
+                          setClientSecret(null);
+                          setPaymentStep('register');
+                          setTimeout(() => {
+                            if (user && selectedPlan) {
+                              proceedToPayment();
+                            }
+                          }, 100);
+                        }}
+                        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
+                      >
+                        Reintentar inicialización
+                      </button>
                     </div>
                   )}
                 </div>
@@ -629,14 +880,17 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">¡Pago completado!</h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">¡Pago completado exitosamente!</h3>
                   <div className="mt-3">
                     <p className="text-sm text-gray-500">
-                      Tu suscripción ha sido activada y ya puedes disfrutar de todas las funcionalidades.
+                      🎉 Tu suscripción al plan <strong>{selectedPlan?.name}</strong> ha sido activada correctamente.
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Ya puedes disfrutar de todas las funcionalidades premium. Serás redirigido automáticamente.
                     </p>
                   </div>
                 </div>
-              )}
+            )}
             </div>
           </div>
         </div>

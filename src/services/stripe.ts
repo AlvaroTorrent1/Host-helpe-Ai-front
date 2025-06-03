@@ -1,9 +1,9 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-// src/services/stripe.ts - Configuración de Stripe para Producción
+// src/services/stripe.ts - Configuración de Stripe para MODO TEST
 const ENVIRONMENT = import.meta.env.MODE;
-// Clave pública de Stripe de producción - ACTUALIZADA para producción
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_live_51QNuzlKpVJd2j1yPFx0LzTWN0c6J7kmw6NsdjJ6z4g5Ki1xnEBWs4uxzSwHcoswuwfNbhWXJTKHWJW2bxcWjOuNd009GmX21J4';
+// Clave pública de Stripe de TEST - ACTUALIZADA para modo de pruebas
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ';
 
 console.log("Entorno actual:", ENVIRONMENT);
 console.log("Clave de Stripe (fallback configurado):", !!STRIPE_PUBLIC_KEY);

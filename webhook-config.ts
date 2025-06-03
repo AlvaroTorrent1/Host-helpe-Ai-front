@@ -1,9 +1,16 @@
-// Edge Function para manejar webhooks de Stripe
-// Esta función se despliega en Supabase
+// Edge Function para manejar webhooks de Stripe - SIN VERIFICACIÓN JWT
+// Esta función se despliega en Supabase y permite acceso directo desde Stripe
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@12.0.0'
+
+// Configuración CORS para permitir acceso sin JWT
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, stripe-signature',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
 
 // Configuración de Stripe
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY') || ''
@@ -19,19 +26,30 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 // Clave secreta para verificar eventos de Stripe
 const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET') || ''
 
-console.log("Webhook iniciado")
+console.log("🚀 Webhook iniciado - Acceso permitido sin JWT")
 
 serve(async (req) => {
+  // Manejar preflight CORS
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   // Verificar método HTTP
   if (req.method !== 'POST') {
-    return new Response('Método no permitido', { status: 405 })
+    return new Response('Método no permitido', { 
+      status: 405,
+      headers: corsHeaders 
+    })
   }
 
   // Necesitamos la firma de stripe para verificar el evento
   const signature = req.headers.get('stripe-signature')
   if (!signature) {
-    console.error('No se proporcionó firma de Stripe')
-    return new Response('No se proporcionó firma de Stripe', { status: 400 })
+    console.error('❌ No se proporcionó firma de Stripe')
+    return new Response('No se proporcionó firma de Stripe', { 
+      status: 400,
+      headers: corsHeaders 
+    })
   }
 
   // Obtener el cuerpo de la solicitud
@@ -41,10 +59,13 @@ serve(async (req) => {
   // Verificar y construir el evento
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    console.log(`Evento recibido: ${event.type}`)
+    console.log(`✅ Evento recibido: ${event.type}`)
   } catch (err) {
-    console.error(`Error al verificar webhook: ${err.message}`)
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 })
+    console.error(`❌ Error al verificar webhook: ${err.message}`)
+    return new Response(`Webhook Error: ${err.message}`, { 
+      status: 400,
+      headers: corsHeaders 
+    })
   }
 
   // Manejar tipos específicos de eventos
@@ -52,7 +73,7 @@ serve(async (req) => {
     switch (event.type) {
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object
-        console.log('Payment Intent succeeded:', paymentIntent.id)
+        console.log('🎉 Payment Intent succeeded:', paymentIntent.id)
         
         // Extraer datos del metadata
         const userId = paymentIntent.metadata?.user_id
@@ -60,11 +81,11 @@ serve(async (req) => {
         const email = paymentIntent.metadata?.email
         
         if (!userId) {
-          console.error('No se encontró user_id en metadata del Payment Intent')
+          console.error('❌ No se encontró user_id en metadata del Payment Intent')
           throw new Error('No se encontró user_id en el Payment Intent')
         }
 
-        console.log('Activando suscripción para Payment Intent:', {
+        console.log('🔄 Activando suscripción para Payment Intent:', {
           paymentIntentId: paymentIntent.id,
           userId,
           planId,
@@ -88,14 +109,14 @@ serve(async (req) => {
             .from('customer_subscriptions')
             .update({
               stripe_customer_id: paymentIntent.customer || null,
-              stripe_subscription_id: paymentIntent.id, // Usar payment intent ID como referencia
+              stripe_subscription_id: paymentIntent.id,
               status: 'active',
               current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             })
             .eq('id', pendingSubscription.id)
           
           if (updateError) {
-            console.error('Error al actualizar suscripción pendiente:', updateError)
+            console.error('❌ Error al actualizar suscripción pendiente:', updateError)
             throw new Error('Error al actualizar suscripción pendiente')
           }
           
@@ -114,7 +135,7 @@ serve(async (req) => {
             })
 
           if (error) {
-            console.error('Error al crear nueva suscripción activa:', error)
+            console.error('❌ Error al crear nueva suscripción activa:', error)
             throw new Error('Error al crear suscripción activa')
           }
           
@@ -125,7 +146,7 @@ serve(async (req) => {
       
       case 'checkout.session.completed': {
         const session = event.data.object
-        console.log('Checkout completado:', session.id)
+        console.log('🛒 Checkout completado:', session.id)
         
         // Extraer datos del cliente
         const customerEmail = session.customer_details?.email
@@ -145,7 +166,7 @@ serve(async (req) => {
           .single()
 
         if (userError || !userData) {
-          console.error('Error al buscar usuario:', userError)
+          console.error('❌ Error al buscar usuario:', userError)
           throw new Error(`No se encontró usuario con email ${customerEmail}`)
         }
 
@@ -171,11 +192,11 @@ serve(async (req) => {
             .eq('id', pendingSubscription.id)
           
           if (updateError) {
-            console.error('Error al actualizar suscripción pendiente:', updateError)
+            console.error('❌ Error al actualizar suscripción pendiente:', updateError)
             throw new Error('Error al actualizar suscripción pendiente')
           }
           
-          console.log('Suscripción pendiente actualizada con éxito:', pendingSubscription.id)
+          console.log('✅ Suscripción pendiente actualizada con éxito:', pendingSubscription.id)
         } else {
           // Si no existe un registro pendiente, crear uno nuevo
           const { data, error } = await supabase
@@ -190,11 +211,11 @@ serve(async (req) => {
             })
 
           if (error) {
-            console.error('Error al registrar suscripción:', error)
+            console.error('❌ Error al registrar suscripción:', error)
             throw new Error('Error al registrar suscripción')
           }
           
-          console.log('Nueva suscripción registrada con éxito:', userData.id)
+          console.log('✅ Nueva suscripción registrada con éxito:', userData.id)
         }
         break
       }
@@ -246,16 +267,25 @@ serve(async (req) => {
         
         break
       }
+
+      default:
+        console.log(`⚠️ Evento no manejado: ${event.type}`)
     }
     
     return new Response(JSON.stringify({ received: true }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...corsHeaders
+      },
       status: 200,
     })
   } catch (error) {
-    console.error(`Error al procesar evento: ${error.message}`)
+    console.error(`❌ Error al procesar evento: ${error.message}`)
     return new Response(JSON.stringify({ error: error.message }), { 
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        ...corsHeaders
+      },
       status: 500,
     })
   }

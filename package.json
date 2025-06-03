@@ -21,7 +21,11 @@
     "fix:all": "eslint src --fix && prettier --write src",
     "fix:imports": "eslint src --fix --rule \"@typescript-eslint/no-unused-vars: error\"",
     "fix:any": "eslint src --fix --rule \"@typescript-eslint/no-explicit-any: error\"",
-    "fix:hooks": "eslint src --fix --rule \"react-hooks/exhaustive-deps: error\""
+    "fix:hooks": "eslint src --fix --rule \"react-hooks/exhaustive-deps: error\"",
+    "verify:production": "node scripts/quick-verify.js",
+    "pre-deploy": "npm run verify:production && npm run lint:errors && npm run build",
+    "deploy:production": "npm run pre-deploy && echo '✅ Build exitoso. Proceder con despliegue manual siguiendo PRODUCTION_SETUP.md'",
+    "check:stripe": "echo '🔑 Verificar que las claves de Stripe sean LIVE (pk_live_*, sk_live_*)"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",

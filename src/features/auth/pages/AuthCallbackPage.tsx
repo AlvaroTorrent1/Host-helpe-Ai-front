@@ -3,7 +3,7 @@
  * Página de callback para manejar redirecciones de autenticación de Supabase
  */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 import { supabaseConfig, environment } from "@/config/environment";
@@ -24,6 +24,7 @@ const AuthCallbackPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>("Procesando autenticación...");
   const [debug, setDebug] = useState<AuthDebugInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -56,6 +57,7 @@ const AuthCallbackPage = () => {
           console.error(errorMsg);
           setError(errorMsg);
           setDebug({...debugInfo, errorDetails: errorMsg});
+          setIsLoading(false);
           return;
         }
         
@@ -74,7 +76,8 @@ const AuthCallbackPage = () => {
 
         if (data?.session) {
           // Si hay una sesión activa, redirigir a la página de precios
-          setMessage("Autenticación exitosa. Redirigiendo...");
+          setMessage("¡Autenticación exitosa!");
+          setIsLoading(false);
           setTimeout(() => navigate("/pricing"), 1500);
         } else {
           // Si no hay sesión, verificar si hay un hash en la URL (para confirmación de correo)
@@ -87,6 +90,7 @@ const AuthCallbackPage = () => {
           // Si hay un error en los parámetros de la URL, mostrarlo
           if (errorParam || errorCode) {
             setMessage(null);
+            setIsLoading(false);
             const errorMsg = errorDescription 
               ? `Error: ${errorDescription}` 
               : `Error de autenticación: ${errorParam || errorCode}`;
@@ -132,12 +136,14 @@ const AuthCallbackPage = () => {
               // Volvemos a verificar si ya hay una sesión
               const { data: sessionData } = await supabase.auth.getSession();
               if (sessionData?.session) {
-                setMessage("Correo confirmado. Redirigiendo a la página de precios...");
+                setMessage("¡Correo confirmado!");
+                setIsLoading(false);
                 setTimeout(() => navigate("/pricing"), 1500);
               } else {
                 // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
-                const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta. Intente iniciar sesión nuevamente.";
+                const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta.";
                 setMessage(null);
+                setIsLoading(false);
                 setError(expiredMsg);
                 setDebug({...debugInfo, errorDetails: expiredMsg});
                 setTimeout(() => navigate("/login"), 3000);
@@ -146,14 +152,16 @@ const AuthCallbackPage = () => {
               const tokenErrorMsg = `Error al procesar el token de autenticación: ${tokenError instanceof Error ? tokenError.message : 'Desconocido'}`;
               console.error("Error processing token:", tokenError);
               setMessage(null);
+              setIsLoading(false);
               setError(tokenErrorMsg);
               setDebug({...debugInfo, errorDetails: tokenErrorMsg});
               setTimeout(() => navigate("/login"), 3000);
             }
           } else {
             // No hay hash ni token, redirigir al login
-            const noAuthInfoMsg = "No se encontró información de autenticación. Verifique que esté usando el enlace completo del correo de confirmación.";
+            const noAuthInfoMsg = "No se encontró información de autenticación.";
             setMessage(null);
+            setIsLoading(false);
             setError(noAuthInfoMsg);
             setDebug({...debugInfo, errorDetails: noAuthInfoMsg});
             setTimeout(() => navigate("/login"), 2000);
@@ -163,6 +171,7 @@ const AuthCallbackPage = () => {
         const generalErrorMsg = `Error de autenticación: ${error instanceof Error ? error.message : 'Desconocido'}`;
         console.error("Error en la autenticación:", error);
         setMessage(null);
+        setIsLoading(false);
         setError(generalErrorMsg);
         setDebug(collectDebugInfo(generalErrorMsg));
         setTimeout(() => navigate("/login"), 3000);
@@ -172,61 +181,144 @@ const AuthCallbackPage = () => {
     handleAuthCallback();
   }, [navigate, t]);
 
+  // 🚀 PANTALLA DE LOADING ELEGANTE (como el resto de la app)
+  if (isLoading) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {t("auth.authCallback.title")}
-          </h2>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="text-center space-y-8">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <img 
+              src="/imagenes/Logo_hosthelper_new.png" 
+              alt="Host Helper AI" 
+              className="h-24 w-auto"
+            />
+          </div>
           
-          {message && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-md">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd" />
+          {/* Spinner elegante */}
+          <div className="relative">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-primary-600"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-r-primary-400 animate-pulse"></div>
+                </div>
+          
+          {/* Mensaje */}
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {message || "Procesando autenticación..."}
+            </h2>
+            <p className="text-gray-600">
+              Esto solo tomará unos segundos
+            </p>
+                </div>
+              </div>
+            </div>
+    );
+  }
+          
+  // 🎉 PANTALLA DE ÉXITO
+  if (message && !error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
+        <div className="text-center space-y-8 max-w-md mx-auto px-6">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <img 
+              src="/imagenes/Logo_hosthelper_new.png" 
+              alt="Host Helper AI" 
+              className="h-24 w-auto"
+            />
+          </div>
+          
+          {/* Icono de éxito */}
+          <div className="flex justify-center">
+            <div className="rounded-full bg-green-100 p-4">
+              <svg className="h-12 w-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <div className="ml-3 flex-1">
-                  <p className="text-sm text-blue-700">{message}</p>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
           
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 rounded-md">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3 flex-1">
-                  <p className="text-sm text-red-700">{error}</p>
-                  <p className="mt-2 text-xs text-red-700">
-                    <a href="/login" className="font-medium underline">Volver al inicio de sesión</a>
-                  </p>
+          {/* Mensaje */}
+          <div className="space-y-4">
+            <h2 className="text-3xl font-bold text-gray-800">
+              {message}
+            </h2>
+            <p className="text-gray-600">
+              Redirigiendo a la página de precios...
+            </p>
+            
+            {/* Barra de progreso */}
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-primary-600 h-2 rounded-full animate-pulse" style={{width: '100%'}}></div>
+            </div>
                 </div>
               </div>
             </div>
-          )}
+    );
+  }
+
+  // ❌ PANTALLA DE ERROR
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-100">
+        <div className="text-center space-y-8 max-w-md mx-auto px-6">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <img 
+              src="/imagenes/Logo_hosthelper_new.png" 
+              alt="Host Helper AI" 
+              className="h-24 w-auto"
+            />
+          </div>
           
-          {/* Mostrar información de debug expandida tanto en desarrollo como en producción cuando hay error */}
-          {debug && (import.meta.env.DEV || error) && (
-            <div className="mt-4 p-4 bg-gray-100 rounded-md">
-              <div className="flex">
-                <div className="ml-3 flex-1">
-                  <p className="text-xs font-semibold mb-1">Información de depuración:</p>
-                  <pre className="text-xs text-gray-700 font-mono whitespace-pre-wrap overflow-auto max-h-40">
-                    {JSON.stringify(debug, null, 2)}
-                  </pre>
+          {/* Icono de error */}
+          <div className="flex justify-center">
+            <div className="rounded-full bg-red-100 p-4">
+              <svg className="h-12 w-12 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
                 </div>
               </div>
+          
+          {/* Mensaje de error */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Oops, algo salió mal
+            </h2>
+            <p className="text-gray-600 text-sm">
+              {error}
+            </p>
+            
+            {/* Botón de acción */}
+            <Link 
+              to="/login"
+              className="inline-block px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Volver al inicio de sesión
+            </Link>
             </div>
+          
+          {/* Debug info solo en desarrollo y con errores */}
+          {debug && import.meta.env.DEV && (
+            <details className="mt-8 text-left">
+              <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                Información técnica (desarrollo)
+              </summary>
+              <pre className="mt-2 text-xs text-gray-600 font-mono bg-gray-100 p-4 rounded-lg overflow-auto max-h-32">
+                {JSON.stringify(debug, null, 2)}
+              </pre>
+            </details>
           )}
         </div>
+      </div>
+    );
+  }
+
+  // Fallback (no debería llegar aquí)
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <p className="text-gray-600">Redirigiendo...</p>
       </div>
     </div>
   );

@@ -3,16 +3,45 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { supabase, checkEmailConfirmation } from "@services/supabase";
 import { useLanguage } from "@shared/contexts/LanguageContext";
+import SmartAuthRouter from "@shared/components/SmartAuthRouter";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSmartRouter, setShowSmartRouter] = useState(false);
+  const [authMethod, setAuthMethod] = useState<'email' | 'google' | 'register'>('email');
 
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  // Si el usuario ya está autenticado, mostrar SmartRouter
+  if (user && !showSmartRouter) {
+    return (
+      <SmartAuthRouter 
+        authMethod="email"
+        showWelcomeMessage={false}
+        onRedirectComplete={() => {
+          // Router se encarga de la navegación
+        }}
+      />
+    );
+  }
+
+  // Si necesitamos mostrar el SmartRouter después de autenticación
+  if (showSmartRouter) {
+    return (
+      <SmartAuthRouter 
+        authMethod={authMethod}
+        showWelcomeMessage={true}
+        onRedirectComplete={() => {
+          setShowSmartRouter(false);
+        }}
+      />
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +63,9 @@ export const LoginPage = () => {
             setError(error.message);
           }
         } else {
-          navigate("/dashboard");
+          // Autenticación exitosa - usar SmartRouter
+          setAuthMethod('email');
+          setShowSmartRouter(true);
         }
       } else {
         // Email no confirmado, mostramos un mensaje claro
@@ -45,7 +76,9 @@ export const LoginPage = () => {
         } else if (error) {
           setError(error.message);
         } else {
-          navigate("/dashboard");
+          // Autenticación exitosa - usar SmartRouter
+          setAuthMethod('email');
+          setShowSmartRouter(true);
         }
       }
     } catch (err: Error | unknown) {
@@ -79,6 +112,10 @@ export const LoginPage = () => {
       
       if (error) {
         setError(error.message);
+      } else {
+        // Google OAuth exitoso - usar SmartRouter  
+        setAuthMethod('google');
+        setShowSmartRouter(true);
       }
       // No necesitamos manejar el caso de éxito aquí, ya que se redirigirá al usuario
     } catch (err: any) {

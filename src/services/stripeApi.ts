@@ -1,5 +1,5 @@
-// src/services/stripeApi.ts - API de Stripe para Producción
-// Este archivo maneja la integración con Stripe en producción usando Supabase Edge Functions
+// src/services/stripeApi.ts - API de Stripe para MODO TEST
+// Este archivo maneja la integración con Stripe en modo test usando Supabase Edge Functions
 
 import supabase from './supabase';
 
@@ -24,7 +24,7 @@ interface CreatePaymentIntentResponse {
  * Solo para producción - sin código de desarrollo o simulaciones
  */
 export const createPaymentIntent = async (params: CreatePaymentIntentParams): Promise<CreatePaymentIntentResponse> => {
-  console.log('🔄 Creando payment intent para producción:', {
+  console.log('🔄 Creando payment intent para MODO TEST:', {
     amount: params.amount,
     currency: params.currency,
     user_id: params.user_id,
@@ -58,15 +58,19 @@ export const createPaymentIntent = async (params: CreatePaymentIntentParams): Pr
       throw new Error(`Error al crear payment intent: ${error.message}`);
     }
     
-    if (!data || !data.clientSecret) {
+    // Manejar tanto formato camelCase como snake_case por compatibilidad
+    const clientSecret = data.clientSecret || data.client_secret;
+    const paymentIntentId = data.paymentIntentId || data.payment_intent_id;
+    
+    if (!clientSecret) {
       console.error('❌ Respuesta inválida de Supabase functions:', data);
       throw new Error('No se recibió un client_secret válido del servidor');
     }
     
     console.log('✅ Payment intent creado exitosamente');
     return {
-      clientSecret: data.clientSecret,
-      paymentIntentId: data.paymentIntentId
+      clientSecret,
+      paymentIntentId
     };
     
   } catch (error: any) {

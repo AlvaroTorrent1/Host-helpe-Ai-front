@@ -11,40 +11,30 @@ import LanguageSelector from "@shared/components/LanguageSelector";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useSubscription } from "@shared/hooks/useSubscription";
+import { usePaymentFlow } from "@shared/contexts/PaymentFlowContext";
+import { usePaymentFlowResume } from "@shared/hooks/usePaymentFlowResume";
 import RegisterModal from "@shared/components/RegisterModal";
 import toast from "react-hot-toast";
 
-// Función para agregar metadatos a URLs de Stripe
-const createStripeLink = (baseUrl: string, planId: string, clientId?: string) => {
-  // Crear un ID único para la sesión si no existe uno
-  const sessionId = clientId || uuidv4();
-  
-  // Almacenar en localStorage para recuperarlo después
-  localStorage.setItem('pending_session_id', sessionId);
-  localStorage.setItem('pending_plan_id', planId);
-  
-  // Añadir parámetros a la URL de Stripe
-  const url = new URL(baseUrl);
-  
-  // Añadir client_reference_id como parámetro para identificar al cliente
-  url.searchParams.append('client_reference_id', sessionId);
-  
-  // Añadir metadata para el plan
-  url.searchParams.append('metadata[plan_id]', planId);
-  
-  return url.toString();
-};
-
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<{id: string; name: string; price: number} | null>(null);
-  const [pendingStripeUrl, setPendingStripeUrl] = useState<string | null>(null);
   
   const { t } = useLanguage();
   const { user, signIn } = useAuth();
   const { hasActiveSubscription } = useSubscription();
   const navigate = useNavigate();
+  
+  // 🚀 NUEVO: Usar PaymentFlow context en lugar de estado local
+  const { selectedPlan, shouldShowModal, startFlow, clearFlow } = usePaymentFlow();
+  
+  // 🚀 NUEVO: Auto-detectar y reanudar flujos de pago pendientes
+  const paymentFlowStatus = usePaymentFlowResume();
+  
+  console.log('💰 Pricing: Estado del flujo de pago:', {
+    selectedPlan,
+    shouldShowModal,
+    flowStatus: paymentFlowStatus
+  });
   
   // Enlaces base de Stripe para los diferentes planes
   const stripeLinks = {
@@ -68,62 +58,50 @@ const Pricing = () => {
   ];
 
   // Función para manejar el clic en los botones de los planes
-  const handlePlanClick = (planId: string, baseUrl: string, planName: string, planPrice: number | null) => {
+  const handlePlanClick = (planId: string, _baseUrl: string, planName: string, planPrice: number | null) => {
     // Si el usuario ya está autenticado y tiene una suscripción activa, redireccionar directamente a dashboard
     if (user && hasActiveSubscription) {
       navigate('/dashboard');
       return;
     }
     
-    // Para todos los demás casos (no autenticados o sin suscripción activa), mostrar el modal de registro
-    setSelectedPlan({
+    let actualPrice = 0;
+    if (planPrice !== null) {
+        const planDetails = plans.find(p => p.id === planId);
+        if (planDetails && planDetails.annualPrice !== null && planDetails.monthlyPrice !== null) { // Ensure prices are not null
+            actualPrice = isAnnual ? planDetails.annualPrice : planDetails.monthlyPrice;
+        } else if (planPrice) { // Fallback if details or specific prices are missing
+            actualPrice = isAnnual ? planPrice : planPrice * 1.25;
+        }
+    } // If planPrice is null (e.g. enterprise), actualPrice remains 0
+
+    // 🚀 NUEVO: Usar PaymentFlow context para iniciar el flujo
+    const planData = {
       id: planId,
       name: planName,
-      price: planPrice 
-        ? (isAnnual ? planPrice : planPrice * 1.25) // Precio mensual es aproximadamente 25% más
-        : 0 // Para el plan enterprise, que no tiene precio fijo
-    });
-    
-    // Guardar la URL de Stripe para usarla después del registro
-    const stripeUrl = createStripeLink(baseUrl, planId, user?.id);
-    setPendingStripeUrl(stripeUrl);
-    
-    // Abrir el modal
-    setIsModalOpen(true);
-  };
-  
-  // Función para manejar el registro exitoso
-  const handleRegistrationSuccess = async (email: string, password: string) => {
-    toast.success("Registro exitoso! Redirigiendo al pago...");
-    
-    // Cerrar el modal
-    setIsModalOpen(false);
-    
-    try {
-      // Intentar iniciar sesión automáticamente
-      const { error } = await signIn(email, password);
-      
-      if (error) {
-        console.error("Error al iniciar sesión automáticamente:", error);
-        // A pesar del error, continuamos con la redirección a Stripe
-      }
-      
-      // Redireccionar a Stripe si tenemos la URL
-      if (pendingStripeUrl) {
-        window.location.href = pendingStripeUrl;
-      } else {
-        // Si por alguna razón no tenemos la URL, redireccionar a la página de pricing
-        navigate('/pricing');
-      }
-    } catch (error) {
-      console.error("Error en el proceso:", error);
-      toast.error("Hubo un problema al procesar tu solicitud");
-      navigate('/pricing');
-    }
+      price: actualPrice 
+    };
+        
+    console.log('🎯 Pricing: Iniciando flujo de pago con plan:', planData);
+    startFlow(planData);
   };
 
   // Pricing plans
-  const plans = [
+  // Define Plan interface/type
+  interface Plan {
+    id: string;
+    name: string;
+    monthlyPrice: number | null;
+    annualPrice: number | null;
+    features: string[];
+    isPopular: boolean;
+    cta: string;
+    customPrice?: string; // Optional for enterprise plan
+    baseLink?: string; // Optional, as it might not be used directly for redirection now
+    onClickAction: () => void; // Define the type for onClickAction
+  }
+
+  const plans: Plan[] = [
     {
       id: "basic",
       name: t("pricing.basic"),
@@ -137,7 +115,7 @@ const Pricing = () => {
       ],
       isPopular: false,
       cta: t("pricing.cta"),
-      baseLink: isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly,
+      onClickAction: () => handlePlanClick("basic", isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly, t("pricing.basic"), isAnnual ? 7.99 : 9.99) 
     },
     {
       id: "pro",
@@ -153,7 +131,7 @@ const Pricing = () => {
       ],
       isPopular: true,
       cta: t("pricing.cta"),
-      baseLink: isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly,
+      onClickAction: () => handlePlanClick("pro", isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly, t("pricing.pro"), isAnnual ? 23.99 : 29.99)
     },
     {
       id: "enterprise",
@@ -170,7 +148,7 @@ const Pricing = () => {
       ],
       isPopular: false,
       cta: t("pricing.contact"),
-      baseLink: stripeLinks.enterprise,
+      onClickAction: () => handlePlanClick("enterprise", stripeLinks.enterprise, t("pricing.enterprise"), null)
     },
   ];
 
@@ -248,7 +226,9 @@ const Pricing = () => {
           </nav>
 
           {/* Mobile Menu */}
-          <MobileMenu links={navLinks} />
+          <div className="md:hidden">
+             <MobileMenu links={navLinks} />
+          </div>
         </div>
       </header>
 
@@ -362,12 +342,7 @@ const Pricing = () => {
 
                     {plan.id !== "enterprise" ? (
                       <button
-                        onClick={() => handlePlanClick(
-                          plan.id, 
-                          plan.baseLink, 
-                          plan.name, 
-                          isAnnual ? plan.annualPrice : plan.monthlyPrice
-                        )}
+                        onClick={() => plan.onClickAction()}
                         className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
                           plan.isPopular 
                             ? "bg-primary-500 hover:bg-primary-600 text-white"
@@ -598,10 +573,14 @@ const Pricing = () => {
       
       {/* Modal de registro */}
       <RegisterModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSuccess={handleRegistrationSuccess}
-        selectedPlan={selectedPlan || undefined}
+        isOpen={shouldShowModal} 
+        onClose={() => {
+          clearFlow();
+        }} 
+        onSuccess={() => { 
+          clearFlow();
+        }}
+        selectedPlan={selectedPlan ? selectedPlan : undefined}
       />
     </div>
   );

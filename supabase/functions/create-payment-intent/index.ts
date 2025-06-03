@@ -7,36 +7,36 @@ import Stripe from 'https://esm.sh/stripe@12.0.0'
 
 // Configuración de Stripe
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
-const stripe = new Stripe(stripeSecretKey, {
+const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
   apiVersion: '2022-11-15',
-})
+}) : null
 
 // Configuración de Supabase
 const supabaseUrl = Deno.env.get('SUPABASE_URL')
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+const supabase = (supabaseUrl && supabaseServiceKey) ? createClient(supabaseUrl, supabaseServiceKey) : null
 
-console.log("Create Payment Intent function iniciada (versión desarrollo)")
-console.log("URL de Supabase:", supabaseUrl ? "Configurada" : "No configurada")
-console.log("Clave de servicio de Supabase:", supabaseServiceKey ? "Configurada" : "No configurada")
-console.log("Clave secreta de Stripe:", stripeSecretKey ? "Configurada" : "No configurada")
+console.log("🚀 Create Payment Intent function iniciada (versión producción)")
+console.log("Environment variables check:")
+console.log("- SUPABASE_URL:", supabaseUrl ? "✅ Configurada" : "❌ No configurada")
+console.log("- SUPABASE_SERVICE_ROLE_KEY:", supabaseServiceKey ? "✅ Configurada" : "❌ No configurada")
+console.log("- STRIPE_SECRET_KEY:", stripeSecretKey ? `✅ Configurada (${stripeSecretKey.substring(0, 8)}...)` : "❌ No configurada")
 
-// Cors headers - Configuración específica para desarrollo
+// Cors headers - Configuración para producción
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*', // Permitir todos los orígenes en desarrollo
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
-  'Access-Control-Allow-Headers': '*', // Permitir todas las cabeceras en desarrollo
+  'Access-Control-Allow-Headers': '*',
   'Access-Control-Max-Age': '86400',
   'Access-Control-Allow-Credentials': 'true',
 }
 
 serve(async (req) => {
-  // Imprimir información de la solicitud para depuración
-  console.log(`Recibida solicitud ${req.method} desde ${req.headers.get('origin')} a ${new URL(req.url).pathname}`);
+  console.log(`📥 Recibida solicitud ${req.method} desde ${req.headers.get('origin')}`);
   
   // Handle CORS preflight request
   if (req.method === 'OPTIONS') {
-    console.log("Recibida solicitud OPTIONS preflight - respondiendo con CORS headers");
+    console.log("✅ Respondiendo solicitud OPTIONS preflight");
     return new Response(null, { 
       headers: corsHeaders,
       status: 204
@@ -44,19 +44,52 @@ serve(async (req) => {
   }
 
   try {
-    // Log the request for debugging
-    const origin = req.headers.get('origin');
-    console.log(`Received ${req.method} request from origin:`, origin);
-    
-    // Imprimir todas las cabeceras para depuración
-    console.log("Headers de la solicitud:");
-    for (const [key, value] of req.headers.entries()) {
-      console.log(`${key}: ${value}`);
+    // Validar variables de entorno críticas al inicio
+    if (!stripeSecretKey) {
+      console.error("❌ STRIPE_SECRET_KEY no está configurada");
+      return new Response(
+        JSON.stringify({ 
+          error: 'Server configuration error: STRIPE_SECRET_KEY missing',
+          details: 'Contact administrator - Stripe key not configured'
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (!stripe) {
+      console.error("❌ Stripe client no pudo ser inicializado");
+      return new Response(
+        JSON.stringify({ 
+          error: 'Server configuration error: Stripe client initialization failed',
+          details: 'Contact administrator - Stripe configuration invalid'
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (!supabase) {
+      console.error("❌ Supabase client no pudo ser inicializado");
+      return new Response(
+        JSON.stringify({ 
+          error: 'Server configuration error: Supabase client initialization failed',
+          details: 'Contact administrator - Supabase configuration invalid'
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
     // Solo permitir POST
     if (req.method !== 'POST') {
-      console.error(`Método no permitido: ${req.method}`);
+      console.error(`❌ Método no permitido: ${req.method}`);
       return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -67,10 +100,14 @@ serve(async (req) => {
     let requestBody;
     try {
       requestBody = await req.json();
+      console.log('📝 Request body recibido:', JSON.stringify(requestBody, null, 2));
     } catch (jsonError) {
-      console.error("Error al parsear JSON:", jsonError);
+      console.error("❌ Error al parsear JSON:", jsonError);
       return new Response(
-        JSON.stringify({ error: 'Error parsing request JSON' }),
+        JSON.stringify({ 
+          error: 'Invalid JSON in request body',
+          details: jsonError.message
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -80,12 +117,22 @@ serve(async (req) => {
     
     const { amount, currency = 'eur', user_id, plan_id, email } = requestBody;
     
-    console.log('Creating payment intent with params:', { amount, currency, user_id, plan_id, email });
+    console.log('💳 Creando payment intent con params:', { 
+      amount, 
+      currency, 
+      user_id: user_id ? 'provided' : 'missing', 
+      plan_id, 
+      email: email ? 'provided' : 'missing'
+    });
 
+    // Validar parámetros requeridos
     if (!amount || amount < 1) {
-      console.error('Error: El monto debe ser al menos 1');
+      console.error('❌ Error: El monto debe ser al menos 1');
       return new Response(
-        JSON.stringify({ error: 'Amount is required and must be at least 1' }),
+        JSON.stringify({ 
+          error: 'Amount is required and must be at least 1',
+          received: { amount }
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -96,8 +143,8 @@ serve(async (req) => {
     // Guardar el plan seleccionado como pendiente
     if (user_id && plan_id) {
       try {
-        console.log('Verificando suscripción pendiente existente');
-        // Comprobar si ya existe una suscripción pendiente
+        console.log('🔍 Verificando suscripción pendiente existente');
+        
         const { data: existingSub, error: selectError } = await supabase
           .from('customer_subscriptions')
           .select('*')
@@ -106,12 +153,11 @@ serve(async (req) => {
           .maybeSingle()
         
         if (selectError) {
-          console.error('Error al consultar suscripción pendiente:', selectError);
+          console.error('⚠️ Error al consultar suscripción pendiente:', selectError);
         }
 
         if (!existingSub) {
-          console.log('Creando suscripción pendiente');
-          // Crear una suscripción pendiente
+          console.log('📝 Creando suscripción pendiente');
           const { error: insertError } = await supabase.from('customer_subscriptions').insert({
             user_id: user_id,
             plan_id: plan_id,
@@ -120,63 +166,66 @@ serve(async (req) => {
           })
           
           if (insertError) {
-            console.error('Error al crear suscripción pendiente:', insertError);
+            console.error('⚠️ Error al crear suscripción pendiente:', insertError);
           } else {
-            console.log('Suscripción pendiente creada correctamente');
+            console.log('✅ Suscripción pendiente creada correctamente');
           }
         } else {
-          console.log('Suscripción pendiente ya existe:', existingSub.id);
+          console.log('ℹ️ Suscripción pendiente ya existe:', existingSub.id);
         }
       } catch (error) {
-        console.error('Error al guardar la suscripción pendiente:', error)
+        console.error('⚠️ Error al guardar la suscripción pendiente:', error)
         // Continuar a pesar del error, ya que el pago puede seguir procesándose
       }
     }
 
-    // Verificar la clave de Stripe
-    if (!stripeSecretKey || stripeSecretKey.trim() === '') {
-      console.error('STRIPE_SECRET_KEY no está configurada');
-      return new Response(
-        JSON.stringify({ error: 'Stripe configuration error: Missing secret key' }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
     try {
-      console.log('Intentando crear payment intent con clave:', stripeSecretKey.substring(0, 8) + '...');
-      // Crear un payment intent
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount, // Stripe espera el monto en centavos
-        currency,
-        metadata: {
-          user_id: user_id || '',
-          plan_id: plan_id || '',
-          email: email || '',
-        },
-      })
-      
-      console.log('Payment intent created successfully:', paymentIntent.id);
+      console.log('💰 Intentando crear payment intent con Stripe...');
+      console.log('🔑 Usando clave Stripe:', stripeSecretKey.substring(0, 12) + '...');
 
-      // Devolver el client_secret al cliente
-      return new Response(
-        JSON.stringify({ 
-          client_secret: paymentIntent.client_secret,
-          payment_intent_id: paymentIntent.id
-        }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      )
+    // Crear un payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: currency.toLowerCase(),
+      metadata: {
+        user_id: user_id || '',
+        plan_id: plan_id || '',
+        email: email || '',
+      },
+        automatic_payment_methods: {
+          enabled: true,
+        },
+    })
+
+      console.log('🎉 Payment intent creado exitosamente:', paymentIntent.id);
+      console.log('🔐 Client secret generado correctamente');
+
+      // Devolver el client_secret al cliente (formato correcto para el frontend)
+    return new Response(
+      JSON.stringify({ 
+          clientSecret: paymentIntent.client_secret,  // Cambio a camelCase
+          paymentIntentId: paymentIntent.id           // Cambio a camelCase
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    )
     } catch (stripeError) {
-      console.error('Error from Stripe:', stripeError);
+      console.error('❌ Error de Stripe:', stripeError);
+      console.error('📋 Detalles del error:', {
+        type: stripeError.type,
+        code: stripeError.code,
+        message: stripeError.message,
+        param: stripeError.param
+      });
+      
       return new Response(
         JSON.stringify({ 
           error: `Stripe error: ${stripeError.message}`,
-          details: stripeError
+          type: stripeError.type,
+          code: stripeError.code,
+          details: 'Payment processing failed - please check your payment method'
         }),
         {
           status: 500,
@@ -185,11 +234,14 @@ serve(async (req) => {
       )
     }
   } catch (error) {
-    console.error('Error al crear payment intent:', error)
+    console.error('💥 Error general al crear payment intent:', error)
+    console.error('📋 Stack trace:', error.stack)
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        stack: error.stack
+        error: 'Internal server error',
+        message: error.message,
+        details: 'An unexpected error occurred while processing the payment'
       }),
       {
         status: 500,

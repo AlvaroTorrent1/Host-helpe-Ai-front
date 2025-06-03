@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./shared/contexts/AuthContext";
 import { LanguageProvider } from "./shared/contexts/LanguageContext";
+import { PaymentFlowProvider } from "./shared/contexts/PaymentFlowContext";
 import "./index.css";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
@@ -25,6 +26,9 @@ const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
 const PaymentSuccessPage = lazy(() => import("./features/payment/PaymentSuccess"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
 const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
+
+// TEMPORAL: Componente de testing
+// const TestConnectivity = lazy(() => import("./components/TestConnectivity"));
 
 // Componente para rastrear navegación
 const RouteTracker = () => {
@@ -70,6 +74,7 @@ function App() {
       <HelmetProvider>
         <LanguageProvider>
           <AuthProvider>
+            <PaymentFlowProvider>
             <Router>
               <RouteTracker />
               <Suspense fallback={<LoadingScreen />}>
@@ -86,6 +91,9 @@ function App() {
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/auth/callback" element={<AuthCallbackPage />} />
                   <Route path="/payment/success" element={<PaymentSuccessPage />} />
+
+                    {/* TEMPORAL: Ruta de testing */}
+                    {/* <Route path="/test-connectivity" element={<TestConnectivity />} /> */}
 
                   {/* Rutas protegidas */}
                   <Route
@@ -144,6 +152,7 @@ function App() {
                 </Routes>
               </Suspense>
             </Router>
+            </PaymentFlowProvider>
           </AuthProvider>
         </LanguageProvider>
       </HelmetProvider>

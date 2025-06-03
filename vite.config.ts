@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
@@ -7,7 +7,45 @@ import fs from 'fs';
 const hasCerts = fs.existsSync('./certs/localhost.key') && fs.existsSync('./certs/localhost.crt');
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  // Cargar variables de entorno basadas en el modo
+  const env = loadEnv(mode, process.cwd(), '');
+  
+  // Configuración de Stripe - Dinámico según el entorno
+  const stripePublicKey = env.VITE_STRIPE_PUBLIC_KEY || 
+    // Fallback para desarrollo si no hay variable definida
+    'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ';
+  
+  // Validaciones importantes para producción
+  if (mode === 'production') {
+    if (!env.VITE_STRIPE_PUBLIC_KEY) {
+      console.error('🚨 ERROR: VITE_STRIPE_PUBLIC_KEY no está definido para producción');
+      process.exit(1);
+    }
+    
+    if (stripePublicKey.includes('pk_test_')) {
+      console.error('🚨 ERROR: Se está usando una clave de Stripe TEST en producción');
+      console.error('Debe usar una clave pk_live_* para producción');
+      process.exit(1);
+    }
+    
+    if (!env.VITE_SITE_URL) {
+      console.error('🚨 ERROR: VITE_SITE_URL no está definido para producción');
+      process.exit(1);
+    }
+    
+    if (env.VITE_SITE_URL.includes('localhost')) {
+      console.error('🚨 ERROR: VITE_SITE_URL contiene localhost en producción');
+      process.exit(1);
+    }
+  }
+  
+  // Log de configuración para debugging
+  console.log(`🔧 Configurando Vite para modo: ${mode}`);
+  console.log(`🔑 Stripe Key: ${stripePublicKey.substring(0, 15)}...`);
+  console.log(`🌐 Site URL: ${env.VITE_SITE_URL || 'no definido'}`);
+  
+  return {
   plugins: [react()],
   server: {
     port: 4000,
@@ -38,7 +76,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
+    // ✅ CONFIGURACIÓN DINÁMICA - Ya no hardcoded
   define: {
-    'import.meta.env.VITE_STRIPE_PUBLIC_KEY': JSON.stringify('pk_test_51QNuzJGqB3BnCkzVWHaM0K4GvzUW2MmvzkTJbMIuP0KiGJgKVnJVJAhW1uTEm9fjMq2op3Osu9dfo2YMZGVzAUcG00NeMVRMGM')
+      'import.meta.env.VITE_STRIPE_PUBLIC_KEY': JSON.stringify(stripePublicKey)
   }
+  };
 }); 
