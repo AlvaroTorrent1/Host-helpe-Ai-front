@@ -523,6 +523,12 @@ export const en = {
       viewAll: "View all incidents",
       pending: "Pending",
       resolutionRate: "Resolution Rate",
+      noIncidents: "No incidents to display",
+      filters: {
+        allProperties: "All properties",
+        clearFilters: "Clear filters",
+        activeFilters: "Active filters"
+      },
       status: {
         resolved: "Resolved",
         pending: "Pending",
@@ -540,6 +546,7 @@ export const en = {
         property: "Property",
         category: "Category",
         status: "Status",
+        phoneNumber: "Phone Number",
         resolved: "Resolved",
         pending: "Pending"
       },

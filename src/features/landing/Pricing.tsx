@@ -105,33 +105,35 @@ const Pricing = () => {
     {
       id: "basic",
       name: t("pricing.basic"),
-      monthlyPrice: 9.99,
-      annualPrice: 7.99,
+      monthlyPrice: 23.99,
+      annualPrice: 19.99,
       features: [
         `1 ${t("common.property")}`,
+        "Agente IA con llamadas de voz",
+        "WhatsApp integrado",
+        "Dashboard de interacciones",
         t("pricing.features.support247"),
-        "WhatsApp",
-        t("pricing.features.basicDataManagement"),
       ],
       isPopular: false,
       cta: t("pricing.cta"),
-      onClickAction: () => handlePlanClick("basic", isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly, t("pricing.basic"), isAnnual ? 7.99 : 9.99) 
+      onClickAction: () => handlePlanClick("basic", isAnnual ? stripeLinks.basic.annual : stripeLinks.basic.monthly, t("pricing.basic"), isAnnual ? 19.99 : 23.99) 
     },
     {
       id: "pro",
       name: t("pricing.pro"),
-      monthlyPrice: 29.99,
-      annualPrice: 23.99,
+      monthlyPrice: 59.99,
+      annualPrice: 49.99,
       features: [
         `${t("pricing.features.upTo")} 5 ${t("common.properties")}`,
         `${t("pricing.features.allFrom")} ${t("pricing.basic")}`,
-        t("pricing.features.automaticCalls"),
-        t("pricing.features.advancedDataManagement"),
-        t("pricing.features.analyticsReports"),
+        "Atención prioritaria",
+        "Analíticas e informes avanzados",
+        "Consultoría legal turística",
+        "Llamadas automáticas programables",
       ],
       isPopular: true,
       cta: t("pricing.cta"),
-      onClickAction: () => handlePlanClick("pro", isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly, t("pricing.pro"), isAnnual ? 23.99 : 29.99)
+      onClickAction: () => handlePlanClick("pro", isAnnual ? stripeLinks.pro.annual : stripeLinks.pro.monthly, t("pricing.pro"), isAnnual ? 49.99 : 59.99)
     },
     {
       id: "enterprise",
@@ -142,9 +144,10 @@ const Pricing = () => {
       features: [
         t("pricing.features.unlimitedProperties"),
         `${t("pricing.features.allFrom")} ${t("pricing.pro")}`,
-        t("pricing.features.dedicatedAPI"),
-        t("pricing.features.prioritySupport"),
-        t("pricing.features.fullCustomization"),
+        "API dedicada y personalizada",
+        "Soporte prioritario 24/7",
+        "Personalización completa",
+        "Integración avanzada multicanal",
       ],
       isPopular: false,
       cta: t("pricing.contact"),

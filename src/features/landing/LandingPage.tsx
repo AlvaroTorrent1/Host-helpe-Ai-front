@@ -359,9 +359,10 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary-600/30 to-transparent z-10"></div>
                   <img
-                    src="/imagenes/wall-e2.4.jpeg"
+                    src="/imagenes/wall-e2.5.jpeg"
                     alt="Configuración del asistente virtual"
-                    className="w-full h-full object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+                    style={{ transform: 'scale(1.15)' }}
                   />
                   <div className="absolute -bottom-10 left-0 w-32 h-32 bg-primary-600 rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-all duration-500"></div>
                 </div>

@@ -43,6 +43,7 @@ type Incident = {
   property_name: string;
   category: IncidentCategory;
   description?: string;
+  phone_number?: string;
 };
 
 const DashboardPage: React.FC = () => {
@@ -55,6 +56,9 @@ const DashboardPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<
     IncidentCategory | "all"
   >("all");
+
+  // Nuevo estado para propiedad seleccionada
+  const [selectedProperty, setSelectedProperty] = useState<string | "all">("all");
 
   // Obtener datos del usuario actual y cargar datos reales
   useEffect(() => {
@@ -144,7 +148,11 @@ const DashboardPage: React.FC = () => {
     tableProperty: "Property",
     tableCategory: "Category", 
     tableStatus: "Status",
-    noIncidents: "No incidents to display"
+    tablePhone: "Phone Number",
+    noIncidents: "No incidents to display",
+    allProperties: "All properties",
+    clearFilters: "Clear filters",
+    activeFilters: "Active filters"
   };
 
   // Use fallback if translation returns the key itself
@@ -175,25 +183,40 @@ const DashboardPage: React.FC = () => {
     return translated;
   };
 
-  // Función para filtrar incidencias según la categoría seleccionada
-  const filteredIncidents =
-    selectedCategory === "all"
-      ? incidents
-      : incidents.filter((incident) => incident.category === selectedCategory);
+  // Función para filtrar incidencias con filtros combinados
+  const filteredIncidents = incidents.filter((incident) => {
+    // Filtro por categoría
+    const categoryMatch = selectedCategory === "all" || incident.category === selectedCategory;
+    
+    // Filtro por propiedad
+    const propertyMatch = selectedProperty === "all" || incident.property_id === selectedProperty;
+    
+    // Ambos filtros deben coincidir
+    return categoryMatch && propertyMatch;
+  });
 
-  // Calcular el número de incidencias pendientes
-  const pendingIncidentsCount = incidents.filter(
+  // Calcular el número de incidencias pendientes (aplicando filtros)
+  const pendingIncidentsCount = filteredIncidents.filter(
     (incident) => incident.status === "pending",
   ).length;
 
-  // Calcular la tasa de resolución
-  const resolvedIncidentsCount = incidents.filter(
+  // Calcular la tasa de resolución (aplicando filtros)
+  const resolvedIncidentsCount = filteredIncidents.filter(
     (incident) => incident.status === "resolved",
   ).length;
   const resolutionRate =
-    incidents.length > 0
-      ? Math.round((resolvedIncidentsCount / incidents.length) * 100)
+    filteredIncidents.length > 0
+      ? Math.round((resolvedIncidentsCount / filteredIncidents.length) * 100)
       : 0;
+
+  // Función para limpiar todos los filtros
+  const clearAllFilters = () => {
+    setSelectedCategory("all");
+    setSelectedProperty("all");
+  };
+
+  // Función para verificar si hay filtros activos
+  const hasActiveFilters = selectedCategory !== "all" || selectedProperty !== "all";
 
   if (isLoading) {
     return (
@@ -376,36 +399,84 @@ const DashboardPage: React.FC = () => {
 
         {/* Incidencias */}
         <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-0">
+          {/* Header con título y botón limpiar filtros */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-0">
               {getText("dashboard.incidents.title", fallbackLabels.incidentsTitle)}
             </h3>
-            <div className="flex space-x-2 overflow-x-auto pb-2 sm:pb-0">
+            {hasActiveFilters && (
               <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                  selectedCategory === "all"
-                    ? "bg-primary-100 text-primary-800"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                onClick={clearAllFilters}
+                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors"
               >
-                {getLabel("all")}
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                {getText("dashboard.incidents.filters.clearFilters", fallbackLabels.clearFilters)}
               </button>
-              {(Object.keys(categoryLabels) as Array<IncidentCategory | "all">)
-                .filter((key) => key !== "all")
-                .map((category) => (
+            )}
+          </div>
+          
+          {/* Toolbar de filtros - Diseño profesional */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+            <div className="flex flex-col lg:flex-row lg:items-end gap-4">
+              {/* Selector de Propiedades */}
+              <div className="flex-1 lg:flex-none lg:min-w-[200px]">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
+                </label>
+                <select
+                  value={selectedProperty}
+                  onChange={(e) => setSelectedProperty(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                >
+                  <option value="all">
+                    {getText("dashboard.incidents.filters.allProperties", fallbackLabels.allProperties)}
+                  </option>
+                  {properties.map((property) => (
+                    <option key={property.id} value={property.id}>
+                      {property.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Divisor visual para pantallas grandes */}
+              <div className="hidden lg:block w-px h-12 bg-gray-300"></div>
+              
+              {/* Filtros por Categoría */}
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
+                </label>
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-2 py-1 text-xs rounded-full whitespace-nowrap ${
-                      selectedCategory === category
-                        ? "bg-primary-100 text-primary-800"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    onClick={() => setSelectedCategory("all")}
+                    className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border transition-all duration-200 ${
+                      selectedCategory === "all"
+                        ? "bg-primary-600 text-white border-primary-600 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                     }`}
                   >
-                    {getLabel(category)}
+                    {getLabel("all")}
                   </button>
-                ))}
+                  {(Object.keys(categoryLabels) as Array<IncidentCategory | "all">)
+                    .filter((key) => key !== "all")
+                    .map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border transition-all duration-200 whitespace-nowrap ${
+                          selectedCategory === category
+                            ? "bg-primary-600 text-white border-primary-600 shadow-sm"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                        }`}
+                      >
+                        {getLabel(category)}
+                      </button>
+                    ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -436,7 +507,7 @@ const DashboardPage: React.FC = () => {
                 <tr>
                   <th
                     scope="col"
-                    className="w-[35%] sm:w-[35%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="w-[25%] sm:w-[25%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.title", fallbackLabels.tableTitle)}
@@ -444,7 +515,7 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="hidden sm:table-cell w-[25%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="hidden sm:table-cell w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
@@ -452,7 +523,7 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="w-[32.5%] sm:w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="w-[25%] sm:w-[15%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
@@ -460,10 +531,18 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="w-[32.5%] sm:w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="w-[25%] sm:w-[15%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    className="w-[25%] sm:w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    <div className="flex items-center">
+                      {getText("dashboard.incidents.table.phoneNumber", fallbackLabels.tablePhone)}
                     </div>
                   </th>
                 </tr>
@@ -503,15 +582,21 @@ const DashboardPage: React.FC = () => {
                           </span>
                         </div>
                       </td>
+                      <td className="px-2 sm:px-6 py-2 sm:py-4 text-sm text-gray-500 text-left">
+                        {incident.phone_number || "N/A"}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan={4}
+                      colSpan={5}
                       className="px-2 sm:px-6 py-4 text-center text-sm text-gray-500"
                     >
-                      {getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)}
+                      {hasActiveFilters 
+                        ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} con los filtros seleccionados`
+                        : getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)
+                      }
                     </td>
                   </tr>
                 )}

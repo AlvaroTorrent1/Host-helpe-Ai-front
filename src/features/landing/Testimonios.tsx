@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
@@ -6,6 +6,42 @@ import { useLanguage } from "@shared/contexts/LanguageContext";
 
 const Testimonios = () => {
   const { t } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Media appearances data (primera noticia con imagen)
+  const mediaAppearances = [
+    {
+      id: 1,
+      title: "Host Helper AI, el asistente virtual que libera a los anfitriones del caos administrativo, se presenta en Alhambra Venture",
+      media: "Alhambra Venture",
+      date: "6 junio 2025",
+      url: "https://alhambraventure.com/host-helper-ai-el-asistente-virtual-que-libera-a-los-anfitriones-del-caos-administrativo-se-presenta-en-alhambra-venture/",
+      excerpt: "Startup andaluza presenta su asistente virtual de voz integrado con WhatsApp para gestores de alojamientos turísticos. Automatiza interacciones, mejora la experiencia del huésped y libera recursos clave.",
+      author: "Alhambra Venture",
+      image: "/imagenes/Host Helper Team (1).jpeg",
+      hasImage: true
+    },
+    {
+      id: 2,
+      title: "La 'startup' malagueña Host Helper AI automatiza la atención al cliente de los apartamentos turísticos",
+      media: "El Español Málaga",
+      date: "31 marzo 2025",
+      url: "https://www.elespanol.com/malaga/economia/tecnologia/20250331/startup-malaguena-host-helper-ai-automatiza-atencion-cliente-apartamentos-turisticos/927157458_0.html",
+      excerpt: "Host Helper AI automatiza la atención al turista mediante un chatbot que optimiza el registro de huéspedes y resuelve consultas en varios idiomas.",
+      author: "Demófilo Peláez",
+      image: "/imagenes/Roll up.png",
+      hasImage: true
+    },
+  ];
+
+  // Navigation functions for carousel
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % mediaAppearances.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + mediaAppearances.length) % mediaAppearances.length);
+  };
 
   // Navigation links configuration
   const navLinks = [
@@ -105,11 +141,181 @@ const Testimonios = () => {
           <div className="container-limited">
             <div className="text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                {t("testimonials.title")}
+                Testimonios
               </h1>
-              <p className="text-xl text-white opacity-90 max-w-2xl mx-auto">
-                {t("testimonials.subtitle")}
+            </div>
+          </div>
+        </section>
+
+        {/* Media Appearances Carousel */}
+        <section className="py-16 bg-gray-50">
+          <div className="container-limited">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                Apariciones en Medios
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Descubre lo que dicen los medios de comunicación sobre Host Helper AI
               </p>
+            </div>
+
+            {/* Carousel Container */}
+            <div className="relative max-w-4xl mx-auto">
+              <div className="overflow-hidden rounded-xl">
+                <div 
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                >
+                  {mediaAppearances.map((article) => (
+                    <div key={article.id} className="w-full flex-shrink-0 px-4">
+                      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                        {/* Layout condicional: con imagen vs sin imagen */}
+                        {article.hasImage ? (
+                          /* Layout con imagen optimizado para calidad */
+                          <div className="flex flex-col md:flex-row">
+                            {/* Sección de imagen - 40% en desktop */}
+                            <div className="w-full md:w-2/5 relative">
+                              <div className="h-64 md:h-80 relative overflow-hidden rounded-l-lg">
+                                <img
+                                  src={article.image}
+                                  alt={`Equipo de ${article.media}`}
+                                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                  style={{ 
+                                    maxWidth: '100%',
+                                    height: 'auto'
+                                  }}
+                                  loading="lazy"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/imagenes/Logo_hosthelper_new.png";
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            
+                            {/* Sección de contenido - 65% en desktop */}
+                            <div className="w-full md:w-3/5 p-8">
+                              <div className="flex items-center mb-4">
+                                <span className="text-primary-600 font-semibold text-sm">
+                                  {article.media}
+                                </span>
+                                <span className="mx-2 text-gray-400">•</span>
+                                <span className="text-gray-500 text-sm">
+                                  {article.date}
+                                </span>
+                              </div>
+                              
+                              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                                {article.title}
+                              </h3>
+                              
+                              <p className="text-gray-600 mb-6 text-lg">
+                                {article.excerpt}
+                              </p>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-500">
+                                  Por {article.author}
+                                </span>
+                                
+                                <a
+                                  href={article.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-md hover:bg-primary-600 transition-colors"
+                                >
+                                  Leer artículo
+                                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Layout sin imagen (original) */
+                          <div className="p-8">
+                            <div className="flex items-center mb-4">
+                              <span className="text-primary-600 font-semibold text-sm">
+                                {article.media}
+                              </span>
+                              <span className="mx-2 text-gray-400">•</span>
+                              <span className="text-gray-500 text-sm">
+                                {article.date}
+                              </span>
+                            </div>
+                            
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                              {article.title}
+                            </h3>
+                            
+                            <p className="text-gray-600 mb-6 text-lg">
+                              {article.excerpt}
+                            </p>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-500">
+                                Por {article.author}
+                              </span>
+                              
+                              <a
+                                href={article.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-md hover:bg-primary-600 transition-colors"
+                              >
+                                Leer artículo
+                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              {mediaAppearances.length > 1 && (
+                <>
+                  <button
+                    onClick={prevSlide}
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+                  >
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <button
+                    onClick={nextSlide}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+                  >
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </>
+              )}
+
+              {/* Dots Indicator */}
+              {mediaAppearances.length > 1 && (
+                <div className="flex justify-center space-x-2 mt-6">
+                  {mediaAppearances.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                        index === currentSlide
+                          ? 'bg-primary-500 scale-110'
+                          : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>

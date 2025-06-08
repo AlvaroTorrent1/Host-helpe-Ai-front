@@ -598,6 +598,12 @@ export const es = {
       viewAll: "Ver todas las incidencias",
       pending: "Pendientes",
       resolutionRate: "Tasa de resolución",
+      noIncidents: "No hay incidencias que mostrar",
+      filters: {
+        allProperties: "Todas las propiedades",
+        clearFilters: "Limpiar filtros",
+        activeFilters: "Filtros activos"
+      },
       status: {
         resolved: "Resuelta",
         pending: "Pendiente",
@@ -615,6 +621,7 @@ export const es = {
         property: "Propiedad",
         category: "Categoría",
         status: "Estado",
+        phoneNumber: "Número de Teléfono",
         resolved: "Resuelto",
         pending: "Pendiente"
       },
