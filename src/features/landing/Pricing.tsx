@@ -109,9 +109,9 @@ const Pricing = () => {
       annualPrice: 19.99,
       features: [
         `1 ${t("common.property")}`,
-        "Agente IA con llamadas de voz",
-        "WhatsApp integrado",
-        "Dashboard de interacciones",
+        t("pricing.features.aiAgentVoiceCalls"),
+        t("pricing.features.whatsappIntegrated"),
+        t("pricing.features.interactionDashboard"),
         t("pricing.features.support247"),
       ],
       isPopular: false,
@@ -126,10 +126,10 @@ const Pricing = () => {
       features: [
         `${t("pricing.features.upTo")} 5 ${t("common.properties")}`,
         `${t("pricing.features.allFrom")} ${t("pricing.basic")}`,
-        "Atención prioritaria",
-        "Analíticas e informes avanzados",
-        "Consultoría legal turística",
-        "Llamadas automáticas programables",
+        t("pricing.features.priorityAttention"),
+        t("pricing.features.advancedAnalyticsReports"),
+        t("pricing.features.legalTourismConsulting"),
+        t("pricing.features.programmableAutomaticCalls"),
       ],
       isPopular: true,
       cta: t("pricing.cta"),
@@ -144,10 +144,10 @@ const Pricing = () => {
       features: [
         t("pricing.features.unlimitedProperties"),
         `${t("pricing.features.allFrom")} ${t("pricing.pro")}`,
-        "API dedicada y personalizada",
-        "Soporte prioritario 24/7",
-        "Personalización completa",
-        "Integración avanzada multicanal",
+        t("pricing.features.dedicatedPersonalizedAPI"),
+        t("pricing.features.prioritySupport247"),
+        t("pricing.features.completeCustomization"),
+        t("pricing.features.advancedMultichannelIntegration"),
       ],
       isPopular: false,
       cta: t("pricing.contact"),
@@ -281,11 +281,11 @@ const Pricing = () => {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
               {plans.map((plan, index) => (
                 <div 
                   key={index} 
-                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"}`}
+                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"} flex flex-col`}
                 >
                   {plan.isPopular && (
                     <div className="bg-primary-400 text-white text-xs font-semibold py-1 px-3 text-center">
@@ -293,77 +293,87 @@ const Pricing = () => {
                     </div>
                   )}
 
-                  <div className="p-6">
-                    <div className="h-10 flex items-center justify-center md:justify-start">
-                      <h3 className="text-xl font-bold text-gray-900">
+                  <div className="p-6 flex flex-col h-full">
+                    {/* Plan name section - Fixed height */}
+                    <div className="mb-4">
+                      <h3 className="text-xl font-bold text-gray-900 text-center md:text-left">
                         {plan.name}
                       </h3>
                     </div>
                     
-                    {plan.customPrice ? (
-                      <div className="h-20 flex flex-col justify-center mb-6">
-                        <span className="text-3xl font-bold text-gray-900">
-                          {t("pricing.customPrice")}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="h-20 flex flex-col justify-center mb-6">
-                        <div>
-                          <span className="text-3xl font-bold text-gray-900">
-                            € {isAnnual ? plan.annualPrice : plan.monthlyPrice}
-                          </span>
-                          <span className="text-gray-600 ml-1">
-                            €{t("pricing.month")}
+                    {/* Price section - Fixed height */}
+                    <div className="mb-6">
+                      {plan.customPrice ? (
+                        <div className="h-16 flex flex-col justify-center">
+                          <span className="text-3xl font-bold text-gray-900 text-center md:text-left">
+                            {t("pricing.customPrice")}
                           </span>
                         </div>
-                        {isAnnual && (
-                          <div className="text-sm text-gray-500 mt-1">
-                            {t("pricing.billedAnnually")}
+                      ) : (
+                        <div className="h-16 flex flex-col justify-center">
+                          <div className="text-center md:text-left">
+                            <span className="text-3xl font-bold text-gray-900">
+                              € {isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                            </span>
+                            <span className="text-gray-600 ml-1">
+                              {t("pricing.month")}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    )}
+                          {isAnnual && (
+                            <div className="text-sm text-gray-500 mt-1 text-center md:text-left">
+                              {t("pricing.billedAnnually")}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
 
-                    <ul className="mb-8 space-y-3 min-h-[200px]">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <svg
-                            className="w-5 h-5 text-primary-500 mr-2 mt-0.5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          <span className="text-gray-600">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {/* Features section - Flexible height */}
+                    <div className="flex-grow mb-6">
+                      <ul className="space-y-3">
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-3">
+                            <svg
+                              className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-gray-600 text-base leading-relaxed">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                    {plan.id !== "enterprise" ? (
-                      <button
-                        onClick={() => plan.onClickAction()}
-                        className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
-                          plan.isPopular 
-                            ? "bg-primary-500 hover:bg-primary-600 text-white"
-                            : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                        }`}
-                      >
-                        {plan.cta}
-                      </button>
-                    ) : (
-                      <a
-                        href={plan.baseLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`block text-center py-3 px-4 rounded-md font-medium transition-colors bg-gray-100 hover:bg-gray-200 text-gray-800`}
-                      >
-                        {plan.cta}
-                      </a>
-                    )}
+                    {/* CTA Button - Fixed at bottom */}
+                    <div className="mt-auto">
+                      {plan.id !== "enterprise" ? (
+                        <button
+                          onClick={() => plan.onClickAction()}
+                          className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
+                            plan.isPopular 
+                              ? "bg-primary-500 hover:bg-primary-600 text-white"
+                              : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                          }`}
+                        >
+                          {plan.cta}
+                        </button>
+                      ) : (
+                        <a
+                          href={plan.baseLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`block text-center py-3 px-4 rounded-md font-medium transition-colors bg-gray-100 hover:bg-gray-200 text-gray-800`}
+                        >
+                          {plan.cta}
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
