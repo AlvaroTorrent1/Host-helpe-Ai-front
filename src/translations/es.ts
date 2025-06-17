@@ -71,9 +71,9 @@ export const es = {
           "Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer.",
       },
       step3: {
-        title: "Comparte el enlace con tus huéspedes",
+        title: "Comparte el número de teléfono con tus huéspedes",
         description:
-          "Proporciona el enlace de tus agentes de IA a tus huéspedes. Ellos podrán hacer check-in, recibir asistencia y adquirir servicios adicionales fácilmente.",
+          "Proporciona el número de teléfono de nuestros agentes de IA a tus huéspedes. Nuestro agente se hace cargo de todo teniendo acceso completo a la información de la propiedad y los detalles de la reserva.",
       },
     },
     cta: {

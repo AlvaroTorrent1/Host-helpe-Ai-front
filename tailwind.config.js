@@ -65,6 +65,15 @@ export default {
         'standard': '0 5px 15px rgba(0, 0, 0, 0.05)',
         'hover': '0 8px 25px rgba(0, 0, 0, 0.1)',
       },
+      keyframes: {
+        'scroll-logos': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
+      animation: {
+        'scroll-logos': 'scroll-logos 20s linear infinite',
+      },
     },
   },
   plugins: [],

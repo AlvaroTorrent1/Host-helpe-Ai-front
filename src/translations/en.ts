@@ -68,16 +68,16 @@ export const en = {
           "Customize chatbot responses, accommodation information and additional services you want to offer.",
       },
       step3: {
-        title: "Share the link with your guests",
+        title: "Share the phone number with your guests",
         description:
-          "Provide your AI agents' link to your guests. They will be able to check-in, receive assistance and purchase additional services easily.",
+          "Provide our AI agents' phone number to your guests. Our agent takes care of everything with complete access to property information and reservation details.",
       },
     },
     cta: {
       title: "Join property owners who are automating their management",
       subtitle:
         "Save time, increase your income and improve guest satisfaction.",
-      button: "Start your free trial",
+      button: "Start now",
     },
   },
 
