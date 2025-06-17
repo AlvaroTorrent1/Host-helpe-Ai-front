@@ -3,7 +3,7 @@
 // Incluye integración con Stripe para los enlaces de pago y con Calendly para demostraciones.
 // La selección entre planes mensuales o anuales actualiza dinámicamente los enlaces de pago.
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import MobileMenu from "@shared/components/MobileMenu";
@@ -35,6 +35,119 @@ const Pricing = () => {
     shouldShowModal,
     flowStatus: paymentFlowStatus
   });
+
+  // Estado para controlar las animaciones de scroll
+  const [visibleSections, setVisibleSections] = useState({
+    pricingCards: [false, false, false],
+    faqTitle: false,
+    faqItems: [false, false, false, false, false, false],
+    ctaSection: false
+  });
+  
+  // Referencias para las secciones que queremos animar
+  const pricingCard1Ref = useRef<HTMLDivElement>(null);
+  const pricingCard2Ref = useRef<HTMLDivElement>(null);
+  const pricingCard3Ref = useRef<HTMLDivElement>(null);
+  const faqTitleRef = useRef<HTMLDivElement>(null);
+  const faqItem1Ref = useRef<HTMLDivElement>(null);
+  const faqItem2Ref = useRef<HTMLDivElement>(null);
+  const faqItem3Ref = useRef<HTMLDivElement>(null);
+  const faqItem4Ref = useRef<HTMLDivElement>(null);
+  const faqItem5Ref = useRef<HTMLDivElement>(null);
+  const faqItem6Ref = useRef<HTMLDivElement>(null);
+  const ctaSectionRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer para animaciones de scroll
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.2, // Se activa cuando el 20% del elemento es visible
+      rootMargin: "-50px 0px", // Margen para ajustar cuándo se activa
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Tarjetas de precios
+          const pricingCardRefs = [pricingCard1Ref, pricingCard2Ref, pricingCard3Ref];
+          const cardIndex = pricingCardRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (cardIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              pricingCards: prev.pricingCards.map((visible, index) => 
+                index === cardIndex ? true : visible
+              )
+            }));
+          }
+
+          // Título de FAQ
+          if (faqTitleRef.current === entry.target) {
+            setVisibleSections(prev => ({ ...prev, faqTitle: true }));
+          }
+
+          // Items de FAQ
+          const faqItemRefs = [faqItem1Ref, faqItem2Ref, faqItem3Ref, faqItem4Ref, faqItem5Ref, faqItem6Ref];
+          const faqIndex = faqItemRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (faqIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              faqItems: prev.faqItems.map((visible, index) => 
+                index === faqIndex ? true : visible
+              )
+            }));
+          }
+
+          // Sección CTA
+          if (ctaSectionRef.current === entry.target) {
+            setVisibleSections(prev => ({ ...prev, ctaSection: true }));
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observar todos los elementos
+    const allRefs = [
+      pricingCard1Ref, pricingCard2Ref, pricingCard3Ref,
+      faqTitleRef,
+      faqItem1Ref, faqItem2Ref, faqItem3Ref, faqItem4Ref, faqItem5Ref, faqItem6Ref,
+      ctaSectionRef
+    ];
+    
+    allRefs.forEach(ref => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    // Cleanup
+    return () => {
+      allRefs.forEach(ref => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
+    };
+  }, []);
+
+  // Scroll to top on mount - Enhanced para garantizar que siempre comience desde arriba
+  useEffect(() => {
+    // Scroll inmediato al cargar la página
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant' // Sin animación para carga inicial
+    });
+    
+    // Backup scroll para asegurar que funcione en todos los navegadores
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // También asegurar que el scroll lateral esté en 0
+    window.scrollTo(0, 0);
+  }, []);
   
   // Enlaces base de Stripe para los diferentes planes
   const stripeLinks = {
@@ -151,7 +264,7 @@ const Pricing = () => {
       ],
       isPopular: false,
       cta: t("pricing.contact"),
-      onClickAction: () => handlePlanClick("enterprise", stripeLinks.enterprise, t("pricing.enterprise"), null)
+      onClickAction: () => navigate("/schedule-demo")
     },
   ];
 
@@ -184,7 +297,26 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ scrollBehavior: 'smooth' }}>
+      {/* Estilos adicionales para garantizar el correcto comportamiento del scroll */}
+      <style>
+        {`
+          html, body {
+            scroll-behavior: smooth;
+          }
+          
+          /* Asegurar que la página comience desde el top */
+          html {
+            scroll-padding-top: 0;
+          }
+          
+          /* Prevenir problemas de scroll en iOS */
+          body {
+            -webkit-overflow-scrolling: touch;
+          }
+        `}
+      </style>
+
       {/* Header */}
       <header className="bg-white shadow-sm w-full">
         <div className="container-limited py-4 flex justify-between items-center">
@@ -284,8 +416,14 @@ const Pricing = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
               {plans.map((plan, index) => (
                 <div 
-                  key={index} 
-                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"} flex flex-col`}
+                  key={index}
+                  ref={index === 0 ? pricingCard1Ref : index === 1 ? pricingCard2Ref : pricingCard3Ref}
+                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"} flex flex-col ${
+                    visibleSections.pricingCards[index]
+                      ? 'opacity-100 translate-y-0 scale-100'
+                      : 'opacity-0 translate-y-8 scale-95'
+                  } transition-all duration-1000 ease-out`}
+                  style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   {plan.isPopular && (
                     <div className="bg-primary-400 text-white text-xs font-semibold py-1 px-3 text-center">
@@ -352,27 +490,16 @@ const Pricing = () => {
 
                     {/* CTA Button - Fixed at bottom */}
                     <div className="mt-auto">
-                      {plan.id !== "enterprise" ? (
-                        <button
-                          onClick={() => plan.onClickAction()}
-                          className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
-                            plan.isPopular 
-                              ? "bg-primary-500 hover:bg-primary-600 text-white"
-                              : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                          }`}
-                        >
-                          {plan.cta}
-                        </button>
-                      ) : (
-                        <a
-                          href={plan.baseLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`block text-center py-3 px-4 rounded-md font-medium transition-colors bg-gray-100 hover:bg-gray-200 text-gray-800`}
-                        >
-                          {plan.cta}
-                        </a>
-                      )}
+                      <button
+                        onClick={() => plan.onClickAction()}
+                        className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
+                          plan.isPopular 
+                            ? "bg-primary-500 hover:bg-primary-600 text-white"
+                            : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {plan.cta}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -384,17 +511,54 @@ const Pricing = () => {
         {/* FAQ Section */}
         <section className="py-16 bg-gray-50">
           <div className="container-limited">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-10 text-center">
+            <h2 
+              ref={faqTitleRef}
+              className={`text-2xl md:text-3xl font-bold text-gray-900 mb-10 text-center transition-all duration-1000 ease-out ${
+                visibleSections.faqTitle
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-6 scale-95'
+              }`}
+            >
               {t("pricing.faq.title")}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {faqItems.map((item, index) => (
-                <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <div 
+                  key={index} 
+                  ref={
+                    index === 0 ? faqItem1Ref :
+                    index === 1 ? faqItem2Ref :
+                    index === 2 ? faqItem3Ref :
+                    index === 3 ? faqItem4Ref :
+                    index === 4 ? faqItem5Ref :
+                    faqItem6Ref
+                  }
+                  className={`bg-white p-6 rounded-lg shadow-md transition-all duration-1000 ease-out ${
+                    visibleSections.faqItems[index]
+                      ? 'opacity-100 translate-y-0 scale-100'
+                      : 'opacity-0 translate-y-8 scale-95'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <h3 className={`text-lg font-semibold text-gray-900 mb-3 transition-all duration-700 ${
+                    visibleSections.faqItems[index]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  }`}
+                  style={{ transitionDelay: `${(index * 150) + 200}ms` }}
+                  >
                     {item.question}
                   </h3>
-                  <p className="text-gray-600">{item.answer}</p>
+                  <p className={`text-gray-600 transition-all duration-700 ${
+                    visibleSections.faqItems[index]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  }`}
+                  style={{ transitionDelay: `${(index * 150) + 400}ms` }}
+                  >
+                    {item.answer}
+                  </p>
                 </div>
               ))}
             </div>
@@ -402,17 +566,41 @@ const Pricing = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-[#ECA408] to-[#F5B730]">
+        <section 
+          ref={ctaSectionRef}
+          className={`py-16 bg-gradient-to-r from-[#ECA408] to-[#F5B730] transition-all duration-1000 ease-out ${
+            visibleSections.ctaSection
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-8'
+          }`}
+        >
           <div className="container-limited text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+            <h2 className={`text-2xl md:text-3xl font-bold text-white mb-4 transition-all duration-700 ${
+              visibleSections.ctaSection
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: '200ms' }}
+            >
               {t("pricing.ctaSection.title")}
             </h2>
-            <p className="text-white text-lg mb-8 max-w-2xl mx-auto">
+            <p className={`text-white text-lg mb-8 max-w-2xl mx-auto transition-all duration-700 ${
+              visibleSections.ctaSection
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: '400ms' }}
+            >
               {t("pricing.ctaSection.subtitle")}
             </p>
             <Link 
               to="/schedule-demo" 
-              className="inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
+              className={`inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-all duration-700 ${
+                visibleSections.ctaSection
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-4 scale-95'
+              }`}
+              style={{ transitionDelay: '600ms' }}
             >
               {t("pricing.scheduleDemo") || "Agendar demo"}
             </Link>

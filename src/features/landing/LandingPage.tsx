@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
@@ -18,6 +18,14 @@ const styles = {
 const LandingPage = () => {
   const { t } = useLanguage();
 
+  // Estado para controlar las animaciones de scroll
+  const [visibleSteps, setVisibleSteps] = useState<boolean[]>([false, false, false]);
+  
+  // Referencias para los pasos
+  const step1Ref = useRef<HTMLDivElement>(null);
+  const step2Ref = useRef<HTMLDivElement>(null);
+  const step3Ref = useRef<HTMLDivElement>(null);
+
   // Navigation links configuration
   const navLinks = [
     { text: t("nav.features"), href: "#features" },
@@ -25,6 +33,50 @@ const LandingPage = () => {
     { text: t("nav.testimonials"), href: "/testimonios" },
     { text: t("nav.login"), href: "/login", isButton: true },
   ];
+
+  // Intersection Observer para animaciones de scroll
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.3, // Se activa cuando el 30% del elemento es visible
+      rootMargin: "-50px 0px", // Margen para ajustar cuándo se activa
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const stepRefs = [step1Ref, step2Ref, step3Ref];
+          const stepIndex = stepRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (stepIndex !== -1) {
+            setVisibleSteps(prev => {
+              const newVisible = [...prev];
+              newVisible[stepIndex] = true;
+              return newVisible;
+            });
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observar cada paso
+    const refs = [step1Ref, step2Ref, step3Ref];
+    refs.forEach(ref => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    // Cleanup
+    return () => {
+      refs.forEach(ref => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
+    };
+  }, []);
 
   // Ejemplo de uso directo de logEvent con importación dinámica
   const handleHeroInteraction = () => {
@@ -295,29 +347,57 @@ const LandingPage = () => {
         <section className="py-24 bg-white" id="how-it-works">
           <div className="container-limited">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {t("landing.howItWorks.title")}
-              </h2>
+              <h2 
+                className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+                dangerouslySetInnerHTML={{
+                  __html: t("landing.howItWorks.title").replace('Host Helper Ai', (match) => 
+                    match.replace('Ai', `<span style="color: #ECA404;">Ai</span>`)
+                  )
+                }}
+              />
             </div>
 
             {/* Paso 1 */}
-            <div className="flex flex-col md:flex-row items-center mb-16">
+            <div 
+              ref={step1Ref}
+              className={`flex flex-col md:flex-row items-center mb-16 transition-all duration-1000 ease-out ${
+                visibleSteps[0] 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                    visibleSteps[0] 
+                      ? 'scale-100 rotate-0' 
+                      : 'scale-0 -rotate-45'
+                  }`}>
                     1
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                    visibleSteps[0] 
+                      ? 'opacity-100 translate-x-0' 
+                      : 'opacity-0 -translate-x-4'
+                  }`}>
                     {t("landing.howItWorks.step1.title")}
                   </h3>
                 </div>
-                <p className="text-gray-600 mb-4">
+                <p className={`text-gray-600 mb-4 transition-all duration-700 delay-500 ${
+                  visibleSteps[0] 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 -translate-x-4'
+                }`}>
                   {t("landing.howItWorks.step1.description")}
                 </p>
               </div>
               <div className="md:w-1/2">
                 <div
-                  className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl"
+                  className={`group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl transition-all duration-1000 delay-400 ${
+                    visibleSteps[0] 
+                      ? 'opacity-100 translate-x-0 scale-100' 
+                      : 'opacity-0 translate-x-8 scale-95'
+                  }`}
                   style={{
                     clipPath:
                       "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)",
@@ -335,23 +415,46 @@ const LandingPage = () => {
             </div>
 
             {/* Paso 2 */}
-            <div className="flex flex-col md:flex-row-reverse items-center mb-16">
+            <div 
+              ref={step2Ref}
+              className={`flex flex-col md:flex-row-reverse items-center mb-16 transition-all duration-1000 ease-out ${
+                visibleSteps[1] 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pl-8">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                    visibleSteps[1] 
+                      ? 'scale-100 rotate-0' 
+                      : 'scale-0 -rotate-45'
+                  }`}>
                     2
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                    visibleSteps[1] 
+                      ? 'opacity-100 translate-x-0' 
+                      : 'opacity-0 translate-x-4'
+                  }`}>
                     {t("landing.howItWorks.step2.title")}
                   </h3>
                 </div>
-                <p className="text-gray-600 mb-4">
+                <p className={`text-gray-600 mb-4 transition-all duration-700 delay-500 ${
+                  visibleSteps[1] 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 translate-x-4'
+                }`}>
                   {t("landing.howItWorks.step2.description")}
                 </p>
               </div>
               <div className="md:w-1/2">
                 <div
-                  className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl"
+                  className={`group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl transition-all duration-1000 delay-400 ${
+                    visibleSteps[1] 
+                      ? 'opacity-100 translate-x-0 scale-100' 
+                      : 'opacity-0 -translate-x-8 scale-95'
+                  }`}
                   style={{
                     clipPath:
                       "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)",
@@ -360,7 +463,7 @@ const LandingPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary-600/30 to-transparent z-10"></div>
                   <img
                     src="/imagenes/wall-e2.5.jpeg"
-                    alt="Configuración del asistente virtual"
+                    alt="Configuración de Agentes de IA"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                     style={{ transform: 'scale(1.15)' }}
                   />
@@ -370,23 +473,46 @@ const LandingPage = () => {
             </div>
 
             {/* Paso 3 */}
-            <div className="flex flex-col md:flex-row items-center">
+            <div 
+              ref={step3Ref}
+              className={`flex flex-col md:flex-row items-center transition-all duration-1000 ease-out ${
+                visibleSteps[2] 
+                  ? 'opacity-100 translate-y-0' 
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                    visibleSteps[2] 
+                      ? 'scale-100 rotate-0' 
+                      : 'scale-0 -rotate-45'
+                  }`}>
                     3
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                    visibleSteps[2] 
+                      ? 'opacity-100 translate-x-0' 
+                      : 'opacity-0 -translate-x-4'
+                  }`}>
                     {t("landing.howItWorks.step3.title")}
                   </h3>
                 </div>
-                <p className="text-gray-600 mb-4">
+                <p className={`text-gray-600 mb-4 transition-all duration-700 delay-500 ${
+                  visibleSteps[2] 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 -translate-x-4'
+                }`}>
                   {t("landing.howItWorks.step3.description")}
                 </p>
               </div>
               <div className="md:w-1/2">
                 <div
-                  className="group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl"
+                  className={`group relative w-5/6 h-64 mx-auto overflow-hidden shadow-xl transition-all duration-1000 delay-400 ${
+                    visibleSteps[2] 
+                      ? 'opacity-100 translate-x-0 scale-100' 
+                      : 'opacity-0 translate-x-8 scale-95'
+                  }`}
                   style={{
                     clipPath:
                       "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)",

@@ -24,7 +24,7 @@ export const es = {
         "Todo lo que necesitas para gestionar tus alojamientos turísticos de forma eficiente",
       chatbot: "Agentes IA 24/7",
       chatbotDesc:
-        "Asistente virtual para huéspedes que resuelve consultas en tiempo real",
+        "Agentes de IA para huéspedes que resuelven consultas en tiempo real",
       registration: "Registro Automatizado",
       registrationDesc:
         "Simplifica el registro de viajeros según normativa española (SES)",
@@ -59,21 +59,21 @@ export const es = {
       deploymentDesc: "Netlify/Vercel",
     },
     howItWorks: {
-      title: "Empezar a utilizar Host Helper AI es muy sencillo",
+      title: "Empezar a utilizar Host Helper Ai es muy sencillo",
       step1: {
         title: "Regístrate y añade tu propiedad",
         description:
           "Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y las normas del alojamiento.",
       },
       step2: {
-        title: "Configura tu asistente virtual",
+        title: "Configura tus agentes de IA",
         description:
           "Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer.",
       },
       step3: {
         title: "Comparte el enlace con tus huéspedes",
         description:
-          "Proporciona el enlace de tu asistente a tus huéspedes. Ellos podrán hacer check-in, recibir asistencia y adquirir servicios adicionales fácilmente.",
+          "Proporciona el enlace de tus agentes de IA a tus huéspedes. Ellos podrán hacer check-in, recibir asistencia y adquirir servicios adicionales fácilmente.",
       },
     },
     cta: {
@@ -84,82 +84,96 @@ export const es = {
     },
   },
 
-  // ChatbotPage
+  // ChatbotPage - Actualizado para Agentes de IA
   chatbotPage: {
     meta: {
-      title: "Chatbots Inteligentes para Alojamientos | Host Helper AI",
+      title: "Agentes de IA para Alojamientos Turísticos | Host Helper AI",
       description:
-        "Nuestros chatbots con IA avanzada atienden a tus huéspedes 24/7, resuelven dudas, optimizan check-ins y generan ingresos adicionales mediante recomendaciones personalizadas.",
+        "Agentes de IA avanzados que atienden por teléfono 24/7, gestionan incidencias y coordinan con proveedores. Integración con WhatsApp y Telegram para property managers.",
     },
     hero: {
-      title: "Chatbots Inteligentes",
-      subtitle: "Beneficios de Nuestros Chatbots",
+      title: "Agentes de IA Inteligentes",
+      subtitle: "Atención Telefónica 24/7 para tus Alojamientos",
       description:
-        "Nuestros chatbots inteligentes combinan lo mejor de la tecnología de IA con el conocimiento específico de tu alojamiento para ofrecer una experiencia excepcional a tus huéspedes.",
+        "Nuestros agentes de IA atienden llamadas telefónicas las 24 horas, gestionan incidencias en tiempo real y coordinan con equipos de mantenimiento o limpieza. Integrados con WhatsApp y Telegram para enviar información multimedia, ubicaciones y enlaces. Cuando necesitan ayuda, colaboran entre ellos o escalan a tu equipo humano.",
     },
     benefits: {
-      availability: {
-        title: "Disponible 24/7",
+      phoneService: {
+        title: "Atención Telefónica Inteligente",
         description:
-          "Tus huéspedes reciben atención inmediata a cualquier hora del día, cualquier día de la semana. Nunca más mensajes sin responder ni huéspedes frustrados esperando.",
+          "Tus huéspedes llaman a un número de teléfono y conversan por voz con nuestros agentes de IA. Disponibles las 24 horas, entienden múltiples idiomas y resuelven consultas al instante.",
       },
-      income: {
-        title: "Ingresos Adicionales",
+      multichannel: {
+        title: "WhatsApp & Telegram Integrados",
         description:
-          "Genera comisiones extra recomendando tours, actividades y servicios cercanos a tus huéspedes. Nuestros chatbots sugieren experiencias personalizadas.",
+          "Durante las llamadas, los agentes envían imágenes, ubicaciones, enlaces y documentos por WhatsApp o Telegram. Combinan la conversación por voz con contenido multimedia al instante.",
       },
-      experience: {
-        title: "Mejor Experiencia",
+      teamwork: {
+        title: "Trabajo en Equipo Inteligente",
         description:
-          "Tus huéspedes obtienen respuestas inmediatas, precisas y personalizadas, mejorando su experiencia general y aumentando las valoraciones positivas.",
+          "Cuando un agente no puede resolver algo, colabora con otros agentes especialistas o escala a tu equipo humano. Pueden coordinar con equipos de mantenimiento o limpieza durante la misma llamada.",
       },
     },
     features: {
-      title: "Características y Capacidades",
-      subtitle: "Tecnología avanzada",
-      description:
-        "Nuestros chatbots están diseñados específicamente para la industria de alojamientos turísticos con funcionalidades que automatizan tus procesos y mejoran la experiencia de tus huéspedes.",
+      title: "Capacidades de Nuestros Agentes de IA",
+      subtitle: "Reduce tu carga de trabajo mientras tus huéspedes reciben atención profesional las 24 horas.",
       multilingual: {
-        title: "Multilingüe",
+        title: "Conversación Natural Multiidioma",
         description:
-          "Nuestros chatbots pueden comunicarse en más de 10 idiomas, adaptándose automáticamente al idioma utilizado por el huésped.",
+          "Conversan por voz como humanos en español, inglés, francés, alemán y más idiomas. Comprenden acentos y contexto para ofrecer respuestas precisas.",
       },
-      sesAutomation: {
-        title: "Automatización del SES",
+      maintenanceCoordination: {
+        title: "Coordinación con Equipos de Mantenimiento",
         description:
-          "Gestiona automáticamente el proceso de registro obligatorio para el Ministerio del Interior, cumpliendo la normativa española.",
+          "Durante la llamada con el huésped, pueden contactar simultáneamente con fontaneros, electricistas o equipos de limpieza. Coordinan la cita y confirman al huésped en tiempo real.",
       },
-      incidentResolution: {
-        title: "Resolución de Incidencias",
+      intelligentEscalation: {
+        title: "Escalación Inteligente",
         description:
-          "Soluciona problemas comunes como WiFi, aire acondicionado o electrodomésticos con instrucciones específicas para tu propiedad.",
+          "Cuando no pueden resolver algo, colaboran con agentes especialistas o transfieren la llamada a tu equipo con todo el contexto de la conversación.",
       },
-      localRecommendations: {
-        title: "Recomendaciones Locales",
+      personalizedRecommendations: {
+        title: "Recomendaciones Personalizadas",
         description:
-          "Ofrece información valiosa sobre restaurantes, atracciones y actividades cercanas, con posibilidad de generar comisiones.",
+          "Conocen tu zona perfectamente y envían por WhatsApp fotos de restaurantes, mapas de ubicación, enlaces de reservas y recomendaciones personalizadas según las preferencias del huésped.",
       },
-      conversionRate: {
-        title: "Tasa de resolución",
-        value: "+80%",
-        description: "de consultas sin intervención humana",
+      responseTime: {
+        title: "Tiempo Respuesta",
+        value: "< 3 segundos",
+        description: "Resolución instantánea",
       },
     },
     demo: {
-      title: "Un asistente virtual que realmente resuelve problemas",
-      subtitle: "Ver en acción",
+      title: "Ejemplo: Avería de Fontanería",
+      subtitle: "Caso Práctico Real",
       description:
-        "Nuestros chatbots se entrenan específicamente con la información de tu alojamiento: normas, instrucciones, recomendaciones locales y respuestas a las preguntas más comunes de tus huéspedes.",
-      capabilities: {
-        instructions: "Instrucciones de check-in y check-out personalizadas",
-        technicalProblems:
-          "Solución de problemas técnicos como WiFi o electrodomésticos",
-        recommendations:
-          "Recomendaciones de restaurantes y actividades cercanas",
-        transportation:
-          "Información sobre transporte público y opciones de movilidad",
+        "Descubre cómo nuestros agentes de IA resuelven incidencias reales paso a paso, coordinando con equipos de mantenimiento durante la misma llamada del huésped.",
+      steps: {
+        step1: {
+          title: "Huésped llama:",
+          description: "No hay agua caliente en el apartamento",
+        },
+        step2: {
+          title: "Diagnóstico y escalación:",
+          description: "El agente entiende el problema y al no poder resolverlo transfiere la llamada a un agente especialista que contacta directamente con el fontanero",
+        },
+        step3: {
+          title: "Coordinación especializada:",
+          description: "El agente especialista explica la avería al fontanero con todos los detalles y agenda la cita de reparación",
+        },
+        step4: {
+          title: "Confirmación al huésped:",
+          description: "El fontanero llegará mañana a las 10:00. Te envío sus datos por WhatsApp",
+        },
       },
-      videoPlaceholder: "Video Demo del Chatbot",
+      workflow: {
+        guest: "Huésped",
+        aiAgent: "Agente IA",
+        whatsapp: "WhatsApp",
+        plumber: "Fontanero",
+        coordination: "Coordinación en Tiempo Real",
+        resolution: "Todo resuelto en una sola llamada",
+      },
     },
   },
 
@@ -349,10 +363,10 @@ export const es = {
     },
     testimonial2: {
       description:
-        "Apartamentos con vistas al mar con terrazas privadas y piscina en Nerja.",
-      text: "Desde que implementamos Host Helper, nuestros huéspedes pueden hacer check-in sin problemas a cualquier hora. Hemos aumentado nuestras valoraciones en un 20%.",
-      author: "Carlos Ruiz",
-      position: "Director",
+        "Casa de vacaciones en el auténtico pueblo español de Ojén, Andalucía, con vistas a las montañas y cerca de la playa.",
+      text: "Host Helper AI ha sido fundamental para gestionar Casa María Flora desde los Países Bajos. ¡Una solución perfecta para propietarios internacionales!",
+      author: "Elske Lena",
+      position: "Propietaria",
     },
     testimonial3: {
       description: "Alojamiento boutique en el centro histórico de Lucena.",
@@ -364,7 +378,7 @@ export const es = {
       testimonial1: {
         author: "Ana Moreno",
         company: "Apartamentos Turísticos Sevilla",
-        text: "El asistente virtual de Host Helper ha sido una revolución para nuestra gestión diaria. Los huéspedes reciben respuestas inmediatas y nosotros podemos centrarnos en mejorar otros aspectos del negocio.",
+        text: "Los agentes de IA de Host Helper han sido una revolución para nuestra gestión diaria. Los huéspedes reciben respuestas inmediatas y nosotros podemos centrarnos en mejorar otros aspectos del negocio.",
       },
       testimonial2: {
         author: "Javier López",
@@ -442,9 +456,9 @@ export const es = {
       q4: "¿Cómo funciona el sistema de ingresos extra?",
       a4: "El asistente ofrece proactivamente servicios adicionales a tus huéspedes, como transfers, entradas a espectáculos o reservas en restaurantes, generando comisiones para ti.",
       q5: "¿Es fácil implementar Host Helper AI?",
-      a5: "Sí, la implementación es muy sencilla. Nuestro equipo te guiará durante todo el proceso y tendrás tu asistente virtual funcionando en menos de 24 horas.",
+      a5: "Sí, la implementación es muy sencilla. Nuestro equipo te guiará durante todo el proceso y tendrás tus agentes de IA funcionando en menos de 24 horas.",
       q6: "¿Hay un período de prueba?",
-      a6: "Ofrecemos una demostración personalizada gratuita donde podrás ver cómo funciona el asistente con tus propios datos y casos de uso específicos.",
+      a6: "Ofrecemos una demostración personalizada gratuita donde podrás ver cómo funcionan los agentes de IA con tus propios datos y casos de uso específicos.",
       q7: "¿Qué soporte técnico está incluido?",
       a7: "Todos los planes incluyen soporte técnico por correo electrónico. Los planes Pro y Empresarial también incluyen soporte prioritario y acceso a un gestor de cuenta dedicado.",
     },
@@ -633,6 +647,7 @@ export const es = {
         category: "Categoría",
         status: "Estado",
         phoneNumber: "Número de Teléfono",
+        date: "Fecha",
         resolved: "Resuelto",
         pending: "Pendiente"
       },

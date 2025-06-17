@@ -24,7 +24,7 @@ export const en = {
         "Everything you need to efficiently manage your tourist accommodations",
       chatbot: "AI Agents 24/7",
       chatbotDesc:
-        "Virtual assistant for guests that resolves queries in real time",
+        "AI agents for guests that resolve queries in real time",
       registration: "Automated Registration",
       registrationDesc:
         "Simplifies traveler registration according to Spanish regulations (SES)",
@@ -56,21 +56,21 @@ export const en = {
       deploymentDesc: "Netlify/Vercel",
     },
     howItWorks: {
-      title: "Getting started with Host Helper AI is very simple",
+      title: "Getting started with Host Helper Ai is very simple",
       step1: {
         title: "Register and add your property",
         description:
           "Create your account in minutes and add the details of your property. Upload photos, description and accommodation rules.",
       },
       step2: {
-        title: "Configure your virtual assistant",
+        title: "Configure your AI agents",
         description:
           "Customize chatbot responses, accommodation information and additional services you want to offer.",
       },
       step3: {
         title: "Share the link with your guests",
         description:
-          "Provide your assistant's link to your guests. They will be able to check-in, receive assistance and purchase additional services easily.",
+          "Provide your AI agents' link to your guests. They will be able to check-in, receive assistance and purchase additional services easily.",
       },
     },
     cta: {
@@ -81,82 +81,96 @@ export const en = {
     },
   },
 
-  // ChatbotPage
+  // ChatbotPage - Updated for AI Agents
   chatbotPage: {
     meta: {
-      title: "Intelligent Chatbots for Accommodations | Host Helper AI",
+      title: "AI Agents for Tourist Accommodations | Host Helper AI",
       description:
-        "Our advanced AI chatbots assist your guests 24/7, resolve questions, optimize check-ins, and generate additional income through personalized recommendations.",
+        "Advanced AI agents that handle phone calls 24/7, manage incidents and coordinate with providers. WhatsApp and Telegram integration for property managers.",
     },
     hero: {
-      title: "Intelligent Chatbots",
-      subtitle: "Benefits of Our Chatbots",
+      title: "Intelligent AI Agents",
+      subtitle: "24/7 Phone Support for Your Accommodations",
       description:
-        "Our intelligent chatbots combine the best of AI technology with specific knowledge about your accommodation to provide an exceptional experience for your guests.",
+        "Our AI agents handle phone calls 24 hours a day, manage incidents in real time and coordinate with maintenance or cleaning teams. Integrated with WhatsApp and Telegram to send multimedia information, locations and links. When they need help, they collaborate with each other or escalate to your human team.",
     },
     benefits: {
-      availability: {
-        title: "Available 24/7",
+      phoneService: {
+        title: "Intelligent Phone Support",
         description:
-          "Your guests receive immediate attention any time of day, any day of the week. No more unanswered messages or frustrated guests waiting.",
+          "Your guests call a phone number and have voice conversations with our AI agents. Available 24 hours, they understand multiple languages and resolve queries instantly.",
       },
-      income: {
-        title: "Additional Income",
+      multichannel: {
+        title: "WhatsApp & Telegram Integrated",
         description:
-          "Generate extra commissions by recommending tours, activities and nearby services to your guests. Our chatbots suggest personalized experiences.",
+          "During calls, agents send images, locations, links and documents via WhatsApp or Telegram. They combine voice conversation with multimedia content instantly.",
       },
-      experience: {
-        title: "Better Experience",
+      teamwork: {
+        title: "Intelligent Teamwork",
         description:
-          "Your guests get immediate, accurate, and personalized answers, improving their overall experience and increasing positive ratings.",
+          "When an agent cannot resolve something, it collaborates with other specialist agents or escalates to your human team. They can coordinate with maintenance or cleaning teams during the same call.",
       },
     },
     features: {
-      title: "Features and Capabilities",
-      subtitle: "Advanced technology",
-      description:
-        "Our chatbots are specifically designed for the tourist accommodation industry with features that automate your processes and improve your guests' experience.",
+      title: "Capabilities of Our AI Agents",
+      subtitle: "Reduce your workload while your guests receive professional attention 24 hours a day.",
       multilingual: {
-        title: "Multilingual",
+        title: "Natural Multilingual Conversation",
         description:
-          "Our chatbots can communicate in more than 10 languages, automatically adapting to the language used by the guest.",
+          "They converse by voice like humans in Spanish, English, French, German and more languages. They understand accents and context to provide accurate responses.",
       },
-      sesAutomation: {
-        title: "SES Automation",
+      maintenanceCoordination: {
+        title: "Coordination with Maintenance Teams",
         description:
-          "Automatically manages the mandatory registration process for the Ministry of the Interior, complying with Spanish regulations.",
+          "During the call with the guest, they can simultaneously contact plumbers, electricians or cleaning teams. They coordinate appointments and confirm with the guest in real time.",
       },
-      incidentResolution: {
-        title: "Incident Resolution",
+      intelligentEscalation: {
+        title: "Intelligent Escalation",
         description:
-          "Solves common problems such as WiFi, air conditioning or appliances with specific instructions for your property.",
+          "When they cannot resolve something, they collaborate with specialist agents or transfer the call to your team with full conversation context.",
       },
-      localRecommendations: {
-        title: "Local Recommendations",
+      personalizedRecommendations: {
+        title: "Personalized Recommendations",
         description:
-          "Offers valuable information about nearby restaurants, attractions and activities, with the possibility of generating commissions.",
+          "They know your area perfectly and send restaurant photos, location maps, booking links and personalized recommendations via WhatsApp based on guest preferences.",
       },
-      conversionRate: {
-        title: "Resolution rate",
-        value: "+80%",
-        description: "of queries without human intervention",
+      responseTime: {
+        title: "Response Time",
+        value: "< 3 seconds",
+        description: "Instant resolution",
       },
     },
     demo: {
-      title: "A virtual assistant that really solves problems",
-      subtitle: "See in action",
+      title: "Example: Plumbing Issue",
+      subtitle: "Real Practical Case",
       description:
-        "Our chatbots are trained specifically with information about your accommodation: rules, instructions, local recommendations and answers to the most common questions from your guests.",
-      capabilities: {
-        instructions: "Customized check-in and check-out instructions",
-        technicalProblems:
-          "Resolution of technical issues like WiFi or appliances",
-        recommendations:
-          "Recommendations for nearby restaurants and activities",
-        transportation:
-          "Information about public transport and mobility options",
+        "Discover how our AI agents resolve real incidents step by step, coordinating with maintenance teams during the same guest call.",
+      steps: {
+        step1: {
+          title: "Guest calls:",
+          description: "No hot water in the apartment",
+        },
+        step2: {
+          title: "Diagnosis and escalation:",
+          description: "The agent understands the problem and unable to resolve it transfers the call to a specialist agent who contacts the plumber directly",
+        },
+        step3: {
+          title: "Specialized coordination:",
+          description: "The specialist agent explains the breakdown to the plumber with all details and schedules the repair appointment",
+        },
+        step4: {
+          title: "Guest confirmation:",
+          description: "The plumber will arrive tomorrow at 10:00. I'm sending you their details via WhatsApp",
+        },
       },
-      videoPlaceholder: "Chatbot Demo Video",
+      workflow: {
+        guest: "Guest",
+        aiAgent: "AI Agent",
+        whatsapp: "WhatsApp",
+        plumber: "Plumber",
+        coordination: "Real-Time Coordination",
+        resolution: "Everything resolved in one call",
+      },
     },
   },
 
@@ -346,10 +360,10 @@ export const en = {
     },
     testimonial2: {
       description:
-        "Apartments with sea views, private terraces and pool in Nerja.",
-      text: "Since implementing Host Helper, our guests can check-in without problems at any time. We have increased our ratings by 20%.",
-      author: "Carlos Ruiz",
-      position: "Director",
+        "Holiday home in the authentic Spanish village of Ojén, Andalusia, with mountain views and close to the beach.",
+      text: "Host Helper AI has been essential for managing Casa María Flora from the Netherlands. A perfect solution for international property owners!",
+      author: "Elske Lena",
+      position: "Owner",
     },
     testimonial3: {
       description: "Boutique accommodation in the historic center of Lucena.",
@@ -361,7 +375,7 @@ export const en = {
       testimonial1: {
         author: "Ana Moreno",
         company: "Seville Tourist Apartments",
-        text: "Host Helper's virtual assistant has been a revolution for our daily management. Guests receive immediate responses and we can focus on improving other aspects of the business.",
+        text: "Host Helper's AI agents have been a revolution for our daily management. Guests receive immediate responses and we can focus on improving other aspects of the business.",
       },
       testimonial2: {
         author: "Javier López",
@@ -439,9 +453,9 @@ export const en = {
       q4: "How does the extra income system work?",
       a4: "The assistant proactively offers additional services to your guests, such as transfers, show tickets, or restaurant reservations, generating commissions for you.",
       q5: "Is it easy to implement Host Helper AI?",
-      a5: "Yes, implementation is very simple. Our team will guide you through the entire process and you will have your virtual assistant up and running in less than 24 hours.",
+      a5: "Yes, implementation is very simple. Our team will guide you through the entire process and you will have your AI agents up and running in less than 24 hours.",
       q6: "Is there a trial period?",
-      a6: "We offer a free personalized demonstration where you can see how the assistant works with your own data and specific use cases.",
+      a6: "We offer a free personalized demonstration where you can see how the AI agents work with your own data and specific use cases.",
       q7: "What technical support is included?",
       a7: "All plans include email technical support. Pro and Enterprise plans also include priority support and access to a dedicated account manager.",
     },
@@ -558,6 +572,7 @@ export const en = {
         category: "Category",
         status: "Status",
         phoneNumber: "Phone Number",
+        date: "Date",
         resolved: "Resolved",
         pending: "Pending"
       },

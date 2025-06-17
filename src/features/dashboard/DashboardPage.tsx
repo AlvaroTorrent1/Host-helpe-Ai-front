@@ -149,6 +149,7 @@ const DashboardPage: React.FC = () => {
     tableCategory: "Category", 
     tableStatus: "Status",
     tablePhone: "Phone Number",
+    tableDate: "Date",
     noIncidents: "No incidents to display",
     allProperties: "All properties",
     clearFilters: "Clear filters",
@@ -501,13 +502,21 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200 table-fixed">
+          {/* Indicador de scroll para móvil */}
+          <div className="block sm:hidden mb-2 text-center">
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              ← Desliza para ver más información →
+            </span>
+          </div>
+          
+          <div className="overflow-x-auto rounded-lg border border-gray-200 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 relative">
+            <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
               <thead className="bg-gray-50">
                 <tr>
                   <th
                     scope="col"
-                    className="w-[25%] sm:w-[25%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '150px' }}
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.title", fallbackLabels.tableTitle)}
@@ -515,7 +524,8 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="hidden sm:table-cell w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '140px' }}
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
@@ -523,7 +533,8 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="w-[25%] sm:w-[15%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '120px' }}
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
@@ -531,7 +542,8 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="w-[25%] sm:w-[15%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '100px' }}
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
@@ -539,10 +551,20 @@ const DashboardPage: React.FC = () => {
                   </th>
                   <th
                     scope="col"
-                    className="w-[25%] sm:w-[20%] px-2 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '140px' }}
                   >
                     <div className="flex items-center">
                       {getText("dashboard.incidents.table.phoneNumber", fallbackLabels.tablePhone)}
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    style={{ minWidth: '100px' }}
+                  >
+                    <div className="flex items-center">
+                      {getText("dashboard.incidents.table.date", fallbackLabels.tableDate)}
                     </div>
                   </th>
                 </tr>
@@ -550,48 +572,48 @@ const DashboardPage: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredIncidents.length > 0 ? (
                   filteredIncidents.map((incident) => (
-                    <tr key={incident.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-2 sm:px-6 py-2 sm:py-4 text-sm text-left">
-                        <div className="truncate max-w-[150px] sm:max-w-full font-medium">
+                    <tr key={incident.id} className="hover:bg-gray-50 transition-colors group">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                        <div className="max-w-[150px] truncate">
                           {incident.title}
                         </div>
-                        <div className="text-xs text-gray-500 sm:hidden mt-1">
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500">
+                        <div className="max-w-[140px] truncate">
                           {incident.property_name}
                         </div>
                       </td>
-                      <td className="hidden sm:table-cell px-2 sm:px-6 py-2 sm:py-4 text-sm text-gray-500 text-left">
-                        {incident.property_name}
+                      <td className="px-4 py-4">
+                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
+                          {getLabel(incident.category)}
+                        </span>
                       </td>
-                      <td className="px-2 sm:px-6 py-2 sm:py-4 text-left">
-                        <div className="flex items-center">
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                            {getLabel(incident.category)}
-                          </span>
+                      <td className="px-4 py-4">
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap ${
+                            incident.status === "resolved"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {getStatusLabel(incident.status)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500">
+                        <div className="max-w-[140px] truncate">
+                          {incident.phone_number || "N/A"}
                         </div>
                       </td>
-                      <td className="px-2 sm:px-6 py-2 sm:py-4 text-left">
-                        <div className="flex items-center">
-                          <span
-                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              incident.status === "resolved"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {getStatusLabel(incident.status)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-2 sm:px-6 py-2 sm:py-4 text-sm text-gray-500 text-left">
-                        {incident.phone_number || "N/A"}
+                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {incident.date ? new Date(incident.date).toLocaleDateString() : "N/A"}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan={5}
-                      className="px-2 sm:px-6 py-4 text-center text-sm text-gray-500"
+                      colSpan={6}
+                      className="px-4 py-8 text-center text-sm text-gray-500"
                     >
                       {hasActiveFilters 
                         ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} con los filtros seleccionados`

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import MobileMenu from "@shared/components/MobileMenu";
@@ -8,6 +8,25 @@ import { useLanguage } from "@shared/contexts/LanguageContext";
 const CheckinPage = () => {
   const { t } = useLanguage();
 
+  // Estado para controlar las animaciones de scroll
+  const [visibleSections, setVisibleSections] = useState({
+    benefits: [false, false, false],
+    features: false,
+    featuresList: [false, false, false, false],
+    demo: false
+  });
+  
+  // Referencias para las secciones que queremos animar
+  const benefit1Ref = useRef<HTMLDivElement>(null);
+  const benefit2Ref = useRef<HTMLDivElement>(null);
+  const benefit3Ref = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const feature1Ref = useRef<HTMLDivElement>(null);
+  const feature2Ref = useRef<HTMLDivElement>(null);
+  const feature3Ref = useRef<HTMLDivElement>(null);
+  const feature4Ref = useRef<HTMLDivElement>(null);
+  const demoRef = useRef<HTMLDivElement>(null);
+
   // Navigation links configuration (same as LandingPage)
   const navLinks = [
     { text: t("nav.features"), href: "/#features" },
@@ -16,17 +35,141 @@ const CheckinPage = () => {
     { text: t("nav.login"), href: "/login", isButton: true },
   ];
 
-  // Scroll to top on mount
+  // Intersection Observer para animaciones de scroll
   useEffect(() => {
+    const observerOptions = {
+      threshold: 0.2, // Se activa cuando el 20% del elemento es visible
+      rootMargin: "-50px 0px", // Margen para ajustar cuándo se activa
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Beneficios principales
+          const benefitRefs = [benefit1Ref, benefit2Ref, benefit3Ref];
+          const benefitIndex = benefitRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (benefitIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              benefits: prev.benefits.map((visible, index) => 
+                index === benefitIndex ? true : visible
+              )
+            }));
+          }
+
+          // Sección de características
+          if (featuresRef.current === entry.target) {
+            setVisibleSections(prev => ({ ...prev, features: true }));
+          }
+
+          // Lista de características
+          const featureRefs = [feature1Ref, feature2Ref, feature3Ref, feature4Ref];
+          const featureIndex = featureRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (featureIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              featuresList: prev.featuresList.map((visible, index) => 
+                index === featureIndex ? true : visible
+              )
+            }));
+          }
+
+          // Sección demo
+          if (demoRef.current === entry.target) {
+            setVisibleSections(prev => ({ ...prev, demo: true }));
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observar todos los elementos
+    const allRefs = [
+      benefit1Ref, benefit2Ref, benefit3Ref,
+      featuresRef,
+      feature1Ref, feature2Ref, feature3Ref, feature4Ref,
+      demoRef
+    ];
+    
+    allRefs.forEach(ref => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    // Cleanup
+    return () => {
+      allRefs.forEach(ref => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
+    };
+  }, []);
+
+  // Scroll to top on mount - Enhanced para garantizar que siempre comience desde arriba
+  useEffect(() => {
+    // Scroll inmediato al cargar la página
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant' // Sin animación para carga inicial
+    });
+    
+    // Backup scroll para asegurar que funcione en todos los navegadores
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // También asegurar que el scroll lateral esté en 0
     window.scrollTo(0, 0);
   }, []);
 
+  // Efecto adicional para resetear el scroll cuando cambie la ruta
+  useEffect(() => {
+    const handleRouteChange = () => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant'
+      });
+    };
+
+    // Ejecutar inmediatamente al montar
+    handleRouteChange();
+    
+    return () => {
+      // Cleanup si es necesario
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ scrollBehavior: 'smooth' }}>
       <Helmet>
         <title>{t("checkinPage.meta.title")}</title>
         <meta name="description" content={t("checkinPage.meta.description")} />
       </Helmet>
+
+      {/* Estilos adicionales para garantizar el correcto comportamiento del scroll */}
+      <style>
+        {`
+          html, body {
+            scroll-behavior: smooth;
+          }
+          
+          /* Asegurar que la página comience desde el top */
+          html {
+            scroll-padding-top: 0;
+          }
+          
+          /* Prevenir problemas de scroll en iOS */
+          body {
+            -webkit-overflow-scrolling: touch;
+          }
+        `}
+      </style>
 
       {/* Header - Same as LandingPage */}
       <header className="bg-white shadow-sm w-full sticky top-0 z-50">
@@ -94,8 +237,19 @@ const CheckinPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* Beneficio 1 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit1Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-200`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -111,17 +265,36 @@ const CheckinPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-300`}>
                   {t("checkinPage.benefits.compliance.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-500`}>
                   {t("checkinPage.benefits.compliance.description")}
                 </p>
               </div>
 
               {/* Beneficio 2 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit2Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out delay-200`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-400`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -137,17 +310,36 @@ const CheckinPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-500`}>
                   {t("checkinPage.benefits.timeSaving.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-700`}>
                   {t("checkinPage.benefits.timeSaving.description")}
                 </p>
               </div>
 
               {/* Beneficio 3 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit3Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out delay-400`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-600`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -163,10 +355,18 @@ const CheckinPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-700`}>
                   {t("checkinPage.benefits.experience.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-900`}>
                   {t("checkinPage.benefits.experience.description")}
                 </p>
               </div>
@@ -192,9 +392,20 @@ const CheckinPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
               {/* Columna izquierda - Lista de características */}
               <div className="space-y-8">
-                <div className="flex">
+                <div 
+                  ref={feature1Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[0]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  }`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-200`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -212,18 +423,37 @@ const CheckinPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-300`}>
                       {t("checkinPage.features.sesIntegration.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-500`}>
                       {t("checkinPage.features.sesIntegration.description")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature2Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[1]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-200`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-400`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -241,18 +471,37 @@ const CheckinPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-500`}>
                       {t("checkinPage.features.customForms.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-700`}>
                       {t("checkinPage.features.customForms.description")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature3Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[2]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-400`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-600`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -270,18 +519,37 @@ const CheckinPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-700`}>
                       {t("checkinPage.features.documentCapture.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-900`}>
                       {t("checkinPage.features.documentCapture.description")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature4Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[3]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-600`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-800`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -299,10 +567,18 @@ const CheckinPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-900`}>
                       {t("checkinPage.features.reservationManagement.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-1000`}>
                       {t(
                         "checkinPage.features.reservationManagement.description",
                       )}
@@ -312,53 +588,66 @@ const CheckinPage = () => {
               </div>
 
               {/* Columna derecha - Imagen o animación */}
-              <div className="relative">
-                <div className="aspect-w-16 aspect-h-9 bg-white rounded-xl shadow-lg overflow-hidden">
-                  {/* Imagen con fallback a imagen genérica */}
-                  <img
-                    src="/imagenes/checkin-features.jpg"
-                    alt="Características del sistema de check-in"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      // Usar una imagen de fallback local en lugar de un servicio externo
-                      target.src = "/imagenes/default-feature-image.jpg";
-                      // Si también falla la imagen de fallback, mostrar un div con gradiente
-                      target.onerror = () => {
-                        if (target.parentElement) {
-                          // Crear un elemento div con gradiente para reemplazar la imagen
-                          const div = document.createElement('div');
-                          div.className = 'w-full h-full bg-gradient-to-br from-primary-100 to-primary-300 flex items-center justify-center';
-                          div.innerHTML = `<div class="text-center p-6">
-                            <svg class="w-12 h-12 text-primary-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <p class="text-primary-700 font-medium">Registro automatizado de huéspedes</p>
-                          </div>`;
-                          
-                          // Reemplazar la imagen con el div
+              <div 
+                ref={featuresRef}
+                className={`relative transition-all duration-1000 ease-out ${
+                  visibleSections.features
+                    ? 'opacity-100 translate-x-0 scale-100'
+                    : 'opacity-0 translate-x-8 scale-95'
+                } flex items-center justify-center`}
+              >
+                <div className="w-3/4 max-w-md mx-auto">
+                  <div className="aspect-square bg-white rounded-xl shadow-lg overflow-hidden">
+                    {/* Imagen de llamada telefónica para check-in */}
+                    <img
+                      src="/imagenes/phoneCall.png"
+                      alt="Llamada telefónica - Sistema de check-in automatizado"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        // Usar una imagen de fallback local en lugar de un servicio externo
+                        target.src = "/imagenes/default-feature-image.jpg";
+                        // Si también falla la imagen de fallback, mostrar un div con gradiente
+                        target.onerror = () => {
                           if (target.parentElement) {
-                            target.parentElement.replaceChild(div, target);
+                            // Crear un elemento div con gradiente para reemplazar la imagen
+                            const div = document.createElement('div');
+                            div.className = 'w-full h-full bg-gradient-to-br from-primary-100 to-primary-300 flex items-center justify-center';
+                            div.innerHTML = `<div class="text-center p-6">
+                              <svg class="w-12 h-12 text-primary-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                              </svg>
+                              <p class="text-primary-700 font-medium">Registro automatizado de huéspedes</p>
+                            </div>`;
+                            
+                            // Reemplazar la imagen con el div
+                            if (target.parentElement) {
+                              target.parentElement.replaceChild(div, target);
+                            }
                           }
-                        }
-                      };
-                    }}
-                  />
+                        };
+                      }}
+                    />
+                  </div>
+
+                  {/* Elementos decorativos - Ajustados para la imagen más pequeña */}
+                  <div className="absolute -right-3 -bottom-3 w-16 h-16 bg-primary-500/20 rounded-full blur-xl"></div>
+                  <div className="absolute -left-6 -top-6 w-20 h-20 bg-yellow-500/20 rounded-full blur-xl"></div>
                 </div>
 
-                {/* Elementos decorativos */}
-                <div className="absolute -right-5 -bottom-5 w-24 h-24 bg-primary-500/20 rounded-full blur-xl"></div>
-                <div className="absolute -left-10 -top-10 w-32 h-32 bg-yellow-500/20 rounded-full blur-xl"></div>
-
-                {/* Elemento flotante con un dato estadístico */}
+                {/* Elemento flotante con un dato estadístico - Reposicionado */}
                 <div
-                  className="absolute -bottom-8 -right-8 bg-white rounded-lg shadow-xl p-4 w-64 transform rotate-3 animate-float"
+                  className={`absolute -bottom-4 -right-4 bg-white rounded-lg shadow-xl p-3 w-56 transform rotate-3 animate-float transition-all duration-1000 ${
+                    visibleSections.features
+                      ? 'opacity-100 translate-y-0 scale-100'
+                      : 'opacity-0 translate-y-8 scale-90'
+                  } delay-500`}
                   style={{ animationDuration: "5s" }}
                 >
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
                       <svg
-                        className="w-6 h-6 text-primary-600"
+                        className="w-5 h-5 text-primary-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -372,11 +661,11 @@ const CheckinPage = () => {
                         ></path>
                       </svg>
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-3">
                       <p className="text-xs text-gray-500">
                         {t("checkinPage.features.registrationTime.title")}
                       </p>
-                      <p className="text-xl font-bold text-gray-900">
+                      <p className="text-lg font-bold text-gray-900">
                         {t("checkinPage.features.registrationTime.value")}
                       </p>
                       <p className="text-xs text-gray-500">
@@ -411,19 +700,50 @@ const CheckinPage = () => {
         {/* Demo Section */}
         <section className="py-20 bg-white">
           <div className="container-limited">
-            <div className="flex flex-col lg:flex-row items-center">
-              <div className="lg:w-1/2 mb-10 lg:mb-0">
-                <span className="inline-block px-4 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-medium mb-4">
+            <div 
+              ref={demoRef}
+              className={`flex flex-col lg:flex-row items-center transition-all duration-1000 ease-out ${
+                visibleSections.demo
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-8'
+              }`}
+            >
+              <div className={`lg:w-1/2 mb-10 lg:mb-0 transition-all duration-1000 ease-out ${
+                visibleSections.demo
+                  ? 'opacity-100 translate-x-0'
+                  : 'opacity-0 -translate-x-8'
+              } delay-200`}>
+                <span className={`inline-block px-4 py-1 bg-primary-100 text-primary-600 rounded-full text-sm font-medium mb-4 transition-all duration-700 ${
+                  visibleSections.demo
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-75'
+                } delay-300`}>
                   {t("checkinPage.demo.subtitle")}
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                <h2 className={`text-3xl sm:text-4xl font-bold text-gray-900 mb-6 transition-all duration-700 ${
+                  visibleSections.demo
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-4'
+                } delay-400`}>
                   {t("checkinPage.demo.title")}
                 </h2>
-                <p className="text-lg text-gray-600 mb-8">
+                <p className={`text-lg text-gray-600 mb-8 transition-all duration-700 ${
+                  visibleSections.demo
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-4'
+                } delay-500`}>
                   {t("checkinPage.demo.description")}
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start">
+                <ul className={`space-y-4 transition-all duration-700 ${
+                  visibleSections.demo
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-4'
+                } delay-600`}>
+                  <li className={`flex items-start transition-all duration-500 ${
+                    visibleSections.demo
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  } delay-700`}>
                     <svg
                       className="w-6 h-6 text-primary-500 mt-0.5"
                       fill="none"
@@ -442,7 +762,11 @@ const CheckinPage = () => {
                       {t("checkinPage.demo.capabilities.dataCollection")}
                     </span>
                   </li>
-                  <li className="flex items-start">
+                  <li className={`flex items-start transition-all duration-500 ${
+                    visibleSections.demo
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  } delay-800`}>
                     <svg
                       className="w-6 h-6 text-primary-500 mt-0.5"
                       fill="none"
@@ -461,7 +785,11 @@ const CheckinPage = () => {
                       {t("checkinPage.demo.capabilities.links")}
                     </span>
                   </li>
-                  <li className="flex items-start">
+                  <li className={`flex items-start transition-all duration-500 ${
+                    visibleSections.demo
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  } delay-900`}>
                     <svg
                       className="w-6 h-6 text-primary-500 mt-0.5"
                       fill="none"
@@ -480,7 +808,11 @@ const CheckinPage = () => {
                       {t("checkinPage.demo.capabilities.validation")}
                     </span>
                   </li>
-                  <li className="flex items-start">
+                  <li className={`flex items-start transition-all duration-500 ${
+                    visibleSections.demo
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4'
+                  } delay-1000`}>
                     <svg
                       className="w-6 h-6 text-primary-500 mt-0.5"
                       fill="none"
@@ -501,7 +833,11 @@ const CheckinPage = () => {
                   </li>
                 </ul>
               </div>
-              <div className="lg:w-1/2 lg:pl-16">
+              <div className={`lg:w-1/2 lg:pl-16 transition-all duration-1000 ease-out ${
+                visibleSections.demo
+                  ? 'opacity-100 translate-x-0 scale-100'
+                  : 'opacity-0 translate-x-8 scale-95'
+              } delay-400`}>
                 {/* Placeholder para una demo interactiva o video */}
                 <div className="aspect-w-16 aspect-h-9 bg-gray-100 rounded-xl shadow-lg overflow-hidden">
                   <div className="w-full h-full flex items-center justify-center bg-gray-100">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import MobileMenu from "@shared/components/MobileMenu";
@@ -8,6 +8,23 @@ import { useLanguage } from "@shared/contexts/LanguageContext";
 const UpsellingPage = () => {
   const { t } = useLanguage();
 
+  // Estado para controlar las animaciones de scroll
+  const [visibleSections, setVisibleSections] = useState({
+    benefits: [false, false, false],
+    features: false,
+    featuresList: [false, false, false, false]
+  });
+  
+  // Referencias para las secciones que queremos animar
+  const benefit1Ref = useRef<HTMLDivElement>(null);
+  const benefit2Ref = useRef<HTMLDivElement>(null);
+  const benefit3Ref = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const feature1Ref = useRef<HTMLDivElement>(null);
+  const feature2Ref = useRef<HTMLDivElement>(null);
+  const feature3Ref = useRef<HTMLDivElement>(null);
+  const feature4Ref = useRef<HTMLDivElement>(null);
+
   // Navigation links configuration (same as LandingPage)
   const navLinks = [
     { text: t("nav.features"), href: "/#features" },
@@ -15,6 +32,75 @@ const UpsellingPage = () => {
     { text: t("nav.testimonials"), href: "/testimonios" },
     { text: t("nav.login"), href: "/login", isButton: true },
   ];
+
+  // Intersection Observer para animaciones de scroll
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.2, // Se activa cuando el 20% del elemento es visible
+      rootMargin: "-50px 0px", // Margen para ajustar cuándo se activa
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Beneficios principales
+          const benefitRefs = [benefit1Ref, benefit2Ref, benefit3Ref];
+          const benefitIndex = benefitRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (benefitIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              benefits: prev.benefits.map((visible, index) => 
+                index === benefitIndex ? true : visible
+              )
+            }));
+          }
+
+          // Sección de características
+          if (featuresRef.current === entry.target) {
+            setVisibleSections(prev => ({ ...prev, features: true }));
+          }
+
+          // Lista de características
+          const featureRefs = [feature1Ref, feature2Ref, feature3Ref, feature4Ref];
+          const featureIndex = featureRefs.findIndex(ref => ref.current === entry.target);
+          
+          if (featureIndex !== -1) {
+            setVisibleSections(prev => ({
+              ...prev,
+              featuresList: prev.featuresList.map((visible, index) => 
+                index === featureIndex ? true : visible
+              )
+            }));
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observar todos los elementos
+    const allRefs = [
+      benefit1Ref, benefit2Ref, benefit3Ref,
+      featuresRef,
+      feature1Ref, feature2Ref, feature3Ref, feature4Ref
+    ];
+    
+    allRefs.forEach(ref => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
+    });
+
+    // Cleanup
+    return () => {
+      allRefs.forEach(ref => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
+    };
+  }, []);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -97,8 +183,19 @@ const UpsellingPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* Beneficio 1 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit1Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-200`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -114,17 +211,36 @@ const UpsellingPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-300`}>
                   {t("upsellingPage.benefits.passiveIncome.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[0]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-500`}>
                   {t("upsellingPage.benefits.passiveIncome.description")}
                 </p>
               </div>
 
               {/* Beneficio 2 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit2Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out delay-200`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-400`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -140,17 +256,36 @@ const UpsellingPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-500`}>
                   {t("upsellingPage.benefits.betterExperience.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[1]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-700`}>
                   {t("upsellingPage.benefits.betterExperience.description")}
                 </p>
               </div>
 
               {/* Beneficio 3 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl">
-                <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
+              <div 
+                ref={benefit3Ref}
+                className={`bg-white rounded-xl shadow-lg p-8 transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-xl ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95'
+                } transition-all duration-1000 ease-out delay-400`}
+              >
+                <div className={`w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'scale-100 rotate-0'
+                    : 'scale-0 rotate-45'
+                } delay-600`}>
                   <svg
                     className="w-8 h-8 text-primary-500"
                     fill="none"
@@ -166,10 +301,18 @@ const UpsellingPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className={`text-xl font-bold text-gray-900 mb-3 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-700`}>
                   {t("upsellingPage.benefits.totalControl.title")}
                 </h3>
-                <p className="text-gray-600">
+                <p className={`text-gray-600 transition-all duration-700 ${
+                  visibleSections.benefits[2]
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-4'
+                } delay-900`}>
                   {t("upsellingPage.benefits.totalControl.description")}
                 </p>
               </div>
@@ -195,9 +338,20 @@ const UpsellingPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
               {/* Columna izquierda - Lista de características */}
               <div className="space-y-8">
-                <div className="flex">
+                <div 
+                  ref={feature1Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[0]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  }`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-200`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -215,18 +369,37 @@ const UpsellingPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-300`}>
                       {t("upsellingPage.features.utmLinks.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[0]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-500`}>
                       {t("upsellingPage.features.utmLinks.description")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature2Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[1]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-200`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-400`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -244,10 +417,18 @@ const UpsellingPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-500`}>
                       {t("upsellingPage.features.smartRecommendations.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[1]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-700`}>
                       {t(
                         "upsellingPage.features.smartRecommendations.description",
                       )}
@@ -255,9 +436,20 @@ const UpsellingPage = () => {
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature3Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[2]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-400`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-600`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -275,18 +467,37 @@ const UpsellingPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-700`}>
                       {t("upsellingPage.features.localIntegration.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[2]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-900`}>
                       {t("upsellingPage.features.localIntegration.description")}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex">
+                <div 
+                  ref={feature4Ref}
+                  className={`flex transition-all duration-1000 ease-out ${
+                    visibleSections.featuresList[3]
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-8'
+                  } delay-600`}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full bg-primary-500 text-white transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'scale-100 rotate-0'
+                        : 'scale-0 rotate-90'
+                    } delay-800`}>
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -304,10 +515,18 @@ const UpsellingPage = () => {
                     </div>
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className={`text-xl font-semibold text-gray-900 transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-900`}>
                       {t("upsellingPage.features.dashboard.title")}
                     </h3>
-                    <p className="mt-2 text-gray-600">
+                    <p className={`mt-2 text-gray-600 transition-all duration-700 ${
+                      visibleSections.featuresList[3]
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-4'
+                    } delay-1000`}>
                       {t("upsellingPage.features.dashboard.description")}
                     </p>
                   </div>
@@ -315,9 +534,16 @@ const UpsellingPage = () => {
               </div>
 
               {/* Columna derecha - Imagen o animación */}
-              <div className="relative">
-                <div className="aspect-w-16 aspect-h-9 bg-white rounded-xl shadow-lg overflow-hidden">
-                  {/* Placeholder para una imagen o animación mostrando el sistema de upselling */}
+              <div 
+                ref={featuresRef}
+                className={`relative flex items-center justify-center transition-all duration-1000 ease-out ${
+                  visibleSections.features
+                    ? 'opacity-100 translate-x-0 scale-100'
+                    : 'opacity-0 translate-x-8 scale-95'
+                }`}
+              >
+                <div className="w-3/5 max-w-md mx-auto aspect-[3/4] bg-white rounded-xl shadow-lg overflow-hidden">
+                  {/* Imagen del sistema de upselling con formato vertical - Aumentada 45% total */}
                   <img
                     src="/imagenes/comisions.jpg"
                     alt="Características del sistema de upselling"
@@ -325,18 +551,22 @@ const UpsellingPage = () => {
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src =
-                        "https://via.placeholder.com/800x450?text=Upselling+y+Comisiones";
+                        "https://via.placeholder.com/335x450?text=Upselling+y+Comisiones";
                     }}
                   />
                 </div>
 
-                {/* Elementos decorativos */}
-                <div className="absolute -right-5 -bottom-5 w-24 h-24 bg-primary-500/20 rounded-full blur-xl"></div>
-                <div className="absolute -left-10 -top-10 w-32 h-32 bg-yellow-500/20 rounded-full blur-xl"></div>
+                {/* Elementos decorativos - Ajustados para imagen aumentada 45% total */}
+                <div className="absolute -right-4 -bottom-4 w-18 h-18 bg-primary-500/20 rounded-full blur-xl"></div>
+                <div className="absolute -left-5 -top-5 w-22 h-22 bg-yellow-500/20 rounded-full blur-xl"></div>
 
-                {/* Elemento flotante con un dato estadístico */}
+                {/* Elemento flotante con un dato estadístico - Ajustado para imagen más grande */}
                 <div
-                  className="absolute bottom-8 right-4 bg-white rounded-lg shadow-xl p-4 w-64 transform rotate-2 animate-float"
+                  className={`absolute -bottom-5 -right-5 bg-white rounded-lg shadow-xl p-4 w-56 transform rotate-2 animate-float transition-all duration-1000 ${
+                    visibleSections.features
+                      ? 'opacity-100 translate-y-0 scale-100'
+                      : 'opacity-0 translate-y-8 scale-90'
+                  } delay-500`}
                   style={{ animationDuration: "5s" }}
                 >
                   <div className="flex items-center">
@@ -356,14 +586,14 @@ const UpsellingPage = () => {
                         ></path>
                       </svg>
                     </div>
-                    <div className="ml-4">
-                      <p className="text-xs text-gray-500">
+                    <div className="ml-3">
+                      <p className="text-sm text-gray-500">
                         {t("upsellingPage.features.incomeIncrease.title")}
                       </p>
-                      <p className="text-xl font-bold text-gray-900">
+                      <p className="text-lg font-bold text-gray-900">
                         {t("upsellingPage.features.incomeIncrease.value")}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         {t("upsellingPage.features.incomeIncrease.description")}
                       </p>
                     </div>
