@@ -14,6 +14,8 @@ export interface Property {
   // Nuevos campos para imágenes adicionales y documentos
   additional_images?: PropertyImage[];
   documents?: PropertyDocument[];
+  // Campo para Google Business Profile URL
+  google_business_profile_url?: string;
 }
 
 export interface PropertyImage {

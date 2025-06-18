@@ -452,7 +452,7 @@ export const es = {
       q2: "¿Puedo cambiar de plan más adelante?",
       a2: "Sí, puedes actualizar o cambiar tu plan en cualquier momento de manera prorrateada.",
       q3: "¿En qué idiomas está disponible el asistente?",
-      a3: "El asistente está disponible en español e inglés, con capacidad para detectar automáticamente el idioma del huésped y responder adecuadamente.",
+      a3: "El asistente está disponible en múltiples idiomas, con capacidad para detectar automáticamente el idioma del huésped y responder adecuadamente en su idioma nativo.",
       q4: "¿Cómo funciona el sistema de ingresos extra?",
       a4: "El asistente ofrece proactivamente servicios adicionales a tus huéspedes, como transfers, entradas a espectáculos o reservas en restaurantes, generando comisiones para ti.",
       q5: "¿Es fácil implementar Host Helper AI?",
@@ -549,14 +549,20 @@ export const es = {
           description: "Descripción",
           status: "Estado",
           images: "Imágenes",
-          documents: "Documentos"
+          documents: "Documentos",
+          googleBusinessUrl: "Enlace de Google Business Profile",
+          googleBusinessHelper: "Nuestros agentes de IA detectan automáticamente cuando un huésped está satisfecho con su estancia y le envían este enlace para que pueda dejar una reseña positiva, mejorando tu reputación online",
+          googleBusinessPlaceholder: "https://business.google.com/reviews/l/tu-negocio-id",
+          googleBusinessTitle: "Google Business Profile",
+          googleBusinessDescription: "Proporciona el enlace a tu perfil de Google Business. Nuestros agentes de IA lo enviarán automáticamente a los huéspedes cuando detecten alta satisfacción durante su conversación, aumentando las probabilidades de obtener reseñas positivas."
         },
         steps: {
           step: "Paso",
           of: "de",
           basicInfo: "Información básica",
           additionalImages: "Imágenes adicionales",
-          documents: "Documentos"
+          documents: "Documentos",
+          googleBusiness: "Google Business Profile"
         },
         buttons: {
           previous: "Anterior",

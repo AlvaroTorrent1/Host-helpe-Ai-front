@@ -28,6 +28,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     status: "active",
     additional_images: [],
     documents: [],
+    google_business_profile_url: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -35,7 +36,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     Record<string, string>
   >({});
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const totalSteps = 3;
+  const totalSteps = 4;
 
   // Cargar datos de la propiedad si estamos en modo edición
   useEffect(() => {
@@ -49,6 +50,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         amenities: property.amenities,
         additional_images: property.additional_images || [],
         documents: property.documents || [],
+        google_business_profile_url: property.google_business_profile_url || "",
       });
 
       if (property.image) {
@@ -410,6 +412,47 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             onChange={handleDocumentsChange}
           />
         );
+      case 4:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {t("properties.form.labels.googleBusinessTitle")}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {t("properties.form.labels.googleBusinessDescription")}
+              </p>
+            </div>
+            
+            <div>
+              <label
+                htmlFor="google_business_profile_url"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                {t("properties.form.labels.googleBusinessUrl")}
+              </label>
+              <input
+                type="url"
+                id="google_business_profile_url"
+                name="google_business_profile_url"
+                value={formData.google_business_profile_url || ""}
+                onChange={handleChange}
+                placeholder={t("properties.form.labels.googleBusinessPlaceholder")}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
+                  validationErrors.google_business_profile_url ? "border-red-500" : ""
+                }`}
+              />
+              {validationErrors.google_business_profile_url && (
+                <p className="mt-1 text-sm text-red-600">
+                  {validationErrors.google_business_profile_url}
+                </p>
+              )}
+              <p className="mt-2 text-sm text-gray-500">
+                {t("properties.form.labels.googleBusinessHelper")}
+              </p>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -475,7 +518,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 ? t("properties.form.steps.basicInfo")
                 : currentStep === 2
                   ? t("properties.form.steps.additionalImages")
-                  : t("properties.form.steps.documents")}
+                  : currentStep === 3
+                    ? t("properties.form.steps.documents")
+                    : t("properties.form.steps.googleBusiness")}
             </div>
           </div>
           <div className="overflow-hidden rounded-full bg-gray-200">

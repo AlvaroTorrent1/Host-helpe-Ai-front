@@ -449,7 +449,7 @@ export const en = {
       q2: "Can I change plans later?",
       a2: "Yes, you can upgrade or change your plan at any time on a prorated basis.",
       q3: "In which languages is the assistant available?",
-      a3: "The assistant is available in Spanish and English, with the ability to automatically detect the guest's language and respond appropriately.",
+      a3: "The assistant is available in multiple languages, with the ability to automatically detect the guest's language and respond appropriately in their native language.",
       q4: "How does the extra income system work?",
       a4: "The assistant proactively offers additional services to your guests, such as transfers, show tickets, or restaurant reservations, generating commissions for you.",
       q5: "Is it easy to implement Host Helper AI?",
@@ -546,14 +546,20 @@ export const en = {
           description: "Description",
           status: "Status",
           images: "Images",
-          documents: "Documents"
+          documents: "Documents",
+          googleBusinessUrl: "Google Business Profile Link",
+          googleBusinessHelper: "Our AI agents automatically detect when a guest is satisfied with their stay and send them this link so they can leave a positive review, improving your online reputation",
+          googleBusinessPlaceholder: "https://business.google.com/reviews/l/your-business-id",
+          googleBusinessTitle: "Google Business Profile",
+          googleBusinessDescription: "Provide the link to your Google Business profile. Our AI agents will automatically send it to guests when they detect high satisfaction during their conversation, increasing the chances of getting positive reviews."
         },
         steps: {
           step: "Step",
           of: "of",
           basicInfo: "Basic information",
           additionalImages: "Additional images",
-          documents: "Documents"
+          documents: "Documents",
+          googleBusiness: "Google Business Profile"
         },
         buttons: {
           previous: "Previous",
@@ -938,14 +944,20 @@ export const en = {
         description: "Description",
         status: "Status",
         images: "Images",
-        documents: "Documents"
+        documents: "Documents",
+        googleBusinessUrl: "Google Business Profile Link",
+        googleBusinessHelper: "Our AI agents automatically detect when a guest is satisfied with their stay and send them this link so they can leave a positive review, improving your online reputation",
+        googleBusinessPlaceholder: "https://business.google.com/reviews/l/your-business-id",
+        googleBusinessTitle: "Google Business Profile",
+        googleBusinessDescription: "Provide the link to your Google Business profile. Our AI agents will automatically send it to guests when they detect high satisfaction during their conversation, increasing the chances of getting positive reviews."
       },
       steps: {
         step: "Step",
         of: "of",
         basicInfo: "Basic information",
         additionalImages: "Additional images",
-        documents: "Documents"
+        documents: "Documents",
+        googleBusiness: "Google Business Profile"
       },
       buttons: {
         previous: "Previous",
