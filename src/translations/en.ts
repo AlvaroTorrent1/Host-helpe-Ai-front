@@ -495,6 +495,89 @@ export const en = {
         active: "Active",
         inactive: "Inactive"
       },
+      search: {
+        placeholder: "Search properties..."
+      },
+      status: {
+        active: "Active",
+        inactive: "Inactive"
+      },
+      templates: {
+        download: "Download templates",
+        dropdownTitle: "Document templates",
+        description: "Download pre-designed templates and models to create useful documents for your properties",
+        faqTemplate: "📋 FAQ Template",
+        faqDescription: "Frequently asked questions model for guests",
+        inventoryTemplate: "📦 Inventory",
+        inventoryDescription: "List of property items and equipment",
+        welcomeTemplate: "🏠 Welcome message",
+        welcomeDescription: "Template for personalized welcome message"
+      },
+      buttons: {
+        add: "Add property",
+        edit: "Edit",
+        delete: "Delete",
+        viewDetails: "View details",
+        cancel: "Cancel",
+        deleting: "Deleting...",
+      },
+      modal: {
+        add: "Add property",
+        edit: "Edit property",
+        confirmDelete: "Confirm deletion",
+        deleteProperty: "Delete property",
+        deleteConfirmMessage: "Are you sure you want to delete the property \"{{propertyName}}\"? This action cannot be undone."
+      },
+      empty: {
+        title: "No properties",
+        noResults: "No results match your filters.",
+        addFirst: "Start by adding your first property."
+      },
+      form: {
+        validation: {
+          nameRequired: "Name is required",
+          addressRequired: "Address is required",
+          imageFormat: "File must be an image (JPG, PNG, GIF)",
+          imageSize: "Image must be smaller than 5MB"
+        },
+        labels: {
+          name: "Property name",
+          address: "Address",
+          description: "Description",
+          status: "Status",
+          images: "Images",
+          documents: "Documents"
+        },
+        steps: {
+          step: "Step",
+          of: "of",
+          basicInfo: "Basic information",
+          additionalImages: "Additional images",
+          documents: "Documents"
+        },
+        buttons: {
+          previous: "Previous",
+          next: "Next",
+          save: "Save property",
+          saving: "Saving..."
+        }
+      },
+      detail: {
+        tabs: {
+          info: "Information",
+          additionalImages: "Additional images",
+          documents: "Documents"
+        },
+        description: "Description",
+        noDescription: "No description available.",
+        amenities: "Amenities",
+        additionalImagesInfo: "These additional images will be shown to tourists when they consult specific property information through the chatbot.",
+        noAdditionalImages: "No additional images",
+        addImagesWhileEditing: "You can add additional images with descriptions when editing the property.",
+        documentsInfo: "These documents contain important property information that will help the chatbot resolve tourist inquiries.",
+        noDocuments: "No documents available",
+        addDocumentsWhileEditing: "You can add documents like guides, FAQs or rules when editing the property."
+      }
     },
     reservations: {
       title: "Reservations",

@@ -334,7 +334,7 @@ const DashboardPage: React.FC = () => {
             ) : (
               <div className="col-span-full bg-white shadow-sm rounded-lg p-4 text-center">
                 <p className="text-gray-500 text-sm sm:text-base mb-3">
-                  {t("dashboard.properties.empty.title")}
+                  {getText("dashboard.properties.empty.title", "No properties available")}
                 </p>
               </div>
             )}

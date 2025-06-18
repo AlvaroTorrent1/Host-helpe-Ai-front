@@ -28,7 +28,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
     mainGuest: {
       firstName: "",
       lastName: "",
-      email: "",
+      email: "", // Mantenemos en el tipo pero no en la UI
       phone: "",
       documentType: "dni",
       documentNumber: "",
@@ -41,7 +41,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
     checkOutDate: "",
     status: "pending",
     totalGuests: 1,
-    bookingSource: "direct",
+    bookingSource: "direct", // Valor por defecto para el backend
   });
 
   // Estado para manejar errores de validación
@@ -152,7 +152,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         documentType: "dni",
         documentNumber: "",
         birthDate: "",
-        nationality: "ES",
+        nationality: "ES", // Española por defecto
       },
     ]);
 
@@ -212,21 +212,14 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       newErrors["mainGuest.lastName"] = "El apellido es obligatorio";
     }
 
-    if (!formData.mainGuest.email.trim()) {
-      newErrors["mainGuest.email"] = "El email es obligatorio";
-    } else if (!/\S+@\S+\.\S+/.test(formData.mainGuest.email)) {
-      newErrors["mainGuest.email"] = "El email no es válido";
-    }
+
 
     if (!formData.mainGuest.documentNumber.trim()) {
       newErrors["mainGuest.documentNumber"] =
         "El número de documento es obligatorio";
     }
 
-    if (!formData.mainGuest.birthDate) {
-      newErrors["mainGuest.birthDate"] =
-        "La fecha de nacimiento es obligatoria";
-    }
+
 
     if (!formData.mainGuest.nationality.trim()) {
       newErrors["mainGuest.nationality"] = "La nacionalidad es obligatoria";
@@ -247,10 +240,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           "El número de documento es obligatorio";
       }
 
-      if (!guest.birthDate) {
-        newErrors[`guest[${index}].birthDate`] =
-          "La fecha de nacimiento es obligatoria";
-      }
+
     });
 
     setErrors(newErrors);
@@ -275,21 +265,203 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
     return errors[fieldName];
   };
 
-  // Opciones para el estado de la reserva
-  const statusOptions: { value: ReservationStatus; label: string }[] = [
-    { value: "pending", label: "Pendiente" },
-    { value: "confirmed", label: "Confirmada" },
-    { value: "cancelled", label: "Cancelada" },
-    { value: "completed", label: "Completada" },
+  // Lista completa de nacionalidades ordenadas alfabéticamente con banderas
+  const nationalityOptions = [
+    { value: "AF", label: "🇦🇫 Afgana" },
+    { value: "ZA", label: "🇿🇦 Africana (Sudáfrica)" },
+    { value: "AL", label: "🇦🇱 Albanesa" },
+    { value: "DE", label: "🇩🇪 Alemana" },
+    { value: "AD", label: "🇦🇩 Andorrana" },
+    { value: "AO", label: "🇦🇴 Angoleña" },
+    { value: "SA", label: "🇸🇦 Árabe Saudí" },
+    { value: "DZ", label: "🇩🇿 Argelina" },
+    { value: "AR", label: "🇦🇷 Argentina" },
+    { value: "AM", label: "🇦🇲 Armenia" },
+    { value: "AU", label: "🇦🇺 Australiana" },
+    { value: "AT", label: "🇦🇹 Austriaca" },
+    { value: "AZ", label: "🇦🇿 Azerbaiyana" },
+    { value: "BS", label: "🇧🇸 Bahameña" },
+    { value: "BD", label: "🇧🇩 Bangladesí" },
+    { value: "BB", label: "🇧🇧 Barbadense" },
+    { value: "BE", label: "🇧🇪 Belga" },
+    { value: "BZ", label: "🇧🇿 Beliceña" },
+    { value: "BJ", label: "🇧🇯 Beninesa" },
+    { value: "BY", label: "🇧🇾 Bielorrusa" },
+    { value: "BO", label: "🇧🇴 Boliviana" },
+    { value: "BA", label: "🇧🇦 Bosnia y Herzegovina" },
+    { value: "BW", label: "🇧🇼 Botsuanesa" },
+    { value: "BR", label: "🇧🇷 Brasileña" },
+    { value: "GB", label: "🇬🇧 Británica" },
+    { value: "BN", label: "🇧🇳 Bruneana" },
+    { value: "BG", label: "🇧🇬 Búlgara" },
+    { value: "BF", label: "🇧🇫 Burkinesa" },
+    { value: "BI", label: "🇧🇮 Burundesa" },
+    { value: "BT", label: "🇧🇹 Butanesa" },
+    { value: "CV", label: "🇨🇻 Caboverdiana" },
+    { value: "KH", label: "🇰🇭 Camboyana" },
+    { value: "CM", label: "🇨🇲 Camerunesa" },
+    { value: "CA", label: "🇨🇦 Canadiense" },
+    { value: "QA", label: "🇶🇦 Catarí" },
+    { value: "TD", label: "🇹🇩 Chadiana" },
+    { value: "CZ", label: "🇨🇿 Checa" },
+    { value: "CL", label: "🇨🇱 Chilena" },
+    { value: "CN", label: "🇨🇳 China" },
+    { value: "CY", label: "🇨🇾 Chipriota" },
+    { value: "CO", label: "🇨🇴 Colombiana" },
+    { value: "KM", label: "🇰🇲 Comorense" },
+    { value: "CG", label: "🇨🇬 Congoleña (Congo)" },
+    { value: "CD", label: "🇨🇩 Congoleña (RD Congo)" },
+    { value: "KP", label: "🇰🇵 Coreana del Norte" },
+    { value: "KR", label: "🇰🇷 Coreana del Sur" },
+    { value: "CR", label: "🇨🇷 Costarricense" },
+    { value: "CI", label: "🇨🇮 Costamarfileña" },
+    { value: "HR", label: "🇭🇷 Croata" },
+    { value: "CU", label: "🇨🇺 Cubana" },
+    { value: "DK", label: "🇩🇰 Danesa" },
+    { value: "DJ", label: "🇩🇯 Yibutiana" },
+    { value: "DM", label: "🇩🇲 Dominiquesa" },
+    { value: "EC", label: "🇪🇨 Ecuatoriana" },
+    { value: "EG", label: "🇪🇬 Egipcia" },
+    { value: "SV", label: "🇸🇻 Salvadoreña" },
+    { value: "AE", label: "🇦🇪 Emiratí" },
+    { value: "ER", label: "🇪🇷 Eritrea" },
+    { value: "SK", label: "🇸🇰 Eslovaca" },
+    { value: "SI", label: "🇸🇮 Eslovena" },
+    { value: "ES", label: "🇪🇸 Española" },
+    { value: "US", label: "🇺🇸 Estadounidense" },
+    { value: "EE", label: "🇪🇪 Estonia" },
+    { value: "ET", label: "🇪🇹 Etíope" },
+    { value: "PH", label: "🇵🇭 Filipina" },
+    { value: "FI", label: "🇫🇮 Finlandesa" },
+    { value: "FJ", label: "🇫🇯 Fiyiana" },
+    { value: "FR", label: "🇫🇷 Francesa" },
+    { value: "GA", label: "🇬🇦 Gabonesa" },
+    { value: "GM", label: "🇬🇲 Gambiana" },
+    { value: "GE", label: "🇬🇪 Georgiana" },
+    { value: "GH", label: "🇬🇭 Ghanesa" },
+    { value: "GR", label: "🇬🇷 Griega" },
+    { value: "GD", label: "🇬🇩 Granadina" },
+    { value: "GT", label: "🇬🇹 Guatemalteca" },
+    { value: "GN", label: "🇬🇳 Guineana" },
+    { value: "GW", label: "🇬🇼 Guineana-Bissau" },
+    { value: "GQ", label: "🇬🇶 Ecuatoguineana" },
+    { value: "GY", label: "🇬🇾 Guyanesa" },
+    { value: "HT", label: "🇭🇹 Haitiana" },
+    { value: "HN", label: "🇭🇳 Hondureña" },
+    { value: "HU", label: "🇭🇺 Húngara" },
+    { value: "IN", label: "🇮🇳 India" },
+    { value: "ID", label: "🇮🇩 Indonesia" },
+    { value: "IR", label: "🇮🇷 Iraní" },
+    { value: "IQ", label: "🇮🇶 Iraquí" },
+    { value: "IE", label: "🇮🇪 Irlandesa" },
+    { value: "IS", label: "🇮🇸 Islandesa" },
+    { value: "IL", label: "🇮🇱 Israelí" },
+    { value: "IT", label: "🇮🇹 Italiana" },
+    { value: "JM", label: "🇯🇲 Jamaiquina" },
+    { value: "JP", label: "🇯🇵 Japonesa" },
+    { value: "JO", label: "🇯🇴 Jordana" },
+    { value: "KZ", label: "🇰🇿 Kazaja" },
+    { value: "KE", label: "🇰🇪 Keniana" },
+    { value: "KG", label: "🇰🇬 Kirguisa" },
+    { value: "KI", label: "🇰🇮 Kiribatiana" },
+    { value: "KW", label: "🇰🇼 Kuwaití" },
+    { value: "LA", label: "🇱🇦 Laosiana" },
+    { value: "LS", label: "🇱🇸 Lesotense" },
+    { value: "LV", label: "🇱🇻 Letona" },
+    { value: "LB", label: "🇱🇧 Libanesa" },
+    { value: "LR", label: "🇱🇷 Liberiana" },
+    { value: "LY", label: "🇱🇾 Libia" },
+    { value: "LI", label: "🇱🇮 Liechtensteiniana" },
+    { value: "LT", label: "🇱🇹 Lituana" },
+    { value: "LU", label: "🇱🇺 Luxemburguesa" },
+    { value: "MK", label: "🇲🇰 Macedonia del Norte" },
+    { value: "MG", label: "🇲🇬 Malgache" },
+    { value: "MY", label: "🇲🇾 Malasia" },
+    { value: "MW", label: "🇲🇼 Malauí" },
+    { value: "MV", label: "🇲🇻 Maldiva" },
+    { value: "ML", label: "🇲🇱 Maliense" },
+    { value: "MT", label: "🇲🇹 Maltesa" },
+    { value: "MA", label: "🇲🇦 Marroquí" },
+    { value: "MH", label: "🇲🇭 Marshalesa" },
+    { value: "MU", label: "🇲🇺 Mauriciana" },
+    { value: "MR", label: "🇲🇷 Mauritana" },
+    { value: "MX", label: "🇲🇽 Mexicana" },
+    { value: "FM", label: "🇫🇲 Micronesia" },
+    { value: "MD", label: "🇲🇩 Moldava" },
+    { value: "MC", label: "🇲🇨 Monegasca" },
+    { value: "MN", label: "🇲🇳 Mongola" },
+    { value: "ME", label: "🇲🇪 Montenegrina" },
+    { value: "MZ", label: "🇲🇿 Mozambiqueña" },
+    { value: "MM", label: "🇲🇲 Birmana" },
+    { value: "NA", label: "🇳🇦 Namibia" },
+    { value: "NR", label: "🇳🇷 Nauruana" },
+    { value: "NP", label: "🇳🇵 Nepalí" },
+    { value: "NI", label: "🇳🇮 Nicaragüense" },
+    { value: "NE", label: "🇳🇪 Nigerina" },
+    { value: "NG", label: "🇳🇬 Nigeriana" },
+    { value: "NO", label: "🇳🇴 Noruega" },
+    { value: "NZ", label: "🇳🇿 Neozelandesa" },
+    { value: "OM", label: "🇴🇲 Omaní" },
+    { value: "NL", label: "🇳🇱 Holandesa" },
+    { value: "PK", label: "🇵🇰 Pakistaní" },
+    { value: "PW", label: "🇵🇼 Palauana" },
+    { value: "PA", label: "🇵🇦 Panameña" },
+    { value: "PG", label: "🇵🇬 Papúa Nueva Guinea" },
+    { value: "PY", label: "🇵🇾 Paraguaya" },
+    { value: "PE", label: "🇵🇪 Peruana" },
+    { value: "PL", label: "🇵🇱 Polaca" },
+    { value: "PT", label: "🇵🇹 Portuguesa" },
+    { value: "DO", label: "🇩🇴 Dominicana" },
+    { value: "RO", label: "🇷🇴 Rumana" },
+    { value: "RU", label: "🇷🇺 Rusa" },
+    { value: "RW", label: "🇷🇼 Ruandesa" },
+    { value: "KN", label: "🇰🇳 San Cristóbal y Nieves" },
+    { value: "SM", label: "🇸🇲 Sanmarinense" },
+    { value: "VC", label: "🇻🇨 San Vicente y las Granadinas" },
+    { value: "LC", label: "🇱🇨 Santalucense" },
+    { value: "ST", label: "🇸🇹 Santotomense" },
+    { value: "SN", label: "🇸🇳 Senegalesa" },
+    { value: "RS", label: "🇷🇸 Serbia" },
+    { value: "SC", label: "🇸🇨 Seychellense" },
+    { value: "SL", label: "🇸🇱 Sierraleonesa" },
+    { value: "SG", label: "🇸🇬 Singapurense" },
+    { value: "SY", label: "🇸🇾 Siria" },
+    { value: "SO", label: "🇸🇴 Somalí" },
+    { value: "LK", label: "🇱🇰 Esrilanquesa" },
+    { value: "SZ", label: "🇸🇿 Suazi" },
+    { value: "SD", label: "🇸🇩 Sudanesa" },
+    { value: "SS", label: "🇸🇸 Sursudanesa" },
+    { value: "SE", label: "🇸🇪 Sueca" },
+    { value: "CH", label: "🇨🇭 Suiza" },
+    { value: "SR", label: "🇸🇷 Surinamesa" },
+    { value: "TH", label: "🇹🇭 Tailandesa" },
+    { value: "TW", label: "🇹🇼 Taiwanesa" },
+    { value: "TZ", label: "🇹🇿 Tanzana" },
+    { value: "TJ", label: "🇹🇯 Tayika" },
+    { value: "TL", label: "🇹🇱 Timorense" },
+    { value: "TG", label: "🇹🇬 Togolesa" },
+    { value: "TO", label: "🇹🇴 Tongana" },
+    { value: "TT", label: "🇹🇹 Trinitense" },
+    { value: "TN", label: "🇹🇳 Tunecina" },
+    { value: "TM", label: "🇹🇲 Turcomana" },
+    { value: "TR", label: "🇹🇷 Turca" },
+    { value: "TV", label: "🇹🇻 Tuvaluana" },
+    { value: "UA", label: "🇺🇦 Ucraniana" },
+    { value: "UG", label: "🇺🇬 Ugandesa" },
+    { value: "UY", label: "🇺🇾 Uruguaya" },
+    { value: "UZ", label: "🇺🇿 Uzbeka" },
+    { value: "VU", label: "🇻🇺 Vanuatuense" },
+    { value: "VA", label: "🇻🇦 Vaticana" },
+    { value: "VE", label: "🇻🇪 Venezolana" },
+    { value: "VN", label: "🇻🇳 Vietnamita" },
+    { value: "YE", label: "🇾🇪 Yemení" },
+    { value: "ZM", label: "🇿🇲 Zambiana" },
+    { value: "ZW", label: "🇿🇼 Zimbabuense" },
   ];
 
-  // Opciones para el origen de la reserva
-  const bookingSourceOptions = [
-    { value: "direct", label: "Directa" },
-    { value: "airbnb", label: "Airbnb" },
-    { value: "booking", label: "Booking.com" },
-    { value: "other", label: "Otro" },
-  ];
+
+
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -331,28 +503,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               )}
             </div>
 
-            {/* Estado de la reserva */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Estado
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              >
-                {statusOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+
 
             {/* Fecha de entrada */}
             <div className="sm:col-span-3">
@@ -404,53 +555,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               )}
             </div>
 
-            {/* Origen de la reserva */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="bookingSource"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Origen de la reserva
-              </label>
-              <select
-                id="bookingSource"
-                name="bookingSource"
-                value={formData.bookingSource || "direct"}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              >
-                {bookingSourceOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            {/* Referencia externa si no es directa */}
-            {formData.bookingSource && formData.bookingSource !== "direct" && (
-              <div className="sm:col-span-3">
-                <label
-                  htmlFor="bookingSourceReference"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Referencia
-                </label>
-                <input
-                  type="text"
-                  name="bookingSourceReference"
-                  id="bookingSourceReference"
-                  placeholder={`ID de ${
-                    bookingSourceOptions.find(
-                      (o) => o.value === formData.bookingSource,
-                    )?.label || "la plataforma"
-                  }`}
-                  value={formData.bookingSourceReference || ""}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                />
-              </div>
-            )}
 
             {/* Notas */}
             <div className="sm:col-span-6">
@@ -529,30 +634,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               )}
             </div>
 
-            {/* Email */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="mainGuest.email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email *
-              </label>
-              <input
-                type="email"
-                name="mainGuest.email"
-                id="mainGuest.email"
-                value={formData.mainGuest.email}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError("mainGuest.email") ? "border-red-300" : ""
-                }`}
-              />
-              {getError("mainGuest.email") && (
-                <p className="mt-2 text-sm text-red-600">
-                  {getError("mainGuest.email")}
-                </p>
-              )}
-            </div>
+
 
             {/* Teléfono */}
             <div className="sm:col-span-3">
@@ -626,8 +708,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               >
                 Nacionalidad *
               </label>
-              <input
-                type="text"
+              <select
                 name="mainGuest.nationality"
                 id="mainGuest.nationality"
                 value={formData.mainGuest.nationality}
@@ -635,7 +716,14 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
                   getError("mainGuest.nationality") ? "border-red-300" : ""
                 }`}
-              />
+              >
+                <option value="">Selecciona nacionalidad</option>
+                {nationalityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               {getError("mainGuest.nationality") && (
                 <p className="mt-2 text-sm text-red-600">
                   {getError("mainGuest.nationality")}
@@ -643,30 +731,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               )}
             </div>
 
-            {/* Fecha de nacimiento */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="mainGuest.birthDate"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Fecha de nacimiento *
-              </label>
-              <input
-                type="date"
-                name="mainGuest.birthDate"
-                id="mainGuest.birthDate"
-                value={formData.mainGuest.birthDate}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError("mainGuest.birthDate") ? "border-red-300" : ""
-                }`}
-              />
-              {getError("mainGuest.birthDate") && (
-                <p className="mt-2 text-sm text-red-600">
-                  {getError("mainGuest.birthDate")}
-                </p>
-              )}
-            </div>
+
           </div>
         </div>
 
@@ -782,6 +847,21 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                     )}
                   </div>
 
+                  {/* Teléfono */}
+                  <div className="sm:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Teléfono
+                    </label>
+                    <input
+                      type="tel"
+                      value={guest.phone || ""}
+                      onChange={(e) =>
+                        handleGuestChange(index, "phone", e.target.value)
+                      }
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                    />
+                  </div>
+
                   {/* Tipo de documento */}
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700">
@@ -837,39 +917,23 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                     <label className="block text-sm font-medium text-gray-700">
                       Nacionalidad *
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={guest.nationality}
                       onChange={(e) =>
                         handleGuestChange(index, "nationality", e.target.value)
                       }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                    />
+                    >
+                      <option value="">Selecciona nacionalidad</option>
+                      {nationalityOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  {/* Fecha de nacimiento */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Fecha de nacimiento *
-                    </label>
-                    <input
-                      type="date"
-                      value={guest.birthDate}
-                      onChange={(e) =>
-                        handleGuestChange(index, "birthDate", e.target.value)
-                      }
-                      className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].birthDate`)
-                          ? "border-red-300"
-                          : ""
-                      }`}
-                    />
-                    {getError(`guest[${index}].birthDate`) && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {getError(`guest[${index}].birthDate`)}
-                      </p>
-                    )}
-                  </div>
+
                 </div>
               </div>
             ))

@@ -303,7 +303,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     if (reservation) {
       setCurrentReservation(reservation);
       setViewMode(ViewMode.DETAIL);
-      navigate(`/dashboard/reservations/${reservationId}`);
+      navigate(`/reservations/${reservationId}`);
     }
   };
 
@@ -318,7 +318,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   const handleBackToList = () => {
     setViewMode(ViewMode.LIST);
     setCurrentReservation(undefined);
-    navigate("/dashboard/reservations");
+    navigate("/reservations");
   };
 
   // Cerrar mensajes de alerta
@@ -364,12 +364,16 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
               </svg>
             </li>
             <li>
-              <Link
-                to="/dashboard/reservations"
-                className={`${viewMode !== ViewMode.LIST ? "hover:text-primary-600" : "text-gray-800 font-medium"}`}
-              >
-                Reservas
-              </Link>
+              {viewMode !== ViewMode.LIST ? (
+                <button
+                  onClick={handleBackToList}
+                  className="hover:text-primary-600 text-gray-800 font-medium text-left"
+                >
+                  Reservas
+                </button>
+              ) : (
+                <span className="text-gray-800 font-medium">Reservas</span>
+              )}
             </li>
             {viewMode === ViewMode.DETAIL && currentReservation && (
               <>
@@ -498,7 +502,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                       {t("dashboard.reservations.emptyState")}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                      {t("dashboard.notice")}
+                      {t("dashboard.reservations.emptyStateDescription")}
                     </p>
                     <button
                       type="button"

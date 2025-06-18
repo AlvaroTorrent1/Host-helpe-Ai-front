@@ -505,6 +505,17 @@ export const es = {
         active: "Activo",
         inactive: "Inactivo"
       },
+      templates: {
+        download: "Descargar modelos",
+        dropdownTitle: "Plantillas de documentos",
+        description: "Descarga plantillas y modelos prediseñados para crear documentos útiles para tus propiedades",
+        faqTemplate: "📋 Plantilla FAQ",
+        faqDescription: "Modelo de preguntas frecuentes para huéspedes",
+        inventoryTemplate: "📦 Inventario",
+        inventoryDescription: "Lista de elementos y equipamiento de la propiedad",
+        welcomeTemplate: "🏠 Mensaje de bienvenida",
+        welcomeDescription: "Plantilla para mensaje de bienvenida personalizado"
+      },
       buttons: {
         add: "Añadir propiedad",
         edit: "Editar",
@@ -577,6 +588,7 @@ export const es = {
       pending: "Pendientes",
       view: "Ver reservas",
       emptyState: "No hay reservas",
+      emptyStateDescription: "Gestiona todas las reservas de tus alojamientos desde aquí. Crea reservas manualmente para que nuestros agentes de IA tengan toda la información necesaria para atender a tus huéspedes de forma personalizada.",
       actions: {
         create: "Nueva Reserva",
         edit: "Editar",
