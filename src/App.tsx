@@ -70,7 +70,7 @@ function App() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen overflow-hidden">
+    <div className="w-full min-h-screen">
       <HelmetProvider>
         <LanguageProvider>
           <AuthProvider>

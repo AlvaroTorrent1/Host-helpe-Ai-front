@@ -414,12 +414,12 @@ const Pricing = () => {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 items-stretch overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
               {plans.map((plan, index) => (
                 <div 
                   key={index}
                   ref={index === 0 ? pricingCard1Ref : index === 1 ? pricingCard2Ref : pricingCard3Ref}
-                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"} flex flex-col ${
+                  className={`bg-white rounded-xl shadow-xl hover:shadow-2xl overflow-hidden transition-transform hover:translate-y-[-5px] border ${plan.isPopular ? "border-primary-400" : "border-gray-200"} flex flex-col w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
                     visibleSections.pricingCards[index]
                       ? 'opacity-100 translate-y-0 scale-100'
                       : 'opacity-0 translate-y-8 scale-95'

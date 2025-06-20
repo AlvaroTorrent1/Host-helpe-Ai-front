@@ -14,8 +14,8 @@ export const es = {
   // Landing Page
   landing: {
     hero: {
-      title: "Gestión Inteligente de Alojamientos",
-      subtitle: "Automatiza tu negocio con inteligencia artificial",
+      title: "Gestión Inteligente de Alojamientos Turísticos",
+      subtitle: "Automatiza con inteligencia artificial",
       cta: "Comenzar ahora",
     },
     features: {

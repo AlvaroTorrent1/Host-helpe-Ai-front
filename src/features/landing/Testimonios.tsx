@@ -476,12 +476,12 @@ const Testimonios = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
               {testimonials.map((testimonial, index) => (
                 <div
                   key={testimonial.id}
                   ref={el => featuredTestimonialRefs.current[index] = el}
-                  className={`bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-1000 ease-out hover:translate-y-[-5px] border border-gray-200 ${
+                  className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white rounded-xl shadow-xl hover:shadow-2xl overflow-hidden transition-all duration-1000 ease-out hover:translate-y-[-4px] md:hover:translate-y-[-8px] border border-gray-200 ${
                     featuredTestimonials[index] 
                       ? 'opacity-100 translate-y-0 scale-100' 
                       : 'opacity-0 translate-y-8 scale-95'

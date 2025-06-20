@@ -24,6 +24,9 @@ const LandingPage = () => {
   const [visibleSteps, setVisibleSteps] = useState<boolean[]>([false, false, false]);
   const [visibleFeatures, setVisibleFeatures] = useState<boolean[]>([false, false, false]);
   
+  // Estado para controlar si el video está reproduciéndose
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  
   // Referencias para los pasos
   const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
@@ -101,9 +104,13 @@ const LandingPage = () => {
 
   // Ejemplo de uso directo de logEvent con importación dinámica
   const handleHeroInteraction = () => {
+    // Activar el video al hacer clic
+    setIsVideoPlaying(true);
+    
+    // Analytics
     import('@services/analytics').then(async ({ logEvent }) => {
       try {
-        await logEvent('Landing', 'Hero Interaction', 'User clicked on hero image');
+        await logEvent('Landing', 'Hero Video Play', 'User clicked to play demo video');
       } catch (error) {
         console.error('Error al registrar evento:', error);
       }
@@ -186,44 +193,78 @@ const LandingPage = () => {
               </div>
               <div className="md:w-1/2">
                 <div
-                  className="group relative w-3/5 h-56 md:h-64 mx-auto overflow-hidden shadow-xl cursor-pointer"
-                  style={{
-                    clipPath:
-                      "polygon(0% 0%, 100% 0%, 95% 85%, 90% 100%, 0% 100%)",
-                  }}
+                  className="group relative mx-auto overflow-hidden shadow-xl cursor-pointer rounded-xl max-w-xs"
+                  style={{ aspectRatio: "9/16" }}
                   onClick={handleHeroInteraction}
                 >
                   <style>
                     {`
                     @keyframes floating {
-                      0% { transform: translateY(0) rotate(-3deg) scale(1.35); }
-                      25% { transform: translateY(-15px) rotate(-1deg) scale(1.37); }
-                      50% { transform: translateY(-10px) rotate(3deg) scale(1.35); }
-                      75% { transform: translateY(-20px) rotate(1deg) scale(1.38); }
-                      100% { transform: translateY(0) rotate(-3deg) scale(1.35); }
+                      0% { transform: translateY(0) scale(1); }
+                      25% { transform: translateY(-10px) scale(1.02); }
+                      50% { transform: translateY(-5px) scale(1); }
+                      75% { transform: translateY(-15px) scale(1.02); }
+                      100% { transform: translateY(0) scale(1); }
                     }
                     `}
                   </style>
-                  <img
-                    src="/imagenes/wall-e.jpg"
-                    alt="Dashboard de Host Helper AI"
-                    className="w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform group-hover:scale-150 group-hover:rotate-3"
-                    style={{
-                      objectPosition: "center center",
-                      animation: "floating 4s ease-in-out infinite",
-                      transform: "rotate(-3deg) scale(1.35)",
-                    }}
-                  />
+                  
+                  {!isVideoPlaying ? (
+                    // Imagen miniatura con botón de play personalizado
+                    <div className="relative w-full h-full">
+                      <img
+                        src="https://img.youtube.com/vi/plXI2I-vaxo/maxresdefault.jpg"
+                        alt="Host Helper AI Demo - Click para reproducir"
+                        className="w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform group-hover:scale-105"
+                        style={{
+                          animation: "floating 4s ease-in-out infinite",
+                          aspectRatio: "9/16",
+                        }}
+                      />
+                      {/* Overlay con botón de play personalizado */}
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-all duration-300">
+                        <div className="bg-white/90 rounded-full p-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <svg 
+                            className="w-6 h-6 text-primary-600 ml-0.5" 
+                            fill="currentColor" 
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    // Video de YouTube cuando está activado
+                    <iframe
+                      src="https://www.youtube.com/embed/plXI2I-vaxo?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
+                      className="w-full h-full"
+                      style={{
+                        aspectRatio: "9/16",
+                      }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title="Host Helper AI Demo Video"
+                    />
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Background design elements */}
+          {/* Background design elements - Técnica defensiva multi-capa */}
+          {/* Elemento de respaldo para eliminar gaps de sub-pixel */}
+          <div className="absolute bottom-0 left-0 right-0 h-2 bg-white"></div>
+          
+          {/* Elemento principal con ángulo (preservando diseño original) */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-20 bg-white"
-            style={{ clipPath: "polygon(0 100%, 100% 100%, 100% 0)" }}
+            className="absolute bottom-0 left-0 right-0 h-24 bg-white"
+            style={{ 
+              clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
+              transform: "translateY(1px)" 
+            }}
           ></div>
+          
           <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-white opacity-5 rounded-full transform translate-x-1/4 -translate-y-1/4"></div>
           <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-white opacity-5 rounded-full transform -translate-x-1/4 translate-y-1/4"></div>
         </section>
@@ -240,11 +281,11 @@ const LandingPage = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
               {/* Primera tarjeta de características - Agentes IA 24/7 */}
               <div 
                 ref={feature1Ref}
-                className={`bg-white p-8 rounded-lg shadow-md transition-all duration-1000 ease-out ${
+                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
                   visibleFeatures[0] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
@@ -304,7 +345,7 @@ const LandingPage = () => {
               {/* Segunda tarjeta de características - Check-in automatizado */}
               <div 
                 ref={feature2Ref}
-                className={`bg-white p-8 rounded-lg shadow-md transition-all duration-1000 ease-out delay-200 ${
+                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-200 w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
                   visibleFeatures[1] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
@@ -364,7 +405,7 @@ const LandingPage = () => {
               {/* Tercera tarjeta de características - Upselling inteligente */}
               <div 
                 ref={feature3Ref}
-                className={`bg-white p-8 rounded-lg shadow-md transition-all duration-1000 ease-out delay-400 ${
+                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-400 w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
                   visibleFeatures[2] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
