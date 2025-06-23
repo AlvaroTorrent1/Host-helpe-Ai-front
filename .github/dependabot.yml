@@ -1,0 +1,47 @@
+# .github/dependabot.yml
+# Configuración de Dependabot para actualizaciones automáticas de dependencias
+
+version: 2
+updates:
+  # Actualizaciones para dependencias npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    # Limitar el número de PRs abiertos simultáneamente
+    open-pull-requests-limit: 5
+    # Configurar etiquetas para los PRs
+    labels:
+      - "dependencies"
+      - "security"
+    # Agrupación de actualizaciones menores/patch
+    groups:
+      security-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "security"
+      minor-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Ignorar actualizaciones de major version para dependencias críticas
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+    # Revisores automáticos para PRs de seguridad
+    reviewers:
+      - "AlvaroTorrent1"
+    # Mensaje de commit personalizado
+    commit-message:
+      prefix: "chore(deps):"
+      prefix-development: "chore(deps-dev):"
+      include: "scope" 
