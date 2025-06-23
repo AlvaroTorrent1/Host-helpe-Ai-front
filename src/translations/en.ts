@@ -14,7 +14,7 @@ export const en = {
   // Landing Page
   landing: {
     hero: {
-      title: "Intelligent Tourist Accommodation Management",
+      title: "AI Agents for Tourist Accommodations",
       subtitle: "Automate with artificial intelligence",
       cta: "Get Started",
     },

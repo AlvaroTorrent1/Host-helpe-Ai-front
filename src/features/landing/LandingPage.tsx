@@ -17,7 +17,22 @@ const styles = {
 };
 
 const LandingPage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Configuración de videos según idioma
+  const videoConfig = {
+    es: {
+      videoId: "MX8ypfuCieU",
+      thumbnail: "https://img.youtube.com/vi/MX8ypfuCieU/maxresdefault.jpg"
+    },
+    en: {
+      videoId: "plXI2I-vaxo", 
+      thumbnail: "https://img.youtube.com/vi/plXI2I-vaxo/maxresdefault.jpg"
+    }
+  };
+
+  // Obtener configuración del video actual basada en el idioma
+  const currentVideo = videoConfig[language] || videoConfig.es;
 
   // Estado para controlar las animaciones de scroll
   // Expandido para incluir las 3 tarjetas de características
@@ -213,7 +228,7 @@ const LandingPage = () => {
                     // Imagen miniatura con botón de play personalizado
                     <div className="relative w-full h-full">
                       <img
-                        src="https://img.youtube.com/vi/plXI2I-vaxo/maxresdefault.jpg"
+                        src={currentVideo.thumbnail}
                         alt="Host Helper AI Demo - Click para reproducir"
                         className="w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform group-hover:scale-105"
                         style={{
@@ -237,7 +252,7 @@ const LandingPage = () => {
                   ) : (
                     // Video de YouTube cuando está activado
                     <iframe
-                      src="https://www.youtube.com/embed/plXI2I-vaxo?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
+                      src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0`}
                       className="w-full h-full"
                       style={{
                         aspectRatio: "9/16",

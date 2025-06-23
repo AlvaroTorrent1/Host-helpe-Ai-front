@@ -14,7 +14,7 @@ export const es = {
   // Landing Page
   landing: {
     hero: {
-      title: "Gestión Inteligente de Alojamientos Turísticos",
+      title: "Agentes IA para alojamientos turísticos",
       subtitle: "Automatiza con inteligencia artificial",
       cta: "Comenzar ahora",
     },
