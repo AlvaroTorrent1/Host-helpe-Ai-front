@@ -6,17 +6,14 @@ import { Property } from "@/types/property";
 import ReservationList from "./ReservationList";
 import ReservationForm from "./ReservationForm";
 import ReservationDetail from "./ReservationDetail";
+import Calendar from "./Calendar";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { supabase } from "@/services/supabase";
 
-// Definimos un enum para el estado de las reservas
-enum ReservationStatus {
-  CONFIRMED = "confirmed",
-  PENDING = "pending",
-  CANCELED = "canceled"
-}
+// Enum eliminado - se usa el tipo ReservationStatus del archivo types/reservation.ts
 
 enum ViewMode {
   LIST,
@@ -47,248 +44,120 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Cargar datos
+  // Cargar datos reales desde Supabase
   const loadData = useCallback(async () => {
+    if (!user?.id) {
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Simulamos una carga de datos desde una API
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Consultar propiedades del usuario autenticado
+      const { data: propertiesData, error: propertiesError } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
 
-      // Datos vacíos para propiedades y reservas
-      const mockProperties: Property[] = [];
-      const mockGuests: Guest[] = [];
-      const mockReservations: Reservation[] = [];
-
-      setProperties(mockProperties);
-      setReservations(mockReservations);
-
-      // Si hay un ID de reserva en la URL, mostrar un mensaje de error
-      if (reservationId) {
-        setErrorMessage(t("reservations.errors.reservationNotFound"));
-        navigate("/dashboard/reservations");
+      if (propertiesError) {
+        console.error('Error loading properties:', propertiesError);
+        throw propertiesError;
       }
+
+      // Por ahora, inicializamos reservas como array vacío
+      // TODO: Implementar consulta de reservas cuando esté la tabla en Supabase
+      const reservationsData: Reservation[] = [];
+
+      // Actualizar estado con datos reales
+      setProperties(propertiesData || []);
+      setReservations(reservationsData);
+
+      // Si hay un ID de reserva en la URL pero no existe, mostrar error
+      if (reservationId) {
+        const foundReservation = reservationsData.find(r => r.id === reservationId);
+        if (!foundReservation) {
+          setErrorMessage(t("reservations.errors.reservationNotFound"));
+          navigate("/dashboard/reservations");
+        }
+      }
+
     } catch (error) {
-      console.error("Error al cargar los datos:", error);
+      console.error("Error al cargar los datos desde Supabase:", error);
       setErrorMessage(t("reservations.errors.loadingData"));
+      // En caso de error, usar arrays vacíos en lugar de datos mock
+      setProperties([]);
+      setReservations([]);
     } finally {
       setIsLoading(false);
     }
-  }, [t, reservationId, navigate]);
+  }, [user?.id, t, reservationId, navigate]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
   // Manejar creación de nueva reserva
-  const handleCreateReservation = (data: ReservationCreateData) => {
+  const handleCreateReservation = async (data: ReservationCreateData) => {
     setIsSubmitting(true);
 
-    // En una implementación real, llamaríamos a Supabase:
-    // async function createReservation() {
-    //   try {
-    //     // 1. Crear la reserva
-    //     const { data: reservationData, error: reservationError } = await supabase
-    //       .from('reservations')
-    //       .insert({
-    //         property_id: data.propertyId,
-    //         check_in_date: data.checkInDate,
-    //         check_out_date: data.checkOutDate,
-    //         status: data.status,
-    //         total_guests: data.totalGuests,
-    //         // ... otros campos
-    //       })
-    //       .select()
-    //       .single();
-    //
-    //     if (reservationError) throw reservationError;
-    //
-    //     // 2. Crear el huésped principal
-    //     const { data: mainGuestData, error: mainGuestError } = await supabase
-    //       .from('guests')
-    //       .insert({
-    //         ...data.mainGuest,
-    //         reservation_id: reservationData.id
-    //       })
-    //       .select()
-    //       .single();
-    //
-    //     // ... etc.
-    //   }
-    // }
-
-    // Simulación de creación para el MVP
-    setTimeout(() => {
-      try {
-        // Generar IDs únicos
-        const reservationId = `res_${Math.random().toString(36).substr(2, 9)}`;
-        const mainGuestId = `guest_${Math.random().toString(36).substr(2, 9)}`;
-
-        // Preparar el huésped principal
-        const mainGuest: Guest = {
-          id: mainGuestId,
-          ...data.mainGuest,
-        };
-
-        // Preparar huéspedes adicionales si existen
-        const additionalGuests: Guest[] = (data.additionalGuests || []).map(
-          (guest) => ({
-            id: `guest_${Math.random().toString(36).substr(2, 9)}`,
-            ...guest,
-          }),
-        );
-
-        // Crear la nueva reserva
-        const newReservation: Reservation = {
-          id: reservationId,
-          propertyId: data.propertyId,
-          mainGuestId: mainGuest.id,
-          guests: [mainGuest, ...additionalGuests],
-          checkInDate: data.checkInDate,
-          checkOutDate: data.checkOutDate,
-          status: data.status,
-          totalGuests: data.totalGuests,
-          totalAmount: data.totalAmount,
-          paymentStatus: data.paymentStatus,
-          bookingSource: data.bookingSource,
-          bookingSourceReference: data.bookingSourceReference,
-          notes: data.notes,
-          createdAt: new Date().toISOString(),
-        };
-
-        // Actualizar el estado
-        setReservations((prev) => [...prev, newReservation]);
-        setSuccessMessage(t("reservations.success.created"));
-
-        // Volver a la lista
+    try {
+      // TODO: Implementar creación real de reservas cuando tengamos las tablas en Supabase
+      // Por ahora mostrar mensaje informativo
+      setErrorMessage("La funcionalidad de crear reservas está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      
+      // Volver a la lista
+      setTimeout(() => {
         setViewMode(ViewMode.LIST);
-      } catch (error) {
-        console.error("Error al crear la reserva:", error);
-        setErrorMessage(t("reservations.errors.saving"));
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 1000); // Simular latencia de red
+      }, 2000);
+
+    } catch (error) {
+      console.error("Error al crear la reserva:", error);
+      setErrorMessage(t("reservations.errors.saving"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Manejar edición de reserva
-  const handleUpdateReservation = (data: ReservationCreateData) => {
+  const handleUpdateReservation = async (data: ReservationCreateData) => {
     if (!currentReservation) return;
 
     setIsSubmitting(true);
 
-    // Simulación de actualización para el MVP
-    setTimeout(() => {
-      try {
-        // Preparar huésped principal (mantener el ID original)
-        const mainGuest: Guest = {
-          ...data.mainGuest,
-          id: currentReservation.mainGuestId,
-        };
+    try {
+      // TODO: Implementar actualización real de reservas cuando tengamos las tablas en Supabase
+      setErrorMessage("La funcionalidad de editar reservas está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      
+      // Volver a la lista
+      setTimeout(() => {
+        setViewMode(ViewMode.LIST);
+      }, 2000);
 
-        // Encontrar huéspedes adicionales existentes (mantener sus IDs)
-        const existingAdditionalGuests = currentReservation.guests.filter(
-          (g) => g.id !== currentReservation.mainGuestId,
-        );
-
-        // Preparar huéspedes adicionales nuevos y existentes
-        const additionalGuests: Guest[] = (data.additionalGuests || []).map(
-          (guest, index) => {
-            // Si hay un huésped existente en esta posición, mantener su ID
-            if (existingAdditionalGuests[index]) {
-              return {
-                ...guest,
-                id: existingAdditionalGuests[index].id,
-              };
-            }
-
-            // Sino, crear un nuevo ID
-            return {
-              ...guest,
-              id: `guest_${Math.random().toString(36).substr(2, 9)}`,
-            };
-          },
-        );
-
-        // Crear la reserva actualizada
-        const updatedReservation: Reservation = {
-          ...currentReservation,
-          propertyId: data.propertyId,
-          guests: [mainGuest, ...additionalGuests],
-          checkInDate: data.checkInDate,
-          checkOutDate: data.checkOutDate,
-          status: data.status,
-          totalGuests: data.totalGuests,
-          totalAmount: data.totalAmount,
-          paymentStatus: data.paymentStatus,
-          bookingSource: data.bookingSource,
-          bookingSourceReference: data.bookingSourceReference,
-          notes: data.notes,
-          updatedAt: new Date().toISOString(),
-        };
-
-        // Actualizar el estado
-        setReservations((prev) =>
-          prev.map((r) =>
-            r.id === currentReservation.id ? updatedReservation : r,
-          ),
-        );
-        setCurrentReservation(updatedReservation);
-        setSuccessMessage(t("reservations.success.updated"));
-
-        // Volver a la vista de detalles
-        setViewMode(ViewMode.DETAIL);
-      } catch (error) {
-        console.error("Error al actualizar la reserva:", error);
-        setErrorMessage(t("reservations.errors.saving"));
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 1000); // Simular latencia de red
+    } catch (error) {
+      console.error("Error al actualizar la reserva:", error);
+      setErrorMessage(t("reservations.errors.saving"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Manejar envío a SES
-  const handleSendToSES = () => {
+  const handleSendToSES = async () => {
     if (!currentReservation) return;
 
     setIsSendingToSES(true);
 
-    // Simulación de envío a SES para el MVP
-    setTimeout(() => {
-      try {
-        // Actualizar estado del huésped principal
-        const updatedGuests = currentReservation.guests.map((guest) => {
-          if (guest.id === currentReservation.mainGuestId) {
-            return {
-              ...guest,
-              sesSent: true,
-              sesResponseCode: "SES" + Math.floor(Math.random() * 10000),
-            };
-          }
-          return guest;
-        });
-
-        // Actualizar reserva
-        const updatedReservation: Reservation = {
-          ...currentReservation,
-          guests: updatedGuests,
-          updatedAt: new Date().toISOString(),
-        };
-
-        // Actualizar estado
-        setReservations((prev) =>
-          prev.map((r) =>
-            r.id === currentReservation.id ? updatedReservation : r,
-          ),
-        );
-        setCurrentReservation(updatedReservation);
-        setSuccessMessage(t("reservations.success.sentToSES"));
-      } catch (error) {
-        console.error("Error al enviar datos a SES:", error);
-        setErrorMessage(t("reservations.errors.sendingToSES"));
-      } finally {
-        setIsSendingToSES(false);
-      }
-    }, 2000); // Simular latencia de red
+    try {
+      // TODO: Implementar envío real a SES cuando tengamos las tablas y la funcionalidad
+      setErrorMessage("La funcionalidad de envío a SES está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      
+    } catch (error) {
+      console.error("Error al enviar datos a SES:", error);
+      setErrorMessage(t("reservations.errors.sendingToSES"));
+    } finally {
+      setIsSendingToSES(false);
+    }
   };
 
   // Mostrar formulario para crear nueva reserva
@@ -369,10 +238,10 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   onClick={handleBackToList}
                   className="hover:text-primary-600 text-gray-800 font-medium text-left"
                 >
-                  Reservas
+{t("dashboard.reservations.reservationsTitle")}
                 </button>
               ) : (
-                <span className="text-gray-800 font-medium">Reservas</span>
+                <span className="text-gray-800 font-medium">{t("dashboard.reservations.reservationsTitle")}</span>
               )}
             </li>
             {viewMode === ViewMode.DETAIL && currentReservation && (
@@ -391,7 +260,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   </svg>
                 </li>
                 <li className="text-gray-800 font-medium">
-                  Detalles de reserva
+                  {t("dashboard.reservations.reservationDetails")}
                 </li>
               </>
             )}
@@ -411,7 +280,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   </svg>
                 </li>
                 <li className="text-gray-800 font-medium">
-                  {currentReservation ? "Editar reserva" : "Nueva reserva"}
+                  {currentReservation ? t("dashboard.reservations.editReservation") : t("dashboard.reservations.newReservation")}
                 </li>
               </>
             )}
@@ -487,6 +356,19 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           </div>
         )}
 
+        {/* Calendario mensual */}
+        {!isLoading && (
+          <div className="mb-8">
+            <Calendar 
+              reservations={reservations}
+              onDateClick={(date) => {
+                // Opcional: agregar funcionalidad al hacer clic en una fecha
+                console.log('Fecha seleccionada:', date);
+              }}
+            />
+          </div>
+        )}
+
         {/* Contenido según el modo de visualización */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
@@ -546,7 +428,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                         d="M15 19l-7-7 7-7"
                       />
                     </svg>
-                    Volver a reservas
+{t("dashboard.reservations.backToReservations")}
                   </button>
                 </div>
 
@@ -565,7 +447,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                 <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {currentReservation ? "Editar reserva" : "Nueva reserva"}
+                      {currentReservation ? t("dashboard.reservations.editReservation") : t("dashboard.reservations.newReservation")}
                     </h3>
                     <button
                       type="button"
@@ -586,7 +468,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                      Cancelar
+{t("dashboard.reservations.cancel")}
                     </button>
                   </div>
                 </div>
