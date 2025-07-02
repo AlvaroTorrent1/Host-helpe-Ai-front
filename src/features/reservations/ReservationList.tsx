@@ -21,7 +21,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
 }) => {
   // Estados para los filtros
   const [filters, setFilters] = useState<ReservationFilters>({
-    status: "all",
     propertyId: undefined,
     startDate: undefined,
     endDate: undefined,
@@ -35,15 +34,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
   // Aplicar filtros cuando cambien o cuando cambien las reservas
   useEffect(() => {
     const filtered = reservations.filter((reservation) => {
-      // Filtro por estado
-      if (
-        filters.status &&
-        filters.status !== "all" &&
-        reservation.status !== filters.status
-      ) {
-        return false;
-      }
-
       // Filtro por propiedad
       if (filters.propertyId && reservation.propertyId !== filters.propertyId) {
         return false;
@@ -93,7 +83,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
   // Manejador para limpiar todos los filtros
   const handleClearFilters = () => {
     setFilters({
-      status: "all",
       propertyId: undefined,
       startDate: undefined,
       endDate: undefined,
@@ -101,27 +90,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
     });
   };
 
-  // Función para traducir el estado a español
-  const getStatusLabel = (status: ReservationStatus): string => {
-    const statusLabels: Record<ReservationStatus, string> = {
-      confirmed: "Confirmada",
-      pending: "Pendiente",
-      cancelled: "Cancelada",
-      completed: "Completada",
-    };
-    return statusLabels[status];
-  };
 
-  // Función para obtener el color del badge de estado
-  const getStatusColor = (status: ReservationStatus): string => {
-    const statusColors: Record<ReservationStatus, string> = {
-      confirmed: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      cancelled: "bg-red-100 text-red-800",
-      completed: "bg-blue-100 text-blue-800",
-    };
-    return statusColors[status];
-  };
 
   // Formatear fecha
   const formatDate = (dateString: string): string => {
@@ -169,7 +138,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
 
       {/* Filtros */}
       <div className="px-4 py-4 sm:px-6 border-b border-gray-200 bg-gray-50">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Filtro de búsqueda */}
           <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <label
@@ -189,33 +158,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
               }
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
-          </div>
-
-          {/* Filtro de estado */}
-          <div>
-            <label
-              htmlFor="status"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Estado
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={filters.status || "all"}
-              onChange={(e) =>
-                handleFilterChange({
-                  status: e.target.value as ReservationStatus | "all",
-                })
-              }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-            >
-              <option value="all">Todos</option>
-              <option value="confirmed">Confirmada</option>
-              <option value="pending">Pendiente</option>
-              <option value="cancelled">Cancelada</option>
-              <option value="completed">Completada</option>
-            </select>
           </div>
 
           {/* Filtro de propiedad */}
@@ -318,13 +260,13 @@ const ReservationList: React.FC<ReservationListProps> = ({
           </h3>
           <p className="mt-1 text-sm text-gray-500">
             {Object.values(filters).some(
-              (val) => val !== undefined && val !== "" && val !== "all",
+              (val) => val !== undefined && val !== "",
             )
               ? "No hay reservas que coincidan con los filtros seleccionados."
               : "Comienza añadiendo tu primera reserva."}
           </p>
           {!Object.values(filters).some(
-            (val) => val !== undefined && val !== "" && val !== "all",
+            (val) => val !== undefined && val !== "",
           ) && (
             <div className="mt-6">
               <button
@@ -351,20 +293,27 @@ const ReservationList: React.FC<ReservationListProps> = ({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          {/* Encabezados fijos */}
+          <table className="min-w-full">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
                 >
                   Huésped
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
                 >
                   Propiedad
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6"
+                >
+                  Teléfono
                 </th>
                 <th
                   scope="col"
@@ -382,16 +331,15 @@ const ReservationList: React.FC<ReservationListProps> = ({
                   scope="col"
                   className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12"
                 >
-                  Estado
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12"
-                >
                   Acciones
                 </th>
               </tr>
             </thead>
+          </table>
+          
+          {/* Contenedor con scroll para las filas */}
+          <div className="max-h-96 overflow-y-auto border-t border-gray-200 bg-white">
+            <table className="min-w-full divide-y divide-gray-200">
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredReservations.map((reservation, index) => {
                 // Encontrar el huésped principal
@@ -433,6 +381,11 @@ const ReservationList: React.FC<ReservationListProps> = ({
                     </td>
                     <td className="px-3 py-4 text-left">
                       <div className="text-sm text-gray-900">
+                        {mainGuest?.phone || "No disponible"}
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-left">
+                      <div className="text-sm text-gray-900">
                         {formatDate(reservation.checkInDate)}
                       </div>
                     </td>
@@ -440,13 +393,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       <div className="text-sm text-gray-900">
                         {formatDate(reservation.checkOutDate)}
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(reservation.status)}`}
-                      >
-                        {getStatusLabel(reservation.status)}
-                      </span>
                     </td>
                     <td className="px-3 py-4 text-left text-sm font-medium">
                       <button
@@ -459,8 +405,18 @@ const ReservationList: React.FC<ReservationListProps> = ({
                   </tr>
                 );
               })}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Indicador de scroll si hay muchas reservas */}
+          {filteredReservations.length > 5 && (
+            <div className="text-center py-2 bg-gray-50 border-t border-gray-200">
+              <p className="text-xs text-gray-500">
+                Mostrando {filteredReservations.length} reservas • Usa scroll para ver más
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

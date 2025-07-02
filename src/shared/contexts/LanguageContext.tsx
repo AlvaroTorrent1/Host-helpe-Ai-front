@@ -32,16 +32,27 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  // Forzar idioma español por defecto
-  const [language, setLanguage] = useState<LanguageCode>("es");
+  // Inicializar idioma desde localStorage o detectar del navegador
+  const [language, setLanguage] = useState<LanguageCode>(() => {
+    // Intentar cargar desde localStorage
+    const savedLanguage = localStorage.getItem("language") as LanguageCode;
+    if (savedLanguage && (savedLanguage === "es" || savedLanguage === "en")) {
+      return savedLanguage;
+    }
+    
+    // Detectar idioma del navegador
+    const browserLang = navigator.language.split('-')[0];
+    if (browserLang === "en" || browserLang === "es") {
+      return browserLang as LanguageCode;
+    }
+    
+    // Por defecto español
+    return "es";
+  });
 
-  // Efecto para limpiar localStorage al iniciar y establecer español
+  // Efecto inicial para establecer el idioma en el DOM
   useEffect(() => {
-    // Limpiamos cualquier preferencia guardada anteriormente
-    localStorage.removeItem("language");
-    // Establecemos explícitamente el idioma en español
-    localStorage.setItem("language", "es");
-    document.documentElement.lang = "es";
+    document.documentElement.lang = language;
   }, []);
 
   // Guardar el idioma en localStorage cuando cambie después de la inicialización
@@ -117,6 +128,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         }
         
         console.warn(`Translation key not found: ${key}`);
+        // En desarrollo, hacer que las claves faltantes sean muy visibles en la UI
+        if (process.env.NODE_ENV === 'development') {
+          return `[CLAVE_NO_ENCONTRADA: ${key}]`;
+        }
         return key; // Retornar la clave si no se encuentra la traducción
       }
     }
@@ -126,6 +141,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         `Translation value for key "${key}" is not a string:`,
         current,
       );
+      // En desarrollo, hacer que las claves faltantes sean muy visibles
+      if (process.env.NODE_ENV === 'development') {
+        return `[TRADUCCIÓN_FALTANTE: ${key}]`;
+      }
       return key;
     }
 

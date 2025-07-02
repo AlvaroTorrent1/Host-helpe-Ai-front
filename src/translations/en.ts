@@ -591,6 +591,42 @@ export const en = {
       pending: "Pending",
       view: "View reservations",
       emptyState: "No reservations",
+      emptyStateDescription: "Get started by creating your first reservation.",
+      newReservation: "New Reservation",
+      editReservation: "Edit Reservation",
+      reservationInformation: "Reservation Information",
+      mainGuest: "Main Guest",
+      additionalGuests: "Additional Guests",
+      addGuest: "Add Guest",
+      guestNumber: "Guest",
+      noAdditionalGuests: "No additional guests",
+      backToReservations: "Back to reservations",
+      cancel: "Cancel",
+      saving: "Saving...",
+      createReservation: "Create Reservation",
+      updateReservation: "Update Reservation",
+      reservationsTitle: "Reservations",
+      reservationDetails: "Reservation Details",
+      form: {
+        property: "Property",
+        selectProperty: "Select a property",
+        checkInDate: "Check-in Date",
+        checkOutDate: "Check-out Date",
+        notes: "Notes",
+        notesPlaceholder: "Additional reservation information...",
+        firstName: "First Name",
+        lastName: "Last Name",
+        phone: "Phone",
+        documentType: "Document Type",
+        documentNumber: "Document Number",
+        nationality: "Nationality",
+        selectNationality: "Select nationality",
+        documentTypes: {
+          dni: "ID Card",
+          passport: "Passport",
+          other: "Other"
+        }
+      },
       actions: {
         create: "New Reservation",
         edit: "Edit",
@@ -613,7 +649,8 @@ export const en = {
         loadingData: "Error loading data. Please try again later.",
         saving: "Error saving reservation. Please try again.",
         deleting: "Error deleting reservation. Please try again.",
-        sendingToSES: "Error sending data to SES. Please try again later."
+        sendingToSES: "Error sending data to SES. Please try again later.",
+        reservationNotFound: "Reservation not found."
       },
       mockNotes: {
         confirmed: "Arriving late, after 8pm.",
@@ -889,7 +926,7 @@ export const en = {
   
   // Error messages
   errors: {
-    signOut: "Error while signing out:",
+    signOut: "Error while signing out",
     loadProperties: "Error loading properties:",
     deleteProperty: "Error deleting property:",
     saveProperty: "Error saving property:",

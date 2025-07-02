@@ -67,12 +67,18 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/access-denied" replace />;
   }
 
+  // 🔧 EXCEPCIÓN: Permitir acceso a /properties/management sin verificar suscripción
+  // Esto es para testing del sistema de webhook N8N con categorización IA
+  const isPropertiesManagement = location.pathname === '/properties/management';
+  
   // Si está autenticado pero no tiene suscripción activa, redirigir a la página de precios
-  if (!hasActiveSubscription) {
+  // EXCEPTO para /properties/management que se permite para testing
+  if (!hasActiveSubscription && !isPropertiesManagement) {
     return <Navigate to="/pricing" state={{ from: location }} replace />;
   }
 
   // Si está autenticado, tiene el rol requerido (o no se requiere rol) y tiene suscripción activa, mostrar el contenido
+  // O si está en la ruta de testing /properties/management
   return <>{children}</>;
 };
 

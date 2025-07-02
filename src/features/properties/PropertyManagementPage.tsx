@@ -11,6 +11,8 @@ import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import documentService from "../../services/documentService";
 import { toast } from "react-hot-toast";
+import propertyWebhookService from "@services/propertyWebhookService";
+import webhookTestService from "@services/webhookTestService";
 
 interface PropertyManagementPageProps {
   onSignOut?: () => void;
@@ -31,6 +33,11 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     null,
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  // Estados para procesamiento con IA
+  const [useWebhook, setUseWebhook] = useState<boolean>(true); // Usar webhook por defecto
+  const [progressPhase, setProgressPhase] = useState<string>('');
+  const [progressPercent, setProgressPercent] = useState<number>(0);
 
   // Limpiar el mensaje de error cuando se abre o cierra el modal
   useEffect(() => {
@@ -240,18 +247,17 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
   // Manejar envío del formulario (crear/actualizar)
   const handleSubmitProperty = async (propertyData: Omit<Property, "id">) => {
     setIsSubmitting(true);
-    
-    // --- DEBUGGING --- 
-    console.log('Data being sent to Supabase:', JSON.stringify(propertyData, null, 2));
-    // --- END DEBUGGING ---
+    setProgressPhase('');
+    setProgressPercent(0);
 
     try {
-      // Extraer additional_images y documents ya que son relaciones y no columnas directas
       const { additional_images, documents, ...propertyDataToSend } = propertyData;
       
       if (currentProperty) {
-        // Actualizar propiedad existente
-        console.log(`Attempting to update property ID: ${currentProperty.id}`);
+        // MODO EDICIÓN: Actualizar propiedad existente (sin webhook)
+        setProgressPhase('Actualizando propiedad...');
+        setProgressPercent(50);
+        
         const { data, error } = await supabase
           .from("properties")
           .update(propertyDataToSend)
@@ -261,24 +267,19 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
         if (error) {
           console.error('Supabase update error:', error);
           setErrorMessage(`Error al actualizar la propiedad: ${error.message}`);
-          setIsSubmitting(false);
           return;
         }
-        console.log('Supabase update success:', data);
 
         if (data && data.length > 0) {
-          // Si hay documentos temporales, actualizar sus IDs con el ID real de la propiedad
-          if (documents && documents.length > 0 && 
-              documents.some(doc => doc.property_id === 'temp')) {
-            
-            console.log(`Encontrados ${documents.filter(doc => doc.property_id === 'temp').length} documentos temporales para actualizar`);
+          // Procesar documentos temporales si existen
+          if (documents && documents.some(doc => doc.property_id === 'temp')) {
+            setProgressPhase('Procesando documentos...');
+            setProgressPercent(75);
             
             try {
-              const updatedDocs = await documentService.updateTempDocumentsPropertyId(currentProperty.id);
-              console.log(`Actualizados ${updatedDocs.length} documentos temporales con ID de propiedad real`);
+              await documentService.updateTempDocumentsPropertyId(currentProperty.id);
             } catch (error) {
               console.error('Error al actualizar documentos temporales:', error);
-              // Continuar con el flujo aunque haya error en los documentos
             }
           }
 
@@ -288,66 +289,209 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
               p.id === currentProperty.id ? { ...p, ...propertyData } : p,
             ),
           );
+          
+          toast.success("Propiedad actualizada correctamente");
         }
       } else {
-        // Crear nueva propiedad
-        console.log('Attempting to insert new property');
-        const propertyToInsert = {
-          ...propertyDataToSend,
-          user_id: user?.id,
-          created_at: new Date().toISOString(),
-        };
+        // MODO CREACIÓN: Nueva propiedad
+        const hasFiles = (additional_images?.length || 0) > 0 || (documents?.length || 0) > 0;
         
-        const { data, error } = await supabase
-          .from("properties")
-          .insert(propertyToInsert)
-          .select();
-
-        if (error) {
-          console.error('Supabase insert error:', error);
-          setErrorMessage(`Error al crear la propiedad: ${error.message}`);
-          setIsSubmitting(false);
-          return;
-        }
-
-        console.log('Supabase insert success:', data);
-
-        if (data && data.length > 0) {
-          const newPropertyId = data[0].id;
+        if (useWebhook && hasFiles) {
+          // USAR WEBHOOK CON IA para procesamiento inteligente
+          console.log('🚀 Usando webhook n8n para procesamiento inteligente de archivos');
           
-          // Si hay documentos temporales, actualizar sus IDs con el ID real de la propiedad
-          if (documents && documents.length > 0 && 
-              documents.some(doc => doc.property_id === 'temp')) {
+          const onProgress = (phase: string, progress: number) => {
+            setProgressPhase(phase);
+            setProgressPercent(progress);
+          };
+          
+          try {
+            // Filtrar solo archivos con URLs válidas (no mock)
+            const validImages = additional_images?.filter(img => 
+              img.file_url && !img.file_url.startsWith('#') && img.file_url.startsWith('http')
+            ) || [];
             
-            console.log(`Encontrados ${documents.filter(doc => doc.property_id === 'temp').length} documentos temporales para actualizar con ID: ${newPropertyId}`);
-            
-            try {
-              const updatedDocs = await documentService.updateTempDocumentsPropertyId(newPropertyId);
-              console.log(`Actualizados ${updatedDocs.length} documentos temporales con ID de propiedad real`);
-            } catch (error) {
-              console.error('Error al actualizar documentos temporales:', error);
-              // Continuar con el flujo aunque haya error en los documentos
-            }
-          }
+            const validDocs = documents?.filter(doc => 
+              doc.file_url && !doc.file_url.startsWith('#') && doc.file_url.startsWith('http')
+            ) || [];
 
-          // Añadir la nueva propiedad a la lista
-          setProperties((prev) => [
-            { ...data[0], ...propertyData, id: newPropertyId },
-            ...prev,
-          ]);
+            // Si no hay archivos válidos, crear propiedad directamente
+            if (validImages.length === 0 && validDocs.length === 0) {
+              console.log('⚠️ No hay archivos válidos para procesar con IA, creando propiedad directamente');
+              await createPropertyDirectly(propertyDataToSend);
+              
+              // Cerrar modal después de crear exitosamente
+              setModalOpen(false);
+              setCurrentProperty(undefined);
+              setProgressPhase('');
+              setProgressPercent(0);
+              return;
+            }
+
+            // Organizar archivos válidos por categoría para el webhook
+            const organizedFiles = {
+              interni: validImages.filter(img => 
+                img.description?.toLowerCase().includes('interior') || 
+                img.description?.toLowerCase().includes('sala') ||
+                img.description?.toLowerCase().includes('cocina') ||
+                img.description?.toLowerCase().includes('dormitorio') ||
+                img.description?.toLowerCase().includes('baño')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                size: 1024000,
+                description: img.description || ''
+              })),
+              
+              esterni: validImages.filter(img => 
+                img.description?.toLowerCase().includes('exterior') ||
+                img.description?.toLowerCase().includes('fachada') ||
+                img.description?.toLowerCase().includes('terraza') ||
+                img.description?.toLowerCase().includes('jardín') ||
+                img.description?.toLowerCase().includes('piscina')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                size: 1024000,
+                description: img.description || ''
+              })),
+              
+              elettrodomestici_foto: validImages.filter(img => 
+                img.description?.toLowerCase().includes('electrodomestico') ||
+                img.description?.toLowerCase().includes('nevera') ||
+                img.description?.toLowerCase().includes('lavadora') ||
+                img.description?.toLowerCase().includes('microondas') ||
+                img.description?.toLowerCase().includes('horno')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                size: 1024000,
+                description: img.description || ''
+              })),
+              
+              documenti_casa: validDocs.filter(doc => 
+                doc.name?.toLowerCase().includes('contrato') ||
+                doc.name?.toLowerCase().includes('plano') ||
+                doc.name?.toLowerCase().includes('normas') ||
+                doc.name?.toLowerCase().includes('reglas')
+              ).map(doc => ({
+                filename: doc.name || 'document.pdf',
+                url: doc.file_url,
+                type: 'application/pdf',
+                size: 512000,
+                description: doc.description || doc.name || ''
+              })),
+              
+              documenti_elettrodomestici: validDocs.filter(doc => 
+                doc.name?.toLowerCase().includes('manual') ||
+                doc.name?.toLowerCase().includes('garantia') ||
+                doc.name?.toLowerCase().includes('instrucciones')
+              ).map(doc => ({
+                filename: doc.name || 'document.pdf',
+                url: doc.file_url,
+                type: 'application/pdf',
+                size: 512000,
+                description: doc.description || doc.name || ''
+              }))
+            };
+
+            // Añadir imágenes no categorizadas a interni
+            const uncategorizedImages = validImages.filter(img => {
+              const desc = img.description?.toLowerCase() || '';
+              return !desc.includes('interior') && !desc.includes('sala') && !desc.includes('cocina') &&
+                     !desc.includes('dormitorio') && !desc.includes('baño') &&
+                     !desc.includes('exterior') && !desc.includes('fachada') && !desc.includes('terraza') &&
+                     !desc.includes('jardín') && !desc.includes('piscina') &&
+                     !desc.includes('electrodomestico') && !desc.includes('nevera') && !desc.includes('lavadora') &&
+                     !desc.includes('microondas') && !desc.includes('horno');
+            });
+            
+            if (uncategorizedImages.length > 0) {
+              organizedFiles.interni.push(...uncategorizedImages.map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                size: 1024000,
+                description: img.description || ''
+              })));
+            }
+
+            // Crear propiedad vía webhook n8n
+            const result = await propertyWebhookService.processPropertyWithWebhook(
+              propertyDataToSend, 
+              organizedFiles,
+              { onProgress }
+            );
+            
+            const newProperty = { 
+              ...propertyData, 
+              id: result.property_id 
+            } as Property;
+            
+            // Añadir la nueva propiedad a la lista
+            setProperties((prev) => [newProperty, ...prev]);
+            
+            toast.success("✨ Propiedad creada con IA - Archivos categorizados automáticamente");
+            
+          } catch (webhookError) {
+            console.warn('⚠️ Webhook falló, usando método directo:', webhookError);
+            toast('El procesamiento IA no está disponible. Usando método estándar...', { 
+              icon: '⚠️',
+              duration: 3000 
+            });
+            
+            // Fallback: crear directamente
+            await createPropertyDirectly(propertyDataToSend);
+          }
+        } else {
+          // CREAR DIRECTAMENTE sin webhook (sin archivos o webhook deshabilitado)
+          console.log('📝 Usando creación directa (sin archivos o webhook deshabilitado)');
+          await createPropertyDirectly(propertyDataToSend);
         }
       }
+      
       setModalOpen(false);
       setCurrentProperty(undefined);
-      setIsSubmitting(false);
+      setProgressPhase('');
+      setProgressPercent(0);
+      
     } catch (error) {
       console.error(t("errors.saveProperty"), error);
-      if (error instanceof Error) {
-        setErrorMessage(`Error: ${error.message}`);
-      } else {
-        setErrorMessage("Se produjo un error desconocido al guardar la propiedad");
-      }
+      setErrorMessage(error instanceof Error ? error.message : "Error al guardar la propiedad");
+      toast.error(`Error: ${error instanceof Error ? error.message : "Error desconocido"}`);
+    } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Función auxiliar para crear propiedad directamente
+  const createPropertyDirectly = async (propertyDataToSend: any) => {
+    setProgressPhase('Creando propiedad...');
+    setProgressPercent(50);
+    
+    // Limpiar el google_business_profile_url si está vacío
+    const cleanedData = {
+      ...propertyDataToSend,
+      google_business_profile_url: propertyDataToSend.google_business_profile_url || null
+    };
+    
+    const { data, error } = await supabase
+      .from("properties")
+      .insert({
+        ...cleanedData,
+        user_id: user?.id,
+        created_at: new Date().toISOString(),
+      })
+      .select();
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      setProperties((prev) => [data[0], ...prev]);
+      toast.success("Propiedad creada correctamente");
     }
   };
 
@@ -429,6 +573,55 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
             </div>
           </div>
         )}
+        {/* Toggle para webhook n8n (solo en modo creación) */}
+        {!currentProperty && (
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <label className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={useWebhook}
+                  onChange={(e) => setUseWebhook(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-blue-600"
+                />
+                <div>
+                  <span className="text-sm font-medium text-gray-900">
+                    🤖 Procesamiento Inteligente con IA
+                  </span>
+                  <p className="text-xs text-gray-600">
+                    Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+        )}
+
+        {/* Indicador de progreso durante el procesamiento */}
+        {isSubmitting && (progressPhase || progressPercent > 0) && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-blue-900">
+                {progressPhase || 'Procesando...'}
+              </span>
+              <span className="text-sm text-blue-600">
+                {progressPercent}%
+              </span>
+            </div>
+            <div className="w-full bg-blue-200 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              ></div>
+            </div>
+            {useWebhook && progressPercent > 0 && progressPercent < 100 && (
+              <p className="text-xs text-blue-600 mt-1">
+                ⚡ Sistema inteligente procesando archivos...
+              </p>
+            )}
+          </div>
+        )}
+
         <PropertyForm
           property={currentProperty}
           onSubmit={handleSubmitProperty}

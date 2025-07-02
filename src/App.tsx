@@ -10,6 +10,7 @@ import LoadingScreen from "./shared/components/LoadingScreen";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
 import { getProtectedRoutes } from "./config/routes";
 import { HelmetProvider } from "react-helmet-async";
+import PropertyManagement from './features/properties/PropertyManagement';
 
 // Lazy load pages for better performance
 const LandingPage = lazy(() => import("./features/landing/LandingPage"));
@@ -149,6 +150,16 @@ function App() {
 
                   {/* Ruta 404 para cualquier otra URL */}
                   <Route path="*" element={<NotFoundPage />} />
+
+                  {/* Nueva ruta temporal para acceder al PropertyManagement correcto */}
+                  <Route 
+                    path="/properties/management" 
+                    element={
+                      <ProtectedRoute>
+                        <PropertyManagement />
+                      </ProtectedRoute>
+                    } 
+                  />
                 </Routes>
               </Suspense>
             </Router>

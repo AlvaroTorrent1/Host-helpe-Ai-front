@@ -7,6 +7,7 @@ import DashboardNavigation from "./DashboardNavigation";
 import DashboardLanguageSelector from "./DashboardLanguageSelector";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
+import n8nTestService from "@services/n8nTestService";
 
 type Property = {
   id: string;
@@ -59,6 +60,9 @@ const DashboardPage: React.FC = () => {
 
   // Nuevo estado para propiedad seleccionada
   const [selectedProperty, setSelectedProperty] = useState<string | "all">("all");
+  
+  // Estado para controlar si mostrar todas las incidencias o solo las 10 recientes
+
 
   // Obtener datos del usuario actual y cargar datos reales
   useEffect(() => {
@@ -86,14 +90,68 @@ const DashboardPage: React.FC = () => {
             setProperties(propertiesData || []);
           }
           
-          // TODO: Implementar carga de reservas e incidencias
-          // Por ahora dejamos arrays vacíos
+          // Obtener incidencias del usuario usando JOIN con properties para filtrar por user_id
+          const { data: incidentsData, error: incidentsError } = await supabase
+            .from('incidents')
+            .select(`
+              id,
+              title,
+              description,
+              property_id,
+              category,
+              status,
+              phone_number,
+              created_at,
+              properties!inner(
+                name,
+                user_id
+              )
+            `)
+            .eq('properties.user_id', userData.user.id)
+            .order('created_at', { ascending: false })
+            .limit(50); // Limitar a las 50 más recientes
+          
+          console.log("Incidents data:", incidentsData);
+          console.log("Incidents error:", incidentsError);
+          
+          if (incidentsError) {
+            console.error("Error al cargar incidencias:", incidentsError);
+            setIncidents([]); // Fallback a array vacío en caso de error
+          } else {
+            // Mapear los datos al formato esperado por el frontend
+            const mappedIncidents: Incident[] = (incidentsData || []).map((incident: any) => {
+              // Verificar que el objeto tenga las propiedades necesarias
+              const propertyName = incident.properties?.name || 
+                                 (Array.isArray(incident.properties) && incident.properties[0]?.name) || 
+                                 'Propiedad desconocida';
+              
+              return {
+                id: incident.id || '',
+                title: incident.title || 'Sin título',
+                date: incident.created_at || new Date().toISOString(),
+                status: (incident.status === 'resolved' ? 'resolved' : 'pending') as "resolved" | "pending",
+                property_id: incident.property_id || '',
+                property_name: propertyName,
+                category: (incident.category || 'other') as IncidentCategory,
+                description: incident.description || '',
+                phone_number: incident.phone_number || ''
+              };
+            });
+            
+            setIncidents(mappedIncidents);
+          }
+          
+          // TODO: Implementar carga de reservas
+          // Por ahora dejamos array vacío para reservas
           setReservations([]);
-          setIncidents([]);
         }
         
       } catch (error) {
         console.error("Error al cargar datos:", error);
+        // En caso de error, asegurar arrays vacíos
+        setProperties([]);
+        setIncidents([]);
+        setReservations([]);
       } finally {
         setIsLoading(false);
       }
@@ -101,6 +159,10 @@ const DashboardPage: React.FC = () => {
 
     fetchData();
   }, []);
+
+  // Reset de vista a recientes cuando cambian los filtros
+  useEffect(() => {
+  }, [selectedCategory, selectedProperty]);
 
   const handleSignOut = async () => {
     setIsLoading(true);
@@ -160,25 +222,25 @@ const DashboardPage: React.FC = () => {
   const getLabel = (category: IncidentCategory | "all"): string => {
     const translated = categoryLabels[category];
     // Check if the translation returned just the key (failed translation)
-    if (translated.includes("dashboard.incidents.categories")) {
+    if (translated && translated.includes("dashboard.incidents.categories")) {
       return fallbackCategoryLabels[category];
     }
-    return translated;
+    return translated || fallbackCategoryLabels[category];
   };
 
   // Get status label with fallback
   const getStatusLabel = (status: "resolved" | "pending"): string => {
     const translated = t(`dashboard.incidents.table.${status}`);
-    if (translated.includes("dashboard.incidents.table")) {
+    if (translated && translated.includes("dashboard.incidents.table")) {
       return fallbackStatusLabels[status];
     }
-    return translated;
+    return translated || fallbackStatusLabels[status];
   };
 
   // Get translated text with fallback
   const getText = (key: string, fallback: string): string => {
     const translated = t(key);
-    if (translated === key || translated.includes("dashboard.incidents")) {
+    if (!translated || translated === key || translated.includes("dashboard.incidents")) {
       return fallback;
     }
     return translated;
@@ -195,6 +257,9 @@ const DashboardPage: React.FC = () => {
     // Ambos filtros deben coincidir
     return categoryMatch && propertyMatch;
   });
+
+  // Limitar a las 10 incidencias más recientes o mostrar todas según el estado
+  // Ya no necesitamos displayedIncidents, usamos directamente filteredIncidents
 
   // Calcular el número de incidencias pendientes (aplicando filtros)
   const pendingIncidentsCount = filteredIncidents.filter(
@@ -341,62 +406,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Grid layout para estadísticas y acciones rápidas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          {/* Reservas */}
-          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
-              {t("dashboard.reservations.title")}
-            </h3>
-            <div className="mt-1">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-2">
-                <span className="text-sm text-gray-600">
-                  {t("dashboard.reservations.upcoming")}
-                </span>
-                <span className="text-lg font-semibold">
-                  {reservations.filter((r) => r.status === "confirmed").length}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-2">
-                <span className="text-sm text-gray-600">
-                  {t("dashboard.reservations.pending")}
-                </span>
-                <span className="text-lg font-semibold">
-                  {reservations.filter((r) => r.status === "pending").length}
-                </span>
-              </div>
-              <div className="mt-4">
-                <Link
-                  to="/reservations"
-                  className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
-                >
-                  {t("dashboard.reservations.view")}
-                </Link>
-              </div>
-            </div>
-          </div>
 
-          {/* Acciones rápidas */}
-          <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2">
-              {t("dashboard.quickActions.title")}
-            </h3>
-            <div className="mt-1 space-y-2">
-              <Link
-                to="/messages"
-                className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
-              >
-                {t("dashboard.quickActions.messages")}
-              </Link>
-              <Link
-                to="/help"
-                className="block text-center text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md"
-              >
-                {t("dashboard.quickActions.help")}
-              </Link>
-            </div>
-          </div>
-        </div>
 
         {/* Incidencias */}
         <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
@@ -508,122 +518,148 @@ const DashboardPage: React.FC = () => {
               ← Desliza para ver más información →
             </span>
           </div>
+
+
           
-          <div className="overflow-x-auto rounded-lg border border-gray-200 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 relative">
-            <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
-              <thead className="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '150px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.title", fallbackLabels.tableTitle)}
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '140px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '120px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '100px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '140px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.phoneNumber", fallbackLabels.tablePhone)}
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    style={{ minWidth: '100px' }}
-                  >
-                    <div className="flex items-center">
-                      {getText("dashboard.incidents.table.date", fallbackLabels.tableDate)}
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredIncidents.length > 0 ? (
-                  filteredIncidents.map((incident) => (
-                    <tr key={incident.id} className="hover:bg-gray-50 transition-colors group">
-                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
-                        <div className="max-w-[150px] truncate">
-                          {incident.title}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-500">
-                        <div className="max-w-[140px] truncate">
-                          {incident.property_name}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
-                          {getLabel(incident.category)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4">
-                        <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap ${
-                            incident.status === "resolved"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
+          {/* Contenedor con scroll horizontal para móvil */}
+          <div className="overflow-x-auto rounded-lg border border-gray-200 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+            {/* Contenedor con scroll vertical */}
+            <div className={`overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
+              filteredIncidents.length > 8 ? 'max-h-96' : 'max-h-none'
+            }`}>
+              <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
+                <thead className="bg-gray-50 sticky top-0 z-10">
+                  <tr className="divide-x divide-gray-200">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '280px', width: '40%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.title", fallbackLabels.tableTitle)}
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '120px', width: '16%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '100px', width: '12%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '85px', width: '10%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '110px', width: '12%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.phoneNumber", fallbackLabels.tablePhone)}
+                      </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '85px', width: '10%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        {getText("dashboard.incidents.table.date", fallbackLabels.tableDate)}
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredIncidents.length > 0 ? (
+                    filteredIncidents.map((incident) => (
+                      <tr key={incident.id} className="hover:bg-gray-50 transition-colors group divide-x divide-gray-200">
+                        <td 
+                          className="px-4 py-4 text-sm font-medium text-gray-900 text-left"
+                          style={{ minWidth: '280px', width: '40%' }}
                         >
-                          {getStatusLabel(incident.status)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-500">
-                        <div className="max-w-[140px] truncate">
-                          {incident.phone_number || "N/A"}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {incident.date ? new Date(incident.date).toLocaleDateString() : "N/A"}
+                          <div className="line-clamp-2 leading-tight text-left" title={incident.title}>
+                            {incident.title}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '120px', width: '16%' }}
+                        >
+                          <div className="truncate text-left" title={incident.property_name}>
+                            {incident.property_name}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-left"
+                          style={{ minWidth: '100px', width: '12%' }}
+                        >
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
+                            {getLabel(incident.category)}
+                          </span>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-left"
+                          style={{ minWidth: '85px', width: '10%' }}
+                        >
+                          <span
+                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap ${
+                              incident.status === "resolved"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {getStatusLabel(incident.status)}
+                          </span>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '110px', width: '12%' }}
+                        >
+                          <div className="truncate text-left">
+                            {incident.phone_number || "N/A"}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left whitespace-nowrap"
+                          style={{ minWidth: '85px', width: '10%' }}
+                        >
+                          {incident.date ? new Date(incident.date).toLocaleDateString() : "N/A"}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-8 text-center text-sm text-gray-500"
+                      >
+                        {hasActiveFilters 
+                          ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} con los filtros seleccionados`
+                          : getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)
+                        }
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="px-4 py-8 text-center text-sm text-gray-500"
-                    >
-                      {hasActiveFilters 
-                        ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} con los filtros seleccionados`
-                        : getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)
-                      }
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </main>

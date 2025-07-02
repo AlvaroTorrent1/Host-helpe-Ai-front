@@ -50,6 +50,32 @@ export interface MediaGallery {
 }
 
 /**
+ * Media file for messaging interface
+ */
+export interface MediaFileForMessaging {
+  id: string;
+  url: string;
+  category: string;
+  subcategory: string;
+  title: string;
+  file_type: 'image' | 'document';
+  file_size?: number;
+  mime_type?: string;
+}
+
+/**
+ * Property media summary interface
+ */
+export interface PropertyMediaSummary {
+  property_id: string;
+  property_name: string;
+  images: MediaFileForMessaging[];
+  documents: MediaFileForMessaging[];
+  total_count: number;
+  messaging_ready: boolean;
+}
+
+/**
  * Ensure the media bucket exists
  */
 const ensureBucket = async (): Promise<void> => {
@@ -378,6 +404,263 @@ export const debouncedOptimizeImage = (() => {
   };
 })();
 
+/**
+ * Obtener todas las URLs de medios para una propiedad específica
+ * Optimizado para envío por mensajería
+ */
+export const getPropertyMediaForMessaging = async (propertyId: string): Promise<PropertyMediaSummary | null> => {
+  try {
+    // Obtener información de la propiedad
+    const { data: property } = await supabase
+      .from('properties')
+      .select('name')
+      .eq('id', propertyId)
+      .single();
+
+    if (!property) {
+      console.error('Propiedad no encontrada:', propertyId);
+      return null;
+    }
+
+    // Obtener todos los archivos multimedia
+    const { data: mediaFiles, error } = await supabase
+      .from('media_files')
+      .select(`
+        id,
+        file_type,
+        category,
+        subcategory,
+        title,
+        public_url,
+        file_size,
+        mime_type
+      `)
+      .eq('property_id', propertyId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error obteniendo archivos multimedia:', error);
+      return null;
+    }
+
+    // Separar imágenes y documentos
+    const images: MediaFileForMessaging[] = [];
+    const documents: MediaFileForMessaging[] = [];
+
+    mediaFiles?.forEach(file => {
+      const mediaFile: MediaFileForMessaging = {
+        id: file.id,
+        url: file.public_url,
+        category: file.category,
+        subcategory: file.subcategory || '',
+        title: file.title,
+        file_type: file.file_type as 'image' | 'document',
+        file_size: file.file_size,
+        mime_type: file.mime_type
+      };
+
+      if (file.file_type === 'image') {
+        images.push(mediaFile);
+      } else {
+        documents.push(mediaFile);
+      }
+    });
+
+    return {
+      property_id: propertyId,
+      property_name: property.name,
+      images,
+      documents,
+      total_count: mediaFiles?.length || 0,
+      messaging_ready: true
+    };
+
+  } catch (error) {
+    console.error('Error en getPropertyMediaForMessaging:', error);
+    return null;
+  }
+};
+
+/**
+ * Obtener URLs de imágenes por categoría específica
+ * Útil para enviar tipos específicos de imágenes
+ */
+export const getImagesByCategory = async (propertyId: string, subcategory: string): Promise<MediaFileForMessaging[]> => {
+  try {
+    const { data: images } = await supabase
+      .from('media_files')
+      .select(`
+        id,
+        category,
+        subcategory,
+        title,
+        public_url,
+        file_size,
+        mime_type
+      `)
+      .eq('property_id', propertyId)
+      .eq('file_type', 'image')
+      .eq('subcategory', subcategory)
+      .order('created_at', { ascending: true });
+
+    return images?.map(img => ({
+      id: img.id,
+      url: img.public_url,
+      category: img.category,
+      subcategory: img.subcategory || '',
+      title: img.title,
+      file_type: 'image',
+      file_size: img.file_size,
+      mime_type: img.mime_type
+    })) || [];
+
+  } catch (error) {
+    console.error('Error obteniendo imágenes por categoría:', error);
+    return [];
+  }
+};
+
+/**
+ * Formatear URLs para mensajería WhatsApp
+ * WhatsApp acepta URLs públicas directas
+ */
+export const formatForWhatsApp = (mediaFiles: MediaFileForMessaging[]): string[] => {
+  return mediaFiles
+    .filter(file => file.url && file.url.length > 0)
+    .map(file => file.url);
+};
+
+/**
+ * Formatear URLs para mensajería Telegram
+ * Telegram también acepta URLs públicas directas
+ */
+export const formatForTelegram = (mediaFiles: MediaFileForMessaging[]): Array<{url: string, caption: string}> => {
+  return mediaFiles
+    .filter(file => file.url && file.url.length > 0)
+    .map(file => ({
+      url: file.url,
+      caption: `${file.title} (${file.subcategory})`
+    }));
+};
+
+/**
+ * Generar resumen de medios para mensajería
+ * Útil para crear mensajes descriptivos
+ */
+export const generateMediaSummary = (summary: PropertyMediaSummary): string => {
+  const imageCategories = summary.images.reduce((acc, img) => {
+    acc[img.subcategory] = (acc[img.subcategory] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const docCategories = summary.documents.reduce((acc, doc) => {
+    acc[doc.subcategory] = (acc[doc.subcategory] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  let message = `📸 *${summary.property_name}*\n\n`;
+  
+  if (summary.images.length > 0) {
+    message += `🏠 **Imágenes (${summary.images.length}):**\n`;
+    Object.entries(imageCategories).forEach(([category, count]) => {
+      message += `   • ${category}: ${count} foto${count > 1 ? 's' : ''}\n`;
+    });
+    message += '\n';
+  }
+
+  if (summary.documents.length > 0) {
+    message += `📄 **Documentos (${summary.documents.length}):**\n`;
+    Object.entries(docCategories).forEach(([category, count]) => {
+      message += `   • ${category}: ${count} archivo${count > 1 ? 's' : ''}\n`;
+    });
+  }
+
+  return message;
+};
+
+/**
+ * Verificar si las URLs están accesibles
+ * Útil para validar antes de enviar por mensajería
+ */
+export const validateMediaUrls = async (mediaFiles: MediaFileForMessaging[]): Promise<{
+  valid: MediaFileForMessaging[];
+  invalid: MediaFileForMessaging[];
+}> => {
+  const valid: MediaFileForMessaging[] = [];
+  const invalid: MediaFileForMessaging[] = [];
+
+  for (const file of mediaFiles) {
+    try {
+      const response = await fetch(file.url, { method: 'HEAD' });
+      if (response.ok) {
+        valid.push(file);
+      } else {
+        invalid.push(file);
+      }
+    } catch (error) {
+      console.error(`URL no accesible: ${file.url}`, error);
+      invalid.push(file);
+    }
+  }
+
+  return { valid, invalid };
+};
+
+/**
+ * Obtener URLs de imágenes destacadas para vista previa
+ * Selecciona las mejores imágenes para mostrar primero
+ */
+export const getFeaturedImages = async (propertyId: string, limit: number = 5): Promise<MediaFileForMessaging[]> => {
+  try {
+    // Priorizar imágenes exteriores y de sala de estar
+    const priorityCategories = ['Exterior', 'Sala de estar', 'Dormitorio', 'Cocina', 'Baño'];
+    
+    const { data: images } = await supabase
+      .from('media_files')
+      .select(`
+        id,
+        category,
+        subcategory,
+        title,
+        public_url,
+        file_size,
+        mime_type
+      `)
+      .eq('property_id', propertyId)
+      .eq('file_type', 'image')
+      .limit(limit * 2); // Obtener más para poder filtrar
+
+    if (!images) return [];
+
+    // Ordenar por prioridad de categoría
+    const sortedImages = images.sort((a, b) => {
+      const aPriority = priorityCategories.indexOf(a.subcategory || '') + 1;
+      const bPriority = priorityCategories.indexOf(b.subcategory || '') + 1;
+      
+      // Si no está en la lista de prioridades, asignar prioridad baja
+      const aScore = aPriority === 0 ? 99 : aPriority;
+      const bScore = bPriority === 0 ? 99 : bPriority;
+      
+      return aScore - bScore;
+    });
+
+    return sortedImages.slice(0, limit).map(img => ({
+      id: img.id,
+      url: img.public_url,
+      category: img.category,
+      subcategory: img.subcategory || '',
+      title: img.title,
+      file_type: 'image',
+      file_size: img.file_size,
+      mime_type: img.mime_type
+    }));
+
+  } catch (error) {
+    console.error('Error obteniendo imágenes destacadas:', error);
+    return [];
+  }
+};
+
 // Export service as a unified object
 const mediaService = {
   initMediaService,
@@ -386,7 +669,14 @@ const mediaService = {
   getMediaById,
   deleteMedia,
   optimizeImage,
-  debouncedOptimizeImage
+  debouncedOptimizeImage,
+  getPropertyMediaForMessaging,
+  getImagesByCategory,
+  formatForWhatsApp,
+  formatForTelegram,
+  generateMediaSummary,
+  validateMediaUrls,
+  getFeaturedImages
 };
 
 export default mediaService;

@@ -6,6 +6,7 @@ import {
   ReservationStatus,
 } from "../../types/reservation";
 import { Property } from "../../types/property";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 
 interface ReservationFormProps {
   reservation?: Reservation;
@@ -22,6 +23,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   onCancel,
   isSubmitting,
 }) => {
+  const { t } = useLanguage();
   // Estado para los datos del formulario
   const [formData, setFormData] = useState<ReservationCreateData>({
     propertyId: "",
@@ -30,8 +32,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       lastName: "",
       email: "", // Mantenemos en el tipo pero no en la UI
       phone: "",
-      documentType: "dni",
-      documentNumber: "",
       birthDate: "",
       nationality: "ES",
     },
@@ -65,8 +65,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           lastName: g.lastName,
           email: g.email,
           phone: g.phone || "",
-          documentType: g.documentType,
-          documentNumber: g.documentNumber,
           birthDate: g.birthDate,
           nationality: g.nationality,
         }));
@@ -79,8 +77,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             lastName: mainGuest.lastName,
             email: mainGuest.email,
             phone: mainGuest.phone || "",
-            documentType: mainGuest.documentType,
-            documentNumber: mainGuest.documentNumber,
             birthDate: mainGuest.birthDate,
             nationality: mainGuest.nationality,
           },
@@ -149,8 +145,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         lastName: "",
         email: "",
         phone: "",
-        documentType: "dni",
-        documentNumber: "",
         birthDate: "",
         nationality: "ES", // Española por defecto
       },
@@ -214,10 +208,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
 
 
-    if (!formData.mainGuest.documentNumber.trim()) {
-      newErrors["mainGuest.documentNumber"] =
-        "El número de documento es obligatorio";
-    }
+
 
 
 
@@ -235,10 +226,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         newErrors[`guest[${index}].lastName`] = "El apellido es obligatorio";
       }
 
-      if (!guest.documentNumber.trim()) {
-        newErrors[`guest[${index}].documentNumber`] =
-          "El número de documento es obligatorio";
-      }
+
 
 
     });
@@ -469,7 +457,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         {/* Sección: Información de la reserva */}
         <div>
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-            Información de la reserva
+            {t("dashboard.reservations.reservationInformation")}
           </h3>
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             {/* Selección de propiedad */}
@@ -478,7 +466,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="propertyId"
                 className="block text-sm font-medium text-gray-700"
               >
-                Propiedad *
+{t("dashboard.reservations.form.property")} *
               </label>
               <select
                 id="propertyId"
@@ -489,7 +477,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   getError("propertyId") ? "border-red-300" : ""
                 }`}
               >
-                <option value="">Selecciona una propiedad</option>
+                <option value="">{t("dashboard.reservations.form.selectProperty")}</option>
                 {properties.map((property) => (
                   <option key={property.id} value={property.id}>
                     {property.name}
@@ -511,7 +499,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="checkInDate"
                 className="block text-sm font-medium text-gray-700"
               >
-                Fecha de entrada *
+{t("dashboard.reservations.form.checkInDate")} *
               </label>
               <input
                 type="date"
@@ -536,7 +524,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="checkOutDate"
                 className="block text-sm font-medium text-gray-700"
               >
-                Fecha de salida *
+{t("dashboard.reservations.form.checkOutDate")} *
               </label>
               <input
                 type="date"
@@ -563,7 +551,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="notes"
                 className="block text-sm font-medium text-gray-700"
               >
-                Notas
+{t("dashboard.reservations.form.notes")}
               </label>
               <textarea
                 id="notes"
@@ -571,7 +559,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 rows={3}
                 value={formData.notes || ""}
                 onChange={handleChange}
-                placeholder="Información adicional sobre la reserva..."
+                placeholder={t("dashboard.reservations.form.notesPlaceholder")}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               />
             </div>
@@ -581,7 +569,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         {/* Sección: Huésped principal */}
         <div>
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-            Huésped principal
+            {t("dashboard.reservations.mainGuest")}
           </h3>
           <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             {/* Nombre */}
@@ -590,7 +578,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="mainGuest.firstName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Nombre *
+                {t("dashboard.reservations.form.firstName")} *
               </label>
               <input
                 type="text"
@@ -615,7 +603,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="mainGuest.lastName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Apellidos *
+                {t("dashboard.reservations.form.lastName")} *
               </label>
               <input
                 type="text"
@@ -642,7 +630,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="mainGuest.phone"
                 className="block text-sm font-medium text-gray-700"
               >
-                Teléfono
+                {t("dashboard.reservations.form.phone")}
               </label>
               <input
                 type="tel"
@@ -654,51 +642,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               />
             </div>
 
-            {/* Tipo de documento */}
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="mainGuest.documentType"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Tipo de documento *
-              </label>
-              <select
-                id="mainGuest.documentType"
-                name="mainGuest.documentType"
-                value={formData.mainGuest.documentType}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              >
-                <option value="dni">DNI</option>
-                <option value="passport">Pasaporte</option>
-                <option value="other">Otro</option>
-              </select>
-            </div>
 
-            {/* Número de documento */}
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="mainGuest.documentNumber"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Número de documento *
-              </label>
-              <input
-                type="text"
-                name="mainGuest.documentNumber"
-                id="mainGuest.documentNumber"
-                value={formData.mainGuest.documentNumber}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError("mainGuest.documentNumber") ? "border-red-300" : ""
-                }`}
-              />
-              {getError("mainGuest.documentNumber") && (
-                <p className="mt-2 text-sm text-red-600">
-                  {getError("mainGuest.documentNumber")}
-                </p>
-              )}
-            </div>
 
             {/* Nacionalidad */}
             <div className="sm:col-span-2">
@@ -706,7 +650,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 htmlFor="mainGuest.nationality"
                 className="block text-sm font-medium text-gray-700"
               >
-                Nacionalidad *
+                {t("dashboard.reservations.form.nationality")} *
               </label>
               <select
                 name="mainGuest.nationality"
@@ -717,7 +661,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   getError("mainGuest.nationality") ? "border-red-300" : ""
                 }`}
               >
-                <option value="">Selecciona nacionalidad</option>
+                <option value="">{t("dashboard.reservations.form.selectNationality")}</option>
                 {nationalityOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -739,7 +683,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Huéspedes adicionales
+              {t("dashboard.reservations.additionalGuests")}
             </h3>
             <button
               type="button"
@@ -759,13 +703,13 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Añadir huésped
+{t("dashboard.reservations.addGuest")}
             </button>
           </div>
 
           {additionalGuests.length === 0 ? (
             <p className="text-sm text-gray-500 italic mb-4">
-              No hay huéspedes adicionales
+              {t("dashboard.reservations.noAdditionalGuests")}
             </p>
           ) : (
             additionalGuests.map((guest, index) => (
@@ -775,7 +719,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               >
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-md font-medium text-gray-900">
-                    Huésped {index + 1}
+                    {t("dashboard.reservations.guestNumber")} {index + 1}
                   </h4>
                   <button
                     type="button"
@@ -802,7 +746,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   {/* Nombre */}
                   <div className="sm:col-span-3">
                     <label className="block text-sm font-medium text-gray-700">
-                      Nombre *
+                      {t("dashboard.reservations.form.firstName")} *
                     </label>
                     <input
                       type="text"
@@ -826,7 +770,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   {/* Apellidos */}
                   <div className="sm:col-span-3">
                     <label className="block text-sm font-medium text-gray-700">
-                      Apellidos *
+                      {t("dashboard.reservations.form.lastName")} *
                     </label>
                     <input
                       type="text"
@@ -850,7 +794,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   {/* Teléfono */}
                   <div className="sm:col-span-3">
                     <label className="block text-sm font-medium text-gray-700">
-                      Teléfono
+                      {t("dashboard.reservations.form.phone")}
                     </label>
                     <input
                       type="tel"
@@ -862,60 +806,12 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                     />
                   </div>
 
-                  {/* Tipo de documento */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Tipo de documento *
-                    </label>
-                    <select
-                      value={guest.documentType}
-                      onChange={(e) =>
-                        handleGuestChange(
-                          index,
-                          "documentType",
-                          e.target.value as "dni" | "passport" | "other",
-                        )
-                      }
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                    >
-                      <option value="dni">DNI</option>
-                      <option value="passport">Pasaporte</option>
-                      <option value="other">Otro</option>
-                    </select>
-                  </div>
 
-                  {/* Número de documento */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Número de documento *
-                    </label>
-                    <input
-                      type="text"
-                      value={guest.documentNumber}
-                      onChange={(e) =>
-                        handleGuestChange(
-                          index,
-                          "documentNumber",
-                          e.target.value,
-                        )
-                      }
-                      className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                        getError(`guest[${index}].documentNumber`)
-                          ? "border-red-300"
-                          : ""
-                      }`}
-                    />
-                    {getError(`guest[${index}].documentNumber`) && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {getError(`guest[${index}].documentNumber`)}
-                      </p>
-                    )}
-                  </div>
 
                   {/* Nacionalidad */}
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Nacionalidad *
+                      {t("dashboard.reservations.form.nationality")} *
                     </label>
                     <select
                       value={guest.nationality}
@@ -924,7 +820,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                       }
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     >
-                      <option value="">Selecciona nacionalidad</option>
+                      <option value="">{t("dashboard.reservations.form.selectNationality")}</option>
                       {nationalityOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
@@ -948,18 +844,18 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
           onClick={onCancel}
           className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
-          Cancelar
+{t("dashboard.reservations.cancel")}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
         >
-          {isSubmitting
-            ? "Guardando..."
+{isSubmitting
+            ? t("dashboard.reservations.saving")
             : reservation
-              ? "Actualizar reserva"
-              : "Crear reserva"}
+              ? t("dashboard.reservations.updateReservation")
+              : t("dashboard.reservations.createReservation")}
         </button>
       </div>
     </form>

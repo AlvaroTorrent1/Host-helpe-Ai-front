@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Property, PropertyDocument } from "../../types/property";
 import propertyService from "../../services/propertyService";
+import propertyWebhookService from "../../services/propertyWebhookService";
+import { webhookTestService } from "../../services/webhookTestService";
 import { updateTempDocumentsPropertyId } from "../../services/documentService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { MessagingUrlsPanel } from "./components/MessagingUrlsPanel";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
 interface PropertyFormData extends Omit<Property, "id"> {
@@ -57,6 +60,14 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [, setSaveError] = useState<string | null>(null);
+  
+  // Estado para feedback de progreso del webhook
+  const [progressPhase, setProgressPhase] = useState<string>('');
+  const [progressPercent, setProgressPercent] = useState<number>(0);
+  const [useWebhook, setUseWebhook] = useState<boolean>(true); // Usar webhook por defecto
+  
+  // Estado para panel de URLs de mensajería
+  const [showMessagingPanel, setShowMessagingPanel] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const isEditing = !!propertyId;
@@ -89,11 +100,16 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
     try {
       setIsSubmitting(true);
       setSaveError(null);
+      setProgressPhase('');
+      setProgressPercent(0);
 
       let savedProperty: Property;
 
-      // Modo edición: actualizar propiedad existente
+      // Modo edición: actualizar propiedad existente (siempre directo a Supabase)
       if (property && property.id) {
+        setProgressPhase('Actualizando propiedad...');
+        setProgressPercent(50);
+        
         const { data, error } = await supabase
           .from("properties")
           .update({
@@ -116,85 +132,231 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
         if (error) throw error;
         savedProperty = data as unknown as Property;
+        
+        setProgressPhase('Procesando documentos...');
+        setProgressPercent(75);
+        
+        // Procesar documentos temporales si existen
+        if (
+          propertyData.documents &&
+          propertyData.documents.some(
+            (doc: PropertyDocument) => doc.property_id === "temp",
+          )
+        ) {
+          const updatedDocs = await updateTempDocumentsPropertyId(
+            savedProperty.id,
+          );
+
+          if (updatedDocs.length > 0) {
+            const allDocuments = [
+              ...(savedProperty.documents || []),
+              ...updatedDocs,
+            ];
+
+            const { data: updatedProperty, error: updateError } = await supabase
+              .from("properties")
+              .update({
+                documents: allDocuments,
+              })
+              .eq("id", savedProperty.id)
+              .select()
+              .single();
+
+            if (updateError) throw updateError;
+            savedProperty = updatedProperty as unknown as Property;
+          }
+        }
       }
-      // Modo creación: crear nueva propiedad
+      // Modo creación: elegir entre webhook n8n o directo Supabase
       else {
-        const { data, error } = await supabase
-          .from("properties")
-          .insert({
-            user_id: user?.id,
-            name: propertyData.name,
-            address: propertyData.address,
-            city: propertyData.city,
-            state: propertyData.state,
-            postal_code: propertyData.postal_code,
-            country: propertyData.country,
-            property_type: propertyData.property_type,
-            num_bedrooms: propertyData.num_bedrooms,
-            num_bathrooms: propertyData.num_bathrooms,
-            max_guests: propertyData.max_guests,
-            description: propertyData.description || "",
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-          .select()
-          .single();
+        const hasFiles = (propertyData.additional_images?.length || 0) > 0 || 
+                        (propertyData.documents?.length || 0) > 0;
+        
+        // Usar webhook si tiene archivos y la opción está habilitada
+        if (useWebhook && hasFiles) {
+          console.log('🚀 Usando webhook n8n para procesamiento inteligente de archivos');
+          
+          // Callback para mostrar progreso al usuario
+          const onProgress = (phase: string, progress: number) => {
+            setProgressPhase(phase);
+            setProgressPercent(progress);
+          };
+          
+          try {
+            // Organizar archivos por categoría para el webhook
+            const organizedFiles = {
+              interni: propertyData.additional_images?.filter(img => 
+                img.description?.toLowerCase().includes('interior') || 
+                img.description?.toLowerCase().includes('sala') ||
+                img.description?.toLowerCase().includes('cocina')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                description: img.description || ''
+              })) || [],
+              esterni: propertyData.additional_images?.filter(img => 
+                img.description?.toLowerCase().includes('exterior') ||
+                img.description?.toLowerCase().includes('fachada') ||
+                img.description?.toLowerCase().includes('terraza')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                description: img.description || ''
+              })) || [],
+              elettrodomestici_foto: propertyData.additional_images?.filter(img => 
+                img.description?.toLowerCase().includes('electrodomestico') ||
+                img.description?.toLowerCase().includes('nevera') ||
+                img.description?.toLowerCase().includes('lavadora')
+              ).map(img => ({
+                filename: img.description || 'image.jpg',
+                url: img.file_url,
+                type: 'image/jpeg',
+                description: img.description || ''
+              })) || [],
+              documenti_casa: propertyData.documents?.filter(doc => 
+                doc.name?.toLowerCase().includes('contrato') ||
+                doc.name?.toLowerCase().includes('plano')
+              ).map(doc => ({
+                filename: doc.name || 'document.pdf',
+                url: doc.file_url,
+                type: 'application/pdf',
+                description: doc.description || doc.name || ''
+              })) || [],
+              documenti_elettrodomestici: propertyData.documents?.filter(doc => 
+                doc.name?.toLowerCase().includes('manual') ||
+                doc.name?.toLowerCase().includes('garantia')
+              ).map(doc => ({
+                filename: doc.name || 'document.pdf',
+                url: doc.file_url,
+                type: 'application/pdf',
+                description: doc.description || doc.name || ''
+              })) || []
+            };
 
-        if (error) throw error;
-        savedProperty = data as unknown as Property;
-      }
-
-      // Procesar documentos temporales si existen
-      if (
-        propertyData.documents &&
-        propertyData.documents.some(
-          (doc: PropertyDocument) => doc.property_id === "temp",
-        )
-      ) {
-        const updatedDocs = await updateTempDocumentsPropertyId(
-          savedProperty.id,
-        );
-
-        if (updatedDocs.length > 0) {
-          // Combinar los documentos existentes con los nuevos
-          const allDocuments = [
-            ...(savedProperty.documents || []),
-            ...updatedDocs,
-          ];
-
-          // Actualizar la propiedad con los nuevos documentos
-          const { data: updatedProperty, error: updateError } = await supabase
-            .from("properties")
-            .update({
-              documents: allDocuments,
-            })
-            .eq("id", savedProperty.id)
-            .select()
-            .single();
-
-          if (updateError) throw updateError;
-          savedProperty = updatedProperty as unknown as Property;
+            // Crear propiedad vía webhook n8n
+            const result = await propertyWebhookService.processPropertyWithWebhook(
+              propertyData, 
+              organizedFiles,
+              { onProgress }
+            );
+            
+            savedProperty = { 
+              ...propertyData, 
+              id: result.property_id 
+            } as Property;
+            
+            console.log('✅ Propiedad creada exitosamente vía webhook:', savedProperty.id);
+            
+          } catch (webhookError) {
+            console.warn('⚠️ Webhook falló, fallback a método directo:', webhookError);
+            toast('El procesamiento inteligente no está disponible. Usando método estándar...', { 
+              icon: '⚠️',
+              duration: 3000 
+            });
+            
+            // Fallback: crear directamente en Supabase
+            savedProperty = await createPropertyDirectly(propertyData);
+          }
+        } else {
+          console.log('📝 Usando creación directa (sin archivos o webhook deshabilitado)');
+          
+          // Crear directamente en Supabase
+          savedProperty = await createPropertyDirectly(propertyData);
         }
       }
 
       // Guardar la propiedad actualizada en el estado
       setProperty(savedProperty);
+      setProgressPhase('Completado');
+      setProgressPercent(100);
 
       // Mostrar mensaje de éxito
-      toast.success(t("properties.saveSuccess"));
+      toast.success(isEditing ? "Propiedad actualizada correctamente" : "Propiedad creada correctamente");
 
       // Redireccionar después de un breve retraso
       setTimeout(() => {
         navigate("/properties");
       }, 1500);
+      
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       setSaveError(errorMessage);
-      toast.error(t("properties.saveError"));
+      toast.error(`Error: ${errorMessage}`);
+      console.error('❌ Error saving property:', error);
     } finally {
       setIsSubmitting(false);
+      setProgressPhase('');
+      setProgressPercent(0);
     }
+  };
+
+  // Función auxiliar para crear propiedad directamente en Supabase
+  const createPropertyDirectly = async (propertyData: PropertyFormData): Promise<Property> => {
+    setProgressPhase('Creando propiedad...');
+    setProgressPercent(30);
+    
+    const { data, error } = await supabase
+      .from("properties")
+      .insert({
+        user_id: user?.id,
+        name: propertyData.name,
+        address: propertyData.address,
+        city: propertyData.city,
+        state: propertyData.state,
+        postal_code: propertyData.postal_code,
+        country: propertyData.country,
+        property_type: propertyData.property_type,
+        num_bedrooms: propertyData.num_bedrooms,
+        num_bathrooms: propertyData.num_bathrooms,
+        max_guests: propertyData.max_guests,
+        description: propertyData.description || "",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    
+    let savedProperty = data as unknown as Property;
+    
+    setProgressPhase('Procesando documentos...');
+    setProgressPercent(70);
+
+    // Procesar documentos temporales si existen
+    if (
+      propertyData.documents &&
+      propertyData.documents.some(
+        (doc: PropertyDocument) => doc.property_id === "temp",
+      )
+    ) {
+      const updatedDocs = await updateTempDocumentsPropertyId(
+        savedProperty.id,
+      );
+
+      if (updatedDocs.length > 0) {
+        const allDocuments = [
+          ...(savedProperty.documents || []),
+          ...updatedDocs,
+        ];
+
+        const { data: updatedProperty, error: updateError } = await supabase
+          .from("properties")
+          .update({
+            documents: allDocuments,
+          })
+          .eq("id", savedProperty.id)
+          .select()
+          .single();
+
+        if (updateError) throw updateError;
+        savedProperty = updatedProperty as unknown as Property;
+      }
+    }
+    
+    return savedProperty;
   };
 
   // Manejar cancelación
@@ -220,9 +382,106 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         {isEditing ? "Editar propiedad" : "Añadir propiedad"}
       </h2>
 
+      {/* Toggle para webhook n8n (solo en modo creación) */}
+      {!isEditing && (
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                checked={useWebhook}
+                onChange={(e) => setUseWebhook(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-blue-600"
+              />
+              <div>
+                <span className="text-sm font-medium text-gray-900">
+                  🤖 Procesamiento Inteligente con IA
+                </span>
+                <p className="text-xs text-gray-600">
+                  Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram
+                </p>
+              </div>
+            </label>
+            
+            {/* Botones de prueba del webhook (solo en desarrollo) */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="flex space-x-2">
+                <button
+                  onClick={async () => {
+                    const isHealthy = await propertyWebhookService.checkWebhookHealth();
+                    toast(isHealthy ? 
+                      '✅ Webhook n8n funcionando correctamente' : 
+                      '❌ Webhook n8n no disponible', 
+                      { duration: 3000 }
+                    );
+                  }}
+                  className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                >
+                  🔧 Test Salud
+                </button>
+                
+                <button
+                  onClick={async () => {
+                    try {
+                      toast('🧪 Ejecutando test completo...', { duration: 2000 });
+                      await webhookTestService.runFullTest();
+                      toast('✅ Test completo exitoso - Revisa la consola para detalles', { duration: 5000 });
+                    } catch (error) {
+                      console.error('Error en test:', error);
+                      toast('❌ Test falló - Revisa la consola para detalles', { duration: 5000 });
+                    }
+                  }}
+                  className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
+                >
+                  🧪 Test Completo
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
           {error}
+        </div>
+      )}
+
+      {/* Indicador de progreso durante el procesamiento */}
+      {isSubmitting && (progressPhase || progressPercent > 0) && (
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-blue-900">
+              {progressPhase || 'Procesando...'}
+            </span>
+            <span className="text-sm text-blue-600">
+              {progressPercent}%
+            </span>
+          </div>
+          <div className="w-full bg-blue-200 rounded-full h-2">
+            <div 
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progressPercent}%` }}
+            ></div>
+          </div>
+          {useWebhook && progressPercent > 0 && progressPercent < 100 && (
+            <p className="text-xs text-blue-600 mt-1">
+              ⚡ Sistema inteligente procesando archivos...
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Botón para mostrar URLs para mensajería (solo en modo edición) */}
+      {isEditing && property && (
+        <div className="mb-6">
+          <button
+            onClick={() => setShowMessagingPanel(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center space-x-2"
+          >
+            <span>📱</span>
+            <span>Ver URLs para Mensajería</span>
+          </button>
         </div>
       )}
 
@@ -232,6 +491,19 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         onCancel={handleCancel}
         isSubmitting={isSubmitting}
       />
+
+      {/* Panel de URLs para mensajería */}
+      {showMessagingPanel && property && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <MessagingUrlsPanel
+              propertyId={property.id}
+              propertyName={property.name}
+              onClose={() => setShowMessagingPanel(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

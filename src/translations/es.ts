@@ -595,6 +595,41 @@ export const es = {
       view: "Ver reservas",
       emptyState: "No hay reservas",
       emptyStateDescription: "Gestiona todas las reservas de tus alojamientos desde aquí. Crea reservas manualmente para que nuestros agentes de IA tengan toda la información necesaria para atender a tus huéspedes de forma personalizada.",
+      newReservation: "Nueva reserva",
+      editReservation: "Editar reserva",
+      reservationInformation: "Información de la reserva",
+      mainGuest: "Huésped principal",
+      additionalGuests: "Huéspedes adicionales",
+      addGuest: "Añadir huésped",
+      guestNumber: "Huésped",
+      noAdditionalGuests: "No hay huéspedes adicionales",
+      backToReservations: "Volver a reservas",
+      cancel: "Cancelar",
+      saving: "Guardando...",
+      createReservation: "Crear reserva",
+      updateReservation: "Actualizar reserva",
+      reservationsTitle: "Reservas",
+      reservationDetails: "Detalles de reserva",
+      form: {
+        property: "Propiedad",
+        selectProperty: "Selecciona una propiedad",
+        checkInDate: "Fecha de entrada",
+        checkOutDate: "Fecha de salida",
+        notes: "Notas",
+        notesPlaceholder: "Información adicional sobre la reserva...",
+        firstName: "Nombre",
+        lastName: "Apellidos",
+        phone: "Teléfono",
+        documentType: "Tipo de documento",
+        documentNumber: "Número de documento",
+        nationality: "Nacionalidad",
+        selectNationality: "Selecciona nacionalidad",
+        documentTypes: {
+          dni: "DNI",
+          passport: "Pasaporte",
+          other: "Otro"
+        }
+      },
       actions: {
         create: "Nueva Reserva",
         edit: "Editar",
@@ -617,7 +652,8 @@ export const es = {
         loadingData: "Error al cargar los datos. Por favor, inténtalo de nuevo más tarde.",
         saving: "Error al guardar la reserva. Por favor, inténtalo de nuevo.",
         deleting: "Error al eliminar la reserva. Por favor, inténtalo de nuevo.",
-        sendingToSES: "Error al enviar datos al SES. Por favor, inténtalo de nuevo más tarde."
+        sendingToSES: "Error al enviar datos al SES. Por favor, inténtalo de nuevo más tarde.",
+        reservationNotFound: "Reserva no encontrada."
       },
       mockNotes: {
         confirmed: "Llegan tarde, después de las 8pm.",

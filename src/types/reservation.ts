@@ -13,8 +13,6 @@ export interface Guest {
   lastName: string;
   email: string;
   phone?: string;
-  documentType: "dni" | "passport" | "other";
-  documentNumber: string;
   birthDate: string; // formato ISO: YYYY-MM-DD
   nationality: string;
   sesSent?: boolean; // Si los datos se han enviado al sistema SES
@@ -43,7 +41,6 @@ export interface Reservation {
 // Filtros para la búsqueda de reservas
 export interface ReservationFilters {
   propertyId?: string;
-  status?: ReservationStatus | "all";
   startDate?: string; // fecha desde
   endDate?: string; // fecha hasta
   searchTerm?: string; // búsqueda por nombre/email del huésped, etc.
