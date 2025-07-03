@@ -27,13 +27,21 @@ type Reservation = {
   property_name: string;
 };
 
-// Tipos de categorías de incidencias según el PRD
+// Tipos de categorías de incidencias - valores reales de Supabase
 type IncidentCategory =
-  | "check-in-out"
-  | "property-issue"
-  | "tourist-info"
-  | "emergency"
-  | "other";
+  | "Check-in"
+  | "Conversation Summary"
+  | "Property Info"
+  | "Property Information"
+  | "Property Issue"
+  | "Propriety Issue"  // typo en DB
+  | "Propriety Info"   // typo en DB
+  | "Reservation Issue"
+  | "Restaurant Recommendation"
+  | "Richiesta immagini"  // italiano
+  | "Tourist Information"
+  | "emergency"   // futuras categorías
+  | "other"       // futuras categorías
 
 type Incident = {
   id: string;
@@ -42,9 +50,10 @@ type Incident = {
   status: "resolved" | "pending";
   property_id: string;
   property_name: string;
-  category: IncidentCategory;
+  category: string;  // Flexible para manejar cualquier categoría de DB
   description?: string;
   phone_number?: string;
+  conversation_body?: string;  // Transcripción completa de la conversación
 };
 
 const DashboardPage: React.FC = () => {
@@ -54,12 +63,20 @@ const DashboardPage: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<
-    IncidentCategory | "all"
-  >("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Nuevo estado para propiedad seleccionada
   const [selectedProperty, setSelectedProperty] = useState<string | "all">("all");
+  
+  // Nuevo estado para filtro por estado
+  const [selectedStatus, setSelectedStatus] = useState<string | "all">("all");
+  
+  // Estados para modal de conversación
+  const [selectedConversation, setSelectedConversation] = useState<{
+    title: string;
+    body: string;
+  } | null>(null);
+  const [isConversationModalOpen, setIsConversationModalOpen] = useState(false);
   
   // Estado para controlar si mostrar todas las incidencias o solo las 10 recientes
 
@@ -68,83 +85,138 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener usuario actual
-        const { data: userData } = await supabase.auth.getUser();
-        console.log("Current user data:", userData);
+        // Verificar sesión activa primero
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
-        if (userData?.user) {
-          console.log("User ID:", userData.user.id);
-          
-          // Obtener propiedades del usuario
-          const { data: propertiesData, error: propertiesError } = await supabase
-            .from('properties')
-            .select('*')
-            .eq('user_id', userData.user.id);
-          
-          console.log("Properties data:", propertiesData);
-          console.log("Properties error:", propertiesError);
-          
-          if (propertiesError) {
-            console.error("Error al cargar propiedades:", propertiesError);
-          } else {
-            setProperties(propertiesData || []);
+        if (sessionError) {
+          console.error("Error al obtener sesión:", sessionError);
+          // Intentar refrescar sesión
+          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError) {
+            console.error("Error al refrescar sesión:", refreshError);
+            console.log("Redirigiendo a login debido a problemas de autenticación...");
+            await signOut();
+            return;
           }
-          
-          // Obtener incidencias del usuario usando JOIN con properties para filtrar por user_id
-          const { data: incidentsData, error: incidentsError } = await supabase
-            .from('incidents')
-            .select(`
-              id,
-              title,
-              description,
-              property_id,
-              category,
-              status,
-              phone_number,
-              created_at,
-              properties!inner(
-                name,
-                user_id
-              )
-            `)
-            .eq('properties.user_id', userData.user.id)
-            .order('created_at', { ascending: false })
-            .limit(50); // Limitar a las 50 más recientes
-          
-          console.log("Incidents data:", incidentsData);
-          console.log("Incidents error:", incidentsError);
-          
-          if (incidentsError) {
-            console.error("Error al cargar incidencias:", incidentsError);
-            setIncidents([]); // Fallback a array vacío en caso de error
-          } else {
-            // Mapear los datos al formato esperado por el frontend
-            const mappedIncidents: Incident[] = (incidentsData || []).map((incident: any) => {
-              // Verificar que el objeto tenga las propiedades necesarias
-              const propertyName = incident.properties?.name || 
-                                 (Array.isArray(incident.properties) && incident.properties[0]?.name) || 
-                                 'Propiedad desconocida';
-              
-              return {
-                id: incident.id || '',
-                title: incident.title || 'Sin título',
-                date: incident.created_at || new Date().toISOString(),
-                status: (incident.status === 'resolved' ? 'resolved' : 'pending') as "resolved" | "pending",
-                property_id: incident.property_id || '',
-                property_name: propertyName,
-                category: (incident.category || 'other') as IncidentCategory,
-                description: incident.description || '',
-                phone_number: incident.phone_number || ''
-              };
-            });
-            
-            setIncidents(mappedIncidents);
-          }
-          
-          // TODO: Implementar carga de reservas
-          // Por ahora dejamos array vacío para reservas
-          setReservations([]);
+          console.log("Sesión refrescada exitosamente");
         }
+        
+        // Obtener usuario actual
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        console.log("Current user data:", userData);
+        console.log("User error:", userError);
+        
+        if (userError) {
+          console.error("Error al obtener usuario:", userError);
+          console.log("Redirigiendo a login debido a error de usuario...");
+          await signOut();
+          return;
+        }
+        
+        if (!userData?.user) {
+          console.log("No hay usuario autenticado, redirigiendo a login...");
+          await signOut();
+          return;
+        }
+        
+        console.log("User ID:", userData.user.id);
+        
+        // Obtener propiedades del usuario
+        const { data: propertiesData, error: propertiesError } = await supabase
+          .from('properties')
+          .select('*')
+          .eq('user_id', userData.user.id);
+        
+        console.log("Properties data:", propertiesData);
+        console.log("Properties error:", propertiesError);
+        
+        if (propertiesError) {
+          console.error("Error al cargar propiedades:", propertiesError);
+          
+          // Si es un error de autenticación, intentar resolver
+          if (propertiesError.code === 'PGRST301' || propertiesError.message?.includes('JWT')) {
+            console.log("Error de JWT detectado, intentando refrescar sesión...");
+            const { error: refreshError } = await supabase.auth.refreshSession();
+            if (refreshError) {
+              console.error("Error al refrescar sesión:", refreshError);
+              await signOut();
+              return;
+            }
+            // Reintentar carga de propiedades
+            const { data: retryData, error: retryError } = await supabase
+              .from('properties')
+              .select('*')
+              .eq('user_id', userData.user.id);
+            
+            if (retryError) {
+              console.error("Error en segundo intento de cargar propiedades:", retryError);
+              setProperties([]);
+            } else {
+              setProperties(retryData || []);
+            }
+          } else {
+            setProperties([]);
+          }
+        } else {
+          setProperties(propertiesData || []);
+        }
+        
+        // Obtener incidencias del usuario usando JOIN con properties para filtrar por user_id
+        const { data: incidentsData, error: incidentsError } = await supabase
+          .from('incidents')
+          .select(`
+            id,
+            title,
+            description,
+            property_id,
+            category,
+            status,
+            phone_number,
+            conversation_body,
+            created_at,
+            properties!inner(
+              name,
+              user_id
+            )
+          `)
+          .eq('properties.user_id', userData.user.id)
+          .order('created_at', { ascending: false })
+          .limit(50); // Limitar a las 50 más recientes
+        
+        console.log("Incidents data:", incidentsData);
+        console.log("Incidents error:", incidentsError);
+        
+        if (incidentsError) {
+          console.error("Error al cargar incidencias:", incidentsError);
+          setIncidents([]); // Fallback a array vacío en caso de error
+        } else {
+          // Mapear los datos al formato esperado por el frontend
+          const mappedIncidents: Incident[] = (incidentsData || []).map((incident: any) => {
+            // Verificar que el objeto tenga las propiedades necesarias
+            const propertyName = incident.properties?.name || 
+                               (Array.isArray(incident.properties) && incident.properties[0]?.name) || 
+                               'Propiedad desconocida';
+            
+            return {
+              id: incident.id || '',
+              title: incident.title || 'Sin título',
+              date: incident.created_at || new Date().toISOString(),
+              status: (incident.status === 'resolved' ? 'resolved' : 'pending') as "resolved" | "pending",
+              property_id: incident.property_id || '',
+              property_name: propertyName,
+              category: incident.category || 'other',  // Mantener valor original de DB
+              description: incident.description || '',
+              phone_number: incident.phone_number || '',
+              conversation_body: incident.conversation_body || ''
+            };
+          });
+          
+          setIncidents(mappedIncidents);
+        }
+        
+        // TODO: Implementar carga de reservas
+        // Por ahora dejamos array vacío para reservas
+        setReservations([]);
         
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -162,7 +234,7 @@ const DashboardPage: React.FC = () => {
 
   // Reset de vista a recientes cuando cambian los filtros
   useEffect(() => {
-  }, [selectedCategory, selectedProperty]);
+  }, [selectedCategory, selectedProperty, selectedStatus]);
 
   const handleSignOut = async () => {
     setIsLoading(true);
@@ -175,25 +247,42 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // Mapeo de categorías para mostrar nombres amigables
-  const categoryLabels: Record<IncidentCategory | "all", string> = {
-    all: t("dashboard.incidents.categories.all"),
-    "check-in-out": t("dashboard.incidents.categories.checkInOut"),
-    "property-issue": t("dashboard.incidents.categories.propertyIssue"),
-    "tourist-info": t("dashboard.incidents.categories.touristInfo"),
-    emergency: t("dashboard.incidents.categories.emergency"),
-    other: t("dashboard.incidents.categories.other"),
+  // Función para normalizar categorías de DB a nombres amigables
+  const normalizeCategoryName = (dbCategory: string): string => {
+    const categoryMap: Record<string, string> = {
+      // Categorías reales de Supabase → Nombres normalizados
+      "Check-in": "Check-in/Check-out",
+      "Conversation Summary": "Conversation Summary",
+      "Property Info": "Property Information",
+      "Property Information": "Property Information", 
+      "Property Issue": "Property Issues",
+      "Propriety Issue": "Property Issues",  // Fix typo
+      "Propriety Info": "Property Information",  // Fix typo
+      "Reservation Issue": "Reservation Issues",
+      "Restaurant Recommendation": "Restaurant Recommendations",
+      "Richiesta immagini": "Image Requests",  // Traducir del italiano
+      "Tourist Information": "Tourist Information",
+      // Futuras categorías
+      "emergency": "Emergencies",
+      "other": "Others",
+      // Fallback para categorías no mapeadas
+      "all": "All"
+    };
+    
+    return categoryMap[dbCategory] || dbCategory || "Others";
   };
 
-  // Hardcoded values in case translations aren't working
-  const fallbackCategoryLabels: Record<IncidentCategory | "all", string> = {
-    all: "All",
-    "check-in-out": "Check-in/Check-out",
-    "property-issue": "Property Issues",
-    "tourist-info": "Tourist Information",
-    emergency: "Emergencies",
-    other: "Others",
+  // Obtener categorías únicas presentes en las incidencias actuales
+  const getAvailableCategories = (): string[] => {
+    const uniqueCategories = Array.from(new Set(incidents.map(incident => incident.category)));
+    return ["all", ...uniqueCategories.sort()];
   };
+
+  // Mapeo de categorías para mostrar nombres amigables (dinámico)
+  const categoryLabels: Record<string, string> = {};
+  getAvailableCategories().forEach(category => {
+    categoryLabels[category] = normalizeCategoryName(category);
+  });
 
   // Fallback status labels
   const fallbackStatusLabels = {
@@ -219,13 +308,8 @@ const DashboardPage: React.FC = () => {
   };
 
   // Use fallback if translation returns the key itself
-  const getLabel = (category: IncidentCategory | "all"): string => {
-    const translated = categoryLabels[category];
-    // Check if the translation returned just the key (failed translation)
-    if (translated && translated.includes("dashboard.incidents.categories")) {
-      return fallbackCategoryLabels[category];
-    }
-    return translated || fallbackCategoryLabels[category];
+  const getLabel = (category: string): string => {
+    return categoryLabels[category] || normalizeCategoryName(category);
   };
 
   // Get status label with fallback
@@ -254,8 +338,11 @@ const DashboardPage: React.FC = () => {
     // Filtro por propiedad
     const propertyMatch = selectedProperty === "all" || incident.property_id === selectedProperty;
     
-    // Ambos filtros deben coincidir
-    return categoryMatch && propertyMatch;
+    // Filtro por estado
+    const statusMatch = selectedStatus === "all" || incident.status === selectedStatus;
+    
+    // Todos los filtros deben coincidir
+    return categoryMatch && propertyMatch && statusMatch;
   });
 
   // Limitar a las 10 incidencias más recientes o mostrar todas según el estado
@@ -279,10 +366,101 @@ const DashboardPage: React.FC = () => {
   const clearAllFilters = () => {
     setSelectedCategory("all");
     setSelectedProperty("all");
+    setSelectedStatus("all");
   };
 
   // Función para verificar si hay filtros activos
-  const hasActiveFilters = selectedCategory !== "all" || selectedProperty !== "all";
+  const hasActiveFilters = selectedCategory !== "all" || selectedProperty !== "all" || selectedStatus !== "all";
+
+  // Funciones para manejar modal de conversación
+  const handleTitleClick = (incident: Incident) => {
+    if (incident.conversation_body && incident.conversation_body.trim()) {
+      setSelectedConversation({
+        title: incident.title,
+        body: incident.conversation_body
+      });
+      setIsConversationModalOpen(true);
+    }
+  };
+
+  const closeConversationModal = () => {
+    setIsConversationModalOpen(false);
+    setSelectedConversation(null);
+  };
+
+  // Efecto para cerrar modal con tecla Escape y manejar scroll del body
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isConversationModalOpen) {
+        closeConversationModal();
+      }
+    };
+
+    if (isConversationModalOpen) {
+      // Desactivar scroll del body cuando modal está abierto
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleEscape);
+      
+      return () => {
+        // Reactivar scroll del body cuando modal se cierra
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('keydown', handleEscape);
+      };
+    }
+  }, [isConversationModalOpen]);
+
+  // Componente Modal para mostrar conversación completa
+  const ConversationModal = () => {
+    if (!isConversationModalOpen || !selectedConversation) return null;
+
+    // Manejar click outside para cerrar modal
+    const handleOverlayClick = (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        closeConversationModal();
+      }
+    };
+
+    return (
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        onClick={handleOverlayClick}
+      >
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col">
+          {/* Header */}
+          <div className="flex justify-between items-center p-6 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Conversación: {selectedConversation.title}
+            </h3>
+            <button
+              onClick={closeConversationModal}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
+              {selectedConversation.body}
+            </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="flex justify-end p-6 border-t border-gray-200">
+            <button
+              onClick={closeConversationModal}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -455,38 +633,49 @@ const DashboardPage: React.FC = () => {
               {/* Divisor visual para pantallas grandes */}
               <div className="hidden lg:block w-px h-12 bg-gray-300"></div>
               
-              {/* Filtros por Categoría */}
-              <div className="flex-1">
+              {/* Selector de Categorías */}
+              <div className="flex-1 lg:flex-none lg:min-w-[200px]">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => setSelectedCategory("all")}
-                    className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border transition-all duration-200 ${
-                      selectedCategory === "all"
-                        ? "bg-primary-600 text-white border-primary-600 shadow-sm"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                    }`}
-                  >
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                >
+                  <option value="all">
                     {getLabel("all")}
-                  </button>
-                  {(Object.keys(categoryLabels) as Array<IncidentCategory | "all">)
-                    .filter((key) => key !== "all")
+                  </option>
+                  {getAvailableCategories()
+                    .filter((category) => category !== "all")
                     .map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border transition-all duration-200 whitespace-nowrap ${
-                          selectedCategory === category
-                            ? "bg-primary-600 text-white border-primary-600 shadow-sm"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                        }`}
-                      >
+                      <option key={category} value={category}>
                         {getLabel(category)}
-                      </button>
+                      </option>
                     ))}
-                </div>
+                </select>
+              </div>
+
+              {/* Selector de Estado */}
+              <div className="flex-1 lg:flex-none lg:min-w-[160px]">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
+                </label>
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                >
+                  <option value="all">
+                    Todos
+                  </option>
+                  <option value="pending">
+                    {getStatusLabel("pending")}
+                  </option>
+                  <option value="resolved">
+                    {getStatusLabel("resolved")}
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -594,8 +783,24 @@ const DashboardPage: React.FC = () => {
                           className="px-4 py-4 text-sm font-medium text-gray-900 text-left"
                           style={{ minWidth: '280px', width: '40%' }}
                         >
-                          <div className="line-clamp-2 leading-tight text-left" title={incident.title}>
-                            {incident.title}
+                          <div 
+                            className={`line-clamp-2 leading-tight text-left flex items-center gap-2 ${
+                              incident.conversation_body && incident.conversation_body.trim() 
+                                ? 'cursor-pointer hover:text-blue-600 transition-colors' 
+                                : ''
+                            }`}
+                            title={incident.conversation_body && incident.conversation_body.trim() 
+                              ? `${incident.title} (Click para ver conversación completa)` 
+                              : incident.title
+                            }
+                            onClick={() => handleTitleClick(incident)}
+                          >
+                            <span>{incident.title}</span>
+                            {incident.conversation_body && incident.conversation_body.trim() && (
+                              <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                              </svg>
+                            )}
                           </div>
                         </td>
                         <td 
@@ -663,6 +868,9 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Modal de conversación */}
+      <ConversationModal />
     </div>
   );
 };
