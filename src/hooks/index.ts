@@ -20,10 +20,7 @@ export { default as useTranslation } from './useTranslation';
 export * from './useTranslation';
 
 // Supabase hooks
-export { 
-  default as useSupabase,
-  useSupabaseQuery,
-  useSupabaseMutation,
-  invalidateCache,
-  clearCache,
-} from './useSupabase'; 
+export { default as useSupabase } from './useSupabase';
+
+// Body scroll lock hook
+export { useBodyScrollLock } from './useBodyScrollLock'; 
