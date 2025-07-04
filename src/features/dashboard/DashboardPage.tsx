@@ -8,6 +8,9 @@ import DashboardLanguageSelector from "./DashboardLanguageSelector";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
 import n8nTestService from "@services/n8nTestService";
+import documentService from "@services/documentService";
+import { PropertyDocument } from "@/types/property";
+import { useBodyScrollLock } from "@/hooks";
 
 type Property = {
   id: string;
@@ -15,6 +18,7 @@ type Property = {
   address: string;
   image?: string;
   status: "active" | "inactive";
+  description?: string;
 };
 
 type Reservation = {
@@ -45,7 +49,8 @@ type IncidentCategory =
 
 type Incident = {
   id: string;
-  title: string;
+  title_spanish: string;
+  title_english?: string;
   date: string;
   status: "resolved" | "pending";
   property_id: string;
@@ -53,12 +58,13 @@ type Incident = {
   category: string;  // Flexible para manejar cualquier categoría de DB
   description?: string;
   phone_number?: string;
-  conversation_body?: string;  // Transcripción completa de la conversación
+  conversation_body_spanish?: string;
+  conversation_body_english?: string;
 };
 
 const DashboardPage: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
   const [properties, setProperties] = useState<Property[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -78,8 +84,40 @@ const DashboardPage: React.FC = () => {
   } | null>(null);
   const [isConversationModalOpen, setIsConversationModalOpen] = useState(false);
   
+  // Estados para modal de propiedades
+  const [selectedPropertyDetails, setSelectedPropertyDetails] = useState<{
+    property: Property;
+    documents: PropertyDocument[];
+  } | null>(null);
+  const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
+  
   // Estado para controlar si mostrar todas las incidencias o solo las 10 recientes
 
+  // Funciones helper para obtener campos según el idioma
+  const getIncidentTitle = (incident: Incident): string => {
+    if (language === 'en') {
+      // Mostrar título en inglés, o español con indicador si no hay traducción
+      return incident.title_english || `${incident.title_spanish} (sin traducir)`;
+    }
+    return incident.title_spanish;
+  };
+
+  const getIncidentConversation = (incident: Incident): string => {
+    if (language === 'en') {
+      // Priorizar inglés, fallback a español
+      return incident.conversation_body_english && incident.conversation_body_english.trim() 
+        ? incident.conversation_body_english.trim()
+        : incident.conversation_body_spanish && incident.conversation_body_spanish.trim()
+        ? incident.conversation_body_spanish.trim()
+        : '';
+    }
+    
+    // Para español, usar directamente el campo español
+    return incident.conversation_body_spanish && incident.conversation_body_spanish.trim()
+      ? incident.conversation_body_spanish.trim()
+      : '';
+  };
 
   // Obtener datos del usuario actual y cargar datos reales
   useEffect(() => {
@@ -166,13 +204,15 @@ const DashboardPage: React.FC = () => {
           .from('incidents')
           .select(`
             id,
-            title,
+            title_spanish,
+            title_english,
             description,
             property_id,
             category,
             status,
             phone_number,
-            conversation_body,
+            conversation_body_spanish,
+            conversation_body_english,
             created_at,
             properties!inner(
               name,
@@ -181,7 +221,7 @@ const DashboardPage: React.FC = () => {
           `)
           .eq('properties.user_id', userData.user.id)
           .order('created_at', { ascending: false })
-          .limit(50); // Limitar a las 50 más recientes
+          .limit(50)
         
         console.log("Incidents data:", incidentsData);
         console.log("Incidents error:", incidentsError);
@@ -191,7 +231,7 @@ const DashboardPage: React.FC = () => {
           setIncidents([]); // Fallback a array vacío en caso de error
         } else {
           // Mapear los datos al formato esperado por el frontend
-          const mappedIncidents: Incident[] = (incidentsData || []).map((incident: any) => {
+          const mappedIncidents: Incident[] = (incidentsData || []).map((incident: any, index: number) => {
             // Verificar que el objeto tenga las propiedades necesarias
             const propertyName = incident.properties?.name || 
                                (Array.isArray(incident.properties) && incident.properties[0]?.name) || 
@@ -199,7 +239,8 @@ const DashboardPage: React.FC = () => {
             
             return {
               id: incident.id || '',
-              title: incident.title || 'Sin título',
+              title_spanish: incident.title_spanish || 'Sin título',
+              title_english: incident.title_english || '',
               date: incident.created_at || new Date().toISOString(),
               status: (incident.status === 'resolved' ? 'resolved' : 'pending') as "resolved" | "pending",
               property_id: incident.property_id || '',
@@ -207,7 +248,9 @@ const DashboardPage: React.FC = () => {
               category: incident.category || 'other',  // Mantener valor original de DB
               description: incident.description || '',
               phone_number: incident.phone_number || '',
-              conversation_body: incident.conversation_body || ''
+              // ✅ Asegurar que las conversaciones se preserven correctamente
+              conversation_body_spanish: typeof incident.conversation_body_spanish === 'string' ? incident.conversation_body_spanish.trim() : '',
+              conversation_body_english: typeof incident.conversation_body_english === 'string' ? incident.conversation_body_english.trim() : ''
             };
           });
           
@@ -247,29 +290,67 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // Función para normalizar categorías de DB a nombres amigables
-  const normalizeCategoryName = (dbCategory: string): string => {
-    const categoryMap: Record<string, string> = {
-      // Categorías reales de Supabase → Nombres normalizados
-      "Check-in": "Check-in/Check-out",
-      "Conversation Summary": "Conversation Summary",
-      "Property Info": "Property Information",
-      "Property Information": "Property Information", 
-      "Property Issue": "Property Issues",
-      "Propriety Issue": "Property Issues",  // Fix typo
-      "Propriety Info": "Property Information",  // Fix typo
-      "Reservation Issue": "Reservation Issues",
-      "Restaurant Recommendation": "Restaurant Recommendations",
-      "Richiesta immagini": "Image Requests",  // Traducir del italiano
-      "Tourist Information": "Tourist Information",
+  // Mapeo de categorías de DB a claves de traducción
+  const getCategoryTranslationKey = (dbCategory: string): string => {
+    const categoryKeyMap: Record<string, string> = {
+      // Categorías reales de Supabase → Claves de traducción
+      "Check-in": "checkInOut",
+      "Conversation Summary": "conversationSummary",
+      "Property Info": "propertyIssue", 
+      "Property Information": "propertyIssue",
+      "Property Issue": "propertyIssue",
+      "Propriety Issue": "propertyIssue",  // Fix typo
+      "Propriety Info": "propertyIssue",   // Fix typo  
+      "Reservation Issue": "reservationIssue",
+      "Restaurant Recommendation": "touristInfo",
+      "Richiesta immagini": "imageRequest",  // Italiano
+      "Tourist Information": "touristInfo",
       // Futuras categorías
-      "emergency": "Emergencies",
-      "other": "Others",
-      // Fallback para categorías no mapeadas
-      "all": "All"
+      "emergency": "emergency",
+      "other": "other",
+      // Fallback
+      "all": "all"
     };
     
-    return categoryMap[dbCategory] || dbCategory || "Others";
+    return categoryKeyMap[dbCategory] || "other";
+  };
+
+  // Función para obtener etiqueta de categoría traducida
+  const getLabel = (category: string): string => {
+    const translationKey = getCategoryTranslationKey(category);
+    const translated = t(`dashboard.incidents.categories.${translationKey}`);
+    
+    // Si la traducción no existe, usar fallback en español/inglés
+    if (!translated || translated.includes('dashboard.incidents.categories')) {
+      const fallbacks: Record<string, Record<string, string>> = {
+        en: {
+          conversationSummary: "Conversation Summary",
+          reservationIssue: "Reservation Issues", 
+          imageRequest: "Image Requests",
+          checkInOut: "Check-in/Check-out",
+          propertyIssue: "Property Issues",
+          touristInfo: "Tourist Information",
+          emergency: "Emergencies",
+          other: "Others",
+          all: "All"
+        },
+        es: {
+          conversationSummary: "Resumen de Conversación",
+          reservationIssue: "Problemas de Reserva",
+          imageRequest: "Solicitudes de Imágenes", 
+          checkInOut: "Check-in/Check-out",
+          propertyIssue: "Problemas de Propiedad",
+          touristInfo: "Información Turística",
+          emergency: "Emergencias",
+          other: "Otros",
+          all: "Todas"
+        }
+      };
+      
+      return fallbacks[language]?.[translationKey] || category;
+    }
+    
+    return translated;
   };
 
   // Obtener categorías únicas presentes en las incidencias actuales
@@ -278,11 +359,7 @@ const DashboardPage: React.FC = () => {
     return ["all", ...uniqueCategories.sort()];
   };
 
-  // Mapeo de categorías para mostrar nombres amigables (dinámico)
-  const categoryLabels: Record<string, string> = {};
-  getAvailableCategories().forEach(category => {
-    categoryLabels[category] = normalizeCategoryName(category);
-  });
+  // Las categorías ahora se traducen dinámicamente con getLabel()
 
   // Fallback status labels
   const fallbackStatusLabels = {
@@ -305,11 +382,6 @@ const DashboardPage: React.FC = () => {
     allProperties: "All properties",
     clearFilters: "Clear filters",
     activeFilters: "Active filters"
-  };
-
-  // Use fallback if translation returns the key itself
-  const getLabel = (category: string): string => {
-    return categoryLabels[category] || normalizeCategoryName(category);
   };
 
   // Get status label with fallback
@@ -374,12 +446,26 @@ const DashboardPage: React.FC = () => {
 
   // Funciones para manejar modal de conversación
   const handleTitleClick = (incident: Incident) => {
-    if (incident.conversation_body && incident.conversation_body.trim()) {
+    const conversationBody = getIncidentConversation(incident);
+    
+    // ✅ Lógica más permisiva: abrir modal si hay CUALQUIER contenido
+    if (conversationBody && conversationBody.length > 0) {
       setSelectedConversation({
-        title: incident.title,
-        body: incident.conversation_body
+        title: getIncidentTitle(incident),
+        body: conversationBody
       });
       setIsConversationModalOpen(true);
+    } else {
+      // ✅ Fallback: usar descripción si no hay conversación
+      const fallbackContent = incident.description || 'No hay contenido de conversación disponible';
+      
+      if (fallbackContent && fallbackContent.trim().length > 0) {
+        setSelectedConversation({
+          title: getIncidentTitle(incident),
+          body: fallbackContent
+        });
+        setIsConversationModalOpen(true);
+      }
     }
   };
 
@@ -388,30 +474,127 @@ const DashboardPage: React.FC = () => {
     setSelectedConversation(null);
   };
 
-  // Efecto para cerrar modal con tecla Escape y manejar scroll del body
+  // Funciones para manejar modal de propiedades
+  const handlePropertyClick = async (property: Property) => {
+    setSelectedPropertyDetails({ property, documents: [] });
+    setIsPropertyModalOpen(true);
+    setIsLoadingDocuments(true);
+
+    try {
+      // Obtener documentos de la propiedad
+      const documents = await documentService.getDocumentsByProperty(property.id);
+      setSelectedPropertyDetails({ property, documents });
+    } catch (error) {
+      console.error("Error al cargar documentos:", error);
+      // Si hay error, mantener el modal abierto pero sin documentos
+    } finally {
+      setIsLoadingDocuments(false);
+    }
+  };
+
+  const closePropertyModal = () => {
+    setIsPropertyModalOpen(false);
+    setSelectedPropertyDetails(null);
+  };
+
+  // Hook para manejar el bloqueo del scroll cuando hay modales abiertos
+  const isAnyModalOpen = isConversationModalOpen || isPropertyModalOpen;
+  useBodyScrollLock(isAnyModalOpen);
+
+  // Efecto para cerrar modales con tecla Escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isConversationModalOpen) {
-        closeConversationModal();
+      if (e.key === 'Escape') {
+        if (isConversationModalOpen) {
+          closeConversationModal();
+        }
+        if (isPropertyModalOpen) {
+          closePropertyModal();
+        }
       }
     };
 
-    if (isConversationModalOpen) {
-      // Desactivar scroll del body cuando modal está abierto
-      document.body.style.overflow = 'hidden';
+    if (isAnyModalOpen) {
       document.addEventListener('keydown', handleEscape);
       
       return () => {
-        // Reactivar scroll del body cuando modal se cierra
-        document.body.style.overflow = 'unset';
         document.removeEventListener('keydown', handleEscape);
       };
     }
-  }, [isConversationModalOpen]);
+  }, [isConversationModalOpen, isPropertyModalOpen, isAnyModalOpen]);
+
+  // Tipos para mensajes de chat
+  interface ChatMessage {
+    sender: 'usuario' | 'agente';
+    text: string;
+    timestamp?: string;
+  }
+
+  // Función para parsear conversaciones en mensajes individuales
+  const parseConversation = (conversationText: string): ChatMessage[] => {
+    if (!conversationText?.trim()) return [];
+
+    const messages: ChatMessage[] = [];
+    
+    // Dividir por "Usuario:" y "Agente:" manteniendo los delimitadores
+    const parts = conversationText.split(/(Usuario:|Agente:)/g);
+    
+    let currentSender: 'usuario' | 'agente' | null = null;
+    
+    for (let i = 1; i < parts.length; i += 2) {
+      const delimiter = parts[i];
+      const text = parts[i + 1]?.trim();
+      
+      if (delimiter === 'Usuario:') {
+        currentSender = 'usuario';
+      } else if (delimiter === 'Agente:') {
+        currentSender = 'agente';
+      }
+      
+      if (currentSender && text) {
+        messages.push({
+          sender: currentSender,
+          text: text
+        });
+      }
+    }
+    
+    return messages;
+  };
+
+    // Componente para renderizar cada mensaje como burbuja de chat
+  const ChatBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
+    const isUser = message.sender === 'usuario';
+    
+    return (
+      <div className={`flex mb-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+              <div className={`group max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md ${
+        isUser 
+          ? 'bg-primary-500 text-white rounded-br-md hover:bg-primary-600' 
+          : 'bg-secondary-50 text-gray-800 border border-secondary-200 rounded-bl-md hover:border-secondary-300'
+      }`}>
+          {/* Etiqueta del remitente */}
+          <div className={`text-xs font-semibold mb-2 ${
+            isUser ? 'text-primary-100' : 'text-secondary-600'
+          }`}>
+            {message.sender === 'usuario' ? t('dashboard.incidents.chat.user') : t('dashboard.incidents.chat.agent')}
+          </div>
+          
+          {/* Texto del mensaje */}
+          <div className="text-sm leading-relaxed">
+            {message.text}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Componente Modal para mostrar conversación completa
   const ConversationModal = () => {
     if (!isConversationModalOpen || !selectedConversation) return null;
+
+    // Parsear conversación en mensajes individuales
+    const messages = parseConversation(selectedConversation.body);
 
     // Manejar click outside para cerrar modal
     const handleOverlayClick = (e: React.MouseEvent) => {
@@ -425,15 +608,160 @@ const DashboardPage: React.FC = () => {
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
         onClick={handleOverlayClick}
       >
-        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+          {/* Header estilo chat */}
+          <div className="flex justify-between items-center p-4 bg-primary-500 text-white rounded-t-lg">
+            <div className="flex items-center space-x-3">
+              {/* Avatar del chat */}
+              <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 15v-4H8l4-6v4h3l-4 6z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {selectedConversation.title}
+                </h3>
+                <p className="text-white text-opacity-90 text-sm">
+                  {messages.length} {t('dashboard.incidents.chat.messages')} • {t('dashboard.incidents.chat.hostHelper')}
+                </p>
+              </div>
+            </div>
+                          <button
+                onClick={closeConversationModal}
+                className="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-10"
+              >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          {/* Chat Area */}
+          <div className="flex-1 overflow-y-auto bg-gray-50 p-4" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.4'%3E%3Ccircle cx='5' cy='5' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}>
+            {messages.length > 0 ? (
+              <div className="space-y-1">
+                {messages.map((message, index) => (
+                  <ChatBubble key={index} message={message} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center text-gray-500">
+                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                                     <p>{t('dashboard.incidents.chat.noMessages')}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Footer estilo chat */}
+          <div className="flex justify-between items-center p-4 border-t border-gray-200 bg-white rounded-b-lg">
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+                             <span>{t('dashboard.incidents.chat.conversationCompleted')}</span>
+             </div>
+             <button
+               onClick={closeConversationModal}
+               className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium"
+             >
+               {t('dashboard.incidents.chat.closeChat')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Componente Modal para mostrar detalles de propiedad
+  const PropertyDetailsModal = () => {
+    if (!isPropertyModalOpen || !selectedPropertyDetails) return null;
+
+    const { property, documents } = selectedPropertyDetails;
+
+    // Manejar click outside para cerrar modal
+    const handleOverlayClick = (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        closePropertyModal();
+      }
+    };
+
+    // Obtener icono según el tipo de documento
+    const getDocumentIcon = (type: string) => {
+      switch (type) {
+        case 'house_rules':
+          return (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l-5.5 9h11z"/>
+              <circle cx="17.5" cy="17.5" r="4.5"/>
+              <path d="M3 13.5h8v8H3z"/>
+            </svg>
+          );
+        case 'inventory':
+          return (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+            </svg>
+          );
+        case 'faq':
+          return (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>
+            </svg>
+          );
+        case 'guide':
+          return (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+            </svg>
+          );
+        default:
+          return (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+            </svg>
+          );
+      }
+    };
+
+    // Función para abrir documento en nueva pestaña
+    const openDocument = (url: string) => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    return (
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        onClick={handleOverlayClick}
+      >
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="flex justify-between items-center p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Conversación: {selectedConversation.title}
-            </h3>
+          <div className="flex justify-between items-center p-4 bg-primary-500 text-white rounded-t-lg">
+            <div className="flex items-center space-x-3">
+              {/* Avatar de propiedad */}
+              <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {property.name}
+                </h3>
+                <p className="text-white text-opacity-90 text-sm">
+                  {property.address}
+                </p>
+              </div>
+            </div>
             <button
-              onClick={closeConversationModal}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={closePropertyModal}
+              className="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-10"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -443,19 +771,117 @@ const DashboardPage: React.FC = () => {
           
           {/* Body */}
           <div className="flex-1 overflow-y-auto p-6">
-            <div className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
-              {selectedConversation.body}
-            </div>
-          </div>
-          
-          {/* Footer */}
-          <div className="flex justify-end p-6 border-t border-gray-200">
-            <button
-              onClick={closeConversationModal}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-            >
-              Cerrar
-            </button>
+            {/* Imagen de la propiedad */}
+            {property.image && (
+              <div className="mb-6">
+                <img 
+                  src={property.image} 
+                  alt={property.name}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                />
+              </div>
+            )}
+
+            {/* Estado de la propiedad */}
+            <div className="mb-6">
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                property.status === "active"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-800"
+              }`}>
+                                 {property.status === "active" ? t('dashboard.propertyDetails.active') : t('dashboard.propertyDetails.inactive')}
+               </span>
+             </div>
+
+             {/* Descripción */}
+             {property.description && (
+               <div className="mb-6">
+                 <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                   {t('dashboard.propertyDetails.description')}
+                 </h4>
+                 <p className="text-gray-700">{property.description}</p>
+               </div>
+             )}
+
+             {/* Documentos */}
+             <div>
+               <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                 {t('dashboard.propertyDetails.documents')} ({documents.length})
+               </h4>
+               
+               {isLoadingDocuments ? (
+                 <div className="flex items-center justify-center py-8">
+                   <div className="w-8 h-8 border-t-2 border-primary-500 rounded-full animate-spin"></div>
+                   <span className="ml-3 text-gray-600">{t('dashboard.propertyDetails.loadingDocuments')}</span>
+                </div>
+              ) : documents.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {documents.map((doc) => (
+                    <div 
+                      key={doc.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition-all cursor-pointer"
+                      onClick={() => openDocument(doc.file_url)}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`p-2 rounded-lg ${
+                          doc.type === 'house_rules' ? 'bg-blue-100 text-blue-600' :
+                          doc.type === 'inventory' ? 'bg-green-100 text-green-600' :
+                          doc.type === 'faq' ? 'bg-purple-100 text-purple-600' :
+                          doc.type === 'guide' ? 'bg-orange-100 text-orange-600' :
+                          'bg-gray-100 text-gray-600'
+                        }`}>
+                          {getDocumentIcon(doc.type)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-medium text-gray-900 truncate">
+                            {doc.name}
+                          </h5>
+                                                     <p className="text-sm text-gray-500 mt-1">
+                             {t(`dashboard.propertyDetails.documentTypes.${doc.type}`) || t('dashboard.propertyDetails.documentTypes.other')}
+                           </p>
+                          {doc.description && (
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                              {doc.description}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-400 mt-2">
+                            {new Date(doc.uploaded_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <svg className="w-12 h-12 mx-auto text-gray-300 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
+                                     <p className="text-gray-500">{t('dashboard.propertyDetails.noDocuments')}</p>
+                 </div>
+               )}
+             </div>
+           </div>
+           
+           {/* Footer */}
+           <div className="flex justify-between items-center p-4 border-t border-gray-200 bg-white rounded-b-lg">
+             <Link
+               to={`/properties/${property.id}`}
+               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+             >
+               {t('dashboard.propertyDetails.manageProperty')}
+             </Link>
+             <button
+               onClick={closePropertyModal}
+               className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium"
+             >
+               {t('dashboard.propertyDetails.close')}
+             </button>
           </div>
         </div>
       </div>
@@ -542,12 +968,12 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <Link
-                        to={`/properties/${property.id}`}
-                        className="block text-base font-semibold text-gray-800 hover:text-primary-500 mb-1"
+                      <button
+                        onClick={() => handlePropertyClick(property)}
+                        className="block w-full text-left text-base font-semibold text-gray-800 hover:text-primary-500 mb-1 transition-colors"
                       >
                         {property.name}
-                      </Link>
+                      </button>
                       <p className="text-xs sm:text-sm text-gray-500">
                         {property.address}
                       </p>
@@ -564,12 +990,6 @@ const DashboardPage: React.FC = () => {
                           ? "Active" 
                           : "Inactive"}
                       </span>
-                      <Link
-                        to={`/properties/${property.id}`}
-                        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200"
-                      >
-                        Manage
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -583,8 +1003,6 @@ const DashboardPage: React.FC = () => {
             )}
           </div>
         </div>
-
-
 
         {/* Incidencias */}
         <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
@@ -708,8 +1126,6 @@ const DashboardPage: React.FC = () => {
             </span>
           </div>
 
-
-          
           {/* Contenedor con scroll horizontal para móvil */}
           <div className="overflow-x-auto rounded-lg border border-gray-200 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
             {/* Contenedor con scroll vertical */}
@@ -785,18 +1201,18 @@ const DashboardPage: React.FC = () => {
                         >
                           <div 
                             className={`line-clamp-2 leading-tight text-left flex items-center gap-2 ${
-                              incident.conversation_body && incident.conversation_body.trim() 
+                              getIncidentConversation(incident) && getIncidentConversation(incident).trim() 
                                 ? 'cursor-pointer hover:text-blue-600 transition-colors' 
                                 : ''
                             }`}
-                            title={incident.conversation_body && incident.conversation_body.trim() 
-                              ? `${incident.title} (Click para ver conversación completa)` 
-                              : incident.title
+                            title={getIncidentConversation(incident) && getIncidentConversation(incident).trim() 
+                              ? `${getIncidentTitle(incident)} (Click para ver conversación completa)` 
+                              : getIncidentTitle(incident)
                             }
                             onClick={() => handleTitleClick(incident)}
                           >
-                            <span>{incident.title}</span>
-                            {incident.conversation_body && incident.conversation_body.trim() && (
+                            <span>{getIncidentTitle(incident)}</span>
+                            {getIncidentConversation(incident) && getIncidentConversation(incident).trim() && (
                               <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                               </svg>
@@ -871,6 +1287,9 @@ const DashboardPage: React.FC = () => {
 
       {/* Modal de conversación */}
       <ConversationModal />
+      
+      {/* Modal de detalles de propiedad */}
+      <PropertyDetailsModal />
     </div>
   );
 };
