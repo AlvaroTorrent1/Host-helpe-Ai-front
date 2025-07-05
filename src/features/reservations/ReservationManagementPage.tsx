@@ -7,6 +7,7 @@ import ReservationList from "./ReservationList";
 import ReservationForm from "./ReservationForm";
 import ReservationDetail from "./ReservationDetail";
 import Calendar from "./Calendar";
+import DayDetailsModal from "./DayDetailsModal";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import { useLanguage } from "@shared/contexts/LanguageContext";
@@ -44,6 +45,11 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   const [isSendingToSES, setIsSendingToSES] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
+  // Estados para el modal de detalles del día
+  const [isDayDetailsModalOpen, setIsDayDetailsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDateReservations, setSelectedDateReservations] = useState<Reservation[]>([]);
 
   // Cargar datos reales desde Supabase
   const loadData = useCallback(async () => {
@@ -270,6 +276,26 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     setSuccessMessage(null);
   };
 
+  // Manejar clic en fecha del calendario
+  const handleDateClick = (date: Date, dayReservations: Reservation[]) => {
+    setSelectedDate(date);
+    setSelectedDateReservations(dayReservations);
+    setIsDayDetailsModalOpen(true);
+  };
+
+  // Cerrar modal de detalles del día
+  const handleCloseDayDetailsModal = () => {
+    setIsDayDetailsModalOpen(false);
+    setSelectedDate(null);
+    setSelectedDateReservations([]);
+  };
+
+  // Navegar a detalle de reserva desde el modal
+  const handleViewReservationFromModal = (reservationId: string) => {
+    handleCloseDayDetailsModal();
+    handleViewReservation(reservationId);
+  };
+
   // Encontrar la propiedad asociada a la reserva actual
   const currentProperty = currentReservation
     ? properties.find((p) => p.id === currentReservation.propertyId)
@@ -435,10 +461,8 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           <div className="mb-8">
             <Calendar 
               reservations={reservations}
-              onDateClick={(date) => {
-                // Opcional: agregar funcionalidad al hacer clic en una fecha
-                console.log('Fecha seleccionada:', date);
-              }}
+              properties={properties}
+              onDateClick={handleDateClick}
             />
           </div>
         )}
@@ -446,7 +470,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
         {/* Contenido según el modo de visualización */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-12 h-12 border-t-4 border-b-4 border-primary-500 rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
           </div>
         ) : (
           <>
@@ -564,6 +588,16 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           </>
         )}
       </main>
+
+      {/* Modal de detalles del día */}
+      <DayDetailsModal
+        isOpen={isDayDetailsModalOpen}
+        selectedDate={selectedDate}
+        reservations={selectedDateReservations}
+        properties={properties}
+        onClose={handleCloseDayDetailsModal}
+        onViewReservation={handleViewReservationFromModal}
+      />
     </div>
   );
 };

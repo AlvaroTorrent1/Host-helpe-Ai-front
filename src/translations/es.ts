@@ -2,6 +2,8 @@
 // Archivo de traducciones en español
 
 export const es = {
+
+
   // Navegación
   nav: {
     features: "Características",
@@ -907,6 +909,7 @@ export const es = {
     error: "Error",
     success: "Éxito",
     loading: "Cargando...",
+    loadingSubtext: "Esto solo tomará unos segundos",
     continue: "Continuar",
     cancel: "Cancelar",
     submit: "Enviar",

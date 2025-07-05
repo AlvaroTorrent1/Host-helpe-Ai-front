@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { AuthProvider } from "./shared/contexts/AuthContext";
 import { LanguageProvider } from "./shared/contexts/LanguageContext";
 import { PaymentFlowProvider } from "./shared/contexts/PaymentFlowContext";
+import { GlobalLoadingProvider } from "./shared/contexts/GlobalLoadingContext";
 import "./index.css";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
@@ -12,7 +13,7 @@ import { getProtectedRoutes } from "./config/routes";
 import { HelmetProvider } from "react-helmet-async";
 import PropertyManagement from './features/properties/PropertyManagement';
 
-// Lazy load pages for better performance
+// Lazy load pages with intelligent pre-loading
 const LandingPage = lazy(() => import("./features/landing/LandingPage"));
 const ChatbotPage = lazy(() => import("./features/landing/ChatbotPage"));
 const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
@@ -23,7 +24,18 @@ const ScheduleDemoPage = lazy(() => import("./features/landing/ScheduleDemoPage"
 const LoginPage = lazy(() => import("./features/auth/pages/LoginPage"));
 const RegisterPage = lazy(() => import("./features/auth/pages/RegisterPage"));
 const AuthCallbackPage = lazy(() => import("./features/auth/pages/AuthCallbackPage"));
-const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
+
+// Pre-load critical components for authenticated users
+const DashboardPage = lazy(() => {
+  const dashboardImport = import("./features/dashboard/DashboardPage");
+  
+  // Pre-load related components in parallel
+  import("./features/reservations/ReservationManagementPage");
+  import("./features/properties/PropertyManagement");
+  
+  return dashboardImport;
+});
+
 const PaymentSuccessPage = lazy(() => import("./features/payment/PaymentSuccess"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
 const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
@@ -74,9 +86,10 @@ function App() {
     <div className="w-full min-h-screen">
       <HelmetProvider>
         <LanguageProvider>
-          <AuthProvider>
-            <PaymentFlowProvider>
-            <Router>
+          <GlobalLoadingProvider>
+            <AuthProvider>
+              <PaymentFlowProvider>
+              <Router>
               <RouteTracker />
               <Suspense fallback={<LoadingScreen />}>
                 <Routes>
@@ -165,6 +178,7 @@ function App() {
             </Router>
             </PaymentFlowProvider>
           </AuthProvider>
+        </GlobalLoadingProvider>
         </LanguageProvider>
       </HelmetProvider>
 

@@ -7,7 +7,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { securityService } from "../../services/security.service";
 import { ROUTES } from "../../config/constants";
-import LoadingScreen from "./LoadingScreen";
+import { useGlobalLoading } from "../contexts/GlobalLoadingContext";
 import { useSubscription } from "@shared/hooks/useSubscription";
 
 interface ProtectedRouteProps {
@@ -26,11 +26,14 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasRequiredRole, setHasRequiredRole] = useState(true);
   const { hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
+  const { setLoading, clearLoading } = useGlobalLoading();
   const location = useLocation();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setLoading(true, 'protected-route', 1);
+        
         // Verificar autenticación
         const authenticated = await securityService.isAuthenticated();
         setIsAuthenticated(authenticated);
@@ -46,15 +49,17 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
         setHasRequiredRole(false);
       } finally {
         setIsLoading(false);
+        clearLoading('protected-route');
       }
     };
 
     checkAuth();
-  }, [requiredRole]);
+  }, [requiredRole, setLoading, clearLoading]);
 
-  // Mientras verifica la autenticación o la suscripción, mostrar una pantalla de carga
+  // El GlobalLoadingProvider maneja el loading state
+  // Solo verificar si está listo para proceder
   if (isLoading || subscriptionLoading) {
-    return <LoadingScreen />;
+    return null; // El GlobalLoadingProvider se encarga del loading visual
   }
 
   // Si no está autenticado, redirigir a inicio de sesión

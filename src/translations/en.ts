@@ -897,6 +897,7 @@ export const en = {
     error: "Error",
     success: "Success",
     loading: "Loading...",
+    loadingSubtext: "This will only take a few seconds",
     continue: "Continue",
     cancel: "Cancel",
     submit: "Submit",

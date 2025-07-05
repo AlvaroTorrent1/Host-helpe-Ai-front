@@ -14,6 +14,7 @@ import {
   getCurrentUser,
   signInWithGoogle,
 } from "@services/supabase";
+import { useGlobalLoading } from "./GlobalLoadingContext";
 
 // Interfaces para los tipos de retorno de autenticación
 interface AuthResponse {
@@ -56,8 +57,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const getUser = async () => {
       try {
         setLoading(true);
+        
+        // Verificar cache del localStorage primero
+        const cachedUser = localStorage.getItem('supabase.auth.user');
+        if (cachedUser) {
+          try {
+            const parsedUser = JSON.parse(cachedUser);
+            setUser(parsedUser);
+          } catch (e) {
+            // Cache inválido, limpiar
+            localStorage.removeItem('supabase.auth.user');
+          }
+        }
+        
         const { data } = await getCurrentUser();
         setUser(data.user);
+        
+        // Cachear usuario para futuras sesiones
+        if (data.user) {
+          localStorage.setItem('supabase.auth.user', JSON.stringify(data.user));
+        } else {
+          localStorage.removeItem('supabase.auth.user');
+        }
         
         // Registrar usuario en Google Analytics (de forma anónima)
         if (data.user) {

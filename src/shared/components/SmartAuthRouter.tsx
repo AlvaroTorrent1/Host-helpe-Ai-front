@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@shared/contexts/AuthContext';
+import { useGlobalLoading } from '@shared/contexts/GlobalLoadingContext';
 import { 
   handleAuthenticationFlow, 
   determineUserDestination,
@@ -36,6 +37,7 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
   fallbackRoute = '/pricing'
 }) => {
   const { user, loading: authLoading } = useAuth();
+  const { setLoading, clearLoading } = useGlobalLoading();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(true);
   const [destination, setDestination] = useState<AuthFlowDestination | null>(null);
@@ -47,11 +49,13 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
       // Esperar a que termine de cargar la autenticación
       if (authLoading) {
         console.log('⏳ SmartAuthRouter: Esperando a que termine la carga de auth...');
+        setLoading(true, 'smart-auth-router', 2);
         return;
       }
 
       try {
         setIsProcessing(true);
+        setLoading(true, 'smart-auth-router', 2);
         
         // Determinar destino
         const targetDestination = await determineUserDestination(user, authMethod);
@@ -89,6 +93,9 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
           onRedirectComplete(targetDestination);
         }
         
+        // Limpiar loading state
+        clearLoading('smart-auth-router');
+        
       } catch (error) {
         console.error('❌ SmartAuthRouter: Error procesando flujo de auth:', error);
         
@@ -102,6 +109,9 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
         if (onRedirectComplete) {
           onRedirectComplete(fallbackRoute as AuthFlowDestination);
         }
+        
+        // Limpiar loading state en caso de error
+        clearLoading('smart-auth-router');
       } finally {
         setIsProcessing(false);
       }
@@ -110,29 +120,8 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
     processAuthFlow();
   }, [user, authLoading, authMethod, selectedPlan, showWelcomeMessage, navigate, onRedirectComplete, fallbackRoute]);
 
-  // Mostrar loading mientras procesa
-  if (authLoading || isProcessing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium">
-            {authLoading ? 'Verificando autenticación...' : 'Preparando tu experiencia...'}
-          </p>
-          {destination && (
-            <p className="mt-2 text-sm text-gray-500">
-              {destination === '/dashboard' 
-                ? 'Accediendo al dashboard...' 
-                : 'Configurando suscripción...'}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // Componente no debería renderizar nada después del procesamiento
-  // ya que habrá navegado a otra página
+  // No renderizar nada - el GlobalLoadingProvider maneja el loading state
+  // El componente solo procesa la lógica de redirección
   return null;
 };
 

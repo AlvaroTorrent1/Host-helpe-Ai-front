@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Reservation } from '@/types/reservation';
+import { Property } from '@/types/property';
 import { useLanguage } from '@shared/contexts/LanguageContext';
 
 interface CalendarProps {
   reservations: Reservation[];
-  onDateClick?: (date: Date) => void;
+  properties: Property[];
+  onDateClick?: (date: Date, dayReservations: Reservation[]) => void;
 }
 
 interface CalendarDay {
@@ -15,7 +17,7 @@ interface CalendarDay {
   reservations: Reservation[];
 }
 
-const Calendar: React.FC<CalendarProps> = ({ reservations, onDateClick }) => {
+const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateClick }) => {
   const { t } = useLanguage();
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -104,7 +106,7 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, onDateClick }) => {
   // Manejar clic en un día
   const handleDayClick = (day: CalendarDay) => {
     if (onDateClick) {
-      onDateClick(day.date);
+      onDateClick(day.date, day.reservations);
     }
   };
 
