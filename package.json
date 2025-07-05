@@ -33,6 +33,7 @@
     "@supabase/supabase-js": "^2.49.6",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
+    "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "i18next": "^23.10.1",
     "nodemon": "^3.1.10",

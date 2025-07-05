@@ -238,13 +238,17 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   // Manejar envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("📋 FORMULARIO ENVIADO: ReservationForm handleSubmit ejecutándose");
 
     if (validateForm()) {
+      console.log("✅ VALIDACIÓN CORRECTA: Llamando a onSubmit");
       // Preparar datos para enviar
       onSubmit({
         ...formData,
         additionalGuests: additionalGuests,
       });
+    } else {
+      console.log("❌ VALIDACIÓN FALLIDA: Formulario no válido");
     }
   };
 

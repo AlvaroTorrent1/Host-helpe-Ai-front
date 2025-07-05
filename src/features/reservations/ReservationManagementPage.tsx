@@ -12,6 +12,7 @@ import DashboardHeader from "@shared/components/DashboardHeader";
 import { useLanguage } from "@shared/contexts/LanguageContext";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { supabase } from "@/services/supabase";
+import { reservationService } from "@/services/reservationService";
 
 // Enum eliminado - se usa el tipo ReservationStatus del archivo types/reservation.ts
 
@@ -65,9 +66,8 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
         throw propertiesError;
       }
 
-      // Por ahora, inicializamos reservas como array vacío
-      // TODO: Implementar consulta de reservas cuando esté la tabla en Supabase
-      const reservationsData: Reservation[] = [];
+      // Cargar reservas del usuario
+      const reservationsData = await reservationService.getReservations();
 
       // Actualizar estado con datos reales
       setProperties(propertiesData || []);
@@ -99,21 +99,53 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
 
   // Manejar creación de nueva reserva
   const handleCreateReservation = async (data: ReservationCreateData) => {
+    console.log("🟢 EJECUTANDO: handleCreateReservation - Creando nueva reserva");
     setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
-      // TODO: Implementar creación real de reservas cuando tengamos las tablas en Supabase
-      // Por ahora mostrar mensaje informativo
-      setErrorMessage("La funcionalidad de crear reservas está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      // Obtener el nombre de la propiedad
+      const property = properties.find(p => p.id === data.propertyId);
       
-      // Volver a la lista
-      setTimeout(() => {
-        setViewMode(ViewMode.LIST);
-      }, 2000);
+      // Mapear los datos del formulario al formato esperado por el servicio
+      const reservationData = {
+        property_id: data.propertyId,
+        property_name: property?.name || '',
+        guest_name: data.mainGuest.firstName,
+        guest_surname: data.mainGuest.lastName,
+        phone_number: data.mainGuest.phone || null,
+        nationality: data.mainGuest.nationality,
+        checkin_date: data.checkInDate,
+        checkout_date: data.checkOutDate,
+        notes: data.notes || null,
+        status: 'active' as const
+      };
+
+      // Verificar disponibilidad antes de crear
+      const isAvailable = await reservationService.checkAvailability(
+        reservationData.property_id,
+        reservationData.checkin_date,
+        reservationData.checkout_date
+      );
+
+      if (!isAvailable) {
+        setErrorMessage(t("dashboard.reservations.errors.propertyNotAvailable"));
+        return;
+      }
+
+      // Crear la reserva
+      const newReservation = await reservationService.createReservation(reservationData);
+      
+      // Actualizar la lista de reservas
+      await loadData();
+      
+      setSuccessMessage(t("dashboard.reservations.successMessages.created"));
+      setViewMode(ViewMode.LIST);
 
     } catch (error) {
       console.error("Error al crear la reserva:", error);
-      setErrorMessage(t("reservations.errors.saving"));
+      setErrorMessage(t("dashboard.reservations.errors.saving"));
     } finally {
       setIsSubmitting(false);
     }
@@ -124,19 +156,60 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     if (!currentReservation) return;
 
     setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
-      // TODO: Implementar actualización real de reservas cuando tengamos las tablas en Supabase
-      setErrorMessage("La funcionalidad de editar reservas está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      // Obtener el nombre de la propiedad si cambió
+      const property = properties.find(p => p.id === data.propertyId);
       
-      // Volver a la lista
-      setTimeout(() => {
-        setViewMode(ViewMode.LIST);
-      }, 2000);
+      // Mapear el status del frontend al formato de la DB
+      let dbStatus: 'active' | 'cancelled' | 'completed' = 'active';
+      if (currentReservation.status === 'cancelled') {
+        dbStatus = 'cancelled';
+      } else if (currentReservation.status === 'completed') {
+        dbStatus = 'completed';
+      }
+      
+      // Mapear los datos del formulario al formato esperado por el servicio
+      const reservationData = {
+        property_id: data.propertyId,
+        property_name: property?.name || '',
+        guest_name: data.mainGuest.firstName,
+        guest_surname: data.mainGuest.lastName,
+        phone_number: data.mainGuest.phone || null,
+        nationality: data.mainGuest.nationality,
+        checkin_date: data.checkInDate,
+        checkout_date: data.checkOutDate,
+        notes: data.notes || null,
+        status: dbStatus
+      };
+
+      // Verificar disponibilidad antes de actualizar (excluyendo la reserva actual)
+      const isAvailable = await reservationService.checkAvailability(
+        reservationData.property_id,
+        reservationData.checkin_date,
+        reservationData.checkout_date,
+        currentReservation.id
+      );
+
+      if (!isAvailable) {
+        setErrorMessage(t("dashboard.reservations.errors.propertyNotAvailable"));
+        return;
+      }
+
+      // Actualizar la reserva
+      await reservationService.updateReservation(currentReservation.id, reservationData);
+      
+      // Actualizar la lista de reservas
+      await loadData();
+      
+      setSuccessMessage(t("dashboard.reservations.successMessages.updated"));
+      setViewMode(ViewMode.LIST);
 
     } catch (error) {
       console.error("Error al actualizar la reserva:", error);
-      setErrorMessage(t("reservations.errors.saving"));
+      setErrorMessage(t("dashboard.reservations.errors.saving"));
     } finally {
       setIsSubmitting(false);
     }
@@ -144,13 +217,14 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
 
   // Manejar envío a SES
   const handleSendToSES = async () => {
+    console.log("🔴 EJECUTANDO: handleSendToSES - Enviando a SES");
     if (!currentReservation) return;
 
     setIsSendingToSES(true);
 
     try {
       // TODO: Implementar envío real a SES cuando tengamos las tablas y la funcionalidad
-      setErrorMessage("La funcionalidad de envío a SES está pendiente de implementar. Necesitamos crear las tablas 'reservations' y 'guests' en Supabase.");
+      setErrorMessage("⚠️ ATENCIÓN: Estás en el botón 'Enviar a SES', no en 'Crear reserva'. La funcionalidad de envío a SES está pendiente de implementar.");
       
     } catch (error) {
       console.error("Error al enviar datos a SES:", error);

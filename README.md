@@ -16,6 +16,7 @@ An application for managing property rentals, guests, and reservations with mode
 
 - **Frontend**: React with TypeScript
 - **Backend**: Supabase (PostgreSQL + APIs)
+- **🤖 IA & Automatización**: n8n *(Nuevo - Junio 2025)*
 - **Storage**: Supabase Storage
 - **Authentication**: Supabase Auth
 - **State Management**: React Query and Context API
@@ -83,10 +84,12 @@ The project includes several utility modules that handle common tasks:
 
 ## 📚 Documentation
 
-Additional documentation is available in the `docs/` directory:
+**📋 Nueva documentación consolidada disponible en [`documentation/`](./documentation/README.md)**
 
-- [API Documentation](docs/API.md)
-- [Best Practices](docs/BEST_PRACTICES.md)
+- **🤖 Integración con n8n** (Junio 2025): [`documentation/integrations/n8n-setup.md`](./documentation/integrations/n8n-setup.md)
+- **🏗️ Arquitectura**: [`documentation/architecture/overview.md`](./documentation/architecture/overview.md)
+- **🛠️ Desarrollo**: [`documentation/development/`](./documentation/development/)
+- **📡 API**: [`documentation/api/endpoints.md`](./documentation/api/endpoints.md)
 
 ## 🏗️ Recent Improvements
 

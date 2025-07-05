@@ -24,6 +24,7 @@ export interface PropertyImage {
   file_url: string;
   description: string;
   uploaded_at: string;
+  file?: File;
 }
 
 export interface PropertyDocument {

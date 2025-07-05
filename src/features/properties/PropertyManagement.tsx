@@ -5,6 +5,7 @@ import propertyService from "../../services/propertyService";
 import propertyWebhookService from "../../services/propertyWebhookService";
 import { webhookTestService } from "../../services/webhookTestService";
 import { updateTempDocumentsPropertyId } from "../../services/documentService";
+import mediaService from "../../services/mediaService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -132,6 +133,41 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
         if (error) throw error;
         savedProperty = data as unknown as Property;
+        
+        // Procesar nuevas imágenes si existen
+        if (propertyData.additional_images && propertyData.additional_images.length > 0) {
+          setProgressPhase('Procesando nuevas imágenes...');
+          setProgressPercent(65);
+          
+          try {
+            // Filtrar solo imágenes nuevas que tienen archivo File
+            const newImageFiles = propertyData.additional_images
+              .filter(img => img.file instanceof File && img.property_id === "temp")
+              .map(img => img.file as File);
+            
+            if (newImageFiles.length > 0) {
+              console.log(`📸 Agregando ${newImageFiles.length} nuevas imágenes a la propiedad ${savedProperty.id}`);
+              
+              // Subir nuevas imágenes usando mediaService
+              const uploadedImages = await mediaService.uploadMediaFiles(
+                savedProperty.id,
+                newImageFiles,
+                (progress) => {
+                  // Ajustar el progreso entre 65-75%
+                  const adjustedProgress = 65 + (progress * 0.1);
+                  setProgressPercent(Math.round(adjustedProgress));
+                }
+              );
+              
+              console.log(`✅ ${uploadedImages.length} nuevas imágenes agregadas`);
+              toast.success(`${uploadedImages.length} nuevas imágenes agregadas`);
+            }
+          } catch (imageError) {
+            console.error('Error al procesar nuevas imágenes:', imageError);
+            toast.error('Algunas imágenes no pudieron ser procesadas');
+            // No lanzar error, continuar con el proceso
+          }
+        }
         
         setProgressPhase('Procesando documentos...');
         setProgressPercent(75);
@@ -321,6 +357,41 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
     if (error) throw error;
     
     let savedProperty = data as unknown as Property;
+    
+    // Procesar imágenes si existen
+    if (propertyData.additional_images && propertyData.additional_images.length > 0) {
+      setProgressPhase('Procesando imágenes...');
+      setProgressPercent(50);
+      
+      try {
+        // Filtrar solo imágenes que tienen archivo File
+        const imageFiles = propertyData.additional_images
+          .filter(img => img.file instanceof File)
+          .map(img => img.file as File);
+        
+        if (imageFiles.length > 0) {
+          console.log(`📸 Procesando ${imageFiles.length} imágenes para la propiedad ${savedProperty.id}`);
+          
+          // Subir imágenes usando mediaService
+          const uploadedImages = await mediaService.uploadMediaFiles(
+            savedProperty.id,
+            imageFiles,
+            (progress) => {
+              // Ajustar el progreso entre 50-70%
+              const adjustedProgress = 50 + (progress * 0.2);
+              setProgressPercent(Math.round(adjustedProgress));
+            }
+          );
+          
+          console.log(`✅ ${uploadedImages.length} imágenes subidas exitosamente`);
+          toast.success(`${uploadedImages.length} imágenes guardadas correctamente`);
+        }
+      } catch (imageError) {
+        console.error('Error al procesar imágenes:', imageError);
+        toast.error('Algunas imágenes no pudieron ser procesadas');
+        // No lanzar error, continuar con el proceso
+      }
+    }
     
     setProgressPhase('Procesando documentos...');
     setProgressPercent(70);

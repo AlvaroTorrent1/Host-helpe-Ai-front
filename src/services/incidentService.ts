@@ -5,7 +5,8 @@ import { supabase } from './supabase';
 
 export interface IncidentData {
   id?: string;
-  title: string;
+  title_spanish: string;
+  title_english?: string;
   description?: string;
   property_id: string;
   category: 'check-in-out' | 'property-issue' | 'tourist-info' | 'emergency' | 'other';
@@ -17,6 +18,8 @@ export interface IncidentData {
   created_at?: string;
   updated_at?: string;
   resolved_at?: string;
+  conversation_body_spanish?: string;
+  conversation_body_english?: string;
 }
 
 export interface N8nIncidentPayload {
@@ -53,7 +56,8 @@ class IncidentService {
       
       // Preparar datos para insertar
       const incidentData: Partial<IncidentData> = {
-        title,
+        title_spanish: title,
+        title_english: title,
         description: `Conversación con huésped:\n\nHuésped: ${payload.conversation.guest_message}\n\nAgente: ${payload.conversation.agent_response}`,
         property_id: payload.workflow.property_id,
         category: this.mapCategory(payload.classification.category),
@@ -65,7 +69,9 @@ class IncidentService {
           conversation: payload.conversation,
           classification: payload.classification,
           timestamp: payload.conversation.timestamp
-        }
+        },
+        conversation_body_spanish: payload.conversation.guest_message,
+        conversation_body_english: payload.conversation.guest_message
       };
 
       const { data, error } = await supabase

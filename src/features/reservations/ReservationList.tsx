@@ -90,8 +90,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
     });
   };
 
-
-
   // Formatear fecha
   const formatDate = (dateString: string): string => {
     try {
@@ -292,121 +290,158 @@ const ReservationList: React.FC<ReservationListProps> = ({
           )}
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          {/* Encabezados fijos */}
-          <table className="min-w-full">
-            <thead className="bg-gray-50 sticky top-0 z-10">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
-                >
-                  Huésped
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5"
-                >
-                  Propiedad
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6"
-                >
-                  Teléfono
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6"
-                >
-                  Check-in
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6"
-                >
-                  Check-out
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-          </table>
-          
-          {/* Contenedor con scroll para las filas */}
-          <div className="max-h-96 overflow-y-auto border-t border-gray-200 bg-white">
-            <table className="min-w-full divide-y divide-gray-200">
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredReservations.map((reservation, index) => {
-                // Encontrar el huésped principal
-                const mainGuest = reservation.guests.find(
-                  (g) => g.id === reservation.mainGuestId,
-                );
-
-                // Encontrar la propiedad
-                const property = properties.find(
-                  (p) => p.id === reservation.propertyId,
-                );
-
-                return (
-                  <tr 
-                    key={reservation.id} 
-                    className={index % 2 === 0 ? "bg-white border-b border-gray-100 hover:bg-gray-50" : "bg-gray-50 border-b border-gray-100 hover:bg-gray-100"}
-                  >
-                    <td className="px-3 py-4 text-left">
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium text-gray-900">
-                          {mainGuest
-                            ? `${mainGuest.firstName} ${mainGuest.lastName}`
-                            : "N/A"}
-                        </div>
-                        <div className="text-xs text-gray-500 truncate max-w-[200px]" title={mainGuest?.email || "N/A"}>
-                          {mainGuest?.email || "N/A"}
-                        </div>
+        <div>
+          {/* Contenedor con scroll horizontal para móvil */}
+          <div className="overflow-x-auto rounded-lg border border-gray-200 scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+            {/* Contenedor con scroll vertical */}
+            <div className={`overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
+              filteredReservations.length > 8 ? 'max-h-96' : 'max-h-none'
+            }`}>
+              <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
+                <thead className="bg-gray-50 sticky top-0 z-10">
+                  <tr className="divide-x divide-gray-200">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '200px', width: '20%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Huésped
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left">
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium text-gray-900">
-                          {property?.name || "N/A"}
-                        </div>
-                        <div className="text-xs text-gray-500 break-words max-w-[200px]">
-                          {property?.address || "N/A"}
-                        </div>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '200px', width: '20%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Propiedad
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left">
-                      <div className="text-sm text-gray-900">
-                        {mainGuest?.phone || "No disponible"}
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '120px', width: '15%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Teléfono
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left">
-                      <div className="text-sm text-gray-900">
-                        {formatDate(reservation.checkInDate)}
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '120px', width: '15%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Check-in
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left">
-                      <div className="text-sm text-gray-900">
-                        {formatDate(reservation.checkOutDate)}
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '120px', width: '15%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Check-out
                       </div>
-                    </td>
-                    <td className="px-3 py-4 text-left text-sm font-medium">
-                      <button
-                        onClick={() => onViewDetails(reservation.id)}
-                        className="text-primary-600 hover:text-primary-900"
-                      >
-                        Ver
-                      </button>
-                    </td>
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      style={{ minWidth: '100px', width: '15%' }}
+                    >
+                      <div className="flex items-center justify-start">
+                        Acciones
+                      </div>
+                    </th>
                   </tr>
-                );
-              })}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredReservations.map((reservation, index) => {
+                    // Encontrar el huésped principal
+                    const mainGuest = reservation.guests.find(
+                      (g) => g.id === reservation.mainGuestId,
+                    );
+
+                    // Encontrar la propiedad
+                    const property = properties.find(
+                      (p) => p.id === reservation.propertyId,
+                    );
+
+                    return (
+                      <tr 
+                        key={reservation.id} 
+                        className="hover:bg-gray-50 transition-colors group divide-x divide-gray-200"
+                      >
+                        <td 
+                          className="px-4 py-4 text-sm font-medium text-gray-900 text-left"
+                          style={{ minWidth: '200px', width: '20%' }}
+                        >
+                          <div className="flex flex-col">
+                            <div className="text-sm font-medium text-gray-900">
+                              {mainGuest
+                                ? `${mainGuest.firstName} ${mainGuest.lastName}`
+                                : "N/A"}
+                            </div>
+                            <div className="text-xs text-gray-500 truncate max-w-[200px]" title={mainGuest?.email || "N/A"}>
+                              {mainGuest?.email || "N/A"}
+                            </div>
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-900 text-left"
+                          style={{ minWidth: '200px', width: '20%' }}
+                        >
+                          <div className="flex flex-col">
+                            <div className="text-sm font-medium text-gray-900">
+                              {property?.name || "N/A"}
+                            </div>
+                            <div className="text-xs text-gray-500 break-words max-w-[200px]">
+                              {property?.address || "N/A"}
+                            </div>
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '120px', width: '15%' }}
+                        >
+                          <div className="text-sm text-gray-900">
+                            {mainGuest?.phone || "No disponible"}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '120px', width: '15%' }}
+                        >
+                          <div className="text-sm text-gray-900">
+                            {formatDate(reservation.checkInDate)}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '120px', width: '15%' }}
+                        >
+                          <div className="text-sm text-gray-900">
+                            {formatDate(reservation.checkOutDate)}
+                          </div>
+                        </td>
+                        <td 
+                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          style={{ minWidth: '100px', width: '15%' }}
+                        >
+                          <button
+                            onClick={() => onViewDetails(reservation.id)}
+                            className="text-primary-600 hover:text-primary-900 font-medium"
+                          >
+                            Ver
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
           
           {/* Indicador de scroll si hay muchas reservas */}

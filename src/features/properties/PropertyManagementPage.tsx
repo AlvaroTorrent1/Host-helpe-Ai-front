@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { supabase } from "@services/supabase";
-import { useAuth } from "@shared/contexts/AuthContext";
-import { useLanguage } from "@shared/contexts/LanguageContext";
-import { Property } from "@/types/property";
+import { Link, useNavigate } from "react-router-dom";
+import { Property, PropertyDocument, PropertyImage } from "../../types/property";
 import PropertyList from "./PropertyList";
 import PropertyForm from "./PropertyForm";
-import Modal from "@shared/components/Modal";
-import DashboardNavigation from "@features/dashboard/DashboardNavigation";
-import DashboardHeader from "@shared/components/DashboardHeader";
+import Modal from "../../shared/components/Modal";
+import DashboardHeader from "../../shared/components/DashboardHeader";
+import DashboardNavigation from "../../features/dashboard/DashboardNavigation";
+import { useAuth } from "../../shared/contexts/AuthContext";
+import { useLanguage } from "../../shared/contexts/LanguageContext";
+import supabase from "../../services/supabase";
 import documentService from "../../services/documentService";
 import { toast } from "react-hot-toast";
-import propertyWebhookService from "@services/propertyWebhookService";
-import webhookTestService from "@services/webhookTestService";
+import propertyWebhookService from "../../services/propertyWebhookService";
+import webhookTestService from "../../services/webhookTestService";
+import mediaService from "../../services/mediaService";
 
 interface PropertyManagementPageProps {
   onSignOut?: () => void;
@@ -308,17 +309,21 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           try {
             // Filtrar solo archivos con URLs válidas (no mock)
             const validImages = additional_images?.filter(img => 
-              img.file_url && !img.file_url.startsWith('#') && img.file_url.startsWith('http')
+              img.file_url && 
+              !img.file_url.startsWith('#') && 
+              (img.file_url.startsWith('http') || img.file_url.startsWith('data:image'))
             ) || [];
             
             const validDocs = documents?.filter(doc => 
-              doc.file_url && !doc.file_url.startsWith('#') && doc.file_url.startsWith('http')
+              doc.file_url && 
+              !doc.file_url.startsWith('#') && 
+              (doc.file_url.startsWith('http') || doc.file_url.startsWith('data:'))
             ) || [];
 
             // Si no hay archivos válidos, crear propiedad directamente
             if (validImages.length === 0 && validDocs.length === 0) {
               console.log('⚠️ No hay archivos válidos para procesar con IA, creando propiedad directamente');
-              await createPropertyDirectly(propertyDataToSend);
+              await createPropertyDirectly(propertyDataToSend, additional_images);
               
               // Cerrar modal después de crear exitosamente
               setModalOpen(false);
@@ -444,12 +449,12 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
             });
             
             // Fallback: crear directamente
-            await createPropertyDirectly(propertyDataToSend);
+            await createPropertyDirectly(propertyDataToSend, additional_images);
           }
         } else {
           // CREAR DIRECTAMENTE sin webhook (sin archivos o webhook deshabilitado)
           console.log('📝 Usando creación directa (sin archivos o webhook deshabilitado)');
-          await createPropertyDirectly(propertyDataToSend);
+          await createPropertyDirectly(propertyDataToSend, additional_images);
         }
       }
       
@@ -468,7 +473,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
   };
 
   // Función auxiliar para crear propiedad directamente
-  const createPropertyDirectly = async (propertyDataToSend: any) => {
+  const createPropertyDirectly = async (propertyDataToSend: any, additional_images?: PropertyImage[]) => {
     setProgressPhase('Creando propiedad...');
     setProgressPercent(50);
     
@@ -490,7 +495,46 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     if (error) throw error;
 
     if (data && data.length > 0) {
-      setProperties((prev) => [data[0], ...prev]);
+      const savedProperty = data[0];
+      
+      // Procesar imágenes si existen
+      if (additional_images && additional_images.length > 0) {
+        setProgressPhase('Procesando imágenes...');
+        setProgressPercent(70);
+        
+        try {
+          // Filtrar solo imágenes que tienen archivo File
+          const imageFiles = additional_images
+            .filter(img => img.file instanceof File)
+            .map(img => img.file as File);
+          
+          if (imageFiles.length > 0) {
+            console.log(`📸 Procesando ${imageFiles.length} imágenes para la propiedad ${savedProperty.id}`);
+            
+            // Subir imágenes usando mediaService
+            const uploadedImages = await mediaService.uploadMediaFiles(
+              savedProperty.id,
+              imageFiles,
+              (progress) => {
+                // Ajustar el progreso entre 70-90%
+                const adjustedProgress = 70 + (progress * 0.2);
+                setProgressPercent(Math.round(adjustedProgress));
+              }
+            );
+            
+            console.log(`✅ ${uploadedImages.length} imágenes subidas exitosamente`);
+            toast.success(`${uploadedImages.length} imágenes guardadas correctamente`);
+          } else {
+            console.log('⚠️ Las imágenes no tienen archivos File asociados');
+          }
+        } catch (imageError) {
+          console.error('Error al procesar imágenes:', imageError);
+          toast.error('Algunas imágenes no pudieron ser procesadas');
+          // No lanzar error, continuar con el proceso
+        }
+      }
+      
+      setProperties((prev) => [savedProperty, ...prev]);
       toast.success("Propiedad creada correctamente");
     }
   };

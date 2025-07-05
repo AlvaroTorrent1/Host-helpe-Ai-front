@@ -639,18 +639,18 @@ export const en = {
         pending: "Pending",
         canceled: "Canceled"
       },
-      success: {
-        created: "Reservation created successfully",
-        updated: "Reservation updated successfully",
-        deleted: "Reservation deleted successfully",
-        sentToSES: "Data sent successfully to the Traveler Entry System (SES)"
-      },
       errors: {
-        loadingData: "Error loading data. Please try again later.",
-        saving: "Error saving reservation. Please try again.",
+        saving: "Error saving the reservation. Please try again.",
+        updating: "Error updating reservation. Please try again.",
         deleting: "Error deleting reservation. Please try again.",
         sendingToSES: "Error sending data to SES. Please try again later.",
-        reservationNotFound: "Reservation not found."
+        reservationNotFound: "The requested reservation was not found",
+        propertyNotAvailable: "The property is not available for the selected dates",
+        loadingData: "Error loading data. Please reload the page."
+      },
+      successMessages: {
+        created: "The reservation has been created successfully",
+        updated: "The reservation has been updated successfully"
       },
       mockNotes: {
         confirmed: "Arriving late, after 8pm.",
@@ -691,6 +691,9 @@ export const en = {
         touristInfo: "Tourist Information",
         emergency: "Emergencies",
         other: "Others",
+        conversationSummary: "Conversation Summary",
+        reservationIssue: "Reservation Issues",
+        imageRequest: "Image Requests",
       },
       table: {
         title: "Title",
@@ -701,6 +704,15 @@ export const en = {
         date: "Date",
         resolved: "Resolved",
         pending: "Pending"
+      },
+      chat: {
+        messages: "messages",
+        hostHelper: "Host Helper AI",
+        user: "User",
+        agent: "AI Agent",
+        conversationCompleted: "Conversation completed",
+        closeChat: "Close Chat",
+        noMessages: "No messages in this conversation"
       },
     },
     sesRegistration: {
@@ -805,6 +817,24 @@ export const en = {
       account: "My Account",
       settings: "Settings",
       logout: "Log out",
+    },
+    propertyDetails: {
+      documents: "Documents",
+      description: "Description",
+      loadingDocuments: "Loading documents...",
+      noDocuments: "No documents available",
+      active: "Active",
+      inactive: "Inactive",
+      manageProperty: "Manage Property",
+      close: "Close",
+      viewDetails: "View Details",
+      documentTypes: {
+        house_rules: "House Rules",
+        inventory: "Inventory",
+        faq: "FAQ",
+        guide: "Guide",
+        other: "Other document"
+      }
     },
   },
   

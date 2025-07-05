@@ -10,7 +10,7 @@ import { tryCatch } from "../utils/commonUtils";
 import { formatFileSize } from "../utils";
 
 // Media bucket name
-const BUCKET_NAME = storageConfig.mediaBucket;
+const BUCKET_NAME = 'property-files';
 
 /**
  * Media item interface
@@ -128,6 +128,8 @@ export const uploadMediaFiles = async (
       const fileName = `${propertyId}/${Date.now()}_${uuidv4()}.${fileExt}`;
       
       // Upload the file to Supabase storage
+      console.log(`📤 Uploading file ${i + 1}/${files.length}: ${file.name} (${formatFileSize(file.size)})`);
+      
       const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
         .upload(fileName, file, {
@@ -136,9 +138,11 @@ export const uploadMediaFiles = async (
         });
       
       if (error) {
-        console.error("Error uploading media:", error);
+        console.error(`❌ Error uploading media ${file.name}:`, error);
         continue; // Skip this file and continue with others
       }
+      
+      console.log(`✅ File uploaded successfully: ${data.path}`);
       
       // Calculate image dimensions (optional - can be expanded)
       const dimensions = await getImageDimensions(file);
@@ -146,42 +150,63 @@ export const uploadMediaFiles = async (
       // Create a public URL for the uploaded file
       const publicUrl = data?.path
         ? supabase.storage.from(BUCKET_NAME).getPublicUrl(data.path).data.publicUrl
-        : "";
+        : "#"; // Use "#" as placeholder when upload fails (allowed by constraint)
+      
+      // Validate URL format before inserting
+      const isValidUrl = publicUrl === "#" || 
+                        publicUrl.startsWith("http://") || 
+                        publicUrl.startsWith("https://") || 
+                        publicUrl.startsWith("blob:");
+      
+      if (!isValidUrl) {
+        console.error(`❌ Invalid URL format for file ${file.name}: ${publicUrl}`);
+        continue; // Skip this file
+      }
         
-      // Create the media item in the database
+      // Create the media item in the database - UPDATED FOR media_files table
       const { data: mediaData, error: mediaError } = await supabase
-        .from("media")
+        .from("media_files") // Changed from "media" to "media_files"
         .insert({
           property_id: propertyId,
-          file_name: file.name,
-          file_type: file.type,
-          url: publicUrl,
-          size: file.size,
-          formatted_size: formatFileSize(file.size),
-          dimensions: dimensions ? JSON.stringify(dimensions) : null,
+          file_type: 'image', // enum value for media_files
+          category: 'gallery', // default category for property images
+          subcategory: determineSubcategory(file.name), // will create this function
+          title: file.name.split('.')[0] || 'Property Image',
+          description: '',
+          file_url: publicUrl,
+          public_url: publicUrl === "#" ? null : publicUrl, // Don't set public_url if placeholder
+          file_size: file.size,
+          mime_type: file.type,
+          is_shareable: true,
           created_at: new Date().toISOString(),
         })
         .select()
         .single();
       
       if (mediaError) {
-        console.error("Error saving media metadata:", mediaError);
+        console.error(`❌ Error saving media metadata for ${file.name}:`, mediaError);
         continue;
       }
       
-      // Add to results
+      console.log(`✅ Media saved to database: ${mediaData.title} (${mediaData.id})`);
+      
+      // Add to results - adapt to media_files structure
       results.push({
         id: mediaData.id,
         propertyId: mediaData.property_id,
-        fileName: mediaData.file_name,
+        fileName: mediaData.title,
         fileType: mediaData.file_type,
-        url: mediaData.url,
-        thumbnailUrl: mediaData.thumbnail_url,
-        size: mediaData.size,
-        formattedSize: mediaData.formatted_size || formatFileSize(mediaData.size),
-        dimensions: mediaData.dimensions ? JSON.parse(mediaData.dimensions) : undefined,
+        url: mediaData.file_url,
+        thumbnailUrl: mediaData.public_url,
+        size: mediaData.file_size || 0,
+        formattedSize: formatFileSize(mediaData.file_size || 0),
+        dimensions: dimensions,
         createdAt: mediaData.created_at,
-        metadata: mediaData.metadata,
+        metadata: {
+          category: mediaData.category,
+          subcategory: mediaData.subcategory,
+          is_shareable: mediaData.is_shareable
+        },
       });
       
       // Report progress
@@ -192,6 +217,29 @@ export const uploadMediaFiles = async (
     
     return results;
   }, [] as MediaItem[]);
+};
+
+/**
+ * Helper function to determine subcategory based on file name or other criteria
+ */
+const determineSubcategory = (fileName: string): string => {
+  const lowerName = fileName.toLowerCase();
+  
+  if (lowerName.includes('exterior') || lowerName.includes('fachada')) {
+    return 'Exterior';
+  } else if (lowerName.includes('cocina') || lowerName.includes('kitchen')) {
+    return 'Cocina';
+  } else if (lowerName.includes('sala') || lowerName.includes('living')) {
+    return 'Sala de estar';
+  } else if (lowerName.includes('dormitorio') || lowerName.includes('bedroom')) {
+    return 'Dormitorio';
+  } else if (lowerName.includes('baño') || lowerName.includes('bathroom')) {
+    return 'Baño';
+  } else if (lowerName.includes('terraza') || lowerName.includes('balcon')) {
+    return 'Terraza';
+  } else {
+    return 'General';
+  }
 };
 
 /**
@@ -208,15 +256,15 @@ export const getMediaByProperty = async (
   const offset = (page - 1) * limit;
 
   try {
-    // Get total count
+    // Get total count - UPDATED FOR media_files table
     const { count } = await supabase
-      .from("media")
+      .from("media_files") // Changed from "media" to "media_files"
       .select("id", { count: "exact", head: true })
       .eq("property_id", propertyId);
 
-    // Get items for this page
+    // Get items for this page - UPDATED FOR media_files table
     const { data, error } = await supabase
-      .from("media")
+      .from("media_files") // Changed from "media" to "media_files"
       .select("*")
       .eq("property_id", propertyId)
       .order("created_at", { ascending: false })
@@ -224,19 +272,24 @@ export const getMediaByProperty = async (
 
     if (error) throw error;
 
-    // Convert to MediaItem model
+    // Convert to MediaItem model - adapted for media_files structure
     const items: MediaItem[] = data.map((item) => ({
       id: item.id,
       propertyId: item.property_id,
-      fileName: item.file_name,
+      fileName: item.title,
       fileType: item.file_type,
-      url: item.url,
-      thumbnailUrl: item.thumbnail_url,
-      size: item.size,
-      formattedSize: item.formatted_size || formatFileSize(item.size),
-      dimensions: item.dimensions ? JSON.parse(item.dimensions) : undefined,
+      url: item.file_url,
+      thumbnailUrl: item.public_url,
+      size: item.file_size || 0,
+      formattedSize: formatFileSize(item.file_size || 0),
+      dimensions: undefined, // Not stored in media_files
       createdAt: item.created_at,
-      metadata: item.metadata,
+      metadata: {
+        category: item.category,
+        subcategory: item.subcategory,
+        is_shareable: item.is_shareable,
+        description: item.description
+      },
     }));
 
     return {
@@ -257,8 +310,9 @@ export const getMediaByProperty = async (
  */
 export const getMediaById = async (mediaId: string): Promise<MediaItem | null> => {
   return tryCatch(async () => {
+    // UPDATED FOR media_files table
     const { data, error } = await supabase
-      .from("media")
+      .from("media_files") // Changed from "media" to "media_files"
       .select("*")
       .eq("id", mediaId)
       .single();
@@ -269,15 +323,20 @@ export const getMediaById = async (mediaId: string): Promise<MediaItem | null> =
     return {
       id: data.id,
       propertyId: data.property_id,
-      fileName: data.file_name,
+      fileName: data.title,
       fileType: data.file_type,
-      url: data.url,
-      thumbnailUrl: data.thumbnail_url,
-      size: data.size,
-      formattedSize: data.formatted_size || formatFileSize(data.size),
-      dimensions: data.dimensions ? JSON.parse(data.dimensions) : undefined,
+      url: data.file_url,
+      thumbnailUrl: data.public_url,
+      size: data.file_size || 0,
+      formattedSize: formatFileSize(data.file_size || 0),
+      dimensions: undefined,
       createdAt: data.created_at,
-      metadata: data.metadata,
+      metadata: {
+        category: data.category,
+        subcategory: data.subcategory,
+        is_shareable: data.is_shareable,
+        description: data.description
+      },
     };
   }, null);
 };
@@ -289,17 +348,17 @@ export const getMediaById = async (mediaId: string): Promise<MediaItem | null> =
  */
 export const deleteMedia = async (mediaId: string): Promise<boolean> => {
   return tryCatch(async () => {
-    // First get the file path
+    // First get the file path - UPDATED FOR media_files table
     const { data, error } = await supabase
-      .from("media")
-      .select("url")
+      .from("media_files") // Changed from "media" to "media_files"
+      .select("file_url")
       .eq("id", mediaId)
       .single();
     
     if (error) throw error;
     
     // Extract the file path from the URL
-    const url = data.url;
+    const url = data.file_url;
     const path = url.split('/').slice(-2).join('/'); // Get last 2 segments
     
     // Delete from storage
@@ -312,9 +371,9 @@ export const deleteMedia = async (mediaId: string): Promise<boolean> => {
       // Continue anyway to delete the database entry
     }
     
-    // Delete from database
+    // Delete from database - UPDATED FOR media_files table
     const { error: dbError } = await supabase
-      .from("media")
+      .from("media_files") // Changed from "media" to "media_files"
       .delete()
       .eq("id", mediaId);
     
@@ -366,8 +425,8 @@ export const optimizeImage = async (mediaId: string): Promise<boolean> => {
   // For now, just a placeholder
   return tryCatch(async () => {
     const { data } = await supabase
-      .from("media")
-      .select("url")
+      .from("media_files")
+      .select("file_url")
       .eq("id", mediaId)
       .single();
     
@@ -378,7 +437,7 @@ export const optimizeImage = async (mediaId: string): Promise<boolean> => {
     
     // Update record to indicate optimization
     await supabase
-      .from("media")
+      .from("media_files")
       .update({
         metadata: { optimized: true, optimizedAt: new Date().toISOString() }
       })

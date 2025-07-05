@@ -43,6 +43,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
         file_url: result,
         description: "",
         uploaded_at: new Date().toISOString(),
+        file: file,
       };
 
       onChange([...images, newImage]);

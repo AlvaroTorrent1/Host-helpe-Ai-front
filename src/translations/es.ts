@@ -649,11 +649,17 @@ export const es = {
         sentToSES: "Datos enviados correctamente al Sistema de Entrada de Viajeros (SES)"
       },
       errors: {
-        loadingData: "Error al cargar los datos. Por favor, inténtalo de nuevo más tarde.",
-        saving: "Error al guardar la reserva. Por favor, inténtalo de nuevo.",
+        saving: "Error al guardar la reserva. Por favor, intenta de nuevo.",
+        updating: "Error al actualizar la reserva. Por favor, inténtalo de nuevo.",
         deleting: "Error al eliminar la reserva. Por favor, inténtalo de nuevo.",
         sendingToSES: "Error al enviar datos al SES. Por favor, inténtalo de nuevo más tarde.",
-        reservationNotFound: "Reserva no encontrada."
+        reservationNotFound: "La reserva solicitada no fue encontrada",
+        propertyNotAvailable: "La propiedad no está disponible para las fechas seleccionadas",
+        loadingData: "Error al cargar los datos. Por favor, recarga la página."
+      },
+      successMessages: {
+        created: "La reserva se ha creado exitosamente",
+        updated: "La reserva se ha actualizado exitosamente"
       },
       mockNotes: {
         confirmed: "Llegan tarde, después de las 8pm.",
@@ -694,6 +700,9 @@ export const es = {
         touristInfo: "Información Turística",
         emergency: "Emergencias",
         other: "Otros",
+        conversationSummary: "Resumen de Conversación",
+        reservationIssue: "Problemas de Reserva",
+        imageRequest: "Solicitudes de Imágenes",
       },
       table: {
         title: "Título",
@@ -704,6 +713,15 @@ export const es = {
         date: "Fecha",
         resolved: "Resuelto",
         pending: "Pendiente"
+      },
+      chat: {
+        messages: "mensajes",
+        hostHelper: "Host Helper AI",
+        user: "Usuario",
+        agent: "Agente IA",
+        conversationCompleted: "Conversación completada",
+        closeChat: "Cerrar Chat",
+        noMessages: "No hay mensajes en esta conversación"
       },
     },
     sesRegistration: {
@@ -809,6 +827,24 @@ export const es = {
       account: "Mi Cuenta",
       settings: "Configuración",
       logout: "Cerrar sesión",
+    },
+    propertyDetails: {
+      documents: "Documentos",
+      description: "Descripción",
+      loadingDocuments: "Cargando documentos...",
+      noDocuments: "No hay documentos disponibles",
+      active: "Activa",
+      inactive: "Inactiva",
+      manageProperty: "Gestionar Propiedad",
+      close: "Cerrar",
+      viewDetails: "Ver Detalles",
+      documentTypes: {
+        house_rules: "Reglas de la casa",
+        inventory: "Inventario",
+        faq: "Preguntas frecuentes",
+        guide: "Guía",
+        other: "Otro documento"
+      }
     },
   },
   
