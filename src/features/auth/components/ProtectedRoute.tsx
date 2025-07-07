@@ -30,7 +30,7 @@ const ProtectedRoute = ({
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Si todo está bien, mostrar los children
+  // Si está autenticado, mostrar el contenido
   return <>{children}</>;
 };
 

@@ -75,10 +75,10 @@ const AuthCallbackPage = () => {
         }
 
         if (data?.session) {
-          // Si hay una sesión activa, redirigir a la página de precios
+          // Si hay una sesión activa, redirigir al dashboard
           setMessage("¡Autenticación exitosa!");
           setIsLoading(false);
-          setTimeout(() => navigate("/pricing"), 1500);
+          setTimeout(() => navigate("/dashboard"), 1500);
         } else {
           // Si no hay sesión, verificar si hay un hash en la URL (para confirmación de correo)
           const hash = window.location.hash;
@@ -138,7 +138,7 @@ const AuthCallbackPage = () => {
               if (sessionData?.session) {
                 setMessage("¡Correo confirmado!");
                 setIsLoading(false);
-                setTimeout(() => navigate("/pricing"), 1500);
+                setTimeout(() => navigate("/dashboard"), 1500);
               } else {
                 // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
                 const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta.";
@@ -244,7 +244,7 @@ const AuthCallbackPage = () => {
               {message}
             </h2>
             <p className="text-gray-600">
-              Redirigiendo a la página de precios...
+              Redirigiendo al dashboard...
             </p>
             
             {/* Barra de progreso */}

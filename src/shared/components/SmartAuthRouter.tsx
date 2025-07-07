@@ -2,15 +2,10 @@
 // Componente inteligente que maneja el enrutamiento post-autenticación
 // Decide automáticamente a dónde redirigir al usuario basado en su estado
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@shared/contexts/AuthContext';
-import { useGlobalLoading } from '@shared/contexts/GlobalLoadingContext';
-import { 
-  handleAuthenticationFlow, 
-  determineUserDestination,
-  AuthFlowDestination 
-} from '@/services/authFlowService';
+import { AuthFlowDestination } from '@/services/authFlowService';
 import toast from 'react-hot-toast';
 
 interface SmartAuthRouterProps {
@@ -36,89 +31,52 @@ const SmartAuthRouter: React.FC<SmartAuthRouterProps> = ({
   onRedirectComplete,
   fallbackRoute = '/pricing'
 }) => {
-  const { user, loading: authLoading } = useAuth();
-  const { setLoading, clearLoading } = useGlobalLoading();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [isProcessing, setIsProcessing] = useState(true);
-  const [destination, setDestination] = useState<AuthFlowDestination | null>(null);
 
   useEffect(() => {
-    const processAuthFlow = async () => {
-      console.log('🚀 SmartAuthRouter: Iniciando procesamiento de flujo de auth');
+    const handleAuthFlow = async () => {
+      if (!user) return;
       
-      // Esperar a que termine de cargar la autenticación
-      if (authLoading) {
-        console.log('⏳ SmartAuthRouter: Esperando a que termine la carga de auth...');
-        setLoading(true, 'smart-auth-router', 2);
-        return;
-      }
-
       try {
-        setIsProcessing(true);
-        setLoading(true, 'smart-auth-router', 2);
+        console.log('🚀 SmartAuthRouter: Iniciando flujo de autenticación');
         
-        // Determinar destino
-        const targetDestination = await determineUserDestination(user, authMethod);
-        setDestination(targetDestination);
+        // CAMBIO: Siempre redirigir al dashboard, sin verificar suscripción
+        const destination: AuthFlowDestination = '/dashboard';
         
-        console.log(`🎯 SmartAuthRouter: Destino determinado: ${targetDestination}`);
+        // Si hay un plan seleccionado, mantenerlo en localStorage para después
+        if (selectedPlan) {
+          console.log('💾 SmartAuthRouter: Plan seleccionado detectado, preservando para después');
+          localStorage.setItem("selectedPlanId", selectedPlan.id);
+          localStorage.setItem("selectedPlanName", selectedPlan.name);
+          localStorage.setItem("selectedPlanPrice", selectedPlan.price.toString());
+        }
         
         // Mostrar mensaje de bienvenida si es necesario
-        if (showWelcomeMessage && user) {
-          const welcomeMessage = authMethod === 'google' 
-            ? `¡Bienvenido/a ${user.email?.split('@')[0]}!`
-            : authMethod === 'register'
-              ? '¡Cuenta creada exitosamente!'
-              : `¡Bienvenido/a de vuelta!`;
-          
-          toast.success(welcomeMessage, {
-            duration: 3000,
-            position: 'top-center'
-          });
+        if (showWelcomeMessage) {
+          const welcomeMsg = authMethod === 'google' 
+            ? `¡Bienvenido/a ${user.email}!`
+            : '¡Cuenta creada exitosamente!';
+          toast.success(welcomeMsg);
         }
         
-        // Manejar flujo completo de autenticación
-        await handleAuthenticationFlow(
-          user,
-          authMethod,
-          navigate,
-          {
-            selectedPlan,
-            showWelcomeMessage: false // Ya lo manejamos arriba
-          }
-        );
+        console.log('🎯 SmartAuthRouter: Redirigiendo a:', destination);
+        navigate(destination);
         
-        // Notificar que la redirección está completa
+        // Notificar que la redirección se completó
         if (onRedirectComplete) {
-          onRedirectComplete(targetDestination);
+          onRedirectComplete(destination);
         }
-        
-        // Limpiar loading state
-        clearLoading('smart-auth-router');
         
       } catch (error) {
-        console.error('❌ SmartAuthRouter: Error procesando flujo de auth:', error);
-        
-        // Fallback en caso de error
-        toast.error('Error procesando autenticación. Redirigiendo...', {
-          duration: 2000
-        });
-        
-        navigate(fallbackRoute);
-        
-        if (onRedirectComplete) {
-          onRedirectComplete(fallbackRoute as AuthFlowDestination);
-        }
-        
-        // Limpiar loading state en caso de error
-        clearLoading('smart-auth-router');
-      } finally {
-        setIsProcessing(false);
+        console.error('❌ SmartAuthRouter: Error en flujo de autenticación:', error);
+        // En caso de error, redirigir al dashboard como fallback
+        navigate('/dashboard');
       }
     };
-
-    processAuthFlow();
-  }, [user, authLoading, authMethod, selectedPlan, showWelcomeMessage, navigate, onRedirectComplete, fallbackRoute]);
+    
+    handleAuthFlow();
+  }, [user, authMethod, showWelcomeMessage, navigate, onRedirectComplete, selectedPlan]);
 
   // No renderizar nada - el GlobalLoadingProvider maneja el loading state
   // El componente solo procesa la lógica de redirección

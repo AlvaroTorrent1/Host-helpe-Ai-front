@@ -689,7 +689,11 @@ export const es = {
       filters: {
         allProperties: "Todas las propiedades",
         clearFilters: "Limpiar filtros",
-        activeFilters: "Filtros activos"
+        activeFilters: "Filtros activos",
+        month: "Mes",
+        allMonths: "Todos los meses",
+        withSelectedFilters: "con los filtros seleccionados",
+        allStatus: "Todos"
       },
       status: {
         resolved: "Resuelta",
@@ -974,5 +978,64 @@ export const es = {
     saveProperty: "Error al guardar propiedad:",
     savePropertyAlert: "Hubo un error al guardar la propiedad. Por favor, intenta de nuevo.",
     signOut: "Error al cerrar sesión"
+  },
+  
+  // Modal de upgrade y planes
+  upgrade: {
+    features: {
+      property: {
+        title: "Suscripción requerida para crear propiedades",
+        description: "Con un plan de suscripción puedes crear y gestionar múltiples propiedades, agregar imágenes, documentos y acceder a todas las funciones avanzadas."
+      },
+      reservation: {
+        title: "Límite de reservas alcanzado",
+        description: "Actualiza tu plan para gestionar más reservas y acceder a funciones avanzadas de gestión."
+      },
+      analytics: {
+        title: "Analíticas - Función Premium",
+        description: "Obtén información valiosa sobre el rendimiento de tus propiedades y reservas con nuestros planes de suscripción."
+      },
+      export: {
+        title: "Exportación de Datos - Función Pro",
+        description: "Exporta tus datos en múltiples formatos con nuestros planes Pro y Enterprise."
+      },
+      custom: {
+        title: "Función Premium",
+        description: "Esta funcionalidad está disponible en nuestros planes de suscripción."
+      }
+    },
+    plans: {
+      professional: {
+        recommend: "Recomendamos el plan",
+        features: {
+          properties: "Hasta 5 propiedades",
+          basic: "Todo lo de Básico",
+          priority: "Atención prioritaria",
+          analytics: "Analíticas e informes avanzados",
+          legal: "Consultoría legal turística",
+          automation: "Llamadas automáticas programables"
+        }
+      },
+      pro: {
+        features: {
+          unlimited_properties: "Propiedades ilimitadas",
+          unlimited_reservations: "Reservas ilimitadas",
+          advanced_analytics: "Analíticas avanzadas",
+          data_export: "Exportación de datos"
+        }
+      },
+      enterprise: {
+        features: {
+          everything_pro: "Todo lo de Pro",
+          priority_support: "Soporte prioritario",
+          custom_integrations: "Integraciones personalizadas"
+        }
+      }
+    },
+    actions: {
+      later: "Más tarde",
+      viewPlans: "Ver planes disponibles"
+    },
+    freeReminder: "Puedes continuar explorando la aplicación con tu cuenta gratuita"
   }
 };

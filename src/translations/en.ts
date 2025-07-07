@@ -678,7 +678,11 @@ export const en = {
       filters: {
         allProperties: "All properties",
         clearFilters: "Clear filters",
-        activeFilters: "Active filters"
+        activeFilters: "Active filters",
+        month: "Month",
+        allMonths: "All months",
+        withSelectedFilters: "with the selected filters",
+        allStatus: "All"
       },
       status: {
         resolved: "Resolved",
@@ -1050,5 +1054,64 @@ export const en = {
       noDocuments: "No documents available",
       addDocumentsWhileEditing: "You can add documents such as guides, FAQs, or rules when editing the property."
     }
+  },
+  
+  // Upgrade modal and plans
+  upgrade: {
+    features: {
+      property: {
+        title: "Subscription required to create properties",
+        description: "With a subscription plan you can create and manage multiple properties, add images, documents and access all advanced features."
+      },
+      reservation: {
+        title: "Reservation limit reached",
+        description: "Upgrade your plan to manage more reservations and access advanced management features."
+      },
+      analytics: {
+        title: "Analytics - Premium Feature",
+        description: "Get valuable insights about your properties and reservations performance with our subscription plans."
+      },
+      export: {
+        title: "Data Export - Pro Feature",
+        description: "Export your data in multiple formats with our Pro and Enterprise plans."
+      },
+      custom: {
+        title: "Premium Feature",
+        description: "This functionality is available in our subscription plans."
+      }
+    },
+    plans: {
+      professional: {
+        recommend: "We recommend the",
+        features: {
+          properties: "Up to 5 properties",
+          basic: "Everything in Basic",
+          priority: "Priority support",
+          analytics: "Advanced analytics and reports",
+          legal: "Tourism legal consulting",
+          automation: "Programmable automatic calls"
+        }
+      },
+      pro: {
+        features: {
+          unlimited_properties: "Unlimited properties",
+          unlimited_reservations: "Unlimited reservations",
+          advanced_analytics: "Advanced analytics",
+          data_export: "Data export"
+        }
+      },
+      enterprise: {
+        features: {
+          everything_pro: "Everything in Pro",
+          priority_support: "Priority support",
+          custom_integrations: "Custom integrations"
+        }
+      }
+    },
+    actions: {
+      later: "Later",
+      viewPlans: "View available plans"
+    },
+    freeReminder: "You can continue exploring the app with your free account"
   }
 };

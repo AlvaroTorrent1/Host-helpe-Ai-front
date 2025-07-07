@@ -505,37 +505,57 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Indicador de pasos */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-full">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-500">
-              {t("properties.form.steps.step")} {currentStep} {t("properties.form.steps.of")} {totalSteps}
+    <>
+      <form onSubmit={handleSubmit} className="space-y-8 divide-y divide-gray-200">
+        <div className="space-y-8 divide-y divide-gray-200">
+          <div>
+            <div className="pb-5">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {property
+                  ? t("properties.form.titles.edit")
+                  : t("properties.form.titles.create")}
+              </h3>
             </div>
-            <div className="text-xs font-medium text-gray-500">
-              {currentStep === 1
-                ? t("properties.form.steps.basicInfo")
-                : currentStep === 2
-                  ? t("properties.form.steps.additionalImages")
-                  : currentStep === 3
-                    ? t("properties.form.steps.documents")
-                    : t("properties.form.steps.googleBusiness")}
+
+            {/* Progress indicator */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between">
+                {[1, 2, 3, 4].map((step) => (
+                  <div
+                    key={step}
+                    className={`flex-1 ${step < 4 ? "mr-2" : ""}`}
+                  >
+                    <div
+                      className={`h-2 rounded-full ${
+                        step <= currentStep
+                          ? "bg-primary-600"
+                          : "bg-gray-200"
+                      }`}
+                    />
+                    <p
+                      className={`mt-2 text-xs text-center ${
+                        step <= currentStep
+                          ? "text-primary-600 font-medium"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {step === 1 && t("properties.form.steps.basic")}
+                      {step === 2 && t("properties.form.steps.images")}
+                      {step === 3 && t("properties.form.steps.documents")}
+                      {step === 4 && t("properties.form.steps.google")}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="overflow-hidden rounded-full bg-gray-200">
-            <div
-              className="h-2 rounded-full bg-primary-600"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
+
+            {renderCurrentStep()}
           </div>
         </div>
-      </div>
 
-      {renderCurrentStep()}
-
-      {renderActionButtons()}
-    </form>
+        {renderActionButtons()}
+      </form>
+    </>
   );
 };
 

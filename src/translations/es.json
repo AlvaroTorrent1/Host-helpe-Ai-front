@@ -1,4 +1,17 @@
 {
+  "properties": {
+    "form": {
+      "titles": {
+        "create": "Crear Propiedad",
+        "edit": "Editar Propiedad"
+      },
+      "steps": {
+        "basic": "Información Básica",
+        "images": "Imágenes",
+        "google": "Google Maps"
+      }
+    }
+  },
   "ses": {
     "history": {
       "title": "Historial de Envíos SES",
@@ -43,5 +56,62 @@
       "first": "Primera",
       "last": "Última"
     }
+  },
+  "upgrade": {
+    "features": {
+      "property": {
+        "title": "Suscripción requerida para crear propiedades",
+        "description": "Con un plan de suscripción podrás crear y gestionar múltiples propiedades, añadir imágenes, documentos y acceder a todas las funcionalidades avanzadas."
+      },
+      "reservation": {
+        "title": "Límite de reservas alcanzado",
+        "description": "Actualiza tu plan para gestionar más reservas y acceder a funciones avanzadas de administración."
+      },
+      "analytics": {
+        "title": "Analytics - Función Premium",
+        "description": "Obtén insights valiosos sobre el rendimiento de tus propiedades y reservas con nuestros planes de suscripción."
+      },
+      "export": {
+        "title": "Exportación de datos - Función Pro",
+        "description": "Exporta tus datos en múltiples formatos con nuestros planes Pro y Enterprise."
+      },
+      "custom": {
+        "title": "Función Premium",
+        "description": "Esta funcionalidad está disponible en nuestros planes de suscripción."
+      }
+    },
+    "plans": {
+      "professional": {
+        "recommend": "Te recomendamos el plan",
+        "features": {
+          "properties": "Hasta 5 propiedades",
+          "basic": "Todo lo de Básico",
+          "priority": "Atención prioritaria",
+          "analytics": "Analíticas e informes avanzados",
+          "legal": "Consultoría legal turística",
+          "automation": "Llamadas automáticas programables"
+        }
+      },
+      "pro": {
+        "features": {
+          "unlimited_properties": "Propiedades ilimitadas",
+          "unlimited_reservations": "Reservas ilimitadas",
+          "advanced_analytics": "Analytics avanzado",
+          "data_export": "Exportación de datos"
+        }
+      },
+      "enterprise": {
+        "features": {
+          "everything_pro": "Todo lo de Pro",
+          "priority_support": "Soporte prioritario",
+          "custom_integrations": "Integraciones personalizadas"
+        }
+      }
+    },
+    "actions": {
+      "later": "Más tarde",
+      "viewPlans": "Ver planes disponibles"
+    },
+    "freeReminder": "Puedes seguir explorando la aplicación con tu cuenta gratuita"
   }
 } 

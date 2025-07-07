@@ -4,6 +4,7 @@ import { AuthProvider } from "./shared/contexts/AuthContext";
 import { LanguageProvider } from "./shared/contexts/LanguageContext";
 import { PaymentFlowProvider } from "./shared/contexts/PaymentFlowContext";
 import { GlobalLoadingProvider } from "./shared/contexts/GlobalLoadingContext";
+import { UserStatusProvider } from "./shared/contexts/UserStatusContext";
 import "./index.css";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
@@ -88,97 +89,99 @@ function App() {
         <LanguageProvider>
           <GlobalLoadingProvider>
             <AuthProvider>
-              <PaymentFlowProvider>
-              <Router>
-              <RouteTracker />
-              <Suspense fallback={<LoadingScreen />}>
-                <Routes>
-                  {/* Rutas públicas */}
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/chatbot" element={<ChatbotPage />} />
-                  <Route path="/check-in" element={<CheckinPage />} />
-                  <Route path="/upselling" element={<UpsellingPage />} />
-                  <Route path="/pricing" element={<PricingPage />} />
-                  <Route path="/testimonios" element={<TestimoniosPage />} />
-                  <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/auth/callback" element={<AuthCallbackPage />} />
-                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <UserStatusProvider>
+                <PaymentFlowProvider>
+                  <Router>
+                    <RouteTracker />
+                    <Suspense fallback={<LoadingScreen />}>
+                      <Routes>
+                        {/* Rutas públicas */}
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/chatbot" element={<ChatbotPage />} />
+                        <Route path="/check-in" element={<CheckinPage />} />
+                        <Route path="/upselling" element={<UpsellingPage />} />
+                        <Route path="/pricing" element={<PricingPage />} />
+                        <Route path="/testimonios" element={<TestimoniosPage />} />
+                        <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                        <Route path="/payment/success" element={<PaymentSuccessPage />} />
 
-                    {/* TEMPORAL: Ruta de testing */}
-                    {/* <Route path="/test-connectivity" element={<TestConnectivity />} /> */}
+                        {/* TEMPORAL: Ruta de testing */}
+                        {/* <Route path="/test-connectivity" element={<TestConnectivity />} /> */}
 
-                  {/* Rutas protegidas */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <DashboardPage />
-                      </ProtectedRoute>
-                    }
-                  />
-
-                  {/* Definir el resto de rutas protegidas de forma dinámica */}
-                  {protectedRoutes
-                    .filter((route) => route.path !== "/dashboard") // Excluimos la ruta que ya definimos
-                    .map((route) => {
-                      const Component = lazy(
-                        () => {
-                          // Intentar diferentes combinaciones de rutas para manejar estructuras de carpetas inconsistentes
-                          const componentName = route.componentName;
-                          const folderName = componentName.toLowerCase();
-                          const alternativeFolderName = componentName.toLowerCase().replace('page', '');
-                          
-                          // Para PropertiesPage y ReservationsPage, usar nombres específicos
-                          if (componentName === 'PropertiesPage') {
-                            return import(/* @vite-ignore */ './features/propertiespage/PropertiesPage.tsx');
-                          }
-                          
-                          if (componentName === 'ReservationsPage') {
-                            return import(/* @vite-ignore */ './features/reservations/ReservationsPage.tsx');
-                          }
-                          
-                          // Para la página SES, usar la ruta específica
-                          if (componentName === 'SESRegistrationPage') {
-                            return import(/* @vite-ignore */ './features/ses/SESRegistrationPage.tsx');
-                          }
-                          
-                          // Para otros componentes, usar la estructura general
-                          return import(/* @vite-ignore */ `./features/${alternativeFolderName}/${componentName}.tsx`);
-                        }
-                      );
-                      return (
+                        {/* Rutas protegidas */}
                         <Route
-                          key={route.path}
-                          path={route.path}
+                          path="/dashboard"
                           element={
                             <ProtectedRoute>
-                              <Component />
+                              <DashboardPage />
                             </ProtectedRoute>
                           }
                         />
-                      );
-                    })}
 
-                  {/* Ruta 404 para cualquier otra URL */}
-                  <Route path="*" element={<NotFoundPage />} />
+                        {/* Definir el resto de rutas protegidas de forma dinámica */}
+                        {protectedRoutes
+                          .filter((route) => route.path !== "/dashboard") // Excluimos la ruta que ya definimos
+                          .map((route) => {
+                            const Component = lazy(
+                              () => {
+                                // Intentar diferentes combinaciones de rutas para manejar estructuras de carpetas inconsistentes
+                                const componentName = route.componentName;
+                                const folderName = componentName.toLowerCase();
+                                const alternativeFolderName = componentName.toLowerCase().replace('page', '');
+                                
+                                // Para PropertiesPage y ReservationsPage, usar nombres específicos
+                                if (componentName === 'PropertiesPage') {
+                                  return import(/* @vite-ignore */ './features/propertiespage/PropertiesPage.tsx');
+                                }
+                                
+                                if (componentName === 'ReservationsPage') {
+                                  return import(/* @vite-ignore */ './features/reservations/ReservationsPage.tsx');
+                                }
+                                
+                                // Para la página SES, usar la ruta específica
+                                if (componentName === 'SESRegistrationPage') {
+                                  return import(/* @vite-ignore */ './features/ses/SESRegistrationPage.tsx');
+                                }
+                                
+                                // Para otros componentes, usar la estructura general
+                                return import(/* @vite-ignore */ `./features/${alternativeFolderName}/${componentName}.tsx`);
+                              }
+                            );
+                            return (
+                              <Route
+                                key={route.path}
+                                path={route.path}
+                                element={
+                                  <ProtectedRoute>
+                                    <Component />
+                                  </ProtectedRoute>
+                                }
+                              />
+                            );
+                          })}
 
-                  {/* Nueva ruta temporal para acceder al PropertyManagement correcto */}
-                  <Route 
-                    path="/properties/management" 
-                    element={
-                      <ProtectedRoute>
-                        <PropertyManagement />
-                      </ProtectedRoute>
-                    } 
-                  />
-                </Routes>
-              </Suspense>
-            </Router>
-            </PaymentFlowProvider>
-          </AuthProvider>
-        </GlobalLoadingProvider>
+                        {/* Ruta 404 para cualquier otra URL */}
+                        <Route path="*" element={<NotFoundPage />} />
+
+                        {/* Nueva ruta temporal para acceder al PropertyManagement correcto */}
+                        <Route 
+                          path="/properties/management" 
+                          element={
+                            <ProtectedRoute>
+                              <PropertyManagement />
+                            </ProtectedRoute>
+                          } 
+                        />
+                      </Routes>
+                    </Suspense>
+                  </Router>
+                </PaymentFlowProvider>
+              </UserStatusProvider>
+            </AuthProvider>
+          </GlobalLoadingProvider>
         </LanguageProvider>
       </HelmetProvider>
 

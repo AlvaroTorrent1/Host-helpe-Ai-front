@@ -80,7 +80,8 @@ export const checkUserSubscriptionStatus = async (userId: string): Promise<UserS
 };
 
 /**
- * Determina hacia dónde redirigir al usuario basado en su estado de autenticación y suscripción
+ * Determina hacia dónde redirigir al usuario basado en su estado de autenticación
+ * CAMBIO: Ya no verificamos suscripción - todos los usuarios autenticados van al dashboard
  */
 export const determineUserDestination = async (
   user: User | null,
@@ -98,18 +99,10 @@ export const determineUserDestination = async (
     return '/login';
   }
   
-  // Verificar estado de suscripción
-  const subscriptionStatus = await checkUserSubscriptionStatus(user.id);
-  
-  // Si tiene suscripción activa, ir al dashboard
-  if (subscriptionStatus.hasActiveSubscription) {
-    console.log('✅ AuthFlow: Usuario con suscripción activa, redirigiendo a dashboard');
-    return '/dashboard';
-  }
-  
-  // Si no tiene suscripción activa, ir a pricing
-  console.log('⚠️ AuthFlow: Usuario sin suscripción activa, redirigiendo a pricing');
-  return '/pricing';
+  // CAMBIO PRINCIPAL: Todos los usuarios autenticados van al dashboard
+  // Ya no verificamos estado de suscripción aquí
+  console.log('✅ AuthFlow: Usuario autenticado, redirigiendo a dashboard');
+  return '/dashboard';
 };
 
 /**
@@ -153,8 +146,8 @@ export const handleAuthenticationFlow = async (
     
   } catch (error) {
     console.error('❌ AuthFlow: Error en flujo de autenticación:', error);
-    // En caso de error, redirigir a pricing como fallback
-    navigate('/pricing');
+    // En caso de error, redirigir a dashboard como fallback
+    navigate('/dashboard');
   }
 };
 

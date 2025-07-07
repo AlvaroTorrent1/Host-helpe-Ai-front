@@ -8,7 +8,6 @@ import { Navigate, useLocation } from "react-router-dom";
 import { securityService } from "../../services/security.service";
 import { ROUTES } from "../../config/constants";
 import { useGlobalLoading } from "../contexts/GlobalLoadingContext";
-import { useSubscription } from "@shared/hooks/useSubscription";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -19,13 +18,12 @@ interface ProtectedRouteProps {
  * Componente que protege las rutas que requieren autenticación
  * Redirige a la página de inicio de sesión si el usuario no está autenticado
  * También puede verificar roles específicos si se especifica requiredRole
- * Además, verifica si el usuario tiene una suscripción activa, si no, redirige a la página de precios
+ * CAMBIO: Ya no verifica suscripciones - las limitaciones se manejan en cada componente
  */
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasRequiredRole, setHasRequiredRole] = useState(true);
-  const { hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
   const { setLoading, clearLoading } = useGlobalLoading();
   const location = useLocation();
 
@@ -57,8 +55,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   }, [requiredRole, setLoading, clearLoading]);
 
   // El GlobalLoadingProvider maneja el loading state
-  // Solo verificar si está listo para proceder
-  if (isLoading || subscriptionLoading) {
+  if (isLoading) {
     return null; // El GlobalLoadingProvider se encarga del loading visual
   }
 
@@ -72,18 +69,11 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to="/access-denied" replace />;
   }
 
-  // 🔧 EXCEPCIÓN: Permitir acceso a /properties/management sin verificar suscripción
-  // Esto es para testing del sistema de webhook N8N con categorización IA
-  const isPropertiesManagement = location.pathname === '/properties/management';
+  // CAMBIO: Eliminada toda la lógica de verificación de suscripción
+  // Los usuarios autenticados pueden acceder a todas las rutas protegidas
+  // Las limitaciones por plan se manejan dentro de cada componente usando UserStatusContext
   
-  // Si está autenticado pero no tiene suscripción activa, redirigir a la página de precios
-  // EXCEPTO para /properties/management que se permite para testing
-  if (!hasActiveSubscription && !isPropertiesManagement) {
-    return <Navigate to="/pricing" state={{ from: location }} replace />;
-  }
-
-  // Si está autenticado, tiene el rol requerido (o no se requiere rol) y tiene suscripción activa, mostrar el contenido
-  // O si está en la ruta de testing /properties/management
+  // Si está autenticado y tiene el rol requerido (si aplica), mostrar el contenido
   return <>{children}</>;
 };
 

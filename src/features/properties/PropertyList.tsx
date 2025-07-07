@@ -324,7 +324,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              d="M3 9L12 2l9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9zm7 9h4v-4H10v4z"
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">

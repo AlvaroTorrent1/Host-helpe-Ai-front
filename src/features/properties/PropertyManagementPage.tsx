@@ -9,11 +9,13 @@ import DashboardNavigation from "../../features/dashboard/DashboardNavigation";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
 import supabase from "../../services/supabase";
-import documentService from "../../services/documentService";
+// documentService removido - ahora se usa mediaService unificado
 import { toast } from "react-hot-toast";
 import propertyWebhookService from "../../services/propertyWebhookService";
 import webhookTestService from "../../services/webhookTestService";
 import mediaService from "../../services/mediaService";
+import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
+import UpgradePrompt from "@shared/components/UpgradePrompt";
 
 interface PropertyManagementPageProps {
   onSignOut?: () => void;
@@ -22,24 +24,24 @@ interface PropertyManagementPageProps {
 const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignOut }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const [isLoading, setIsLoading] = useState(true);
+  const { canCreate, remainingProperties, loading: statusLoading } = useCanCreateProperty();
   const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [currentProperty, setCurrentProperty] = useState<Property | undefined>(
     undefined,
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(
     null,
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
-  // Estados para procesamiento con IA
-  const [useWebhook, setUseWebhook] = useState<boolean>(true); // Usar webhook por defecto
+  const [useWebhook, setUseWebhook] = useState(true);
   const [progressPhase, setProgressPhase] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState<number>(0);
-
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  
   // Limpiar el mensaje de error cuando se abre o cierra el modal
   useEffect(() => {
     setErrorMessage(null);
@@ -50,151 +52,77 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     const loadProperties = async () => {
       setIsLoading(true);
       try {
-        // En una implementación real, esto sería una llamada a Supabase:
+        // ACTUALIZADO: Usar media_files unificado en lugar de tablas legacy
         const { data, error } = await supabase
           .from("properties")
-          .select("*, property_documents(*), property_images(*)")
+          .select(`
+            *,
+            media_files (
+              id,
+              file_type,
+              category,
+              subcategory,
+              title,
+              description,
+              file_url,
+              public_url,
+              file_size,
+              mime_type,
+              is_shareable,
+              created_at
+            )
+          `)
           .eq("user_id", user?.id);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // Mapear los datos para que coincidan con la estructura esperada
-          const mappedProperties = data.map(property => ({
-            ...property,
-            documents: property.property_documents || [],
-            additional_images: property.property_images || [],
-          }));
+          // Mapear los datos para separar documentos e imágenes desde media_files
+          const mappedProperties = data.map((property: any) => {
+            const mediaFiles = property.media_files || [];
+            
+            // Separar documentos e imágenes basado en file_type
+            const documents = mediaFiles
+              .filter((file: any) => file.file_type === 'document')
+              .map((file: any) => ({
+                id: file.id,
+                property_id: property.id,
+                name: file.title,
+                description: file.description || '',
+                type: file.subcategory?.toLowerCase() || 'other',
+                file_url: file.file_url,
+                file_type: file.mime_type?.includes('pdf') ? 'pdf' : 'other',
+                uploaded_at: file.created_at
+              }));
+            
+            const additional_images = mediaFiles
+              .filter((file: any) => file.file_type === 'image')
+              .map((file: any) => ({
+                id: file.id,
+                property_id: property.id,
+                file_url: file.file_url,
+                description: file.description || '',
+                uploaded_at: file.created_at,
+                file_type: file.mime_type || 'image/jpeg',
+                is_featured: file.category === 'featured'
+              }));
+            
+            return {
+              ...property,
+              documents,
+              additional_images,
+            };
+          });
           setProperties(mappedProperties);
         } else {
-          // Usar datos simulados si no hay datos en Supabase
-          const mockProperties: Property[] = [
-            {
-              id: "1",
-              name: t("mockData.properties.apartment.name"),
-              address: t("mockData.properties.apartment.address"),
-              image:
-                "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-              status: "active",
-              description: t("mockData.properties.apartment.description"),
-              amenities: ["WiFi", "Cocina", "TV", "Aire acondicionado"],
-              created_at: "2025-02-15T12:00:00Z",
-              additional_images: [
-                {
-                  id: "img1",
-                  property_id: "1",
-                  file_url:
-                    "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                  description: t("mockData.properties.apartment.workspace"),
-                  uploaded_at: "2025-02-15T12:30:00Z",
-                },
-                {
-                  id: "img2",
-                  property_id: "1",
-                  file_url:
-                    "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                  description: t("mockData.properties.apartment.kitchen"),
-                  uploaded_at: "2025-02-15T12:35:00Z",
-                },
-              ],
-              documents: [
-                {
-                  id: "doc1",
-                  property_id: "1",
-                  type: "faq",
-                  name: t("mockData.properties.documents.faq"),
-                  file_url: "#",
-                  description: t("mockData.properties.documents.faqDesc"),
-                  uploaded_at: "2025-02-15T14:00:00Z",
-                  file_type: "pdf",
-                },
-                {
-                  id: "doc2",
-                  property_id: "1",
-                  type: "house_rules",
-                  name: t("mockData.properties.documents.rules"),
-                  file_url: "#",
-                  description: t("mockData.properties.documents.rulesDesc"),
-                  uploaded_at: "2025-02-15T14:10:00Z",
-                  file_type: "doc",
-                },
-              ],
-            },
-            {
-              id: "2",
-              name: t("mockData.properties.beach.name"),
-              address: t("mockData.properties.beach.address"),
-              image:
-                "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-              status: "active",
-              description: t("mockData.properties.beach.description"),
-              amenities: ["WiFi", "Cocina", "Piscina", "Parking"],
-              created_at: "2025-01-20T10:30:00Z",
-              additional_images: [
-                {
-                  id: "img3",
-                  property_id: "2",
-                  file_url:
-                    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                  description: t("mockData.properties.beach.terrace"),
-                  uploaded_at: "2025-01-20T11:00:00Z",
-                },
-                {
-                  id: "img4",
-                  property_id: "2",
-                  file_url:
-                    "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                  description: t("mockData.properties.beach.pool"),
-                  uploaded_at: "2025-01-20T11:05:00Z",
-                },
-                {
-                  id: "img5",
-                  property_id: "2",
-                  file_url:
-                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                  description: t("mockData.properties.beach.bbq"),
-                  uploaded_at: "2025-01-20T11:10:00Z",
-                },
-              ],
-              documents: [
-                {
-                  id: "doc3",
-                  property_id: "2",
-                  type: "guide",
-                  name: t("mockData.properties.documents.guide"),
-                  file_url: "#",
-                  description: t("mockData.properties.documents.guideDesc"),
-                  uploaded_at: "2025-01-20T12:00:00Z",
-                  file_type: "pdf",
-                },
-                {
-                  id: "doc4",
-                  property_id: "2",
-                  type: "faq",
-                  name: t("mockData.properties.documents.faq"),
-                  file_url: "#",
-                  description: t("mockData.properties.documents.nearbyFaqDesc"),
-                  uploaded_at: "2025-01-20T12:15:00Z",
-                  file_type: "doc",
-                },
-                {
-                  id: "doc5",
-                  property_id: "2",
-                  type: "inventory",
-                  name: t("mockData.properties.documents.inventory"),
-                  file_url: "#",
-                  description: t("mockData.properties.documents.inventoryDesc"),
-                  uploaded_at: "2025-01-20T12:30:00Z",
-                  file_type: "txt",
-                },
-              ],
-            },
-          ];
-
-          setProperties(mockProperties);
+          // MODIFICADO: No cargar datos mock - usuarios free deben tener 0 propiedades
+          // Los usuarios free deben ver una lista vacía para fomentar el upgrade
+          setProperties([]);
         }
       } catch (error) {
         console.error(t("errors.loadProperties"), error);
+        // En caso de error, también mostrar lista vacía
+        setProperties([]);
       } finally {
         setIsLoading(false);
       }
@@ -205,8 +133,20 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
 
   // Manejar apertura del modal para añadir nueva propiedad
   const handleAddProperty = () => {
-    setCurrentProperty(undefined);
-    setModalOpen(true);
+    try {
+      // NUEVO: Verificar si puede crear propiedad (no verificar durante carga)
+      if (!statusLoading && !canCreate) {
+        setShowUpgradePrompt(true);
+        return;
+      }
+      
+      setCurrentProperty(undefined);
+      setModalOpen(true);
+    } catch (error) {
+      console.error('Error handling add property:', error);
+      // Fallback: mostrar prompt de upgrade por seguridad
+      setShowUpgradePrompt(true);
+    }
   };
 
   // Manejar edición de propiedad
@@ -272,16 +212,15 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
         }
 
         if (data && data.length > 0) {
-          // Procesar documentos temporales si existen
+          // ACTUALIZADO: Los documentos temporales ahora se procesan vía mediaService
+          // Si hay documentos temporales, se procesarían aquí con mediaService
+          // Por ahora, esta funcionalidad se mantiene para compatibilidad
           if (documents && documents.some(doc => doc.property_id === 'temp')) {
             setProgressPhase('Procesando documentos...');
             setProgressPercent(75);
             
-            try {
-              await documentService.updateTempDocumentsPropertyId(currentProperty.id);
-            } catch (error) {
-              console.error('Error al actualizar documentos temporales:', error);
-            }
+            console.log('🔄 Documentos temporales detectados - procesando con sistema unificado');
+            // TODO: Implementar updateTempMediaPropertyId en mediaService si es necesario
           }
 
           // Actualizar la lista de propiedades
@@ -539,6 +478,15 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     }
   };
 
+  // Función segura para cerrar el upgrade prompt
+  const handleCloseUpgradePrompt = () => {
+    try {
+      setShowUpgradePrompt(false);
+    } catch (error) {
+      console.error('Error closing upgrade prompt:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header con navegación */}
@@ -727,6 +675,14 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           </button>
         </div>
       </Modal>
+
+      {/* NUEVO: Upgrade prompt modal */}
+      <UpgradePrompt
+        isOpen={showUpgradePrompt}
+        onClose={handleCloseUpgradePrompt}
+        feature="property"
+        recommendedPlan="basic"
+      />
     </div>
   );
 };

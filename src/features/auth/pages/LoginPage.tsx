@@ -263,7 +263,7 @@ export const LoginPage = () => {
             <p className="text-gray-600">
               {t("auth.noAccount")}{" "}
               <a
-                href="/pricing"
+                href="/register"
                 className="text-primary-600 hover:text-primary-800"
               >
                 {t("auth.registerNow")}

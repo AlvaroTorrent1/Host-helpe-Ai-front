@@ -61,7 +61,8 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
     };
   }, [isLoading, isVisible, debounceTimer]);
 
-  const setLoading = (loading: boolean, source: string, priority: number = 1) => {
+  // Memorizar funciones para evitar loops infinitos en componentes que las usan como dependencias
+  const setLoading = React.useCallback((loading: boolean, source: string, priority: number = 1) => {
     setLoadingStates(prev => {
       const newStates = new Map(prev);
       
@@ -73,19 +74,19 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
       
       return newStates;
     });
-  };
+  }, []);
 
-  const clearLoading = (source: string) => {
+  const clearLoading = React.useCallback((source: string) => {
     setLoadingStates(prev => {
       const newStates = new Map(prev);
       newStates.delete(source);
       return newStates;
     });
-  };
+  }, []);
 
-  const clearAllLoading = () => {
+  const clearAllLoading = React.useCallback(() => {
     setLoadingStates(new Map());
-  };
+  }, []);
 
   const value = {
     isLoading,

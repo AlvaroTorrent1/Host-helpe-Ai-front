@@ -186,7 +186,7 @@ const LandingPage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="relative py-12 md:py-20 bg-gradient-to-r from-[#ECA408] to-[#F5B730] overflow-hidden w-full">
+        <section className="relative py-6 md:py-8 bg-gradient-to-r from-[#ECA408] to-[#F5B730] overflow-hidden w-full">
           <div className="container-limited relative z-10">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
@@ -599,7 +599,7 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary-600/30 to-transparent z-10"></div>
                   <img
-                    src="/imagenes/wall-e2.5.jpeg"
+                    src="/imagenes/Helpy_checklist.jpeg"
                     alt="Configuración de Agentes de IA"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                     style={{ transform: 'scale(1.15)' }}

@@ -18,7 +18,7 @@ interface CalendarDay {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateClick }) => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Obtener el primer día del mes actual
@@ -110,14 +110,16 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
     }
   };
 
-  // Nombres de los días de la semana
-  const weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  // Nombres de los días de la semana según el idioma
+  const weekDays = language === 'es' 
+    ? ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Formatear el mes y año actual
-  const currentMonthYear = currentDate.toLocaleDateString('es-ES', {
-    month: 'long',
-    year: 'numeric'
-  });
+  // Formatear el mes y año actual según el idioma
+  const locale = language === 'es' ? 'es-ES' : 'en-US';
+  const monthName = currentDate.toLocaleDateString(locale, { month: 'long' });
+  const year = currentDate.getFullYear();
+  const currentMonthYear = `${monthName} ${year}`;
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -130,14 +132,14 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
           <button
             onClick={goToPreviousMonth}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title="Mes anterior"
+            title={language === 'es' ? 'Mes anterior' : 'Previous month'}
           >
             <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
           </button>
           <button
             onClick={goToNextMonth}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title="Mes siguiente"
+            title={language === 'es' ? 'Mes siguiente' : 'Next month'}
           >
             <ChevronRightIcon className="h-5 w-5 text-gray-600" />
           </button>
@@ -186,7 +188,7 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
                   <div
                     key={reservation.id}
                     className="w-2 h-2 rounded-full bg-green-500"
-                    title="Reserva"
+                    title={language === 'es' ? 'Reserva' : 'Reservation'}
                   />
                 ))}
                 {day.reservations.length > 2 && (
@@ -204,7 +206,7 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
       <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <span>Reserva</span>
+          <span>{language === 'es' ? 'Reserva' : 'Reservation'}</span>
         </div>
       </div>
     </div>

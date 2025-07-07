@@ -77,6 +77,9 @@ const DashboardPage: React.FC = () => {
   // Nuevo estado para filtro por estado
   const [selectedStatus, setSelectedStatus] = useState<string | "all">("all");
   
+  // Nuevo estado para filtro por mes
+  const [selectedMonth, setSelectedMonth] = useState<string | "all">("all");
+  
   // Estados para modal de conversación
   const [selectedConversation, setSelectedConversation] = useState<{
     title: string;
@@ -359,6 +362,32 @@ const DashboardPage: React.FC = () => {
     return ["all", ...uniqueCategories.sort()];
   };
 
+  // Función para obtener los meses disponibles basados en las fechas de las incidencias
+  const getAvailableMonths = (): { value: string; label: string }[] => {
+    // Obtener fechas únicas de las incidencias
+    const uniqueMonths = Array.from(new Set(
+      incidents.map(incident => {
+        const date = new Date(incident.date);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      })
+    )).sort().reverse(); // Ordenar más recientes primero
+    
+    // Convertir a formato legible usando la función de dateUtils para localización automática
+    return uniqueMonths.map(monthValue => {
+      const [year, month] = monthValue.split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1);
+      const locale = language === 'es' ? 'es-ES' : 'en-US';
+      
+      // Usar getMonthName de dateUtils para manejo automático de localización
+      const monthName = date.toLocaleDateString(locale, { month: 'long' });
+      
+      return {
+        value: monthValue,
+        label: `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}`
+      };
+    });
+  };
+
   // Las categorías ahora se traducen dinámicamente con getLabel()
 
   // Fallback status labels
@@ -413,8 +442,15 @@ const DashboardPage: React.FC = () => {
     // Filtro por estado
     const statusMatch = selectedStatus === "all" || incident.status === selectedStatus;
     
+    // Filtro por mes
+    const monthMatch = selectedMonth === "all" || (() => {
+      const incidentDate = new Date(incident.date);
+      const incidentMonth = `${incidentDate.getFullYear()}-${String(incidentDate.getMonth() + 1).padStart(2, '0')}`;
+      return incidentMonth === selectedMonth;
+    })();
+    
     // Todos los filtros deben coincidir
-    return categoryMatch && propertyMatch && statusMatch;
+    return categoryMatch && propertyMatch && statusMatch && monthMatch;
   });
 
   // Limitar a las 10 incidencias más recientes o mostrar todas según el estado
@@ -439,10 +475,11 @@ const DashboardPage: React.FC = () => {
     setSelectedCategory("all");
     setSelectedProperty("all");
     setSelectedStatus("all");
+    setSelectedMonth("all");
   };
 
   // Función para verificar si hay filtros activos
-  const hasActiveFilters = selectedCategory !== "all" || selectedProperty !== "all" || selectedStatus !== "all";
+  const hasActiveFilters = selectedCategory !== "all" || selectedProperty !== "all" || selectedStatus !== "all" || selectedMonth !== "all";
 
   // Funciones para manejar modal de conversación
   const handleTitleClick = (incident: Incident) => {
@@ -1085,7 +1122,7 @@ const DashboardPage: React.FC = () => {
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                 >
                   <option value="all">
-                    Todos
+                    {getText("dashboard.incidents.filters.allStatus", language === 'es' ? 'Todos' : 'All')}
                   </option>
                   <option value="pending">
                     {getStatusLabel("pending")}
@@ -1093,6 +1130,27 @@ const DashboardPage: React.FC = () => {
                   <option value="resolved">
                     {getStatusLabel("resolved")}
                   </option>
+                </select>
+              </div>
+
+              {/* Selector de Mes */}
+              <div className="flex-1 lg:flex-none lg:min-w-[160px]">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.filters.month", "Mes")}
+                </label>
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                >
+                  <option value="all">
+                    {getText("dashboard.incidents.filters.allMonths", "Todos los meses")}
+                  </option>
+                  {getAvailableMonths().map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -1272,7 +1330,7 @@ const DashboardPage: React.FC = () => {
                         className="px-4 py-8 text-center text-sm text-gray-500"
                       >
                         {hasActiveFilters 
-                          ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} con los filtros seleccionados`
+                          ? `${getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)} ${getText("dashboard.incidents.filters.withSelectedFilters", language === 'es' ? 'con los filtros seleccionados' : 'with the selected filters')}`
                           : getText("dashboard.incidents.noIncidents", fallbackLabels.noIncidents)
                         }
                       </td>
