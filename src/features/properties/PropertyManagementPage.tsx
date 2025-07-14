@@ -18,7 +18,7 @@ import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
 import UpgradePrompt from "@shared/components/UpgradePrompt";
 import { webhookDocumentService } from "../../services/webhookDocumentService";
 import { shareableLinkService } from "../../services/shareableLinkService";
-import directImageWebhookService from "../../services/directImageWebhookService";
+import { dualImageProcessingService } from "../../services/dualImageProcessingService";
 
 // Función utilitaria para validar y limpiar URL de Google Business
 const validateGoogleBusinessUrl = (url: string | undefined): string | undefined => {
@@ -392,11 +392,11 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           .map(img => img.file as File);
         
         if (imageFiles.length > 0) {
-          console.log(`📸 Enviando ${imageFiles.length} imágenes al webhook para la propiedad ${savedProperty.id}`);
+          console.log(`🔄 Iniciando procesamiento dual de ${imageFiles.length} imágenes para la propiedad ${savedProperty.id}`);
           
-          // Enviar imágenes al webhook de n8n
+          // Procesamiento dual: Storage+media_files + Webhook simultáneo
           try {
-            await directImageWebhookService.sendImagesToWebhook(
+            await dualImageProcessingService.processImagesForProperty(
               savedProperty.id,
               savedProperty.name,
               imageFiles,
@@ -409,21 +409,21 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
                   }
                 },
                 onStatusChange: (status: string) => {
-                  console.log(`📊 Estado del webhook: ${status}`);
+                  console.log(`📊 Estado del procesamiento dual: ${status}`);
                 },
                 onSuccess: (results: any[]) => {
-                  console.log(`✅ Webhook procesó ${results.length} imágenes exitosamente`);
-                  toast.success(`${imageFiles.length} imágenes enviadas al webhook correctamente`);
+                  console.log(`✅ Procesamiento dual completado: ${results.length} imágenes`);
+                  toast.success(`${imageFiles.length} imágenes procesadas con éxito (Storage + Webhook)`);
                 },
                 onError: (error: string) => {
-                  console.error(`❌ Error enviando al webhook: ${error}`);
-                  toast.error(`Error al enviar imágenes: ${error}`);
+                  console.error(`❌ Error en procesamiento dual: ${error}`);
+                  toast.error(`Error procesando imágenes: ${error}`);
                 }
               }
             );
-          } catch (webhookError) {
-            console.error('Error enviando imágenes al webhook:', webhookError);
-            toast.error('No se pudieron enviar las imágenes al webhook');
+          } catch (dualProcessingError) {
+            console.error('Error en procesamiento dual de imágenes:', dualProcessingError);
+            toast.error('No se pudieron procesar las imágenes completamente');
           }
         }
       } catch (imageError) {
