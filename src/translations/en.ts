@@ -534,6 +534,30 @@ export const en = {
         addFirst: "Start by adding your first property."
       },
       form: {
+        titles: {
+          create: "Create Property",
+          edit: "Edit Property"
+        },
+        steps: {
+          basic: "Basic Information",
+          images: "Images",
+          documents: "Documents",
+          google: "Google Business"
+        },
+        fields: {
+          name: "Property name",
+          address: "Address",
+          description: "Description",
+          googleBusiness: "Google Business Profile"
+        },
+        placeholders: {
+          name: "e.g.: Downtown Apartment",
+          address: "e.g.: 123 Main Street, Madrid",
+          description: "Describe your property..."
+        },
+        hints: {
+          googleBusiness: "Our AI agents will automatically send this link to satisfied guests to get positive reviews"
+        },
         validation: {
           nameRequired: "Name is required",
           addressRequired: "Address is required",
@@ -544,7 +568,6 @@ export const en = {
           name: "Property name",
           address: "Address",
           description: "Description",
-          status: "Status",
           images: "Images",
           documents: "Documents",
           googleBusinessUrl: "Google Business Profile Link",
@@ -553,17 +576,12 @@ export const en = {
           googleBusinessTitle: "Google Business Profile",
           googleBusinessDescription: "Provide the link to your Google Business profile. Our AI agents will automatically send it to guests when they detect high satisfaction during their conversation, increasing the chances of getting positive reviews."
         },
-        steps: {
-          step: "Step",
-          of: "of",
-          basicInfo: "Basic information",
-          additionalImages: "Additional images",
-          documents: "Documents",
-          googleBusiness: "Google Business Profile"
-        },
         buttons: {
           previous: "Previous",
           next: "Next",
+          cancel: "Cancel",
+          create: "Create Property",
+          update: "Update Property",
           save: "Save property",
           saving: "Saving..."
         }
@@ -971,6 +989,7 @@ export const en = {
   properties: {
     title: "Your Properties",
     subtitle: "Manage all your properties from here",
+    deleteSuccess: "Property deleted successfully",
     filters: {
       all: "All",
       active: "Active",
@@ -1026,10 +1045,17 @@ export const en = {
       steps: {
         step: "Step",
         of: "of",
+        basic: "Basic Information",
         basicInfo: "Basic information",
         additionalImages: "Additional images",
+        images: "Images",
         documents: "Documents",
+        google: "Google Business",
         googleBusiness: "Google Business Profile"
+      },
+      titles: {
+        create: "Create Property",
+        edit: "Edit Property"
       },
       buttons: {
         previous: "Previous",

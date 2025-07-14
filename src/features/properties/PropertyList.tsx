@@ -43,8 +43,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
   // Filtrar propiedades basado en el estado y búsqueda
   const filteredProperties = properties.filter((property) => {
-    // Filtrar por estado
-    if (filter !== "all" && property.status !== filter) {
+    // NOTA: Campo status eliminado - todas las propiedades son consideradas "activas"
+    // Solo filtrar por "all" o si no hay filtro específico
+    if (filter !== "all" && filter !== "active") {
+      // Si el filtro es "inactive", no mostrar ninguna propiedad ya que no hay inactivas
       return false;
     }
 

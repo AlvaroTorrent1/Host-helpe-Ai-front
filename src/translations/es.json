@@ -1,5 +1,8 @@
 {
   "properties": {
+    "title": "Propiedades",
+    "subtitle": "Gestiona todas tus propiedades",
+    "deleteSuccess": "Propiedad eliminada con éxito",
     "form": {
       "titles": {
         "create": "Crear Propiedad",
@@ -8,8 +11,102 @@
       "steps": {
         "basic": "Información Básica",
         "images": "Imágenes",
-        "google": "Google Maps"
+        "documents": "Documentos",
+        "google": "Google Business"
+      },
+      "fields": {
+        "name": "Nombre de la propiedad",
+        "address": "Dirección",
+        "description": "Descripción",
+        "googleBusiness": "Google Business Profile"
+      },
+      "placeholders": {
+        "name": "Ej: Apartamento en el centro",
+        "address": "Ej: Calle Mayor 123, Madrid",
+        "description": "Describe tu propiedad..."
+      },
+      "hints": {
+        "googleBusiness": "Nuestros agentes de IA enviarán automáticamente este enlace a huéspedes satisfechos para obtener reseñas positivas"
+      },
+      "labels": {
+        "name": "Nombre de la propiedad",
+        "address": "Dirección",
+        "description": "Descripción",
+        "status": "Estado",
+        "googleBusinessTitle": "Google Business Profile",
+        "googleBusinessDescription": "Conecta tu propiedad con Google Business Profile para mejorar la visibilidad",
+        "googleBusinessUrl": "URL de Google Business Profile",
+        "googleBusinessPlaceholder": "https://business.google.com/...",
+        "googleBusinessHelper": "Encuentra tu URL de Google Business Profile en Google My Business"
+      },
+      "validation": {
+        "nameRequired": "El nombre de la propiedad es obligatorio",
+        "addressRequired": "La dirección es obligatoria",
+        "imageFormat": "El archivo debe ser una imagen válida",
+        "imageSize": "La imagen no puede ser mayor a 5MB"
+      },
+      "buttons": {
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "cancel": "Cancelar",
+        "create": "Crear Propiedad",
+        "update": "Actualizar Propiedad",
+        "save": "Guardar Propiedad",
+        "saving": "Guardando..."
       }
+    },
+    "status": {
+      "active": "Activa",
+      "inactive": "Inactiva"
+    },
+    "buttons": {
+      "add": "Agregar Propiedad",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleting": "Eliminando...",
+      "cancel": "Cancelar",
+      "viewDetails": "Ver Detalles"
+    },
+    "modal": {
+      "add": "Agregar Propiedad",
+      "edit": "Editar Propiedad",
+      "confirmDelete": "Confirmar Eliminación",
+      "deleteProperty": "¿Eliminar Propiedad?",
+      "deleteConfirmMessage": "¿Estás seguro de que quieres eliminar la propiedad \"{{propertyName}}\"? Esta acción no se puede deshacer."
+    },
+    "filters": {
+      "all": "Todas",
+      "active": "Activas",
+      "inactive": "Inactivas"
+    },
+    "search": {
+      "placeholder": "Buscar propiedades..."
+    },
+    "empty": {
+      "title": "No hay propiedades",
+      "noResults": "No se encontraron propiedades con los filtros aplicados",
+      "addFirst": "Comienza agregando tu primera propiedad"
+    },
+    "detail": {
+      "tabs": {
+        "info": "Información",
+        "additionalImages": "Imágenes Adicionales",
+        "documents": "Documentos"
+      },
+      "description": "Descripción",
+      "noDescription": "Sin descripción",
+      "amenities": "Amenidades",
+      "additionalImagesInfo": "Imágenes adicionales de la propiedad",
+      "noAdditionalImages": "No hay imágenes adicionales",
+      "addImagesWhileEditing": "Puedes agregar imágenes mientras editas la propiedad",
+      "documentsInfo": "Documentos relacionados con la propiedad",
+      "noDocuments": "No hay documentos",
+      "addDocumentsWhileEditing": "Puedes agregar documentos mientras editas la propiedad"
+    },
+    "documentManager": {
+      "title": "Gestor de Documentos",
+      "retry": "Reintentar",
+      "close": "Cerrar"
     }
   },
   "ses": {

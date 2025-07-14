@@ -49,15 +49,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         )}
 
         {/* Badge de estado */}
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 z-10">
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              property.status === "active"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800`}
           >
-            {property.status === "active" ? t("properties.status.active") : t("properties.status.inactive")}
+            {t("properties.status.active")}
           </span>
         </div>
       </div>

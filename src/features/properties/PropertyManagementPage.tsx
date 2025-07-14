@@ -8,7 +8,7 @@ import DashboardHeader from "../../shared/components/DashboardHeader";
 import DashboardNavigation from "../../features/dashboard/DashboardNavigation";
 import { useAuth } from "../../shared/contexts/AuthContext";
 import { useLanguage } from "../../shared/contexts/LanguageContext";
-import supabase from "../../services/supabase";
+import { supabase } from "../../services/supabase";
 // documentService removido - ahora se usa mediaService unificado
 import { toast } from "react-hot-toast";
 import propertyWebhookService from "../../services/propertyWebhookService";
@@ -16,6 +16,25 @@ import webhookTestService from "../../services/webhookTestService";
 import mediaService from "../../services/mediaService";
 import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
 import UpgradePrompt from "@shared/components/UpgradePrompt";
+import { webhookDocumentService } from "../../services/webhookDocumentService";
+import { shareableLinkService } from "../../services/shareableLinkService";
+import directImageWebhookService from "../../services/directImageWebhookService";
+
+// Función utilitaria para validar y limpiar URL de Google Business
+const validateGoogleBusinessUrl = (url: string | undefined): string | undefined => {
+  if (!url || url.trim() === '') {
+    return undefined; // URL vacía se convierte en undefined para la BD
+  }
+  
+  const cleanUrl = url.toString().trim();
+  
+  // Si no tiene protocolo, añadir https://
+  if (!cleanUrl.match(/^https?:\/\//i)) {
+    return `https://${cleanUrl}`;
+  }
+  
+  return cleanUrl;
+};
 
 interface PropertyManagementPageProps {
   onSignOut?: () => void;
@@ -52,67 +71,22 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     const loadProperties = async () => {
       setIsLoading(true);
       try {
-        // ACTUALIZADO: Usar media_files unificado en lugar de tablas legacy
+        // SOLUCION CORS: Usar consulta simple como en Dashboard que funciona
         const { data, error } = await supabase
           .from("properties")
-          .select(`
-            *,
-            media_files (
-              id,
-              file_type,
-              category,
-              subcategory,
-              title,
-              description,
-              file_url,
-              public_url,
-              file_size,
-              mime_type,
-              is_shareable,
-              created_at
-            )
-          `)
-          .eq("user_id", user?.id);
+          .select('*')
+          .eq('user_id', user?.id)
+          .order("created_at", { ascending: false });
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // Mapear los datos para separar documentos e imágenes desde media_files
-          const mappedProperties = data.map((property: any) => {
-            const mediaFiles = property.media_files || [];
-            
-            // Separar documentos e imágenes basado en file_type
-            const documents = mediaFiles
-              .filter((file: any) => file.file_type === 'document')
-              .map((file: any) => ({
-                id: file.id,
-                property_id: property.id,
-                name: file.title,
-                description: file.description || '',
-                type: file.subcategory?.toLowerCase() || 'other',
-                file_url: file.file_url,
-                file_type: file.mime_type?.includes('pdf') ? 'pdf' : 'other',
-                uploaded_at: file.created_at
-              }));
-            
-            const additional_images = mediaFiles
-              .filter((file: any) => file.file_type === 'image')
-              .map((file: any) => ({
-                id: file.id,
-                property_id: property.id,
-                file_url: file.file_url,
-                description: file.description || '',
-                uploaded_at: file.created_at,
-                file_type: file.mime_type || 'image/jpeg',
-                is_featured: file.category === 'featured'
-              }));
-            
-            return {
-              ...property,
-              documents,
-              additional_images,
-            };
-          });
+          // SOLUCION CORS: Mapeo simplificado sin JOIN - cargar media_files por separado si es necesario
+          const mappedProperties = data.map((property: any) => ({
+            ...property,
+            documents: [], // Se puede cargar por separado si es necesario
+            additional_images: [], // Se puede cargar por separado si es necesario
+          }));
           setProperties(mappedProperties);
         } else {
           // MODIFICADO: No cargar datos mock - usuarios free deben tener 0 propiedades
@@ -192,52 +166,132 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     setProgressPercent(0);
 
     try {
-      const { additional_images, documents, ...propertyDataToSend } = propertyData;
+      // Extraer datos adicionales que no son parte de Property
+      const { additional_images, _temporaryDocuments, _googleBusinessUrls, ...otherData } = propertyData as any;
+      
+      // Obtener usuario actual para RLS
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Usuario no autenticado');
+      }
+      
+      // Crear objeto limpio SOLO con campos válidos de la tabla properties
+      // Basado en el esquema actual: id, name, address, image, description, amenities, rules, 
+      // created_at, updated_at, user_id, google_business_url, featured_image_id, 
+      // gallery_setup_completed, shareable_links_generated, google_business_profile_url
+      const propertyDataToSend = {
+        name: otherData.name?.toString().trim() || '',
+        address: otherData.address?.toString().trim() || '',
+        description: otherData.description?.toString().trim() || '',
+        amenities: Array.isArray(otherData.amenities) ? otherData.amenities.filter(Boolean) : [],
+        rules: Array.isArray(otherData.rules) ? otherData.rules.filter(Boolean) : [],
+        image: otherData.image?.toString().trim() || '',
+        // Validar y limpiar URL de Google Business
+        google_business_profile_url: validateGoogleBusinessUrl(otherData.google_business_profile_url),
+        user_id: user.id, // REQUERIDO para política RLS
+        // No incluir campos automáticos: id, created_at, updated_at se manejan por la DB
+        // No incluir campos opcionales: featured_image_id, gallery_setup_completed, shareable_links_generated, google_business_url
+      };
+      
+      // Log de validación de datos
+      console.log('🔍 Datos filtrados para envío:', JSON.stringify(propertyDataToSend, null, 2));
       
       if (currentProperty) {
-        // MODO EDICIÓN: Actualizar propiedad existente (sin webhook)
-        setProgressPhase('Actualizando propiedad...');
-        setProgressPercent(50);
+        // MODO EDICIÓN: Actualizar propiedad existente
+        setProgressPhase('Actualizando información básica...');
+        setProgressPercent(20);
         
-        const { data, error } = await supabase
+        const { data: updatedProperty, error: updateError } = await supabase
           .from("properties")
           .update(propertyDataToSend)
           .eq("id", currentProperty.id)
-          .select();
+          .select()
+          .single();
 
-        if (error) {
-          console.error('Supabase update error:', error);
-          setErrorMessage(`Error al actualizar la propiedad: ${error.message}`);
-          return;
+        if (updateError) {
+          console.error("Error actualizando propiedad:", updateError);
+          throw updateError;
         }
 
-        if (data && data.length > 0) {
-          // ACTUALIZADO: Los documentos temporales ahora se procesan vía mediaService
-          // Si hay documentos temporales, se procesarían aquí con mediaService
-          // Por ahora, esta funcionalidad se mantiene para compatibilidad
-          if (documents && documents.some(doc => doc.property_id === 'temp')) {
-            setProgressPhase('Procesando documentos...');
-            setProgressPercent(75);
-            
-            console.log('🔄 Documentos temporales detectados - procesando con sistema unificado');
-            // TODO: Implementar updateTempMediaPropertyId en mediaService si es necesario
-          }
-
-          // Actualizar la lista de propiedades
-          setProperties((prev) =>
-            prev.map((p) =>
-              p.id === currentProperty.id ? { ...p, ...propertyData } : p,
-            ),
+        // Actualizar imágenes si hay nuevas
+        if (additional_images && additional_images.length > 0) {
+          setProgressPhase('Procesando nuevas imágenes...');
+          setProgressPercent(50);
+          
+          const newImages = additional_images.filter((img: PropertyImage) => 
+            img.property_id === "temp" && img.file instanceof File
           );
           
-          toast.success("Propiedad actualizada correctamente");
+          if (newImages.length > 0) {
+            const imageFiles = newImages.map((img: PropertyImage) => img.file as File);
+            await mediaService.uploadMediaFiles(
+              currentProperty.id,
+              imageFiles,
+              (progress) => {
+                setProgressPercent(50 + (progress * 0.3));
+              }
+            );
+          }
         }
+
+        // Procesar documentos si hay nuevos
+        if (_temporaryDocuments && _temporaryDocuments.length > 0) {
+          setProgressPhase('Procesando documentos...');
+          setProgressPercent(80);
+          
+          for (const doc of _temporaryDocuments) {
+            if (doc.file instanceof File) {
+              await webhookDocumentService.sendDocumentToWebhook(
+                currentProperty.id,
+                propertyDataToSend.name,
+                doc.file,
+                {
+                  name: doc.name,
+                  description: doc.description,
+                  type: doc.type,
+                }
+              );
+            }
+          }
+        }
+
+        // Procesar Google Business URLs
+        if (_googleBusinessUrls && _googleBusinessUrls.length > 0) {
+          setProgressPhase('Guardando enlaces de Google Business...');
+          setProgressPercent(90);
+          
+          await shareableLinkService.createGoogleBusinessLinks(
+            currentProperty.id,
+            _googleBusinessUrls
+          );
+        }
+
+        setProgressPhase('¡Actualización completada!');
+        setProgressPercent(100);
+        
+        // Actualizar la lista local
+        setProperties((prev) =>
+          prev.map((p) =>
+            p.id === currentProperty.id
+              ? { ...p, ...propertyDataToSend }
+              : p
+          )
+        );
+
+        toast.success("Propiedad actualizada exitosamente");
       } else {
         // MODO CREACIÓN: Nueva propiedad
-        const hasFiles = (additional_images?.length || 0) > 0 || (documents?.length || 0) > 0;
+        const hasFiles = (additional_images?.length || 0) > 0 || (_temporaryDocuments?.length || 0) > 0;
         
+        console.log('🏗️ Creando nueva propiedad directamente en Supabase (evitando webhook n8n)');
+        
+        // Temporalmente deshabilitamos el webhook n8n para evitar errores de columna status
+        // El webhook tiene problemas con campos legacy que ya no existen en la base de datos
+        await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
+        
+        /* WEBHOOK N8N TEMPORALMENTE DESHABILITADO - CAUSA ERRORES DE COLUMNA STATUS
         if (useWebhook && hasFiles) {
-          // USAR WEBHOOK CON IA para procesamiento inteligente
+          // USAR WEBHOOK CON IA para procesamiento inteligente (LEGACY - mantener por compatibilidad)
           console.log('🚀 Usando webhook n8n para procesamiento inteligente de archivos');
           
           const onProgress = (phase: string, progress: number) => {
@@ -246,236 +300,195 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           };
           
           try {
-            // Filtrar solo archivos con URLs válidas (no mock)
-            const validImages = additional_images?.filter(img => 
-              img.file_url && 
-              !img.file_url.startsWith('#') && 
-              (img.file_url.startsWith('http') || img.file_url.startsWith('data:image'))
-            ) || [];
+            // ... resto del código del webhook ...
+          } catch (error) {
+            console.error('❌ Error con webhook n8n:', error);
+            toast.error("Error al procesar con IA. Creando propiedad de forma estándar...");
             
-            const validDocs = documents?.filter(doc => 
-              doc.file_url && 
-              !doc.file_url.startsWith('#') && 
-              (doc.file_url.startsWith('http') || doc.file_url.startsWith('data:'))
-            ) || [];
-
-            // Si no hay archivos válidos, crear propiedad directamente
-            if (validImages.length === 0 && validDocs.length === 0) {
-              console.log('⚠️ No hay archivos válidos para procesar con IA, creando propiedad directamente');
-              await createPropertyDirectly(propertyDataToSend, additional_images);
-              
-              // Cerrar modal después de crear exitosamente
-              setModalOpen(false);
-              setCurrentProperty(undefined);
-              setProgressPhase('');
-              setProgressPercent(0);
-              return;
-            }
-
-            // Organizar archivos válidos por categoría para el webhook
-            const organizedFiles = {
-              interni: validImages.filter(img => 
-                img.description?.toLowerCase().includes('interior') || 
-                img.description?.toLowerCase().includes('sala') ||
-                img.description?.toLowerCase().includes('cocina') ||
-                img.description?.toLowerCase().includes('dormitorio') ||
-                img.description?.toLowerCase().includes('baño')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                size: 1024000,
-                description: img.description || ''
-              })),
-              
-              esterni: validImages.filter(img => 
-                img.description?.toLowerCase().includes('exterior') ||
-                img.description?.toLowerCase().includes('fachada') ||
-                img.description?.toLowerCase().includes('terraza') ||
-                img.description?.toLowerCase().includes('jardín') ||
-                img.description?.toLowerCase().includes('piscina')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                size: 1024000,
-                description: img.description || ''
-              })),
-              
-              elettrodomestici_foto: validImages.filter(img => 
-                img.description?.toLowerCase().includes('electrodomestico') ||
-                img.description?.toLowerCase().includes('nevera') ||
-                img.description?.toLowerCase().includes('lavadora') ||
-                img.description?.toLowerCase().includes('microondas') ||
-                img.description?.toLowerCase().includes('horno')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                size: 1024000,
-                description: img.description || ''
-              })),
-              
-              documenti_casa: validDocs.filter(doc => 
-                doc.name?.toLowerCase().includes('contrato') ||
-                doc.name?.toLowerCase().includes('plano') ||
-                doc.name?.toLowerCase().includes('normas') ||
-                doc.name?.toLowerCase().includes('reglas')
-              ).map(doc => ({
-                filename: doc.name || 'document.pdf',
-                url: doc.file_url,
-                type: 'application/pdf',
-                size: 512000,
-                description: doc.description || doc.name || ''
-              })),
-              
-              documenti_elettrodomestici: validDocs.filter(doc => 
-                doc.name?.toLowerCase().includes('manual') ||
-                doc.name?.toLowerCase().includes('garantia') ||
-                doc.name?.toLowerCase().includes('instrucciones')
-              ).map(doc => ({
-                filename: doc.name || 'document.pdf',
-                url: doc.file_url,
-                type: 'application/pdf',
-                size: 512000,
-                description: doc.description || doc.name || ''
-              }))
-            };
-
-            // Añadir imágenes no categorizadas a interni
-            const uncategorizedImages = validImages.filter(img => {
-              const desc = img.description?.toLowerCase() || '';
-              return !desc.includes('interior') && !desc.includes('sala') && !desc.includes('cocina') &&
-                     !desc.includes('dormitorio') && !desc.includes('baño') &&
-                     !desc.includes('exterior') && !desc.includes('fachada') && !desc.includes('terraza') &&
-                     !desc.includes('jardín') && !desc.includes('piscina') &&
-                     !desc.includes('electrodomestico') && !desc.includes('nevera') && !desc.includes('lavadora') &&
-                     !desc.includes('microondas') && !desc.includes('horno');
-            });
-            
-            if (uncategorizedImages.length > 0) {
-              organizedFiles.interni.push(...uncategorizedImages.map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                size: 1024000,
-                description: img.description || ''
-              })));
-            }
-
-            // Crear propiedad vía webhook n8n
-            const result = await propertyWebhookService.processPropertyWithWebhook(
-              propertyDataToSend, 
-              organizedFiles,
-              { onProgress }
-            );
-            
-            const newProperty = { 
-              ...propertyData, 
-              id: result.property_id 
-            } as Property;
-            
-            // Añadir la nueva propiedad a la lista
-            setProperties((prev) => [newProperty, ...prev]);
-            
-            toast.success("✨ Propiedad creada con IA - Archivos categorizados automáticamente");
-            
-          } catch (webhookError) {
-            console.warn('⚠️ Webhook falló, usando método directo:', webhookError);
-            toast('El procesamiento IA no está disponible. Usando método estándar...', { 
-              icon: '⚠️',
-              duration: 3000 
-            });
-            
-            // Fallback: crear directamente
-            await createPropertyDirectly(propertyDataToSend, additional_images);
+            // Fallback: crear directamente en Supabase
+            await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
           }
         } else {
-          // CREAR DIRECTAMENTE sin webhook (sin archivos o webhook deshabilitado)
-          console.log('📝 Usando creación directa (sin archivos o webhook deshabilitado)');
-          await createPropertyDirectly(propertyDataToSend, additional_images);
+          // Crear directamente en Supabase sin webhook n8n
+          await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
         }
+        */
       }
-      
+
+      // Cerrar modal después de crear/actualizar exitosamente
       setModalOpen(false);
       setCurrentProperty(undefined);
       setProgressPhase('');
       setProgressPercent(0);
       
     } catch (error) {
-      console.error(t("errors.saveProperty"), error);
-      setErrorMessage(error instanceof Error ? error.message : "Error al guardar la propiedad");
-      toast.error(`Error: ${error instanceof Error ? error.message : "Error desconocido"}`);
+      console.error("Error al guardar propiedad:", error);
+      
+      // Manejo específico de errores comunes
+      let errorMessage = "Error desconocido";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('constraint')) {
+          errorMessage = "Error de validación de datos. Verifique que todos los campos estén correctamente completados.";
+        } else if (error.message.includes('authentication') || error.message.includes('auth')) {
+          errorMessage = "Error de autenticación. Por favor, inicie sesión nuevamente.";
+        } else if (error.message.includes('permission') || error.message.includes('policy')) {
+          errorMessage = "No tiene permisos para realizar esta acción.";
+        } else if (error.message.includes('network') || error.message.includes('connection')) {
+          errorMessage = "Error de conexión. Verifique su conexión a internet.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      toast.error(`Error al guardar: ${errorMessage}`);
+      setProgressPhase('');
+      setProgressPercent(0);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Función auxiliar para crear propiedad directamente
-  const createPropertyDirectly = async (propertyDataToSend: any, additional_images?: PropertyImage[]) => {
+  // Crear propiedad directamente en Supabase
+  const createPropertyDirectly = async (
+    propertyData: any, 
+    images?: PropertyImage[],
+    documents?: PropertyDocument[],
+    googleBusinessUrls?: string[]
+  ) => {
     setProgressPhase('Creando propiedad...');
-    setProgressPercent(50);
+    setProgressPercent(20);
     
-    // Limpiar el google_business_profile_url si está vacío
-    const cleanedData = {
-      ...propertyDataToSend,
-      google_business_profile_url: propertyDataToSend.google_business_profile_url || null
-    };
+    // Log de depuración para verificar los datos que se envían
+    console.log('🔍 Datos que se enviarán a la base de datos:');
+    console.log('propertyData:', JSON.stringify(propertyData, null, 2));
+    console.log('Columnas disponibles en properties:', ['id', 'name', 'address', 'image', 'description', 'amenities', 'rules', 'created_at', 'updated_at', 'user_id', 'google_business_url', 'featured_image_id', 'gallery_setup_completed', 'shareable_links_generated', 'google_business_profile_url']);
     
-    const { data, error } = await supabase
+    // Crear propiedad en Supabase
+    const { data: newProperty, error: createError } = await supabase
       .from("properties")
-      .insert({
-        ...cleanedData,
-        user_id: user?.id,
-        created_at: new Date().toISOString(),
-      })
-      .select();
+      .insert(propertyData)
+      .select()
+      .single();
 
-    if (error) throw error;
-
-    if (data && data.length > 0) {
-      const savedProperty = data[0];
+    if (createError) {
+      console.error("Error creando propiedad:", createError);
+      console.error("Error details:", JSON.stringify(createError, null, 2));
+      throw createError;
+    }
+    
+    const savedProperty = newProperty as Property;
+    console.log('✅ Propiedad creada:', savedProperty.id);
+    
+    // Procesar imágenes si existen
+    if (images && images.length > 0) {
+      setProgressPhase('Procesando imágenes...');
+      setProgressPercent(50);
       
-      // Procesar imágenes si existen
-      if (additional_images && additional_images.length > 0) {
-        setProgressPhase('Procesando imágenes...');
-        setProgressPercent(70);
+      try {
+        // Filtrar solo imágenes que tienen archivo File
+        const imageFiles = images
+          .filter(img => img.file instanceof File)
+          .map(img => img.file as File);
         
-        try {
-          // Filtrar solo imágenes que tienen archivo File
-          const imageFiles = additional_images
-            .filter(img => img.file instanceof File)
-            .map(img => img.file as File);
+        if (imageFiles.length > 0) {
+          console.log(`📸 Enviando ${imageFiles.length} imágenes al webhook para la propiedad ${savedProperty.id}`);
           
-          if (imageFiles.length > 0) {
-            console.log(`📸 Procesando ${imageFiles.length} imágenes para la propiedad ${savedProperty.id}`);
-            
-            // Subir imágenes usando mediaService
-            const uploadedImages = await mediaService.uploadMediaFiles(
+          // Enviar imágenes al webhook de n8n
+          try {
+            await directImageWebhookService.sendImagesToWebhook(
               savedProperty.id,
+              savedProperty.name,
               imageFiles,
-              (progress) => {
-                // Ajustar el progreso entre 70-90%
-                const adjustedProgress = 70 + (progress * 0.2);
-                setProgressPercent(Math.round(adjustedProgress));
+              {
+                onProgress: (message: string, percent?: number) => {
+                  setProgressPhase(message);
+                  if (percent) {
+                    const adjustedProgress = 50 + (percent * 0.3);
+                    setProgressPercent(Math.round(adjustedProgress));
+                  }
+                },
+                onStatusChange: (status: string) => {
+                  console.log(`📊 Estado del webhook: ${status}`);
+                },
+                onSuccess: (results: any[]) => {
+                  console.log(`✅ Webhook procesó ${results.length} imágenes exitosamente`);
+                  toast.success(`${imageFiles.length} imágenes enviadas al webhook correctamente`);
+                },
+                onError: (error: string) => {
+                  console.error(`❌ Error enviando al webhook: ${error}`);
+                  toast.error(`Error al enviar imágenes: ${error}`);
+                }
               }
             );
-            
-            console.log(`✅ ${uploadedImages.length} imágenes subidas exitosamente`);
-            toast.success(`${uploadedImages.length} imágenes guardadas correctamente`);
-          } else {
-            console.log('⚠️ Las imágenes no tienen archivos File asociados');
+          } catch (webhookError) {
+            console.error('Error enviando imágenes al webhook:', webhookError);
+            toast.error('No se pudieron enviar las imágenes al webhook');
           }
-        } catch (imageError) {
-          console.error('Error al procesar imágenes:', imageError);
-          toast.error('Algunas imágenes no pudieron ser procesadas');
-          // No lanzar error, continuar con el proceso
         }
+      } catch (imageError) {
+        console.error('Error al procesar imágenes:', imageError);
+        toast.error('Algunas imágenes no pudieron ser procesadas');
+        // No lanzar error, continuar con el proceso
       }
-      
-      setProperties((prev) => [savedProperty, ...prev]);
-      toast.success("Propiedad creada correctamente");
     }
+    
+    // Procesar documentos vía webhook
+    if (documents && documents.length > 0) {
+      setProgressPhase('Procesando documentos...');
+      setProgressPercent(70);
+      
+      try {
+        for (const doc of documents) {
+          if (doc.file instanceof File) {
+            await webhookDocumentService.sendDocumentToWebhook(
+              savedProperty.id,
+              savedProperty.name,
+              doc.file,
+              {
+                name: doc.name,
+                description: doc.description,
+                type: doc.type,
+              }
+            );
+          }
+        }
+        
+        console.log(`✅ ${documents.length} documentos enviados al webhook`);
+        toast.success(`${documents.length} documentos procesados correctamente`);
+      } catch (docError) {
+        console.error('Error al procesar documentos:', docError);
+        toast.error('Algunos documentos no pudieron ser procesados');
+      }
+    }
+    
+    // Procesar Google Business URLs
+    if (googleBusinessUrls && googleBusinessUrls.length > 0) {
+      setProgressPhase('Guardando enlaces de Google Business...');
+      setProgressPercent(90);
+      
+      try {
+        const createdLinks = await shareableLinkService.createGoogleBusinessLinks(
+          savedProperty.id,
+          googleBusinessUrls
+        );
+        
+        console.log(`✅ ${createdLinks.length} enlaces de Google Business guardados`);
+        toast.success(`${createdLinks.length} enlaces guardados correctamente`);
+      } catch (linkError) {
+        console.error('Error al guardar enlaces:', linkError);
+        toast.error('Algunos enlaces no pudieron ser guardados');
+      }
+    }
+    
+    setProgressPhase('¡Propiedad creada exitosamente!');
+    setProgressPercent(100);
+    
+    // Añadir a la lista local
+    setProperties((prev) => [savedProperty, ...prev]);
+    toast.success("Propiedad creada exitosamente");
+    
+    return savedProperty;
   };
 
   // Función segura para cerrar el upgrade prompt
@@ -616,6 +629,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
 
         <PropertyForm
           property={currentProperty}
+          propertyName={currentProperty?.name}
           onSubmit={handleSubmitProperty}
           onCancel={() => setModalOpen(false)}
           isSubmitting={isSubmitting}

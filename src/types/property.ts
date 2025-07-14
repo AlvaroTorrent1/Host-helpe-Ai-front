@@ -4,17 +4,16 @@ export interface Property {
   name: string;
   address: string;
   image?: string;
-  status: "active" | "inactive";
   // Campos adicionales según el PRD
   description?: string;
   amenities?: string[];
   rules?: string[];
   created_at?: string;
   updated_at?: string;
-  // Nuevos campos para imágenes adicionales y documentos
+  // Nuevos campos para imágenes adicionales
   additional_images?: PropertyImage[];
-  documents?: PropertyDocument[];
-  // Campo para Google Business Profile URL
+  // REMOVIDO: documents - ahora se envían al webhook, no se guardan localmente
+  // Campo para Google Business Profile URL (legacy - ahora usa shareable_links)
   google_business_profile_url?: string;
 }
 
@@ -30,14 +29,33 @@ export interface PropertyImage {
 export interface PropertyDocument {
   id: string;
   property_id: string;
-  type: "house_rules" | "inventory" | "faq" | "guide" | "other";
   name: string;
+  description: string;
+  type: "faq" | "guide" | "house_rules" | "inventory" | "other";
   file_url: string;
-  description?: string;
+  file_type: string;
   uploaded_at: string;
-  file_type: "pdf" | "doc" | "txt" | "other" | string;
-  // Propiedades adicionales para documentos temporales
-  file?: Blob | File;
-  document_type?: string;
-  file_path?: string;
+  file?: File; // Campo opcional para almacenar archivo temporalmente
+}
+
+// Nuevos tipos para shareable links
+export type LinkType = 'image' | 'gallery' | 'document' | 'profile';
+export type PlatformType = 'whatsapp' | 'telegram' | 'email' | 'general';
+
+export interface ShareableLink {
+  id: string;
+  property_id: string;
+  link_type: LinkType;
+  target_id?: string; // Referencias a media_files si aplica
+  public_url: string;
+  title: string;
+  description?: string;
+  is_active: boolean;
+  click_count: number;
+  last_accessed_at?: string;
+  expires_at?: string;
+  created_for: PlatformType;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
 }

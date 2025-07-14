@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { PropertyDocument } from "../../types/property";
-import documentService from "../../services/documentService";
+import { webhookDocumentService, DocumentProcessingStatus } from "../../services/webhookDocumentService";
 import { formatFileSize } from "../../utils";
 
 interface PropertyDocumentsFormProps {
   propertyId: string;
+  propertyName?: string; // Nombre de la propiedad para el webhook
   documents?: PropertyDocument[];
   onChange: (documents: PropertyDocument[]) => void;
   onAddDocument?: (document: PropertyDocument) => void;
@@ -12,6 +13,7 @@ interface PropertyDocumentsFormProps {
 
 const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
   propertyId,
+  propertyName = "Propiedad",
   documents = [],
   onChange,
   onAddDocument,
@@ -19,6 +21,8 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<DocumentProcessingStatus | null>(null);
+  const [processingMessage, setProcessingMessage] = useState<string>("");
   const [currentDocument, setCurrentDocument] = useState<{
     name: string;
     description: string;
@@ -30,31 +34,24 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
     type: "faq",
   });
 
-  // Inicializar el servicio de documentos
+  // Verificar salud del webhook al montar el componente
   useEffect(() => {
-    let isInitialized = false;
-    
-    const initService = async () => {
-      try {
-        console.log("Inicializando servicio de documentos");
-        await documentService.initDocumentService();
-        isInitialized = true;
-        console.log("Servicio de documentos inicializado correctamente");
+    const checkWebhook = async () => {
+      // Solo verificar webhook si tenemos un propertyId válido (no temporal)
+      if (propertyId && propertyId !== "temp") {
+        try {
+          const isHealthy = await webhookDocumentService.checkWebhookHealth();
+          if (!isHealthy) {
+            console.warn("⚠️ El webhook de documentos podría no estar disponible");
+          }
       } catch (error) {
-        console.error("Error inicializando servicio de documentos:", error);
-        
-        // Intentar nuevamente después de un tiempo si falló
-        if (!isInitialized) {
-          console.log("Reintentando inicialización en 3 segundos...");
-          setTimeout(initService, 3000);
+          console.error("Error verificando webhook:", error);
         }
       }
     };
     
-    initService();
-    
-    // No hay limpieza necesaria
-  }, []);
+    checkWebhook();
+  }, [propertyId]);
 
   // Manejar selección de archivo
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +69,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
     setValidationError(null);
   };
 
-  // Manejar subida de documentos
+  // Manejar subida de documentos al webhook
   const handleUpload = async () => {
     if (
       !selectedFile ||
@@ -83,36 +80,107 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
       return;
     }
 
+    // Si es una propiedad temporal, almacenar localmente
+    if (!propertyId || propertyId === "temp") {
+      console.log("📁 Almacenando documento temporalmente (se procesará al guardar la propiedad)");
+      
+      // Crear objeto documento temporal
+      const tempDocument: PropertyDocument = {
+        id: `temp_${Date.now()}`,
+        property_id: "temp",
+        name: currentDocument.name,
+        description: currentDocument.description || "",
+        type: currentDocument.type,
+        file_url: "#", // URL temporal
+        file_type: selectedFile.type.includes("pdf") ? "pdf" : 
+                  selectedFile.type.includes("doc") ? "doc" : 
+                  selectedFile.type.includes("text") ? "txt" : "other",
+        uploaded_at: new Date().toISOString(),
+        // Almacenar el archivo File para procesarlo después
+        file: selectedFile,
+      };
+      
+      // Añadir a la lista de documentos
+      if (onAddDocument) {
+        onAddDocument(tempDocument);
+      } else {
+        onChange([...documents, tempDocument]);
+      }
+      
+      // Resetear formulario
+      setCurrentDocument({
+        name: "",
+        description: "",
+        type: "other",
+      });
+      setSelectedFile(null);
+      
+      // Limpiar elemento de entrada de archivo
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+      return;
+    }
+
+    // Si tenemos un propertyId válido, proceder con el webhook normalmente
     setIsUploading(true);
     setValidationError(null);
+    setProcessingStatus(null);
+    setProcessingMessage("");
 
     try {
-      console.log("Iniciando subida de documento:", {
+      console.log("📤 Enviando documento al webhook para procesamiento:", {
         fileName: selectedFile.name,
         fileSize: selectedFile.size,
         fileType: selectedFile.type,
         propertyId,
+        propertyName,
         documentType: currentDocument.type,
       });
 
-      const uploadedDocument = await documentService.uploadDocument(
-        propertyId || "temp",
+      // Enviar documento al webhook con callbacks para mostrar progreso
+      const response = await webhookDocumentService.sendDocumentToWebhook(
+        propertyId,
+        propertyName,
         selectedFile,
         {
           name: currentDocument.name,
           description: currentDocument.description,
           type: currentDocument.type,
         },
-      );
-
-      // Agregar documento a la lista si se subió correctamente
-      if (uploadedDocument) {
-        console.log("Documento subido exitosamente:", uploadedDocument);
+        {
+          onStatusChange: (status) => {
+            setProcessingStatus(status);
+          },
+          onProgress: (message) => {
+            setProcessingMessage(message);
+          },
+          onError: (error) => {
+            setValidationError(error);
+          },
+          onSuccess: (documentId) => {
+            console.log("✅ Documento procesado exitosamente:", documentId);
+            
+            // Crear objeto temporal para mostrar en la UI
+            const processedDocument: PropertyDocument = {
+              id: documentId || `webhook_${Date.now()}`,
+              property_id: propertyId,
+              name: currentDocument.name,
+              description: currentDocument.description || "",
+              type: currentDocument.type,
+              file_url: "#", // El webhook procesará y guardará la URL real
+              file_type: selectedFile.type.includes("pdf") ? "pdf" : 
+                        selectedFile.type.includes("doc") ? "doc" : 
+                        selectedFile.type.includes("text") ? "txt" : "other",
+              uploaded_at: new Date().toISOString(),
+            };
         
         if (onAddDocument) {
-          onAddDocument(uploadedDocument);
+              onAddDocument(processedDocument);
         } else {
-          onChange([...documents, uploadedDocument]);
+              onChange([...documents, processedDocument]);
         }
 
         // Resetear formulario
@@ -122,19 +190,26 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
           type: "other",
         });
         setSelectedFile(null);
+            setProcessingStatus(null);
+            setProcessingMessage("");
         
         // Limpiar elemento de entrada de archivo
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (fileInput) {
           fileInput.value = '';
         }
-      } else {
-        throw new Error("No se pudo subir el documento. La respuesta del servidor fue vacía.");
+          }
+        }
+      );
+
+      if (!response.success) {
+        throw new Error(response.error || "Error al procesar el documento");
       }
+
     } catch (error) {
-      console.error("Error detallado al subir documento:", error);
+      console.error("Error detallado al enviar documento:", error);
       
-      let errorMessage = "Error al subir documento. ";
+      let errorMessage = "Error al procesar documento. ";
       
       // Errores específicos con mensajes personalizados
       if (error instanceof Error) {
@@ -142,12 +217,12 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
           errorMessage += "Problema de autenticación. Por favor, inicie sesión nuevamente.";
         } else if (error.message.includes("network") || error.message.includes("connection")) {
           errorMessage += "Problema de conexión. Verifique su conexión a internet.";
-        } else if (error.message.includes("permission") || error.message.includes("403")) {
-          errorMessage += "No tiene permisos para subir archivos.";
+        } else if (error.message.includes("webhook")) {
+          errorMessage += "El servicio de procesamiento no está disponible. Intente más tarde.";
         } else if (error.message.includes("size")) {
           errorMessage += "El archivo es demasiado grande.";
         } else {
-          errorMessage += "Intente nuevamente. " + error.message;
+          errorMessage += error.message;
         }
       }
       
@@ -157,10 +232,9 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
     }
   };
 
-  // Eliminar un documento
+  // Eliminar un documento (solo de la UI, ya que están en el webhook)
   const handleRemoveDocument = async (id: string) => {
     try {
-      await documentService.deleteDocument(id);
       const updatedDocuments = documents.filter((doc) => doc.id !== id);
       onChange(updatedDocuments);
     } catch {
@@ -234,9 +308,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
 
   // Determinar si un documento es temporal (guardado en el cliente)
   const isTemporaryDocument = (document: PropertyDocument): boolean => {
-    return (
-      document.property_id === "temp" && document.file_url.startsWith("data:")
-    );
+    return document.property_id === "temp" || document.id.startsWith("temp_");
   };
 
   return (
@@ -274,6 +346,30 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
         </p>
       </div>
 
+      {/* Mostrar aviso si estamos en modo creación */}
+      {propertyId === "temp" && documents.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-amber-800">
+                Documentos pendientes de procesar
+              </h3>
+              <div className="mt-2 text-sm text-amber-700">
+                <p>
+                  Los documentos se procesarán automáticamente cuando guardes la propiedad completa.
+                  Puedes añadir todos los documentos que necesites antes de guardar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Lista de documentos */}
       <div className="space-y-3">
         {documents.map((doc) => (
@@ -299,8 +395,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   </p>
                   {isTemporaryDocument(doc) && (
                     <p className="text-xs text-amber-600 mt-1">
-                      Documento temporal - Se guardará cuando finalice la
-                      creación de la propiedad
+                      Pendiente de procesar - Se enviará al guardar la propiedad
                     </p>
                   )}
                 </div>
@@ -529,6 +624,58 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
               )}
             </button>
           </div>
+
+          {/* Indicador de estado de procesamiento */}
+          {processingStatus && (
+            <div className={`mt-3 p-3 rounded-md flex items-center ${
+              processingStatus === 'completed' ? 'bg-green-50 text-green-700' :
+              processingStatus === 'failed' ? 'bg-red-50 text-red-700' :
+              processingStatus === 'retry' ? 'bg-yellow-50 text-yellow-700' :
+              'bg-blue-50 text-blue-700'
+            }`}>
+              {processingStatus === 'uploading' && (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Subiendo documento...</span>
+                </>
+              )}
+              {processingStatus === 'processing' && (
+                <>
+                  <svg className="animate-pulse h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
+                  </svg>
+                  <span>{processingMessage || 'Procesando documento con IA...'}</span>
+                </>
+              )}
+              {processingStatus === 'completed' && (
+                <>
+                  <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>¡Documento procesado exitosamente!</span>
+                </>
+              )}
+              {processingStatus === 'failed' && (
+                <>
+                  <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span>Error al procesar documento</span>
+                </>
+              )}
+              {processingStatus === 'retry' && (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{processingMessage || 'Reintentando...'}</span>
+                </>
+              )}
+            </div>
+          )}
 
           {propertyId === "temp" && (
             <div className="mt-3 text-sm text-amber-600 bg-amber-50 p-3 rounded-md">

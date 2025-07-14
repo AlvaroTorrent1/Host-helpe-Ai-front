@@ -1,5 +1,5 @@
-// src/shared/components/StripePaymentElement.tsx - Componente de Pago Stripe para MODO TEST
-// Funcionalidad de test - usando claves de prueba de Stripe
+// src/shared/components/StripePaymentElement.tsx - Componente de Pago Stripe
+// Soporte para modo TEST y PRODUCCIÓN
 
 import React, { useEffect, useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -8,12 +8,14 @@ interface StripePaymentElementProps {
   clientSecret: string;
   onSuccess: () => void;
   onError: (error: string) => void;
+  isTestMode?: boolean; // Nueva prop para detectar modo test
 }
 
 const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   clientSecret,
   onSuccess,
   onError,
+  isTestMode = false, // Por defecto asume producción
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -22,11 +24,14 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   const [message, setMessage] = useState<string>('');
   const [isPaymentElementReady, setIsPaymentElementReady] = useState(false);
   
-  console.log('✅ StripePaymentElement iniciado para MODO TEST:', {
+  console.log(`✅ StripePaymentElement iniciado en modo ${isTestMode ? 'TEST' : 'PRODUCCIÓN'}:`, {
     clientSecret: clientSecret?.substring(0, 20) + '...',
     stripeLoaded: !!stripe,
     elementsLoaded: !!elements,
-    environment: import.meta.env.MODE || 'development'
+    environment: import.meta.env.MODE || 'development',
+    testMode: isTestMode,
+    willShowTestInfo: isTestMode,
+    stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY?.substring(0, 15) + '...'
   });
 
   // Efecto simple para verificar estado
@@ -143,12 +148,16 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
         <p className="mt-4 text-gray-600">Cargando sistema de pago...</p>
-        <p className="text-sm text-gray-500 mt-2">Inicializando Stripe en modo TEST</p>
-        <div className="mt-4 text-xs text-gray-400">
-          <p>Client Secret: {clientSecret ? '✅ Válido' : '❌ No disponible'}</p>
-          <p>Stripe: {stripe ? '✅ Cargado' : '❌ No cargado'}</p>
-          <p>Elements: {elements ? '✅ Cargado' : '❌ No cargado'}</p>
-        </div>
+        <p className="text-sm text-gray-500 mt-2">
+          Inicializando Stripe en modo {isTestMode ? 'TEST' : 'PRODUCCIÓN'}
+        </p>
+        {isTestMode && (
+          <div className="mt-4 text-xs text-gray-400">
+            <p>Client Secret: {clientSecret ? '✅ Válido' : '❌ No disponible'}</p>
+            <p>Stripe: {stripe ? '✅ Cargado' : '❌ No cargado'}</p>
+            <p>Elements: {elements ? '✅ Cargado' : '❌ No cargado'}</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -212,14 +221,25 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
       </button>
     </form>
 
-      {/* Información de seguridad */}
+      {/* Información de seguridad - Condicionada por modo */}
       <div className="text-xs text-gray-500 text-center">
-        <p>🔒 Modo de prueba - usar tarjetas de test</p>
-        <p>Tarjeta: 4242 4242 4242 4242</p>
-        <p className="mt-1 text-green-600">✅ El pago se procesa completamente en este modal</p>
+        {isTestMode ? (
+          // Información de modo TEST o DEMO
+          <>
+            <p>🔒 Modo de prueba - usar tarjetas de test</p>
+            <p>Tarjeta: 4242 4242 4242 4242</p>
+            <p className="mt-1 text-green-600">✅ El pago se procesa completamente en este modal</p>
+          </>
+        ) : (
+          // Información de modo PRODUCCIÓN (real o demo)
+          <>
+            <p>🔒 Pago seguro procesado por Stripe</p>
+            <p className="mt-1 text-green-600">✅ Transacción protegida con SSL</p>
+          </>
+        )}
         
-        {/* Botón de diagnóstico si hay problemas */}
-        {!isPaymentElementReady && (
+        {/* Botón de diagnóstico solo en modo TEST */}
+        {isTestMode && !isPaymentElementReady && (
           <button 
             onClick={() => {
               console.log('🔍 Diagnóstico de configuración:');

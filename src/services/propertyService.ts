@@ -6,14 +6,75 @@ import { Property } from "../types/property";
  */
 export const getProperties = async (): Promise<Property[]> => {
   try {
+    // Verificar si el usuario está autenticado
+    const { data: userAuth, error: authError } = await supabase.auth.getUser();
+    
+    if (authError) {
+      console.error("Error de autenticación:", authError);
+      throw authError;
+    }
+
+    if (!userAuth?.user) {
+      console.error("Usuario no autenticado");
+      throw new Error("Usuario no autenticado");
+    }
+
+    console.log("Usuario autenticado:", userAuth.user.email, "ID:", userAuth.user.id);
+
+    // Consulta directa usando media_files en lugar de additional_images y documents
     const { data, error } = await supabase
       .from("properties")
-      .select("*, additional_images(*), documents(*)")
+      .select(`
+        *,
+        media_files(*)
+      `)
+      .eq('user_id', userAuth.user.id)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error en consulta directa:", error);
+      throw error;
+    }
 
-    return data as Property[];
+    console.log("Propiedades obtenidas:", data);
+
+    // Mapear los datos para que coincidan con el tipo Property
+    const mappedProperties = data.map(property => {
+      const mediaFiles = property.media_files || [];
+      
+      // Separar imágenes de documentos basado en file_type
+      const images = mediaFiles
+        .filter((file: any) => file.file_type === 'image')
+        .map((file: any) => ({
+          id: file.id,
+          property_id: file.property_id,
+          file_url: file.file_url || file.public_url,
+          description: file.description || file.title,
+          uploaded_at: file.created_at
+        }));
+
+      const documents = mediaFiles
+        .filter((file: any) => file.file_type === 'document')
+        .map((file: any) => ({
+          id: file.id,
+          property_id: file.property_id,
+          type: file.category?.replace('document_', '') || 'other',
+          name: file.title,
+          file_url: file.file_url || file.public_url,
+          description: file.description,
+          uploaded_at: file.created_at,
+          file_type: file.mime_type || 'other'
+        }));
+
+      return {
+        ...property,
+        additional_images: images,
+        documents: documents
+      };
+    });
+
+    return mappedProperties as Property[];
+
   } catch (error) {
     console.error("Error obteniendo propiedades:", error);
     throw error;

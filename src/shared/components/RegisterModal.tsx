@@ -12,15 +12,19 @@ import SimpleStripeTest from './SimpleStripeTest';
 import { createPaymentIntent } from '@/services/stripeApi';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@shared/hooks/useSubscription';
+import { stripeConfig } from '../../../config/stripe-config';
 
-// Configuración de Stripe - Se adapta automáticamente según las variables de entorno
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ';
+// Configuración de Stripe - Usando sistema centralizado
+const STRIPE_PUBLIC_KEY = stripeConfig.publicKey;
+const isProductionMode = stripeConfig.isProduction;
+const stripeMode = stripeConfig.mode.toUpperCase();
 
-// Detectar automáticamente si estamos en modo producción o test
-const isProductionMode = STRIPE_PUBLIC_KEY.startsWith('pk_live_');
-const stripeMode = isProductionMode ? 'PRODUCCIÓN' : 'TEST';
-
-console.log(`RegisterModal: Usando clave pública de Stripe en modo ${stripeMode}:`, STRIPE_PUBLIC_KEY?.substring(0, 15) + '...');
+console.log(`RegisterModal: Usando configuración Stripe en modo ${stripeMode}:`, {
+  publicKey: STRIPE_PUBLIC_KEY?.substring(0, 15) + '...',
+  isProductionMode,
+  isTestMode: !isProductionMode,
+  source: 'stripe-config.ts'
+});
 
 // Verificar que la clave pública tenga un formato válido
 if (!STRIPE_PUBLIC_KEY || !STRIPE_PUBLIC_KEY.startsWith('pk_')) {
@@ -508,27 +512,54 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   };
   
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        {/* Overlay de fondo */}
-        <div 
-          className="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" 
-          onClick={onClose}
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      onClick={(e) => {
+        // Cerrar si se hace clic en el fondo
+        if (e.target === e.currentTarget) {
+          // Limpiar completamente el estado de Stripe al cerrar
+          clearStripePromise();
+          setClientSecret(null);
+          setPaymentStep('register');
+          setError('');
+          
+          // Limpiar flags de confirmación
+          setShowAccountConfirmation(false);
+          localStorage.removeItem('awaitingAccountConfirmation');
+          
+          // 🚀 NUEVO: Limpiar el flujo de pago del contexto global
+          clearFlow();
+          
+          onClose();
+        }
+      }}
+    >
+      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+        {/* Fondo oscuro */}
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           aria-hidden="true"
         ></div>
 
-        {/* Centrar el modal */}
+        {/* Spacer para centrar */}
         <span 
           className="hidden sm:inline-block sm:align-middle sm:h-screen" 
           aria-hidden="true"
-        >&#8203;</span>
-        
-        {/* Modal content */}
-        <div className="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <div className="absolute top-0 right-0 pt-4 pr-4">
+        >
+          &#8203;
+        </span>
+
+        {/* Modal */}
+        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-lg w-full">
+          {/* Header */}
+          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {getModalTitle()}
+              </h3>
             <button
-              type="button"
-              className="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none"
               onClick={() => {
                 // Limpiar completamente el estado de Stripe al cerrar
                 clearStripePromise();
@@ -545,31 +576,50 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                 
                 onClose();
               }}
+                className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Cerrar"
             >
-              <XMarkIcon className="w-6 h-6" />
+                <span className="sr-only">Cerrar</span>
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
             </button>
+            </div>
           </div>
           
-          <div className="sm:flex sm:items-start">
-            <div className="w-full mt-3 text-center sm:mt-0 sm:text-left">
-              <h3 className="text-2xl font-bold leading-6 text-gray-900 mb-6">
-                {getModalTitle()}
-              </h3>
-              
+          {/* Content */}
+          <div className="bg-white px-4 pt-0 pb-4 sm:p-6 sm:pt-0">
               {/* Mostrar errores */}
             {error && (
-                <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-md">
+              <div className="mb-4 p-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md">
                 {error}
               </div>
             )}
             
               {/* Step: Registro */}
               {paymentStep === 'register' && !showAccountConfirmation && (
-                <>
+              <div className="space-y-6">
+                {/* Plan seleccionado */}
+                {selectedPlan && (
+                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                    <div className="flex items-center mb-2">
+                      <svg className="w-5 h-5 text-primary-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <h4 className="text-sm font-medium text-primary-800">Plan seleccionado</h4>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-primary-700">{selectedPlan.name}</span>
+                      <span className="text-lg font-bold text-primary-800">{selectedPlan.price}€</span>
+                    </div>
+                    <p className="text-xs text-primary-600 mt-1">El pago se realizará en el siguiente paso</p>
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Nombre completo */}
                   <div>
-                      <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                       Nombre completo
                     </label>
                     <input
@@ -578,14 +628,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       required
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
                         placeholder="Tu nombre completo"
                     />
                   </div>
                   
                     {/* Email */}
                   <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       Correo electrónico
                     </label>
                     <input
@@ -594,14 +644,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
                         placeholder="tu@correo.com"
                     />
                   </div>
                   
                     {/* Contraseña */}
                   <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                       Contraseña
                     </label>
                     <input
@@ -611,14 +661,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
                         placeholder="Mínimo 6 caracteres"
                     />
                   </div>
                   
                     {/* Confirmar contraseña */}
                   <div>
-                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                       Confirmar contraseña
                     </label>
                     <input
@@ -627,30 +677,19 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                        className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
                         placeholder="Repite tu contraseña"
                     />
                   </div>
                   
-                    {/* Mostrar resumen del plan seleccionado */}
-                    {selectedPlan && (
-                      <div className="p-4 mt-4 border border-gray-200 rounded-md bg-gray-50">
-                        <h4 className="text-md font-medium">Resumen del plan</h4>
-                        <div className="flex justify-between items-center mt-2">
-                          <span>{selectedPlan.name}</span>
-                          <span className="font-bold">{selectedPlan.price}€</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* GOOGLE OAUTH PRIMERO - Opción recomendada */}
-                    <div className="flex flex-col space-y-3">
+                  {/* Botones de acción */}
+                  <div className="space-y-3 pt-2">
                       {/* Botón de Google - PRIORITARIO */}
                       <button
                         type="button"
                         onClick={handleGoogleSignIn}
                         disabled={isLoading}
-                        className="w-full px-4 py-3 flex items-center justify-center border-2 border-blue-500 rounded-md shadow-sm bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                      className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
                           <path
@@ -658,9 +697,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                             d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"
                           />
                         </svg>
-                        <span className="font-medium text-blue-700">
-                          🚀 Continuar con Google (Recomendado)
-                        </span>
+                      Continuar con Google
                       </button>
                       
                       {/* Separador */}
@@ -669,54 +706,58 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                           <div className="w-full border-t border-gray-300"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                          <span className="px-2 text-gray-500 bg-white">o crea cuenta manualmente</span>
+                        <span className="px-2 text-gray-500 bg-white">o</span>
                         </div>
                       </div>
                       
-                      {/* Botón de registro manual - SECUNDARIO */}
+                    {/* Botón de registro manual */}
                   <button
                     type="submit"
                     disabled={isLoading}
-                        className="w-full px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
+                      className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isLoading ? (
                           <>
-                            <span className="mr-2">Procesando...</span>
-                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
+                          Procesando...
                           </>
                         ) : (
-                          "Crear cuenta con email"
+                        'Crear cuenta con email'
                         )}
                   </button>
                     </div>
                 </form>
-                </>
+              </div>
               )}
 
               {/* Step: Confirmación de cuenta (después de Google OAuth) */}
               {showAccountConfirmation && user && selectedPlan && (
-                <div className="space-y-6 py-2">
+              <div className="space-y-6">
+                {/* Mensaje de éxito */}
                   <div className="text-center">
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                       <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">
                       ¡Autenticación exitosa!
                     </h3>
-                    <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-sm text-gray-600">
                       Has iniciado sesión correctamente con tu cuenta de Google.
                     </p>
                   </div>
                   
                   {/* Información de la cuenta seleccionada */}
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="text-sm font-medium text-blue-900 mb-2">
-                      📧 Cuenta seleccionada:
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-blue-900 mb-3 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                    </svg>
+                    Cuenta seleccionada:
                     </h4>
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
@@ -726,12 +767,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                           </span>
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-blue-900">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-blue-900 truncate">
                           {user.email}
                         </p>
                         {user.user_metadata?.full_name && (
-                          <p className="text-xs text-blue-700">
+                        <p className="text-xs text-blue-700 truncate">
                             {user.user_metadata.full_name}
                           </p>
                         )}
@@ -740,9 +781,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   </div>
                   
                   {/* Resumen del plan seleccionado */}
-                  <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">
-                      📋 Plan seleccionado:
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                    Plan seleccionado:
                     </h4>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-700">{selectedPlan.name}</span>
@@ -754,22 +798,22 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   </div>
                   
                   {/* Botones de acción */}
-                  <div className="flex flex-col space-y-3">
+                <div className="space-y-3">
                     <button
                       onClick={proceedToPayment}
                       disabled={isLoading}
-                      className="w-full px-4 py-3 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <>
-                          <span className="mr-2">Preparando pago...</span>
-                          <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
+                        Preparando pago...
                         </>
                       ) : (
-                        "✅ Continuar al pago"
+                      "Continuar al pago"
                       )}
                     </button>
                     
@@ -781,9 +825,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         toast.success('Sesión cerrada. Puedes elegir otra cuenta.');
                       }}
                       disabled={isLoading}
-                      className="w-full px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed text-sm"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      🔄 Usar otra cuenta de Google
+                    Usar otra cuenta de Google
                     </button>
                   </div>
                 </div>
@@ -791,16 +835,16 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
 
               {/* Step: Pago */}
               {paymentStep === 'payment' && clientSecret && (
-                <div className="space-y-6 py-2">
+              <div className="space-y-6">
                   {/* Mostrar resumen del plan seleccionado */}
                   {selectedPlan && (
-                    <div className="p-4 border border-gray-200 rounded-md bg-gray-50 mb-4">
-                      <h4 className="text-md font-medium">Resumen de la compra</h4>
-                      <div className="flex justify-between items-center mt-2">
-                        <span>{selectedPlan.name}</span>
-                        <span className="font-bold">{selectedPlan.price}€</span>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">Resumen de la compra</h4>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-700">{selectedPlan.name}</span>
+                      <span className="text-lg font-bold text-gray-900">{selectedPlan.price}€</span>
                       </div>
-                      <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-xs text-gray-500 mt-2">
                         Tu suscripción comenzará inmediatamente después del pago
                       </p>
                     </div>
@@ -820,37 +864,32 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         clientSecret={clientSecret}
                         onSuccess={handlePaymentSuccessAndNavigate}
                         onError={handlePaymentError}
+                        isTestMode={!stripeConfig.isProduction}
                       />
                     </Elements>
                   ) : clientSecret && !stripe ? (
-                    <div className="text-center py-6">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto"></div>
-                      <p className="mt-4 text-red-600 font-medium">Error cargando Stripe.js</p>
-                      <p className="text-sm text-gray-500">La clave pública puede ser inválida o hay problemas de conexión</p>
-                      <div className="mt-4 space-y-2">
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-4"></div>
+                    <p className="text-red-600 font-medium">Error cargando sistema de pago</p>
+                    <p className="text-sm text-gray-500 mb-4">La clave pública puede ser inválida o hay problemas de conexión</p>
                         <button 
                           onClick={() => window.location.reload()}
-                          className="mx-auto block px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 text-sm"
                         >
                           Recargar página
                     </button>
-                        <p className="text-xs text-gray-400">
-                          Si el problema persiste, contacta con soporte
-                        </p>
-                      </div>
                     </div>
                   ) : !clientSecret ? (
-                    <div className="text-center py-6">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto"></div>
-                      <p className="mt-4 text-yellow-600 font-medium">Preparando pago...</p>
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Preparando pago...</p>
                       <p className="text-sm text-gray-500">Creando información de pago segura</p>
                     </div>
                   ) : (
-                    <div className="text-center py-6">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
-                      <p className="mt-4 text-gray-600">Inicializando sistema de pago...</p>
-                      <p className="text-sm text-gray-500">Cargando Stripe.js en modo {stripeMode}...</p>
-                      {/* Botón de reintento si hay problemas */}
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Inicializando sistema de pago...</p>
+                    <p className="text-sm text-gray-500 mb-4">Cargando Stripe.js en modo {stripeMode}...</p>
                       <button 
                         onClick={() => {
                           // Limpiar estado y reiniciar
@@ -863,7 +902,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                             }
                           }, 100);
                         }}
-                        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
+                      className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
                       >
                         Reintentar inicialización
                       </button>
@@ -874,24 +913,23 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               
               {/* Step: Éxito */}
               {paymentStep === 'success' && (
-                <div className="text-center py-4">
+              <div className="text-center py-6">
                   <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                     <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">¡Pago completado exitosamente!</h3>
-                  <div className="mt-3">
-                    <p className="text-sm text-gray-500">
-                      🎉 Tu suscripción al plan <strong>{selectedPlan?.name}</strong> ha sido activada correctamente.
-                    </p>
-                    <p className="text-sm text-gray-500 mt-2">
+                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">¡Pago completado exitosamente!</h3>
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600">
+                    Tu suscripción al plan <strong>{selectedPlan?.name}</strong> ha sido activada correctamente.
+                  </p>
+                  <p className="text-sm text-gray-500">
                       Ya puedes disfrutar de todas las funcionalidades premium. Serás redirigido automáticamente.
                     </p>
                   </div>
                 </div>
             )}
-            </div>
           </div>
         </div>
       </div>

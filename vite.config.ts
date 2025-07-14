@@ -11,39 +11,13 @@ export default defineConfig(({ mode }) => {
   // Cargar variables de entorno basadas en el modo
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Configuración de Stripe - Dinámico según el entorno
-  const stripePublicKey = env.VITE_STRIPE_PUBLIC_KEY || 
-    // Fallback para desarrollo si no hay variable definida
-    'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ';
-  
-  // Validaciones importantes para producción
-  if (mode === 'production') {
-    if (!env.VITE_STRIPE_PUBLIC_KEY) {
-      console.error('🚨 ERROR: VITE_STRIPE_PUBLIC_KEY no está definido para producción');
-      process.exit(1);
-    }
-    
-    if (stripePublicKey.includes('pk_test_')) {
-      console.error('🚨 ERROR: Se está usando una clave de Stripe TEST en producción');
-      console.error('Debe usar una clave pk_live_* para producción');
-      process.exit(1);
-    }
-    
-    if (!env.VITE_SITE_URL) {
-      console.error('🚨 ERROR: VITE_SITE_URL no está definido para producción');
-      process.exit(1);
-    }
-    
-    if (env.VITE_SITE_URL.includes('localhost')) {
-      console.error('🚨 ERROR: VITE_SITE_URL contiene localhost en producción');
-      process.exit(1);
-    }
-  }
+  // 🚫 CONFIGURACIÓN DE STRIPE MOVIDA A config/stripe-config.ts
+  // Ya no se inyecta desde vite.config.ts para permitir configuración manual
   
   // Log de configuración para debugging
   console.log(`🔧 Configurando Vite para modo: ${mode}`);
-  console.log(`🔑 Stripe Key: ${stripePublicKey.substring(0, 15)}...`);
-  console.log(`🌐 Site URL: ${env.VITE_SITE_URL || 'no definido'}`);
+  console.log(`🌐 Site URL: ${env.VITE_SITE_URL || 'http://localhost:4000'}`);
+  console.log(`ℹ️  Configuración de Stripe: Usando config/stripe-config.ts`);
   
   return {
   plugins: [react()],
@@ -75,10 +49,7 @@ export default defineConfig(({ mode }) => {
       '@assets': path.resolve(__dirname, './src/assets'),
       '@': path.resolve(__dirname, './src')
     }
-  },
-    // ✅ CONFIGURACIÓN DINÁMICA - Ya no hardcoded
-  define: {
-      'import.meta.env.VITE_STRIPE_PUBLIC_KEY': JSON.stringify(stripePublicKey)
   }
+  // 🚫 CONFIGURACIÓN STRIPE REMOVIDA - Ahora se usa config/stripe-config.ts
   };
 }); 

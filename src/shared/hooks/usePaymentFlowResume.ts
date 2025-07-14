@@ -1,42 +1,41 @@
 // src/shared/hooks/usePaymentFlowResume.ts
-// Hook para detectar y reanudar automáticamente flujos de pago interrumpidos
+// Hook para manejar la reanudación automática de flujos de pago después de OAuth
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { usePaymentFlow } from '../contexts/PaymentFlowContext';
 
-/**
- * Hook que detecta automáticamente si hay un flujo de pago pendiente
- * y lo reanuda cuando las condiciones son correctas (usuario autenticado + plan en localStorage)
- */
 export const usePaymentFlowResume = () => {
   const { user } = useAuth();
   const { isFlowActive, selectedPlan, shouldShowModal, resumeFlow } = usePaymentFlow();
+  const [lastChecked, setLastChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('🔍 PaymentFlowResume: Verificando condiciones...', {
-      hasUser: !!user,
-      isFlowActive,
-      hasSelectedPlan: !!selectedPlan,
-      shouldShowModal
-    });
-
-    // Solo reanudar si:
-    // 1. Hay un usuario autenticado
-    // 2. Hay un flujo activo con plan seleccionado
-    // 3. El modal no se está mostrando ya
-    if (user && isFlowActive && selectedPlan && !shouldShowModal) {
-      console.log('✅ PaymentFlowResume: Condiciones cumplidas, reanudando flujo...');
+    // Solo ejecutar verificación si hay cambios reales
+    if (user && isFlowActive && selectedPlan && !shouldShowModal && !lastChecked) {
+      console.log('🔍 PaymentFlow: Verificando condiciones para reanudar flujo...');
+      
+      // Verificar si todas las condiciones se cumplen
+      const shouldResume = user && isFlowActive && selectedPlan && !shouldShowModal;
+      
+      if (shouldResume) {
+        console.log('✅ PaymentFlow: Reanudando flujo automáticamente...');
       resumeFlow();
+        setLastChecked(true);
+      }
     }
-  }, [user, isFlowActive, selectedPlan, shouldShowModal, resumeFlow]);
+    
+    // Reset lastChecked cuando el modal se cierre
+    if (!shouldShowModal && lastChecked) {
+      setLastChecked(false);
+    }
+    
+  }, [user, isFlowActive, selectedPlan, shouldShowModal, resumeFlow, lastChecked]);
 
-  // Retornar información útil para el componente que usa el hook
   return {
-    isFlowActive,
-    selectedPlan,
-    shouldShowModal,
-    hasUser: !!user
+    isActive: isFlowActive,
+    plan: selectedPlan,
+    shouldShow: shouldShowModal
   };
 };
 

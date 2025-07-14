@@ -53,7 +53,8 @@ export const PaymentFlowProvider: React.FC<PaymentFlowProviderProps> = ({ childr
         setSelectedPlan(plan);
         setIsFlowActive(true);
         
-        console.log('🔄 PaymentFlow: Flujo detectado en localStorage:', plan);
+        // Solo log cuando realmente hay un flujo pendiente
+        console.log('🔄 PaymentFlow: Flujo de pago pendiente detectado:', plan);
         return true;
       }
       return false;
@@ -65,7 +66,7 @@ export const PaymentFlowProvider: React.FC<PaymentFlowProviderProps> = ({ childr
 
   // Función para iniciar un nuevo flujo
   const startFlow = (plan: PlanData) => {
-    console.log('🚀 PaymentFlow: Iniciando nuevo flujo con plan:', plan);
+    console.log('🚀 PaymentFlow: Iniciando flujo de pago:', plan);
     setSelectedPlan(plan);
     setIsFlowActive(true);
     setShouldShowModal(true);
@@ -79,17 +80,17 @@ export const PaymentFlowProvider: React.FC<PaymentFlowProviderProps> = ({ childr
   // Función para reanudar el flujo
   const resumeFlow = () => {
     if (user && isFlowActive && selectedPlan) {
-      console.log('✅ PaymentFlow: Reanudando flujo para usuario autenticado:', {
-        user: user.email,
-        plan: selectedPlan
-      });
+      console.log('✅ PaymentFlow: Reanudando flujo para usuario autenticado');
       setShouldShowModal(true);
     }
   };
 
   // Función para limpiar el flujo
   const clearFlow = () => {
-    console.log('🧹 PaymentFlow: Limpiando flujo de pago');
+    // Solo log si realmente hay algo que limpiar
+    if (isFlowActive || selectedPlan) {
+      console.log('🧹 PaymentFlow: Flujo de pago completado/cancelado');
+    }
     setIsFlowActive(false);
     setSelectedPlan(null);
     setShouldShowModal(false);
@@ -104,8 +105,6 @@ export const PaymentFlowProvider: React.FC<PaymentFlowProviderProps> = ({ childr
   // Efecto para detectar cambios en el usuario y reanudar flujo automáticamente
   useEffect(() => {
     if (user) {
-      console.log('👤 PaymentFlow: Usuario detectado, verificando flujo pendiente...');
-      
       // Si no hay flujo activo, verificar localStorage
       if (!isFlowActive) {
         const hasStoredFlow = checkStoredFlow();
@@ -122,9 +121,8 @@ export const PaymentFlowProvider: React.FC<PaymentFlowProviderProps> = ({ childr
     }
   }, [user, isFlowActive]);
 
-  // Efecto para verificar el flujo al cargar la aplicación
+  // Efecto para verificar el flujo al cargar la aplicación (sin log)
   useEffect(() => {
-    console.log('🔍 PaymentFlow: Verificando flujo almacenado al inicializar...');
     checkStoredFlow();
   }, []);
 

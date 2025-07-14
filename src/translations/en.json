@@ -1,5 +1,8 @@
 {
   "properties": {
+    "title": "Properties",
+    "subtitle": "Manage all your properties",
+    "deleteSuccess": "Property deleted successfully",
     "form": {
       "titles": {
         "create": "Create Property",
@@ -8,8 +11,102 @@
       "steps": {
         "basic": "Basic Information",
         "images": "Images",
-        "google": "Google Maps"
+        "documents": "Documents",
+        "google": "Google Business"
+      },
+      "fields": {
+        "name": "Property name",
+        "address": "Address",
+        "description": "Description",
+        "googleBusiness": "Google Business Profile"
+      },
+      "placeholders": {
+        "name": "e.g.: Downtown Apartment",
+        "address": "e.g.: 123 Main Street, Madrid",
+        "description": "Describe your property..."
+      },
+      "hints": {
+        "googleBusiness": "Our AI agents will automatically send this link to satisfied guests to get positive reviews"
+      },
+      "labels": {
+        "name": "Property name",
+        "address": "Address",
+        "description": "Description",
+        "status": "Status",
+        "googleBusinessTitle": "Google Business Profile",
+        "googleBusinessDescription": "Connect your property with Google Business Profile to improve visibility",
+        "googleBusinessUrl": "Google Business Profile URL",
+        "googleBusinessPlaceholder": "https://business.google.com/...",
+        "googleBusinessHelper": "Find your Google Business Profile URL in Google My Business"
+      },
+      "validation": {
+        "nameRequired": "Property name is required",
+        "addressRequired": "Address is required",
+        "imageFormat": "File must be a valid image",
+        "imageSize": "Image cannot be larger than 5MB"
+      },
+      "buttons": {
+        "previous": "Previous",
+        "next": "Next",
+        "cancel": "Cancel",
+        "create": "Create Property",
+        "update": "Update Property",
+        "save": "Save Property",
+        "saving": "Saving..."
       }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "buttons": {
+      "add": "Add Property",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "cancel": "Cancel",
+      "viewDetails": "View Details"
+    },
+    "modal": {
+      "add": "Add Property",
+      "edit": "Edit Property",
+      "confirmDelete": "Confirm Deletion",
+      "deleteProperty": "Delete Property?",
+      "deleteConfirmMessage": "Are you sure you want to delete the property \"{{propertyName}}\"? This action cannot be undone."
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "search": {
+      "placeholder": "Search properties..."
+    },
+    "empty": {
+      "title": "No properties",
+      "noResults": "No properties found with the applied filters",
+      "addFirst": "Start by adding your first property"
+    },
+    "detail": {
+      "tabs": {
+        "info": "Information",
+        "additionalImages": "Additional Images",
+        "documents": "Documents"
+      },
+      "description": "Description",
+      "noDescription": "No description",
+      "amenities": "Amenities",
+      "additionalImagesInfo": "Additional images of the property",
+      "noAdditionalImages": "No additional images",
+      "addImagesWhileEditing": "You can add images while editing the property",
+      "documentsInfo": "Documents related to the property",
+      "noDocuments": "No documents",
+      "addDocumentsWhileEditing": "You can add documents while editing the property"
+    },
+    "documentManager": {
+      "title": "Document Manager",
+      "retry": "Retry",
+      "close": "Close"
     }
   },
   "ses": {

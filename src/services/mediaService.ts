@@ -169,8 +169,7 @@ export const uploadMediaFiles = async (
         .insert({
           property_id: propertyId,
           file_type: 'image', // enum value for media_files
-          category: 'gallery', // default category for property images
-          subcategory: determineSubcategory(file.name), // will create this function
+          // category y subcategory fueron eliminados de la tabla
           title: file.name.split('.')[0] || 'Property Image',
           description: '',
           file_url: publicUrl,
@@ -203,8 +202,9 @@ export const uploadMediaFiles = async (
         dimensions: dimensions,
         createdAt: mediaData.created_at,
         metadata: {
-          category: mediaData.category,
-          subcategory: mediaData.subcategory,
+          // category y subcategory fueron eliminados de la tabla
+          // category: mediaData.category,
+          // subcategory: mediaData.subcategory,
           is_shareable: mediaData.is_shareable
         },
       });

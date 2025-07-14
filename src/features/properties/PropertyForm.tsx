@@ -10,6 +10,7 @@ import { useLanguage } from "@shared/contexts/LanguageContext";
 
 interface PropertyFormProps {
   property?: Property;
+  propertyName?: string; // Para pasar a PropertyDocumentsForm
   onSubmit: (property: Omit<Property, "id">) => void;
   onCancel: () => void;
   isSubmitting: boolean;
@@ -17,6 +18,7 @@ interface PropertyFormProps {
 
 const PropertyForm: React.FC<PropertyFormProps> = ({
   property,
+  propertyName,
   onSubmit,
   onCancel,
   isSubmitting,
@@ -25,18 +27,27 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [formData, setFormData] = useState<Omit<Property, "id">>({
     name: "",
     address: "",
-    status: "active",
     additional_images: [],
-    documents: [],
-    google_business_profile_url: "",
+    google_business_profile_url: undefined, // Campo legacy, se mantiene por compatibilidad
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // Estado separado para documentos (no se guardan en Property)
+  const [temporaryDocuments, setTemporaryDocuments] = useState<PropertyDocument[]>([]);
+  
+  // Estado para múltiples links de Google Business
+  const [googleBusinessUrls, setGoogleBusinessUrls] = useState<string[]>([""]);
+
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
   const [currentStep, setCurrentStep] = useState<number>(1);
   const totalSteps = 4;
+  const [isIntentionalSubmit, setIsIntentionalSubmit] = useState<boolean>(false);
+
+  // Log temporal para debug
+  useEffect(() => {
+    console.log(`📍 PropertyForm - Paso actual: ${currentStep}, Submit intencional: ${isIntentionalSubmit}`);
+  }, [currentStep, isIntentionalSubmit]);
 
   // Cargar datos de la propiedad si estamos en modo edición
   useEffect(() => {
@@ -44,20 +55,34 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setFormData({
         name: property.name,
         address: property.address,
-        status: property.status,
         image: property.image,
         description: property.description,
         amenities: property.amenities,
         additional_images: property.additional_images || [],
-        documents: property.documents || [],
-        google_business_profile_url: property.google_business_profile_url || "",
+        google_business_profile_url: property.google_business_profile_url || undefined,
       });
 
-      if (property.image) {
-        setImagePreview(property.image);
+      // Si hay URL legacy, añadirla a la lista
+      if (property.google_business_profile_url) {
+        setGoogleBusinessUrls([property.google_business_profile_url]);
       }
     }
   }, [property]);
+
+  // Efecto para establecer automáticamente la imagen de portada
+  useEffect(() => {
+    // Solo establecer imagen de portada automáticamente en modo creación
+    if (!property && formData.additional_images && formData.additional_images.length > 0) {
+      const firstImage = formData.additional_images[0];
+      if (firstImage.file_url && !formData.image) {
+        console.log("🖼️ Estableciendo automáticamente la primera imagen como portada:", firstImage.file_url);
+        setFormData(prev => ({
+          ...prev,
+          image: firstImage.file_url
+        }));
+      }
+    }
+  }, [formData.additional_images, property, formData.image]);
 
   // Manejar cambios en inputs de texto
   const handleChange = (
@@ -104,47 +129,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     });
   };
 
-  // Manejar subida de imagen principal
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.match("image.*")) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        image: t("properties.form.validation.imageFormat"),
-      }));
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      // 5MB
-      setValidationErrors((prev) => ({
-        ...prev,
-        image: t("properties.form.validation.imageSize"),
-      }));
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      setImagePreview(result);
-      setFormData((prev) => ({
-        ...prev,
-        image: result,
-      }));
-    };
-    reader.readAsDataURL(file);
-
-    // Limpiar error si había
-    setValidationErrors((prev) => {
-      const newErrors = { ...prev };
-      delete newErrors.image;
-      return newErrors;
-    });
-  };
-
   // Validar el formulario antes de enviar
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
@@ -164,29 +148,56 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   // Manejar el envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Log de debug para entender qué está disparando el submit
+    console.log('🚨 handleSubmit llamado!', {
+      currentStep,
+      isIntentionalSubmit,
+      event: e.type,
+      target: e.target,
+      timeStamp: e.timeStamp
+    });
+
+    // VERIFICACIÓN DE SEGURIDAD: Solo permitir submit si es intencional
+    if (!isIntentionalSubmit) {
+      console.log('❌ Submit bloqueado - No es intencional');
+      return;
+    }
+
+    // Verificar que estamos en el último paso
+    if (currentStep !== totalSteps) {
+      console.log('❌ Submit bloqueado - No estamos en el último paso');
+      return;
+    }
 
     // Solo proceder con la validación y envío cuando se hace clic en el botón de guardar
     if (validateForm()) {
       try {
-        // Log detallado de los documentos antes de enviar
+        // Log detallado antes de enviar
         console.log("Enviando formulario con los siguientes datos:");
-        console.log(`Total de documentos: ${formData.documents?.length || 0}`);
-        if (formData.documents && formData.documents.length > 0) {
-          formData.documents.forEach((doc, index) => {
-            console.log(`Documento ${index + 1}:`);
-            console.log(`- ID: ${doc.id}`);
-            console.log(`- Nombre: ${doc.name}`);
-            console.log(`- Tipo: ${doc.type}`);
-            console.log(`- Property ID: ${doc.property_id}`);
-            console.log(`- Es temporal: ${doc.property_id === 'temp'}`);
-          });
-        }
+        console.log(`Nombre: ${formData.name}`);
+        console.log(`Dirección: ${formData.address}`);
+        console.log(`Total de imágenes: ${formData.additional_images?.length || 0}`);
+        console.log(`Documentos temporales (para webhook): ${temporaryDocuments.length}`);
+        console.log(`URLs Google Business: ${googleBusinessUrls.filter(url => url).length}`);
         
-        // Enviar formulario - los documentos temporales se procesarán en PropertyManagement
-        onSubmit(formData);
+        // Pasar datos del formulario junto con información adicional
+        const submitData = {
+          ...formData,
+          // Mantener el primer URL por compatibilidad legacy
+          google_business_profile_url: googleBusinessUrls.find(url => url) || undefined,
+          // Pasar documentos y URLs como datos adicionales (no parte de Property)
+          _temporaryDocuments: temporaryDocuments,
+          _googleBusinessUrls: googleBusinessUrls.filter(url => url),
+        };
+        
+        onSubmit(submitData as any);
+        
+        // Resetear el flag después de enviar
+        setIsIntentionalSubmit(false);
       } catch (error) {
         console.error("Error al enviar formulario:", error);
-        // Manejar el error de manera silenciosa para no interrumpir el flujo
+        setIsIntentionalSubmit(false);
       }
     }
   };
@@ -199,37 +210,55 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }));
   };
 
-  // Manejar cambios en documentos
+  // Manejar cambios en documentos (ahora temporales)
   const handleDocumentsChange = (documents: PropertyDocument[]) => {
-    setFormData((prev) => ({
-      ...prev,
-      documents: documents,
-    }));
+    setTemporaryDocuments(documents);
   };
 
-  // Navegar a siguiente paso con validación de paso actual
-  const handleNextStep = () => {
-    // Para el paso 1, validar campos requeridos
-    if (currentStep === 1) {
-      if (!formData.name.trim()) {
-        setValidationErrors(prev => ({ ...prev, name: t("properties.form.validation.nameRequired") }));
-        return;
-      }
-      if (!formData.address.trim()) {
-        setValidationErrors(prev => ({ ...prev, address: t("properties.form.validation.addressRequired") }));
-        return;
-      }
+  // Manejar cambios en URLs de Google Business
+  const handleGoogleBusinessUrlChange = (index: number, value: string) => {
+    const newUrls = [...googleBusinessUrls];
+    newUrls[index] = value;
+    setGoogleBusinessUrls(newUrls);
+  };
+
+  // Añadir nueva URL de Google Business
+  const addGoogleBusinessUrl = () => {
+    setGoogleBusinessUrls([...googleBusinessUrls, ""]);
+  };
+
+  // Eliminar URL de Google Business
+  const removeGoogleBusinessUrl = (index: number) => {
+    const newUrls = googleBusinessUrls.filter((_, i) => i !== index);
+    setGoogleBusinessUrls(newUrls.length > 0 ? newUrls : [""]);
+  };
+
+  // Prevenir envío del formulario cuando se presiona Enter en campos específicos
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevenir envío automático del formulario
     }
-    
-    setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
-  // Navegar a paso anterior
-  const handlePreviousStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  // Navegación entre pasos
+  const nextStep = () => {
+    if (currentStep < totalSteps) {
+      // Pequeño delay para evitar doble clics
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1);
+        // Asegurarse de que el flag de submit está en false
+        setIsIntentionalSubmit(false);
+      }, 100);
+    }
   };
 
-  // Renderizar paso actual
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Renderizar contenido del paso actual
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 1:
@@ -240,23 +269,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.labels.name")} *
+                {t("properties.form.fields.name")} *
               </label>
               <input
                 type="text"
-                id="name"
                 name="name"
+                id="name"
+                required
                 value={formData.name}
                 onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  validationErrors.name ? "border-red-500" : ""
-                }`}
+                placeholder={t("properties.form.placeholders.name")}
+                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
               />
-              {validationErrors.name && (
-                <p className="mt-1 text-sm text-red-600">
-                  {validationErrors.name}
-                </p>
-              )}
             </div>
 
             <div>
@@ -264,23 +288,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.labels.address")} *
+                {t("properties.form.fields.address")} *
               </label>
               <input
                 type="text"
-                id="address"
                 name="address"
+                id="address"
+                required
                 value={formData.address}
                 onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  validationErrors.address ? "border-red-500" : ""
-                }`}
+                placeholder={t("properties.form.placeholders.address")}
+                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
               />
-              {validationErrors.address && (
-                <p className="mt-1 text-sm text-red-600">
-                  {validationErrors.address}
-                </p>
-              )}
             </div>
 
             <div>
@@ -288,168 +307,160 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.labels.description")}
+                {t("properties.form.fields.description")}
               </label>
               <textarea
-                id="description"
                 name="description"
-                rows={3}
-                value={formData.description || ""}
+                id="description"
+                rows={4}
+                value={formData.description}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                placeholder={t("properties.form.placeholders.description")}
+                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
               />
             </div>
 
-            <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {t("properties.form.labels.status")}
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              >
-                <option value="active">{t("properties.status.active")}</option>
-                <option value="inactive">{t("properties.status.inactive")}</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Imagen principal
-              </label>
-              <div className="mt-1 flex items-center">
-                {imagePreview ? (
-                  <div className="relative">
-                    <img
-                      src={imagePreview}
-                      alt="Vista previa"
-                      className="h-32 w-48 object-cover rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImagePreview(null);
-                        setFormData((prev) => ({ ...prev, image: undefined }));
-                      }}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ) : (
+            {/* Información sobre imagen de portada */}
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+              <div className="flex">
                   <div className="flex-shrink-0">
-                    <div className="h-32 w-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center">
-                      <svg
-                        className="h-8 w-8 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
+                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                     </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-blue-800">
+                    Imagen de portada automática
+                  </h3>
+                  <div className="mt-2 text-sm text-blue-700">
+                    <p>
+                      La primera imagen que subas en la siguiente pestaña se convertirá automáticamente en la imagen de portada de la propiedad.
+                    </p>
                   </div>
-                )}
-
-                <label
-                  htmlFor="image-upload"
-                  className="ml-4 cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  Subir imagen
-                  <input
-                    id="image-upload"
-                    name="image"
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={handleImageUpload}
-                  />
-                </label>
+                </div>
               </div>
-              {validationErrors.image && (
-                <p className="mt-1 text-sm text-red-600">
-                  {validationErrors.image}
-                </p>
-              )}
             </div>
           </div>
         );
       case 2:
         return (
+          <div>
+            {/* Mostrar preview de imagen de portada si existe */}
+            {formData.image && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <h3 className="text-sm font-medium text-green-800">
+                      Imagen de portada establecida
+                    </h3>
+                    <div className="mt-2 flex items-center space-x-3">
+                      <img
+                        src={formData.image}
+                        alt="Imagen de portada"
+                        className="h-16 w-20 object-cover rounded-md border"
+                      />
+                      <p className="text-sm text-green-700">
+                        Esta será la imagen principal que se mostrará en las listas de propiedades.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
           <PropertyImagesForm
             images={formData.additional_images}
             onChange={handleAdditionalImagesChange}
           />
+          </div>
         );
       case 3:
         return (
           <PropertyDocumentsForm
             propertyId={property?.id || "temp"}
-            documents={formData.documents}
+            propertyName={propertyName || formData.name || "Propiedad"}
+            documents={temporaryDocuments}
             onChange={handleDocumentsChange}
           />
         );
       case 4:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {t("properties.form.labels.googleBusinessTitle")}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900">
+                Enlaces de Google Business
               </h3>
-              <p className="text-sm text-gray-600">
-                {t("properties.form.labels.googleBusinessDescription")}
+              <p className="mt-1 text-sm text-gray-500">
+                Añade los enlaces a los perfiles de Google Business de tu propiedad. 
+                Estos enlaces se guardarán como enlaces compartibles para uso en mensajería.
               </p>
             </div>
             
-            <div>
+            <div className="space-y-4">
+              {googleBusinessUrls.map((url, index) => (
+                <div key={index} className="flex gap-2">
+                  <div className="flex-1">
               <label
-                htmlFor="google_business_profile_url"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                      htmlFor={`google_business_url_${index}`}
+                      className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.labels.googleBusinessUrl")}
+                      {index === 0 ? "URL principal" : `URL adicional ${index}`}
               </label>
               <input
                 type="url"
-                id="google_business_profile_url"
-                name="google_business_profile_url"
-                value={formData.google_business_profile_url || ""}
-                onChange={handleChange}
-                placeholder={t("properties.form.labels.googleBusinessPlaceholder")}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  validationErrors.google_business_profile_url ? "border-red-500" : ""
-                }`}
-              />
-              {validationErrors.google_business_profile_url && (
-                <p className="mt-1 text-sm text-red-600">
-                  {validationErrors.google_business_profile_url}
-                </p>
-              )}
-              <p className="mt-2 text-sm text-gray-500">
-                {t("properties.form.labels.googleBusinessHelper")}
-              </p>
+                      id={`google_business_url_${index}`}
+                      value={url}
+                      onChange={(e) => handleGoogleBusinessUrlChange(index, e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      placeholder="https://maps.google.com/maps?cid=..."
+                    />
+                  </div>
+                  {googleBusinessUrls.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeGoogleBusinessUrl(index)}
+                      className="mt-6 inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addGoogleBusinessUrl}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Añadir otro enlace
+              </button>
+            </div>
+
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-blue-700">
+                    Los enlaces se guardarán como enlaces compartibles que podrás usar en WhatsApp, 
+                    Telegram y otras plataformas de mensajería.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -458,47 +469,58 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }
   };
 
-  // Dividir el renderizado del botón final para evitar confusiones
+  // Renderizar botones de acción según el paso actual
   const renderActionButtons = () => {
     return (
-      <div className="pt-5 border-t border-gray-200 flex justify-between items-center">
+      <div className="pt-5">
+        <div className="flex justify-between">
         <div>
           {currentStep > 1 && (
             <button
               type="button"
-              onClick={handlePreviousStep}
-              className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                onClick={prevStep}
+                className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
               {t("properties.form.buttons.previous")}
             </button>
           )}
         </div>
+
         <div className="flex space-x-3">
           <button
             type="button"
             onClick={onCancel}
-            className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
-            {t("properties.buttons.cancel")}
+              {t("properties.form.buttons.cancel")}
           </button>
+
           {currentStep < totalSteps ? (
             <button
               type="button"
-              onClick={handleNextStep}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                onClick={nextStep}
+                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
               {t("properties.form.buttons.next")}
             </button>
           ) : (
             <button
-              type="button" 
-              onClick={handleSubmit}
+                type="submit"
               disabled={isSubmitting}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+                onClick={() => {
+                  console.log('✅ Botón de crear/actualizar clickeado - Marcando como submit intencional');
+                  setIsIntentionalSubmit(true);
+                }}
+                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
             >
-              {isSubmitting ? t("properties.form.buttons.saving") : t("properties.form.buttons.save")}
+                {isSubmitting
+                  ? t("properties.form.buttons.saving")
+                  : property
+                    ? t("properties.form.buttons.update")
+                    : t("properties.form.buttons.create")}
             </button>
           )}
+          </div>
         </div>
       </div>
     );
@@ -506,7 +528,17 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-8 divide-y divide-gray-200">
+      <form 
+        onSubmit={handleSubmit} 
+        onKeyDown={(e) => {
+          // Prevenir submit con Enter en TODO el formulario
+          if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            console.log('⚠️ Enter prevenido en:', e.target);
+          }
+        }}
+        className="space-y-8 divide-y divide-gray-200"
+      >
         <div className="space-y-8 divide-y divide-gray-200">
           <div>
             <div className="pb-5">

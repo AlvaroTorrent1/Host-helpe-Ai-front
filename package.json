@@ -25,7 +25,14 @@
     "verify:production": "node scripts/quick-verify.js",
     "pre-deploy": "npm run verify:production && npm run lint:errors && npm run build",
     "deploy:production": "npm run pre-deploy && echo '✅ Build exitoso. Proceder con despliegue manual siguiendo PRODUCTION_SETUP.md'",
-    "check:stripe": "echo '🔑 Verificar que las claves de Stripe sean LIVE (pk_live_*, sk_live_*)"
+    "check:stripe": "echo '🔑 Verificar que las claves de Stripe sean LIVE (pk_live_*, sk_live_*)",
+    "stripe:test": "node scripts/stripe-mode-switcher.cjs 1",
+    "stripe:demo": "node scripts/stripe-mode-switcher.cjs 2", 
+    "stripe:production": "node scripts/stripe-mode-switcher.cjs 3",
+    "stripe:status": "node scripts/stripe-mode-switcher.cjs",
+    "stripe:help": "echo 'Comandos: stripe:test, stripe:demo, stripe:production, stripe:status'",
+    "test:production": "node scripts/test-production-flow.cjs",
+    "verify:config": "node scripts/verify-config.cjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",

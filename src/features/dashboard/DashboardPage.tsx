@@ -17,7 +17,6 @@ type Property = {
   name: string;
   address: string;
   image?: string;
-  status: "active" | "inactive";
   description?: string;
 };
 
@@ -819,17 +818,6 @@ const DashboardPage: React.FC = () => {
               </div>
             )}
 
-            {/* Estado de la propiedad */}
-            <div className="mb-6">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                property.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-gray-100 text-gray-800"
-              }`}>
-                                 {property.status === "active" ? t('dashboard.propertyDetails.active') : t('dashboard.propertyDetails.inactive')}
-               </span>
-             </div>
-
              {/* Descripción */}
              {property.description && (
                <div className="mb-6">
@@ -1018,14 +1006,10 @@ const DashboardPage: React.FC = () => {
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                          property.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
+                          'bg-green-100 text-green-800'
                         }`}
                       >
-                        {property.status === "active"
-                          ? "Active" 
-                          : "Inactive"}
+                        {t('dashboard.propertyDetails.active')}
                       </span>
                     </div>
                   </div>
