@@ -137,6 +137,12 @@ class ImageWebhookService {
   ): Promise<ImageForProcessing[]> {
     const uploadedImages: ImageForProcessing[] = [];
 
+    // Verify authentication before proceeding
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error('Usuario no autenticado - no se pueden subir imágenes');
+    }
+
     for (let i = 0; i < imageFiles.length; i++) {
       const file = imageFiles[i];
       const progressPercent = 10 + (i / imageFiles.length) * 20; // 10-30%
@@ -174,6 +180,7 @@ class ImageWebhookService {
           .from('media_files')
           .insert({
             property_id: propertyId,
+            user_id: user.id, // REQUIRED for RLS policy
             file_type: 'image',
             title: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
             description: '',

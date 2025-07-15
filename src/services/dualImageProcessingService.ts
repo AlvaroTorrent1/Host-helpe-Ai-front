@@ -28,7 +28,7 @@ export interface MediaFileRecord {
   mime_type: string;
   is_shareable: boolean;
   ai_description?: string;
-  processing_status?: 'pending' | 'completed' | 'failed';
+  n8n_processing_status?: 'pending' | 'completed' | 'failed';
 }
 
 /**
@@ -50,6 +50,34 @@ class DualImageProcessingService {
   private bucketName = 'property-files';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes
+
+  /**
+   * Ensure the storage bucket exists before uploading
+   */
+  private async ensureBucket(): Promise<void> {
+    try {
+      const { data: buckets } = await supabase.storage.listBuckets();
+      const bucketExists = buckets?.some(bucket => bucket.name === this.bucketName);
+      
+      if (!bucketExists) {
+        console.log(`📦 Creating bucket "${this.bucketName}"...`);
+        const { error } = await supabase.storage.createBucket(this.bucketName, {
+          public: true,
+          fileSizeLimit: 10 * 1024 * 1024 // 10MB
+        });
+        
+        if (error) {
+          console.error(`❌ Error creating bucket:`, error);
+          throw new Error(`Failed to create storage bucket: ${error.message}`);
+        }
+        
+        console.log(`✅ Bucket "${this.bucketName}" created successfully`);
+      }
+    } catch (error) {
+      console.error('❌ Error checking/creating bucket:', error);
+      throw error;
+    }
+  }
 
   /**
    * Main method: Process images with dual approach
@@ -116,6 +144,15 @@ class DualImageProcessingService {
   ): Promise<MediaFileRecord[]> {
     const mediaRecords: MediaFileRecord[] = [];
 
+    // Verify authentication before proceeding
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error('Usuario no autenticado - no se pueden guardar imágenes');
+    }
+
+    // Ensure bucket exists before uploading
+    await this.ensureBucket();
+
     callbacks?.onProgress?.('Subiendo imágenes a almacenamiento...', 15);
 
     for (let i = 0; i < imageFiles.length; i++) {
@@ -155,6 +192,7 @@ class DualImageProcessingService {
           .from('media_files')
           .insert({
             property_id: propertyId,
+            user_id: user.id, // REQUIRED for RLS policy
             file_type: 'image',
             title: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
             description: '', // Will be updated by webhook
@@ -165,7 +203,7 @@ class DualImageProcessingService {
             is_shareable: true,
             // Mark for AI processing
             ai_description_status: 'pending',
-            processing_status: 'pending'
+            n8n_processing_status: 'pending'
           })
           .select()
           .single();
@@ -186,7 +224,7 @@ class DualImageProcessingService {
           file_size: mediaFile.file_size,
           mime_type: mediaFile.mime_type,
           is_shareable: mediaFile.is_shareable,
-          processing_status: 'pending'
+          n8n_processing_status: 'pending'
         });
 
         console.log(`✅ Uploaded to storage: ${file.name} → ${publicUrl}`);
@@ -330,7 +368,7 @@ class DualImageProcessingService {
             .update({
               description: processedImage.ai_description,
               ai_description_status: 'completed',
-              processing_status: 'completed'
+              n8n_processing_status: 'completed'
             })
             .eq('id', mediaRecord.id)
             .select()
@@ -343,7 +381,7 @@ class DualImageProcessingService {
               ...mediaRecord,
               description: processedImage.ai_description,
               ai_description: processedImage.ai_description,
-              processing_status: 'completed'
+              n8n_processing_status: 'completed'
             };
             console.log(`✅ Updated description: ${mediaRecord.title}`);
           }
@@ -353,13 +391,13 @@ class DualImageProcessingService {
             .from('media_files')
             .update({
               ai_description_status: 'failed',
-              processing_status: 'failed'
+              n8n_processing_status: 'failed'
             })
             .eq('id', mediaRecord.id);
 
           updatedRecords[i] = {
             ...mediaRecord,
-            processing_status: 'failed'
+            n8n_processing_status: 'failed'
           };
         }
       } catch (error) {

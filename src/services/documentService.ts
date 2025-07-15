@@ -140,6 +140,7 @@ export const uploadDocument = async (
       .from("media_files")
       .insert({
         property_id: propertyId,
+        user_id: userData.user?.id, // REQUIRED for RLS policy
         file_type: 'document', // enum value
         category: mapDocumentCategory(documentData.type), // mapped category
         subcategory: documentData.type,

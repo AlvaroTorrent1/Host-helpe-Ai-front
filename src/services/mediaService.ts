@@ -111,6 +111,12 @@ export const uploadMediaFiles = async (
 ): Promise<MediaItem[]> => {
   await ensureBucket();
   
+  // Verify authentication before proceeding
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('Usuario no autenticado - no se pueden subir archivos');
+  }
+  
   return tryCatch(async () => {
     const results: MediaItem[] = [];
     
@@ -168,6 +174,7 @@ export const uploadMediaFiles = async (
         .from("media_files") // Changed from "media" to "media_files"
         .insert({
           property_id: propertyId,
+          user_id: user.id, // REQUIRED for RLS policy
           file_type: 'image', // enum value for media_files
           // category y subcategory fueron eliminados de la tabla
           title: file.name.split('.')[0] || 'Property Image',
