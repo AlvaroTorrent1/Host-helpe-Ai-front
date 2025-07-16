@@ -310,7 +310,7 @@ async function createPropertyWithFiles(payload: PropertyWebhookPayload, processe
     });
 
     // Preparar archivos como array de JSONB
-    const mediaFilesArray = processedFiles.map(file => ({
+    const mediaFilesArray = processedFiles.map((file, index) => ({
       file_type: file.file_type,
       category: file.category,
       subcategory: file.subcategory,
@@ -318,7 +318,8 @@ async function createPropertyWithFiles(payload: PropertyWebhookPayload, processe
       file_url: file.file_url,
       public_url: file.public_url,
       file_size: file.file_size,
-      mime_type: file.mime_type
+      mime_type: file.mime_type,
+      sort_order: index
     }));
 
     console.log('📁 Media files array prepared, count:', mediaFilesArray.length);
