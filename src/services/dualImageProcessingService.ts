@@ -142,8 +142,6 @@ class DualImageProcessingService {
     imageFiles: File[],
     callbacks?: DualProcessingCallbacks
   ): Promise<MediaFileRecord[]> {
-    const mediaRecords: MediaFileRecord[] = [];
-
     // Verify authentication before proceeding
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -155,12 +153,15 @@ class DualImageProcessingService {
 
     callbacks?.onProgress?.('Subiendo imágenes a almacenamiento...', 15);
 
-    for (let i = 0; i < imageFiles.length; i++) {
-      const file = imageFiles[i];
-      const progressPercent = 15 + (i / imageFiles.length) * 25; // 15-40%
+    // Procesar todas las imágenes secuencialmente para mantener el orden
+    const uploadPromises = imageFiles.map(async (file, index) => {
+      const progressPercent = 15 + (index / imageFiles.length) * 25; // 15-40%
+
+      // DEBUG: Log para verificar el valor del índice
+      console.log(`🔍 DEBUG: Procesando archivo ${index + 1}/${imageFiles.length}, índice = ${index}, archivo: ${file.name}`);
 
       callbacks?.onProgress?.(
-        `Subiendo imagen ${i + 1} de ${imageFiles.length}: ${file.name}`,
+        `Subiendo imagen ${index + 1} de ${imageFiles.length}: ${file.name}`,
         progressPercent
       );
 
@@ -187,12 +188,17 @@ class DualImageProcessingService {
           .from(this.bucketName)
           .getPublicUrl(filePath);
 
+        // IMPORTANTE: Usar el índice del map, no una variable del loop
+        const sortOrderValue = index;
+        console.log(`🔍 DEBUG: Asignando sort_order = ${sortOrderValue} para ${file.name}`);
+
         // Create media_files record with URL
         const { data: mediaFile, error: dbError } = await supabase
           .from('media_files')
           .insert({
             property_id: propertyId,
             user_id: user.id, // REQUIRED for RLS policy
+            sort_order: sortOrderValue, // Usar el valor del índice del map
             file_type: 'image',
             title: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
             description: '', // Will be updated by webhook
@@ -208,12 +214,15 @@ class DualImageProcessingService {
           .select()
           .single();
 
+        // DEBUG: Log para verificar el valor insertado
+        console.log(`🔍 DEBUG: Insertado en media_files - sort_order: ${sortOrderValue}, id: ${mediaFile?.id}, title: ${mediaFile?.title}`);
+
         if (dbError) {
           throw new Error(`Error creando registro: ${dbError.message}`);
         }
 
-        // Add to results
-        mediaRecords.push({
+        // Return the media record
+        return {
           id: mediaFile.id,
           property_id: mediaFile.property_id,
           file_type: mediaFile.file_type,
@@ -223,19 +232,27 @@ class DualImageProcessingService {
           public_url: mediaFile.public_url,
           file_size: mediaFile.file_size,
           mime_type: mediaFile.mime_type,
+          sort_order: mediaFile.sort_order,
           is_shareable: mediaFile.is_shareable,
-          n8n_processing_status: 'pending'
-        });
-
-        console.log(`✅ Uploaded to storage: ${file.name} → ${publicUrl}`);
+          ai_description_status: mediaFile.ai_description_status,
+          n8n_processing_status: mediaFile.n8n_processing_status,
+          created_at: mediaFile.created_at,
+          updated_at: mediaFile.updated_at
+        } as MediaFileRecord;
 
       } catch (error) {
-        console.error(`❌ Error uploading ${file.name}:`, error);
+        console.error(`❌ Error procesando ${file.name}:`, error);
         throw error;
       }
-    }
+    });
 
-    callbacks?.onProgress?.('Subida a almacenamiento completada', 40);
+    // Esperar a que todas las subidas terminen
+    const results = await Promise.all(uploadPromises);
+    
+    // Filtrar cualquier resultado undefined
+    const mediaRecords = results.filter(record => record !== undefined);
+
+    console.log(`✅ ${mediaRecords.length} archivos subidos a Storage y media_files`);
     return mediaRecords;
   }
 
