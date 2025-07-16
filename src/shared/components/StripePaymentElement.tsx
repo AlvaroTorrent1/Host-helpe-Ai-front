@@ -202,7 +202,7 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
           className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
             isProcessing || !stripe || !isPaymentElementReady
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
+              : 'bg-primary-600 hover:bg-primary-700 text-white'
           }`}
       >
         {isProcessing ? (

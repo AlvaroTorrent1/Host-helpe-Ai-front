@@ -175,6 +175,7 @@ export const uploadMediaFiles = async (
         .insert({
           property_id: propertyId,
           user_id: user.id, // REQUIRED for RLS policy
+          sort_order: i, // Add sort order from loop index
           file_type: 'image', // enum value for media_files
           // category y subcategory fueron eliminados de la tabla
           title: file.name.split('.')[0] || 'Property Image',

@@ -641,7 +641,7 @@ export const es = {
           basic: "Información Básica",
           images: "Imágenes",
           documents: "Documentos",
-          google: "Google Business"
+          google: "Enlaces de Negocio"
         },
         fields: {
           name: "Nombre de la propiedad",
@@ -675,6 +675,62 @@ export const es = {
           googleBusinessTitle: "Google Business Profile",
           googleBusinessDescription: "Proporciona el enlace a tu perfil de Google Business. Nuestros agentes de IA lo enviarán automáticamente a los huéspedes cuando detecten alta satisfacción durante su conversación, aumentando las probabilidades de obtener reseñas positivas."
         },
+        businessLinksTitle: "Enlaces de Negocio",
+        businessLinksDescription: "Añade enlaces a tus perfiles de Google Business, redes sociales (Instagram, Facebook) y sitios web personales. Nuestro Agente de IA compartirá estos enlaces cuando los huéspedes tengan experiencias positivas para ayudar con tu posicionamiento online.",
+        businessUrlPlaceholder: "https://instagram.com/tupropiedad, https://maps.google.com/maps?cid=...",
+        propertyName: "Nombre de la Propiedad",
+        address: "Dirección",
+        description: "Descripción",
+        propertyNamePlaceholder: "ej., Apartamento en el Centro",
+        addressPlaceholder: "ej., Calle Mayor 123, Madrid",
+        descriptionPlaceholder: "Describe tu propiedad...",
+        autoCoverImageTitle: "Imagen de Portada Automática",
+        autoCoverImageText: "La primera imagen que subas en la siguiente pestaña se convertirá automáticamente en la imagen de portada de la propiedad.",
+        removeLink: "Eliminar enlace",
+        addAnotherLink: "Añadir otro enlace",
+        shareableLinksNote: "Estos enlaces serán compartidos estratégicamente por nuestro Agente de IA para ayudar a promocionar tu negocio cuando los huéspedes tengan experiencias positivas.",
+        additionalImages: {
+          title: "Imágenes Adicionales",
+          description: "Añade imágenes con descripción para mostrar al turista información visual sobre la propiedad. Las imágenes deben ir acompañadas de un contexto claro para que nuestro agente de IA sepa cuándo mostrarlas al turista (por ejemplo, \"Vista desde la terraza\" o \"Instrucciones del horno\")."
+        },
+        documents: {
+          title: "Documentos de la Propiedad",
+          description: "Añade documentos como guías, instrucciones, reglas de la casa o FAQs para responder a las preguntas frecuentes de los huéspedes. Estos documentos serán utilizados por nuestro Agente de IA para proporcionar respuestas precisas y personalizadas a los turistas.",
+          recommendedTypes: "Los tipos de documentos recomendados incluyen:",
+          types: {
+            faq: "FAQs",
+            faqDescription: "Respuestas a preguntas habituales sobre la propiedad, zona o servicios",
+            guides: "Guías",
+            guidesDescription: "Instrucciones de uso de electrodomésticos, wifi, TV, etc.",
+            houseRules: "Reglas de la Casa",
+            houseRulesDescription: "Normas específicas que deben seguir los huéspedes",
+            inventory: "Inventario",
+            inventoryDescription: "Lista de objetos y equipamiento disponible",
+            other: "Otro"
+          },
+          addNewDocument: "Añadir Nuevo Documento",
+          documentName: "Nombre del Documento",
+          documentType: "Tipo de Documento",
+          documentDescription: "Descripción",
+          documentFile: "Archivo",
+          documentNamePlaceholder: "Guía de bienvenida, FAQ, etc.",
+                      documentDescriptionPlaceholder: "Añade información sobre este documento para ayudar al Agente de IA a utilizarlo correctamente...",
+          selectFile: "Seleccionar archivo",
+          dragAndDrop: "o arrastrar y soltar",
+          fileSizeLimit: "PDF, Word, TXT (MAX. 10MB)",
+          changeFile: "Cambiar archivo",
+          uploadDocument: "Subir Documento",
+          uploading: "Subiendo...",
+          uploadingDocument: "Subiendo documento...",
+          processingDocument: "Procesando documento con IA...",
+          documentProcessedSuccessfully: "¡Documento procesado exitosamente!",
+          errorProcessingDocument: "Error al procesar documento",
+          retrying: "Reintentando...",
+          documentsTemporary: "Los documentos se guardarán temporalmente hasta que finalices la creación de la propiedad.",
+          pendingProcess: "Pendiente de procesar - Se enviará al guardar la propiedad",
+          pendingDocuments: "Documentos pendientes de procesar",
+          pendingDescription: "Los documentos se procesarán automáticamente cuando guardes la propiedad completa. Puedes añadir todos los documentos que necesites antes de guardar."
+        },
         buttons: {
           previous: "Anterior",
           next: "Siguiente",
@@ -697,11 +753,17 @@ export const es = {
         additionalImagesInfo: "Estas imágenes adicionales se mostrarán al turista cuando consulte información específica de la propiedad a través del chatbot.",
         noAdditionalImages: "No hay imágenes adicionales",
         addImagesWhileEditing: "Puedes añadir imágenes adicionales con descripciones al editar la propiedad.",
-        documentsInfo: "Estos documentos contienen información importante sobre la propiedad que ayudará al chatbot a resolver dudas de los turistas.",
+                  documentsInfo: "Estos documentos contienen información importante sobre la propiedad que ayudará al Agente de IA a resolver dudas de los turistas.",
         noDocuments: "No hay documentos disponibles",
         addDocumentsWhileEditing: "Puedes añadir documentos como guías, FAQs o reglas al editar la propiedad."
       }
     },
+    
+    propertyManagement: {
+      intelligentProcessingAI: "🤖 Procesamiento Inteligente con IA",
+      intelligentProcessingAIDescription: "Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram"
+    },
+    
     reservations: {
       title: "Reservas",
       upcoming: "Próximas",
@@ -1045,6 +1107,11 @@ export const es = {
     english: "English",
     property: "propiedad",
     properties: "propiedades",
+    previous: "Anterior",
+    next: "Siguiente",
+    creating: "Creando...",
+    createProperty: "Crear Propiedad",
+    updateProperty: "Actualizar Propiedad",
   },
   
   // Datos de ejemplo

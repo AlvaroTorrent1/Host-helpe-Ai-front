@@ -12,9 +12,11 @@ export interface Property {
   updated_at?: string;
   // Nuevos campos para imágenes adicionales
   additional_images?: PropertyImage[];
-  // REMOVIDO: documents - ahora se envían al webhook, no se guardan localmente
+  documents?: PropertyDocument[];
   // Campo para Google Business Profile URL (legacy - ahora usa shareable_links)
   google_business_profile_url?: string;
+  // Descripción para enlaces de negocio
+  business_links_description?: string;
 }
 
 export interface PropertyImage {

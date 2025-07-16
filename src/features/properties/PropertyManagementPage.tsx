@@ -578,29 +578,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
             </div>
           </div>
         )}
-        {/* Toggle para webhook n8n (solo en modo creación) */}
-        {!currentProperty && (
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between">
-              <label className="flex items-center space-x-3">
-                <input
-                  type="checkbox"
-                  checked={useWebhook}
-                  onChange={(e) => setUseWebhook(e.target.checked)}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <div>
-                  <span className="text-sm font-medium text-gray-900">
-                    🤖 Procesamiento Inteligente con IA
-                  </span>
-                  <p className="text-xs text-gray-600">
-                    Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram
-                  </p>
-                </div>
-              </label>
-            </div>
-          </div>
-        )}
+
 
         {/* Indicador de progreso durante el procesamiento */}
         {isSubmitting && (progressPhase || progressPercent > 0) && (

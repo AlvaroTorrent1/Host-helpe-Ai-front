@@ -542,7 +542,7 @@ export const en = {
           basic: "Basic Information",
           images: "Images",
           documents: "Documents",
-          google: "Google Business"
+          google: "Business Links"
         },
         fields: {
           name: "Property name",
@@ -576,6 +576,9 @@ export const en = {
           googleBusinessTitle: "Google Business Profile",
           googleBusinessDescription: "Provide the link to your Google Business profile. Our AI agents will automatically send it to guests when they detect high satisfaction during their conversation, increasing the chances of getting positive reviews."
         },
+        businessLinksTitle: "Business Links",
+        businessLinksDescription: "Add links to your Google Business profiles, social media (Instagram, Facebook), and personal websites. Our AI Agent will share these links when guests have positive experiences to help boost your online presence.",
+        businessUrlPlaceholder: "https://instagram.com/yourproperty, https://maps.google.com/maps?cid=...",
         buttons: {
           previous: "Previous",
           next: "Next",
@@ -598,7 +601,7 @@ export const en = {
         additionalImagesInfo: "These additional images will be shown to tourists when they consult specific property information through the chatbot.",
         noAdditionalImages: "No additional images",
         addImagesWhileEditing: "You can add additional images with descriptions when editing the property.",
-        documentsInfo: "These documents contain important property information that will help the chatbot resolve tourist inquiries.",
+                  documentsInfo: "These documents contain important property information that will help the AI Agent resolve tourist inquiries.",
         noDocuments: "No documents available",
         addDocumentsWhileEditing: "You can add documents like guides, FAQs or rules when editing the property."
       }
@@ -939,6 +942,11 @@ export const en = {
     english: "English",
     property: "property",
     properties: "properties",
+    previous: "Previous",
+    next: "Next",
+    creating: "Creating...",
+    createProperty: "Create Property",
+    updateProperty: "Update Property",
   },
   
   // Sample data
@@ -1042,6 +1050,62 @@ export const en = {
         googleBusinessTitle: "Google Business Profile",
         googleBusinessDescription: "Provide the link to your Google Business profile. Our AI agents will automatically send it to guests when they detect high satisfaction during their conversation, increasing the chances of getting positive reviews."
       },
+      propertyName: "Property Name",
+      address: "Address",
+      description: "Description",
+      propertyNamePlaceholder: "e.g., Downtown Apartment",
+      addressPlaceholder: "e.g., 123 Main Street, Madrid",
+      descriptionPlaceholder: "Describe your property...",
+      autoCoverImageTitle: "Automatic Cover Image",
+      autoCoverImageText: "The first image you upload in the next tab will automatically become the property's cover image.",
+              businessLinksTitle: "Business Links",
+        businessLinksDescription: "Add links to your Google Business profiles, social media (Instagram, Facebook), and personal websites. Our AI Agent will share these links when guests have positive experiences to help boost your online presence.",
+        businessUrlPlaceholder: "https://instagram.com/yourproperty, https://maps.google.com/maps?cid=...",
+      removeLink: "Remove link",
+      addAnotherLink: "Add another link",
+              shareableLinksNote: "These links will be strategically shared by our AI Agent to help promote your business when guests have positive experiences.",
+      additionalImages: {
+        title: "Additional Images",
+        description: "Add images with descriptions to show tourists visual information about the property. Images should be accompanied by clear context so our AI agent knows when to show them to tourists (e.g., \"View from the terrace\" or \"Oven instructions\")."
+      },
+      documents: {
+        title: "Property Documents",
+                    description: "Add documents such as guides, instructions, house rules or FAQs to answer guests' frequently asked questions. These documents will be used by our AI Agent to provide accurate and personalized answers to tourists.",
+        recommendedTypes: "Recommended document types include:",
+        types: {
+          faq: "FAQs",
+          faqDescription: "Answers to common questions about the property, area or services",
+          guides: "Guides",
+          guidesDescription: "Instructions for using appliances, wifi, TV, etc.",
+          houseRules: "House Rules",
+          houseRulesDescription: "Specific rules that guests must follow",
+          inventory: "Inventory",
+          inventoryDescription: "List of available objects and equipment",
+          other: "Other"
+        },
+        addNewDocument: "Add New Document",
+        documentName: "Document Name",
+        documentType: "Document Type",
+        documentDescription: "Description",
+        documentFile: "File",
+        documentNamePlaceholder: "Welcome guide, FAQ, etc.",
+                    documentDescriptionPlaceholder: "Add information about this document to help the AI Agent use it correctly...",
+        selectFile: "Select file",
+        dragAndDrop: "or drag and drop",
+        fileSizeLimit: "PDF, Word, TXT (MAX. 10MB)",
+        changeFile: "Change file",
+        uploadDocument: "Upload Document",
+        uploading: "Uploading...",
+        uploadingDocument: "Uploading document...",
+        processingDocument: "Processing document with AI...",
+        documentProcessedSuccessfully: "Document processed successfully!",
+                  errorProcessingDocument: "Error processing document",
+          retrying: "Retrying...",
+          documentsTemporary: "Documents will be saved temporarily until you finish creating the property.",
+          pendingProcess: "Pending to process - Will be sent when saving the property",
+          pendingDocuments: "Pending documents to process",
+          pendingDescription: "Documents will be processed automatically when you save the complete property. You can add all the documents you need before saving."
+      },
       steps: {
         step: "Step",
         of: "of",
@@ -1076,10 +1140,15 @@ export const en = {
       additionalImagesInfo: "These additional images will be shown to tourists when they ask for specific information about the property through the chatbot.",
       noAdditionalImages: "No additional images",
       addImagesWhileEditing: "You can add additional images with descriptions when editing the property.",
-      documentsInfo: "These documents contain important information about the property that will help the chatbot answer tourist questions.",
+                  documentsInfo: "These documents contain important information about the property that will help the AI Agent answer tourist questions.",
       noDocuments: "No documents available",
       addDocumentsWhileEditing: "You can add documents such as guides, FAQs, or rules when editing the property."
     }
+  },
+  
+  propertyManagement: {
+    intelligentProcessingAI: "🤖 Intelligent Processing with AI",
+    intelligentProcessingAIDescription: "Automatically categorizes images and documents using n8n + AI for WhatsApp/Telegram agents"
   },
   
   // Upgrade modal and plans

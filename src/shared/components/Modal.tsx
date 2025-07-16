@@ -66,13 +66,6 @@ const Modal: React.FC<ModalProps> = ({
     }
   };
 
-  // Manejar clic en el contenedor para cerrar si se hace clic fuera del modal
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      onClose();
-    }
-  };
-
   return (
     <div
       className="fixed inset-0 z-50 overflow-y-auto"
@@ -82,7 +75,6 @@ const Modal: React.FC<ModalProps> = ({
     >
       <div
         className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0"
-        onClick={handleBackdropClick}
       >
         {/* Fondo oscuro */}
         <div

@@ -181,6 +181,7 @@ class ImageWebhookService {
           .insert({
             property_id: propertyId,
             user_id: user.id, // REQUIRED for RLS policy
+            sort_order: i, // Add sort order from loop index
             file_type: 'image',
             title: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
             description: '',

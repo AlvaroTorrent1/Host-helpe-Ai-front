@@ -7,6 +7,7 @@ import {
 import PropertyImagesForm from "./PropertyImagesForm";
 import PropertyDocumentsForm from "./PropertyDocumentsForm";
 import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyFormProps {
   property?: Property;
@@ -23,12 +24,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   onCancel,
   isSubmitting,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Property, "id">>({
     name: "",
     address: "",
     additional_images: [],
     google_business_profile_url: undefined, // Campo legacy, se mantiene por compatibilidad
+    business_links_description: "",
   });
 
   // Estado separado para documentos (no se guardan en Property)
@@ -60,6 +62,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         amenities: property.amenities,
         additional_images: property.additional_images || [],
         google_business_profile_url: property.google_business_profile_url || undefined,
+        business_links_description: property.business_links_description || "",
       });
 
       // Si hay URL legacy, añadirla a la lista
@@ -263,201 +266,225 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
+            {/* Basic Information */}
             <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.fields.name")} *
+                {t("properties.form.propertyName")} *
               </label>
               <input
                 type="text"
                 name="name"
                 id="name"
-                required
                 value={formData.name}
                 onChange={handleChange}
-                placeholder={t("properties.form.placeholders.name")}
-                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                onKeyDown={handleKeyDown}
+                placeholder={t("properties.form.propertyNamePlaceholder")}
+                className={`mt-1 block w-full px-3 py-2 border ${
+                  validationErrors.name ? "border-red-500" : "border-gray-300"
+                } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                required
               />
+              {validationErrors.name && (
+                <p className="mt-2 text-sm text-red-600">
+                  {validationErrors.name}
+                </p>
+              )}
             </div>
-
             <div>
               <label
                 htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
-                {t("properties.form.fields.address")} *
+                {t("properties.form.address")} *
               </label>
               <input
                 type="text"
                 name="address"
                 id="address"
-                required
                 value={formData.address}
                 onChange={handleChange}
-                placeholder={t("properties.form.placeholders.address")}
-                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                onKeyDown={handleKeyDown}
+                placeholder={t("properties.form.addressPlaceholder")}
+                className={`mt-1 block w-full px-3 py-2 border ${
+                  validationErrors.address
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                required
               />
+              {validationErrors.address && (
+                <p className="mt-2 text-sm text-red-600">
+                  {validationErrors.address}
+                </p>
+              )}
             </div>
 
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {t("properties.form.fields.description")}
-              </label>
-              <textarea
-                name="description"
-                id="description"
-                rows={4}
-                value={formData.description}
-                onChange={handleChange}
-                placeholder={t("properties.form.placeholders.description")}
-                className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-              />
-            </div>
 
-            {/* Información sobre imagen de portada */}
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-              <div className="flex">
-                  <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">
-                    Imagen de portada automática
-                  </h3>
-                  <div className="mt-2 text-sm text-blue-700">
-                    <p>
-                      La primera imagen que subas en la siguiente pestaña se convertirá automáticamente en la imagen de portada de la propiedad.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         );
       case 2:
         return (
-          <div>
-            {/* Mostrar preview de imagen de portada si existe */}
-            {formData.image && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3 flex-1">
-                    <h3 className="text-sm font-medium text-green-800">
-                      Imagen de portada establecida
-                    </h3>
-                    <div className="mt-2 flex items-center space-x-3">
-                      <img
-                        src={formData.image}
-                        alt="Imagen de portada"
-                        className="h-16 w-20 object-cover rounded-md border"
-                      />
-                      <p className="text-sm text-green-700">
-                        Esta será la imagen principal que se mostrará en las listas de propiedades.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-          <PropertyImagesForm
-            images={formData.additional_images}
-            onChange={handleAdditionalImagesChange}
-          />
-          </div>
-        );
-      case 3:
-        return (
-          <PropertyDocumentsForm
-            propertyId={property?.id || "temp"}
-            propertyName={propertyName || formData.name || "Propiedad"}
-            documents={temporaryDocuments}
-            onChange={handleDocumentsChange}
-          />
-        );
-      case 4:
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">
-                Enlaces de Google Business
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Añade los enlaces a los perfiles de Google Business de tu propiedad. 
-                Estos enlaces se guardarán como enlaces compartibles para uso en mensajería.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              {googleBusinessUrls.map((url, index) => (
-                <div key={index} className="flex gap-2">
-                  <div className="flex-1">
-              <label
-                      htmlFor={`google_business_url_${index}`}
-                      className="block text-sm font-medium text-gray-700"
-              >
-                      {index === 0 ? "URL principal" : `URL adicional ${index}`}
-              </label>
-              <input
-                type="url"
-                      id={`google_business_url_${index}`}
-                      value={url}
-                      onChange={(e) => handleGoogleBusinessUrlChange(index, e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      placeholder="https://maps.google.com/maps?cid=..."
-                    />
-                  </div>
-                  {googleBusinessUrls.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeGoogleBusinessUrl(index)}
-                      className="mt-6 inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={addGoogleBusinessUrl}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Añadir otro enlace
-              </button>
-            </div>
-
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+          <div className="animate-fade-in">
+            {/* Mensaje de Imagen de Portada Automática */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <svg
+                    className="h-5 w-5 text-blue-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-blue-700">
-                    Los enlaces se guardarán como enlaces compartibles que podrás usar en WhatsApp, 
-                    Telegram y otras plataformas de mensajería.
+                    <span className="font-bold">{t("properties.form.autoCoverImageTitle")}</span>{" "}
+                    {t("properties.form.autoCoverImageText")}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <PropertyImagesForm
+              images={formData.additional_images || []}
+              onChange={handleAdditionalImagesChange}
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="animate-fade-in">
+            <PropertyDocumentsForm
+              documents={temporaryDocuments}
+              onChange={handleDocumentsChange}
+              propertyId={property?.id || "temp"}
+              propertyName={formData.name || propertyName} // Pasar el nombre de la propiedad
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <h3 className="text-lg font-medium text-gray-900">
+                {t("properties.form.businessLinksTitle")}
+              </h3>
+              <p className="mt-1 text-sm text-gray-600">
+                {t("properties.form.businessLinksDescription")}
+              </p>
+            </div>
+
+            {googleBusinessUrls.map((url, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) =>
+                    handleGoogleBusinessUrlChange(index, e.target.value)
+                  }
+                  onKeyDown={handleKeyDown}
+                  placeholder={t("properties.form.businessUrlPlaceholder")}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                {googleBusinessUrls.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeGoogleBusinessUrl(index)}
+                    className="p-2 text-gray-500 hover:text-red-600"
+                    aria-label={t("properties.form.removeLink")}
+                  >
+                    <svg
+                      className="h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addGoogleBusinessUrl}
+              className="mt-2 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              <svg
+                className="h-5 w-5 mr-1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {t("properties.form.addAnotherLink")}
+            </button>
+
+            {/* Sección de descripción */}
+            <div className="mt-6">
+              <label
+                htmlFor="businessLinksDescription"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {t("properties.form.businessLinksDescriptionLabel")}
+              </label>
+              <textarea
+                id="businessLinksDescription"
+                name="businessLinksDescription"
+                value={formData.business_links_description || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    business_links_description: e.target.value,
+                  })
+                }
+                rows={3}
+                placeholder={t("properties.form.businessLinksDescriptionPlaceholder")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+              />
+            </div>
+            
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mt-6">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                   <svg
+                    className="h-5 w-5 text-blue-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                   <p className="text-sm text-blue-700">
+                    {t("properties.form.shareableLinksNote")}
                   </p>
                 </div>
               </div>
@@ -470,61 +497,55 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   };
 
   // Renderizar botones de acción según el paso actual
-  const renderActionButtons = () => {
-    return (
-      <div className="pt-5">
-        <div className="flex justify-between">
-        <div>
-          {currentStep > 1 && (
-            <button
-              type="button"
-                onClick={prevStep}
-                className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            >
-              {t("properties.form.buttons.previous")}
-            </button>
-          )}
-        </div>
+  const renderActionButtons = () => (
+    <div className="flex justify-end items-center space-x-4 pt-6 border-t border-gray-200">
+      {currentStep > 1 && (
+        <button
+          type="button"
+          onClick={prevStep}
+          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+        >
+          {t("common.previous")}
+        </button>
+      )}
+      {currentStep < totalSteps ? (
+        <button
+          type="button"
+          onClick={nextStep}
+          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+        >
+          {t("common.next")}
+        </button>
+      ) : (
+        <button
+          type="submit"
+          onClick={() => {
+            // Log para debug
+            console.log('✅ Botón "Create Property" pulsado - Estableciendo submit intencional');
+            setIsIntentionalSubmit(true);
+          }}
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-primary-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+        >
+          {isSubmitting ? t("common.creating") : t("common.createProperty")}
+        </button>
+      )}
+       <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+        >
+          {t("common.cancel")}
+        </button>
+    </div>
+  );
 
-        <div className="flex space-x-3">
-          <button
-            type="button"
-            onClick={onCancel}
-              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-              {t("properties.form.buttons.cancel")}
-          </button>
-
-          {currentStep < totalSteps ? (
-            <button
-              type="button"
-                onClick={nextStep}
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            >
-              {t("properties.form.buttons.next")}
-            </button>
-          ) : (
-            <button
-                type="submit"
-              disabled={isSubmitting}
-                onClick={() => {
-                  console.log('✅ Botón de crear/actualizar clickeado - Marcando como submit intencional');
-                  setIsIntentionalSubmit(true);
-                }}
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-            >
-                {isSubmitting
-                  ? t("properties.form.buttons.saving")
-                  : property
-                    ? t("properties.form.buttons.update")
-                    : t("properties.form.buttons.create")}
-            </button>
-          )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const steps = [
+    { id: 1, name: t("properties.form.steps.basicInfo") },
+    { id: 2, name: t("properties.form.steps.images") },
+    { id: 3, name: t("properties.form.steps.documents") },
+    { id: 4, name: t("properties.form.steps.google") },
+  ];
 
   return (
     <>

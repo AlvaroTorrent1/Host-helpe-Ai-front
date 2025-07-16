@@ -9,7 +9,7 @@ import mediaService from "../../services/mediaService";
 import directImageWebhookService from "../../services/directImageWebhookService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 import { MessagingUrlsPanel } from "./components/MessagingUrlsPanel";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
@@ -59,7 +59,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
   const navigate = useNavigate();
   const isEditing = !!propertyId;
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const user = useUser();
 
   // Cargar propiedad si estamos en modo edición
@@ -95,7 +95,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
       // Modo edición: actualizar propiedad existente (siempre directo a Supabase)
       if (property && property.id) {
-        setProgressPhase('Actualizando propiedad...');
+        setProgressPhase(t('propertyManagement.updatingProperty'));
         setProgressPercent(50);
         
         const { data, error } = await supabase
@@ -123,7 +123,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         
         // Procesar nuevas imágenes si existen
         if (propertyData.additional_images && propertyData.additional_images.length > 0) {
-          setProgressPhase('Procesando nuevas imágenes...');
+          setProgressPhase(t('propertyManagement.processingNewImages'));
           setProgressPercent(65);
           
           try {
@@ -133,7 +133,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
               .map(img => img.file as File);
             
             if (newImageFiles.length > 0) {
-              console.log(`📸 Agregando ${newImageFiles.length} nuevas imágenes a la propiedad ${savedProperty.id}`);
+              console.log(`📸 ${t('propertyManagement.addingNewImages', { count: newImageFiles.length, propertyId: savedProperty.id })}`);
               
               // NOTA: Temporalmente deshabilitado para evitar conflicto con imageWebhookService
               // TODO: Actualizar mediaService para que funcione sin category/subcategory
@@ -149,22 +149,22 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
                 }
               );
               
-              console.log(`✅ ${uploadedImages.length} nuevas imágenes agregadas`);
-              toast.success(`${uploadedImages.length} nuevas imágenes agregadas`);
+              console.log(`✅ ${t('propertyManagement.newImagesAdded', { count: uploadedImages.length })}`);
+              toast.success(t('propertyManagement.newImagesAdded', { count: uploadedImages.length }));
               */
               
               // Por ahora, solo mostrar mensaje de éxito
-              console.log(`✅ ${newImageFiles.length} nuevas imágenes preparadas para procesar`);
-              toast.success(`${newImageFiles.length} nuevas imágenes agregadas`);
+              console.log(`✅ ${t('propertyManagement.newImagesReady', { count: newImageFiles.length })}`);
+              toast.success(t('propertyManagement.newImagesAddedSuccess', { count: newImageFiles.length }));
             }
           } catch (imageError) {
-            console.error('Error al procesar nuevas imágenes:', imageError);
-            toast.error('Algunas imágenes no pudieron ser procesadas');
+            console.error(t('propertyManagement.errorProcessingNewImages'), imageError);
+            toast.error(t('propertyManagement.someImagesNotProcessed'));
             // No lanzar error, continuar con el proceso
           }
         }
         
-        setProgressPhase('Procesando documentos...');
+        setProgressPhase(t('propertyManagement.processingDocuments'));
         setProgressPercent(75);
         
         // Procesar documentos temporales si existen
@@ -205,12 +205,12 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         
         // NUEVO: Usar procesamiento de imágenes con IA si hay imágenes
         if (useImageProcessing && hasImages) {
-          console.log('🎨 Usando nuevo flujo con procesamiento de imágenes IA');
+          console.log(t('propertyManagement.usingImageProcessing'));
           savedProperty = await createPropertyWithImageProcessing(propertyData);
         }
         // Usar webhook tradicional si tiene archivos y la opción está habilitada
         else if (useWebhook && (hasImages || hasOtherFiles)) {
-          console.log('🚀 Usando webhook n8n para procesamiento inteligente de archivos');
+          console.log(t('propertyManagement.usingN8nWebhook'));
           
           // Callback para mostrar progreso al usuario
           const onProgress = (phase: string, progress: number) => {
@@ -333,8 +333,8 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
    */
   const createPropertyWithImageProcessing = async (propertyData: PropertyFormData): Promise<Property> => {
     try {
-      setProgressPhase('Creando propiedad en modo borrador...');
-      setProgressPercent(5);
+      setProgressPhase(t('propertyManagement.creatingPropertyRecord'));
+      setProgressPercent(10);
 
       // Paso 1: Crear propiedad en modo "draft"
       const { data: { user } } = await supabase.auth.getUser();
@@ -360,7 +360,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
       // Paso 2: Procesar imágenes con IA si existen
       if (propertyData.additional_images && propertyData.additional_images.length > 0) {
-        setProgressPhase('Procesando imágenes con IA...');
+        setProgressPhase(t('propertyManagement.processingImagesWithIA'));
         setProgressPercent(20);
 
         // Extraer archivos File de las imágenes
@@ -399,7 +399,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         }
       }
 
-      setProgressPhase('Finalizando...');
+      setProgressPhase(t('propertyManagement.completingCreation'));
       setProgressPercent(95);
 
       // Mostrar mensaje de éxito
@@ -422,8 +422,8 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
   // Función auxiliar para crear propiedad directamente en Supabase
   const createPropertyDirectly = async (propertyData: PropertyFormData): Promise<Property> => {
-    setProgressPhase('Creando propiedad...');
-    setProgressPercent(30);
+    setProgressPhase(t('propertyManagement.creatingPropertyDirectly'));
+    setProgressPercent(20);
     
     const { data, error } = await supabase
       .from("properties")
@@ -452,7 +452,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
     
     // Procesar imágenes si existen
     if (propertyData.additional_images && propertyData.additional_images.length > 0) {
-      setProgressPhase('Procesando imágenes...');
+      setProgressPhase(t('propertyManagement.uploadingImagesDirectly'));
       setProgressPercent(50);
       
       try {
@@ -493,7 +493,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
       }
     }
     
-    setProgressPhase('Procesando documentos...');
+    setProgressPhase(t('propertyManagement.processingDocumentsDirectly'));
     setProgressPercent(70);
 
     // Procesar documentos temporales si existen
@@ -552,65 +552,6 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
       <h2 className="text-2xl font-bold mb-6">
         {isEditing ? "Editar propiedad" : "Añadir propiedad"}
       </h2>
-
-      {/* Toggle para webhook n8n (solo en modo creación) */}
-      {!isEditing && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <label className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                checked={useWebhook}
-                onChange={(e) => setUseWebhook(e.target.checked)}
-                className="form-checkbox h-5 w-5 text-blue-600"
-              />
-              <div>
-                <span className="text-sm font-medium text-gray-900">
-                  🤖 Procesamiento Inteligente con IA
-                </span>
-                <p className="text-xs text-gray-600">
-                  Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram
-                </p>
-              </div>
-            </label>
-            
-            {/* Botones de prueba del webhook (solo en desarrollo) */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="flex space-x-2">
-                <button
-                  onClick={async () => {
-                    const isHealthy = await propertyWebhookService.checkWebhookHealth();
-                    toast(isHealthy ? 
-                      '✅ Webhook n8n funcionando correctamente' : 
-                      '❌ Webhook n8n no disponible', 
-                      { duration: 3000 }
-                    );
-                  }}
-                  className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
-                >
-                  🔧 Test Salud
-                </button>
-                
-                <button
-                  onClick={async () => {
-                    try {
-                      toast('🧪 Ejecutando test completo...', { duration: 2000 });
-                      await webhookTestService.runFullTest();
-                      toast('✅ Test completo exitoso - Revisa la consola para detalles', { duration: 5000 });
-                    } catch (error) {
-                      console.error('Error en test:', error);
-                      toast('❌ Test falló - Revisa la consola para detalles', { duration: 5000 });
-                    }
-                  }}
-                  className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
-                >
-                  🧪 Test Completo
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">

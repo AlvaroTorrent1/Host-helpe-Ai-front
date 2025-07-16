@@ -187,6 +187,153 @@ const LandingPage = () => {
       <main>
         {/* Hero Section */}
         <section className="relative py-6 md:py-8 bg-gradient-to-r from-[#ECA408] to-[#F5B730] overflow-hidden w-full">
+          {/* Circuitos animados en el fondo */}
+          <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+            <style>
+              {`
+                @keyframes circuitPulse {
+                  0%, 70%, 100% { 
+                    opacity: 0;
+                    stroke-dasharray: 0, 1000;
+                  }
+                  10%, 60% { 
+                    opacity: 0.4;
+                    stroke-dasharray: 1000, 0;
+                  }
+                }
+                @keyframes nodePulse {
+                  0%, 70%, 100% { 
+                    opacity: 0;
+                    transform: scale(0);
+                  }
+                  15%, 55% { 
+                    opacity: 0.6;
+                    transform: scale(1);
+                  }
+                }
+                .circuit-line-1 { animation: circuitPulse 12s infinite; }
+                .circuit-line-2 { animation: circuitPulse 12s infinite 1s; }
+                .circuit-line-3 { animation: circuitPulse 12s infinite 2s; }
+                .circuit-line-4 { animation: circuitPulse 12s infinite 0.5s; }
+                .circuit-line-5 { animation: circuitPulse 12s infinite 1.5s; }
+                .circuit-node-1 { animation: nodePulse 12s infinite 0.3s; }
+                .circuit-node-2 { animation: nodePulse 12s infinite 1.3s; }
+                .circuit-node-3 { animation: nodePulse 12s infinite 2.3s; }
+                .circuit-node-4 { animation: nodePulse 12s infinite 0.8s; }
+              `}
+            </style>
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 1200 400"
+              preserveAspectRatio="xMidYMid slice"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Línea principal horizontal superior */}
+              <path
+                className="circuit-line-1"
+                d="M 100 80 L 300 80 L 320 100 L 500 100 L 520 80 L 800 80 L 820 100 L 1100 100"
+                fill="none"
+                stroke="#F4D03F"
+                strokeWidth="2"
+                opacity="0"
+              />
+              
+              {/* Bifurcación vertical izquierda */}
+              <path
+                className="circuit-line-2"
+                d="M 300 80 L 300 150 L 280 170 L 280 220 L 300 240 L 400 240"
+                fill="none"
+                stroke="#F7DC6F"
+                strokeWidth="1.5"
+                opacity="0"
+              />
+              
+              {/* Línea diagonal central */}
+              <path
+                className="circuit-line-3"
+                d="M 500 100 L 520 120 L 580 120 L 600 140 L 600 200 L 620 220 L 700 220"
+                fill="none"
+                stroke="#FCF3CF"
+                strokeWidth="2"
+                opacity="0"
+              />
+              
+              {/* Circuito inferior derecho */}
+              <path
+                className="circuit-line-4"
+                d="M 800 80 L 800 160 L 780 180 L 780 280 L 800 300 L 900 300 L 920 280 L 1000 280"
+                fill="none"
+                stroke="#F4D03F"
+                strokeWidth="1.5"
+                opacity="0"
+              />
+              
+              {/* Línea horizontal inferior */}
+              <path
+                className="circuit-line-5"
+                d="M 200 320 L 400 320 L 420 300 L 600 300 L 620 320 L 900 320"
+                fill="none"
+                stroke="#F7DC6F"
+                strokeWidth="2"
+                opacity="0"
+              />
+              
+              {/* Nodos de conexión */}
+              <circle
+                className="circuit-node-1"
+                cx="300"
+                cy="80"
+                r="4"
+                fill="#F4D03F"
+                opacity="0"
+              />
+              <circle
+                className="circuit-node-2"
+                cx="520"
+                cy="100"
+                r="3"
+                fill="#FCF3CF"
+                opacity="0"
+              />
+              <circle
+                className="circuit-node-3"
+                cx="800"
+                cy="80"
+                r="4"
+                fill="#F7DC6F"
+                opacity="0"
+              />
+              <circle
+                className="circuit-node-4"
+                cx="600"
+                cy="200"
+                r="3"
+                fill="#F4D03F"
+                opacity="0"
+              />
+              
+              {/* Pequeños rectángulos que simulan componentes */}
+              <rect
+                className="circuit-node-1"
+                x="296"
+                y="236"
+                width="8"
+                height="8"
+                fill="#F4D03F"
+                opacity="0"
+              />
+              <rect
+                className="circuit-node-3"
+                x="916"
+                y="276"
+                width="8"
+                height="8"
+                fill="#FCF3CF"
+                opacity="0"
+              />
+            </svg>
+          </div>
+          
           <div className="container-limited relative z-10">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { PropertyImage } from "../../types/property";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 
 interface PropertyImagesFormProps {
   images?: PropertyImage[];
@@ -10,6 +11,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
   images = [],
   onChange,
 }) => {
+  const { t } = useLanguage();
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Generar un ID único para las nuevas imágenes
@@ -70,14 +72,10 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
     <div className="space-y-4">
       <div className="border-b border-gray-200 pb-2">
         <h3 className="text-lg font-medium text-gray-900">
-          Imágenes adicionales
+          {t("properties.form.additionalImages.title")}
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          Añade imágenes con descripción para mostrar al turista información
-          visual sobre la propiedad. Las imágenes deben ir acompañadas de un
-          contexto claro para que nuestro agente de IA sepa cuándo mostrarlas al
-          turista (por ejemplo, "Vista desde la terraza" o "Instrucciones del
-          horno").
+          {t("properties.form.additionalImages.description")}
         </p>
       </div>
 

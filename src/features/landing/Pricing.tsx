@@ -153,12 +153,12 @@ const Pricing = () => {
   // Enlaces base de Stripe para los diferentes planes
   const stripeLinks = {
     basic: {
-      annual: "https://buy.stripe.com/14kaHD96S0lpgdafZ0",
-      monthly: "https://buy.stripe.com/6oEbLH1Eq4BF4us288",
+      annual: "https://buy.stripe.com/cNi14o1sn3qDcUs2QO1Nu07",
+      monthly: "https://buy.stripe.com/4gM8wQ0oj3qD1bKfDA1Nu08",
     },
     pro: {
-      annual: "https://buy.stripe.com/9AQ8zv1Eq4BFgda6os",
-      monthly: "https://buy.stripe.com/4gw6rn0Am6JN6CAfYZ",
+      annual: "https://buy.stripe.com/cNi8wQgnhe5h7A80IG1Nu05",
+      monthly: "https://buy.stripe.com/8x2fZi8UP4uH4nWbnk1Nu06",
     },
     enterprise: "https://hosthelperai.com/schedule-demo",
   };

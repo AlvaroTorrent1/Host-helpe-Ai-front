@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PropertyDocument } from "../../types/property";
 import { webhookDocumentService, DocumentProcessingStatus } from "../../services/webhookDocumentService";
 import { formatFileSize } from "../../utils";
+import { useLanguage } from "@shared/contexts/LanguageContext";
 
 interface PropertyDocumentsFormProps {
   propertyId: string;
@@ -18,6 +19,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
   onChange,
   onAddDocument,
 }) => {
+  const { t } = useLanguage();
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -315,32 +317,25 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
     <div className="space-y-4">
       <div className="border-b border-gray-200 pb-2">
         <h3 className="text-lg font-medium text-gray-900">
-          Documentos de la propiedad
+          {t("properties.form.documents.title")}
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          Añade documentos como guías, instrucciones, reglas de la casa o FAQs
-          para responder a las preguntas frecuentes de los huéspedes. Estos
-          documentos serán utilizados por nuestro chatbot de IA para
-          proporcionar respuestas precisas y personalizadas a los turistas.
+          {t("properties.form.documents.description")}
         </p>
         <p className="mt-1 text-sm text-gray-500">
-          Los tipos de documentos recomendados incluyen:
+          {t("properties.form.documents.recommendedTypes")}
           <ul className="list-disc pl-5 mt-1">
             <li>
-              <strong>FAQs:</strong> Respuestas a preguntas habituales sobre la
-              propiedad, zona o servicios.
+              <strong>{t("properties.form.documents.types.faq")}:</strong> {t("properties.form.documents.types.faqDescription")}
             </li>
             <li>
-              <strong>Guías:</strong> Instrucciones de uso de electrodomésticos,
-              wifi, TV, etc.
+              <strong>{t("properties.form.documents.types.guides")}:</strong> {t("properties.form.documents.types.guidesDescription")}
             </li>
             <li>
-              <strong>Reglas de la casa:</strong> Normas específicas que deben
-              seguir los huéspedes.
+              <strong>{t("properties.form.documents.types.houseRules")}:</strong> {t("properties.form.documents.types.houseRulesDescription")}
             </li>
             <li>
-              <strong>Inventario:</strong> Lista de objetos y equipamiento
-              disponible.
+              <strong>{t("properties.form.documents.types.inventory")}:</strong> {t("properties.form.documents.types.inventoryDescription")}
             </li>
           </ul>
         </p>
@@ -357,12 +352,11 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-amber-800">
-                Documentos pendientes de procesar
+                {t("properties.form.documents.pendingDocuments")}
               </h3>
               <div className="mt-2 text-sm text-amber-700">
                 <p>
-                  Los documentos se procesarán automáticamente cuando guardes la propiedad completa.
-                  Puedes añadir todos los documentos que necesites antes de guardar.
+                  {t("properties.form.documents.pendingDescription")}
                 </p>
               </div>
             </div>
@@ -387,15 +381,15 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                     {doc.name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {doc.type === "faq" && "Preguntas frecuentes"}
-                    {doc.type === "guide" && "Guía"}
-                    {doc.type === "house_rules" && "Reglas de la casa"}
-                    {doc.type === "inventory" && "Inventario"}
-                    {doc.type === "other" && "Otro"}
+                    {doc.type === "faq" && t("properties.form.documents.types.faq")}
+                    {doc.type === "guide" && t("properties.form.documents.types.guides")}
+                    {doc.type === "house_rules" && t("properties.form.documents.types.houseRules")}
+                    {doc.type === "inventory" && t("properties.form.documents.types.inventory")}
+                    {doc.type === "other" && t("properties.form.documents.types.other")}
                   </p>
                   {isTemporaryDocument(doc) && (
                     <p className="text-xs text-amber-600 mt-1">
-                      Pendiente de procesar - Se enviará al guardar la propiedad
+                      {t("properties.form.documents.pendingProcess")}
                     </p>
                   )}
                 </div>
@@ -430,18 +424,18 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
       {/* Formulario para añadir nuevos documentos */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h4 className="text-md font-medium text-gray-900 mb-3">
-          Añadir nuevo documento
+          {t("properties.form.documents.addNewDocument")}
         </h4>
 
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700">
-            Añadir nuevo documento
+            {t("properties.form.documents.addNewDocument")}
           </label>
           
           <div className="mt-1 flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700">
-                Nombre del documento
+                {t("properties.form.documents.documentName")}
               </label>
               <input
                 type="text"
@@ -453,13 +447,13 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   })
                 }
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                placeholder="Guía de bienvenida, FAQ, etc."
+                placeholder={t("properties.form.documents.documentNamePlaceholder")}
               />
             </div>
             
             <div className="w-full sm:w-1/3">
               <label className="block text-sm font-medium text-gray-700">
-                Tipo de documento
+                {t("properties.form.documents.documentType")}
               </label>
               <select
                 value={currentDocument.type}
@@ -471,36 +465,18 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                 }
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               >
-                <option value="faq">FAQ</option>
-                <option value="guide">Guía</option>
-                <option value="house_rules">Reglas de la casa</option>
-                <option value="inventory">Inventario</option>
-                <option value="other">Otro</option>
+                <option value="faq">{t("properties.form.documents.types.faq")}</option>
+                <option value="guide">{t("properties.form.documents.types.guides")}</option>
+                <option value="house_rules">{t("properties.form.documents.types.houseRules")}</option>
+                <option value="inventory">{t("properties.form.documents.types.inventory")}</option>
+                <option value="other">{t("properties.form.documents.types.other")}</option>
               </select>
             </div>
           </div>
           
           <div className="mt-2">
             <label className="block text-sm font-medium text-gray-700">
-              Descripción
-            </label>
-            <textarea
-              value={currentDocument.description}
-              onChange={(e) =>
-                setCurrentDocument({
-                  ...currentDocument,
-                  description: e.target.value,
-                })
-              }
-              rows={2}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              placeholder="Añade información sobre este documento para ayudar al chatbot a utilizarlo correctamente..."
-            />
-          </div>
-          
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Archivo
+              {t("properties.form.documents.documentFile")}
             </label>
             <div 
               className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 ${selectedFile ? 'border-green-300 bg-green-50' : 'border-gray-300'} border-dashed rounded-md`}
@@ -520,7 +496,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                       onClick={() => setSelectedFile(null)}
                       className="mt-2 inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
-                      Cambiar archivo
+                      {t("properties.form.documents.changeFile")}
                     </button>
                   </div>
                 ) : (
@@ -544,7 +520,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                         htmlFor="file-upload"
                         className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
                       >
-                        <span>Seleccionar archivo</span>
+                        <span>{t("properties.form.documents.selectFile")}</span>
                         <input
                           id="file-upload"
                           name="file-upload"
@@ -554,10 +530,10 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                           onChange={handleFileSelect}
                         />
                       </label>
-                      <p className="pl-1">o arrastrar y soltar</p>
+                      <p className="pl-1">{t("properties.form.documents.dragAndDrop")}</p>
                     </div>
                     <p className="text-xs text-gray-500">
-                      PDF, Word, TXT (MAX. 10MB)
+                      {t("properties.form.documents.fileSizeLimit")}
                     </p>
                   </>
                 )}
@@ -617,10 +593,10 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Subiendo...
+                  {t("properties.form.documents.uploading")}
                 </span>
               ) : (
-                "Subir documento"
+                t("properties.form.documents.uploadDocument")
               )}
             </button>
           </div>
@@ -639,7 +615,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Subiendo documento...</span>
+                  <span>{t("properties.form.documents.uploadingDocument")}</span>
                 </>
               )}
               {processingStatus === 'processing' && (
@@ -647,7 +623,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   <svg className="animate-pulse h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
                   </svg>
-                  <span>{processingMessage || 'Procesando documento con IA...'}</span>
+                  <span>{processingMessage || t("properties.form.documents.processingDocument")}</span>
                 </>
               )}
               {processingStatus === 'completed' && (
@@ -655,7 +631,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>¡Documento procesado exitosamente!</span>
+                  <span>{t("properties.form.documents.documentProcessedSuccessfully")}</span>
                 </>
               )}
               {processingStatus === 'failed' && (
@@ -663,7 +639,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
-                  <span>Error al procesar documento</span>
+                  <span>{t("properties.form.documents.errorProcessingDocument")}</span>
                 </>
               )}
               {processingStatus === 'retry' && (
@@ -671,31 +647,13 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
                   <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  <span>{processingMessage || 'Reintentando...'}</span>
+                  <span>{processingMessage || t("properties.form.documents.retrying")}</span>
                 </>
               )}
             </div>
           )}
 
-          {propertyId === "temp" && (
-            <div className="mt-3 text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
-              <p className="flex items-center">
-                <svg
-                  className="h-5 w-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Los documentos se guardarán temporalmente hasta que finalices la
-                creación de la propiedad.
-              </p>
-            </div>
-          )}
+
         </div>
       </div>
     </div>

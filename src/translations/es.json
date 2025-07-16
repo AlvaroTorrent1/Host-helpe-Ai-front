@@ -10,9 +10,46 @@
       },
       "steps": {
         "basic": "Información Básica",
+        "basicInfo": "Información básica",
         "images": "Imágenes",
         "documents": "Documentos",
-        "google": "Google Business"
+        "google": "Enlaces de Negocio",
+        "googleBusiness": "Enlaces de Negocio"
+      },
+      "propertyName": "Nombre de la propiedad",
+      "propertyNamePlaceholder": "Ej: Apartamento Céntrico",
+      "address": "Dirección",
+      "addressPlaceholder": "Ej: Calle Principal 123, Madrid",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe tu propiedad...",
+      "autoCoverImageTitle": "Imagen de portada automática",
+      "autoCoverImageText": "La primera imagen que subas en la siguiente pestaña se convertirá automáticamente en la imagen de portada de la propiedad.",
+              "businessLinksTitle": "Enlaces de Negocio",
+        "businessLinksDescription": "Añade enlaces a tus perfiles de negocio (Instagram, Facebook, web, Google Business, etc.). Nuestro Agente de IA compartirá estos enlaces cuando los huéspedes tengan experiencias positivas para ayudar con tu posicionamiento online.",
+        "businessLinksDescriptionLabel": "Descripción",
+        "businessLinksDescriptionPlaceholder": "Describe tu estrategia de enlaces de negocio o instrucciones específicas para tu Agente de IA...",
+              "businessUrlPlaceholder": "https://instagram.com/tupropiedad, https://maps.google.com/maps?cid=...",
+      "removeLink": "Eliminar enlace",
+      "addAnotherLink": "Añadir otro enlace",
+              "shareableLinksNote": "Estos enlaces serán compartidos estratégicamente por nuestro Agente de IA para ayudar a promocionar tu negocio cuando los huéspedes tengan experiencias positivas.",
+      "additionalImages": {
+        "title": "Imágenes Adicionales",
+        "description": "Añade imágenes con descripción para mostrar al turista información visual sobre la propiedad. Las imágenes deben ir acompañadas de un contexto claro para que nuestro agente de IA sepa cuándo mostrarlas al turista (por ejemplo, \"Vista desde la terraza\" o \"Instrucciones del horno\")."
+      },
+      "documents": {
+        "title": "Documentos de la Propiedad",
+        "description": "Añade documentos como guías, instrucciones, reglas de la casa o FAQs para responder a las preguntas frecuentes de los huéspedes. Estos documentos serán utilizados por nuestro Agente de IA para proporcionar respuestas precisas y personalizadas a los turistas.",
+        "recommendedTypes": "Los tipos de documentos recomendados incluyen:",
+        "types": {
+          "faq": "FAQs",
+          "faqDescription": "Respuestas a preguntas habituales sobre la propiedad, zona o servicios",
+          "guides": "Guías",
+          "guidesDescription": "Instrucciones de uso de electrodomésticos, wifi, TV, etc.",
+          "houseRules": "Reglas de la Casa",
+          "houseRulesDescription": "Normas específicas que deben seguir los huéspedes",
+          "inventory": "Inventario",
+          "inventoryDescription": "Lista de objetos y equipamiento disponible"
+        }
       },
       "fields": {
         "name": "Nombre de la propiedad",
@@ -109,6 +146,28 @@
       "close": "Cerrar"
     }
   },
+  "propertyManagement": {
+    "intelligentProcessingAI": "🤖 Procesamiento Inteligente con IA",
+    "intelligentProcessingAIDescription": "Categoriza automáticamente imágenes y documentos usando n8n + IA para agentes WhatsApp/Telegram"
+  },
+  "common": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "creating": "Creando...",
+    "createProperty": "Crear Propiedad",
+    "updateProperty": "Actualizar Propiedad",
+    "cancel": "Cancelar",
+    "pagination": {
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "first": "Primera",
+      "last": "Última"
+    }
+  },
   "ses": {
     "history": {
       "title": "Historial de Envíos SES",
@@ -140,18 +199,6 @@
         "retry": "Reintentar"
       },
       "noSubmissions": "No se encontraron envíos"
-    }
-  },
-  "common": {
-    "pagination": {
-      "showing": "Mostrando",
-      "to": "a",
-      "of": "de",
-      "results": "resultados",
-      "previous": "Anterior",
-      "next": "Siguiente",
-      "first": "Primera",
-      "last": "Última"
     }
   },
   "upgrade": {

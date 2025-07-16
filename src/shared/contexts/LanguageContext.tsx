@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { translations, LanguageCode } from "@translations/index";
+import { useTranslation } from "react-i18next";
 
 type LanguageContextType = {
   language: LanguageCode;
@@ -32,6 +33,8 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
+  const { i18n } = useTranslation();
+  
   // Inicializar idioma desde localStorage o detectar del navegador
   const [language, setLanguage] = useState<LanguageCode>(() => {
     // Intentar cargar desde localStorage
@@ -50,16 +53,23 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     return "es";
   });
 
-  // Efecto inicial para establecer el idioma en el DOM
+  // Efecto inicial para establecer el idioma en el DOM y sincronizar con react-i18next
   useEffect(() => {
     document.documentElement.lang = language;
-  }, []);
+    // Sincronizar con react-i18next
+    if (i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
 
   // Guardar el idioma en localStorage cuando cambie después de la inicialización
-  useEffect(() => {
-    localStorage.setItem("language", language);
-    document.documentElement.lang = language;
-  }, [language]);
+  const handleSetLanguage = (lang: LanguageCode) => {
+    setLanguage(lang);
+    localStorage.setItem("language", lang);
+    document.documentElement.lang = lang;
+    // Sincronizar con react-i18next
+    i18n.changeLanguage(lang);
+  };
 
   // Función para traducir textos con soporte para variables
   const t = (key: string, variables?: Record<string, string | number>): string => {
@@ -161,7 +171,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
   const value = {
     language,
-    setLanguage,
+    setLanguage: handleSetLanguage,
     t,
   };
 

@@ -10,9 +10,46 @@
       },
       "steps": {
         "basic": "Basic Information",
+        "basicInfo": "Basic Information",
         "images": "Images",
         "documents": "Documents",
-        "google": "Google Business"
+        "google": "Business Links",
+        "googleBusiness": "Business Links"
+      },
+      "propertyName": "Property Name",
+      "propertyNamePlaceholder": "e.g., Downtown Apartment",
+      "address": "Address",
+      "addressPlaceholder": "e.g., 123 Main Street, Madrid",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your property...",
+      "autoCoverImageTitle": "Automatic Cover Image",
+      "autoCoverImageText": "The first image you upload in the next tab will automatically become the property's cover image.",
+              "businessLinksTitle": "Business Links",
+        "businessLinksDescription": "Add links to your business profiles (Instagram, Facebook, website, Google Business, etc.). Our AI Agent will share these links when guests have positive experiences to help boost your online presence.",
+        "businessLinksDescriptionLabel": "Description",
+        "businessLinksDescriptionPlaceholder": "Describe your business links strategy or any specific instructions for your AI Agent...",
+              "businessUrlPlaceholder": "https://instagram.com/yourproperty, https://maps.google.com/maps?cid=...",
+      "removeLink": "Remove link",
+      "addAnotherLink": "Add another link",
+              "shareableLinksNote": "These links will be strategically shared by our AI Agent to help promote your business when guests have positive experiences.",
+      "additionalImages": {
+        "title": "Additional Images",
+        "description": "Add images with descriptions to show tourists visual information about the property. Images should be accompanied by clear context so our AI agent knows when to show them to tourists (e.g., \"View from the terrace\" or \"Oven instructions\")."
+      },
+      "documents": {
+        "title": "Property Documents",
+        "description": "Add documents such as guides, instructions, house rules or FAQs to answer guests' frequently asked questions. These documents will be used by our AI Agent to provide accurate and personalized answers to tourists.",
+        "recommendedTypes": "Recommended document types include:",
+        "types": {
+          "faq": "FAQs",
+          "faqDescription": "Answers to common questions about the property, area or services",
+          "guides": "Guides",
+          "guidesDescription": "Instructions for using appliances, wifi, TV, etc.",
+          "houseRules": "House Rules",
+          "houseRulesDescription": "Specific rules that guests must follow",
+          "inventory": "Inventory",
+          "inventoryDescription": "List of available objects and equipment"
+        }
       },
       "fields": {
         "name": "Property name",
@@ -109,6 +146,28 @@
       "close": "Close"
     }
   },
+  "propertyManagement": {
+    "intelligentProcessingAI": "🤖 Intelligent Processing with AI",
+    "intelligentProcessingAIDescription": "Automatically categorizes images and documents using n8n + AI for WhatsApp/Telegram agents"
+  },
+  "common": {
+    "previous": "Previous",
+    "next": "Next",
+    "creating": "Creating...",
+    "createProperty": "Create Property",
+    "updateProperty": "Update Property",
+    "cancel": "Cancel",
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results",
+      "previous": "Previous",
+      "next": "Next",
+      "first": "First",
+      "last": "Last"
+    }
+  },
   "ses": {
     "history": {
       "title": "SES Submission History",
@@ -140,18 +199,6 @@
         "retry": "Retry"
       },
       "noSubmissions": "No submissions found"
-    }
-  },
-  "common": {
-    "pagination": {
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results",
-      "previous": "Previous",
-      "next": "Next",
-      "first": "First",
-      "last": "Last"
     }
   },
   "upgrade": {
