@@ -142,118 +142,87 @@ class DualImageProcessingService {
     imageFiles: File[],
     callbacks?: DualProcessingCallbacks
   ): Promise<MediaFileRecord[]> {
-    // Verify authentication before proceeding
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       throw new Error('Usuario no autenticado - no se pueden guardar imágenes');
     }
 
-    // Ensure bucket exists before uploading
     await this.ensureBucket();
 
-    callbacks?.onProgress?.('Subiendo imágenes a almacenamiento...', 15);
+    callbacks?.onProgress?.('Subiendo imágenes a almacenamiento y base deatos...', 15);
 
-    // Procesar todas las imágenes secuencialmente para mantener el orden
+    console.log(`Iniciando la subida de ${imageFiles.length} imágenes para la propiedad ${propertyId}`);
+
     const uploadPromises = imageFiles.map(async (file, index) => {
-      const progressPercent = 15 + (index / imageFiles.length) * 25; // 15-40%
+      const progressPercent = 15 + (index / imageFiles.length) * 30; // Progreso de 15% a 45%
+      callbacks?.onProgress?.(`Subiendo ${file.name}...`, progressPercent);
 
-      // DEBUG: Log para verificar el valor del índice
-      console.log(`🔍 DEBUG: Procesando archivo ${index + 1}/${imageFiles.length}, índice = ${index}, archivo: ${file.name}`);
+      console.log(`Procesando archivo en índice ${index}. Asignando sort_order: ${index}`);
 
-      callbacks?.onProgress?.(
-        `Subiendo imagen ${index + 1} de ${imageFiles.length}: ${file.name}`,
-        progressPercent
-      );
-
+      const fileExtension = file.name.split('.').pop() || 'jpg';
+      const uniqueFilename = `${Date.now()}_${crypto.randomUUID()}.${fileExtension}`;
+      const filePath = `${propertyId}/${uniqueFilename}`;
+      
       try {
-        // Generate unique filename
-        const fileExtension = file.name.split('.').pop() || 'jpg';
-        const uniqueFilename = `${Date.now()}_${crypto.randomUUID()}.${fileExtension}`;
-        const filePath = `${propertyId}/${uniqueFilename}`;
-
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from(this.bucketName)
           .upload(filePath, file, {
             cacheControl: '3600',
-            upsert: false
+            upsert: false,
           });
 
         if (uploadError) {
-          throw new Error(`Error subiendo ${file.name}: ${uploadError.message}`);
+          throw new Error(`Error en subida a Storage para ${file.name}: ${uploadError.message}`);
         }
-
-        // Get public URL
+        
         const { data: { publicUrl } } = supabase.storage
           .from(this.bucketName)
           .getPublicUrl(filePath);
 
-        // IMPORTANTE: Usar el índice del map, no una variable del loop
-        const sortOrderValue = index;
-        console.log(`🔍 DEBUG: Asignando sort_order = ${sortOrderValue} para ${file.name}`);
+        console.log(`Archivo ${file.name} subido a ${publicUrl}. Insertando en DB con sort_order: ${index}`);
 
-        // Create media_files record with URL
-        const { data: mediaFile, error: dbError } = await supabase
+        const { data: insertedMedia, error: insertError } = await supabase
           .from('media_files')
           .insert({
             property_id: propertyId,
-            user_id: user.id, // REQUIRED for RLS policy
-            sort_order: sortOrderValue, // Usar el valor del índice del map
-            file_type: 'image',
-            title: file.name.replace(/\.[^/.]+$/, ''), // Remove extension
-            description: '', // Will be updated by webhook
-            file_url: publicUrl,
+            user_id: user.id,
+            file_url: publicUrl, // Asegúrate que el nombre de la columna es correcto
             public_url: publicUrl,
+            file_path: filePath,
+            description: "Property image",
+            sort_order: index,
+            file_type: 'image',
+            title: file.name.replace(/\.[^/.]+$/, ''),
             file_size: file.size,
             mime_type: file.type,
             is_shareable: true,
-            // Mark for AI processing
             ai_description_status: 'pending',
-            n8n_processing_status: 'pending'
+            n8n_processing_status: 'pending',
           })
           .select()
           .single();
 
-        // DEBUG: Log para verificar el valor insertado
-        console.log(`🔍 DEBUG: Insertado en media_files - sort_order: ${sortOrderValue}, id: ${mediaFile?.id}, title: ${mediaFile?.title}`);
-
-        if (dbError) {
-          throw new Error(`Error creando registro: ${dbError.message}`);
+        if (insertError) {
+          throw new Error(`Error insertando en DB para ${file.name}: ${insertError.message}`);
         }
 
-        // Return the media record
-        return {
-          id: mediaFile.id,
-          property_id: mediaFile.property_id,
-          file_type: mediaFile.file_type,
-          title: mediaFile.title,
-          description: mediaFile.description,
-          file_url: mediaFile.file_url,
-          public_url: mediaFile.public_url,
-          file_size: mediaFile.file_size,
-          mime_type: mediaFile.mime_type,
-          sort_order: mediaFile.sort_order,
-          is_shareable: mediaFile.is_shareable,
-          ai_description_status: mediaFile.ai_description_status,
-          n8n_processing_status: mediaFile.n8n_processing_status,
-          created_at: mediaFile.created_at,
-          updated_at: mediaFile.updated_at
-        } as MediaFileRecord;
+        console.log(`Éxito al insertar en DB para ${file.name}. ID: ${insertedMedia.id}, sort_order: ${insertedMedia.sort_order}`);
+        
+        return insertedMedia as MediaFileRecord;
 
       } catch (error) {
-        console.error(`❌ Error procesando ${file.name}:`, error);
-        throw error;
+        console.error(`Fallo al procesar ${file.name} en el índice ${index}:`, error);
+        callbacks?.onError?.(`Error con ${file.name}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+        return null; // Retorna null para filtrar después
       }
     });
 
-    // Esperar a que todas las subidas terminen
     const results = await Promise.all(uploadPromises);
-    
-    // Filtrar cualquier resultado undefined
-    const mediaRecords = results.filter(record => record !== undefined);
+    const successfulUploads = results.filter((record): record is MediaFileRecord => record !== null);
 
-    console.log(`✅ ${mediaRecords.length} archivos subidos a Storage y media_files`);
-    return mediaRecords;
+    console.log(`Se completaron ${successfulUploads.length} de ${imageFiles.length} subidas.`);
+    
+    return successfulUploads;
   }
 
   /**
