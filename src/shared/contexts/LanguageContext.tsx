@@ -6,7 +6,10 @@ import React, {
   useEffect,
 } from "react";
 import { translations, LanguageCode } from "@translations/index";
-import { useTranslation } from "react-i18next";
+
+// Debug: verificar que las traducciones se importen correctamente
+console.log('LanguageContext - translations loaded:', !!translations);
+console.log('LanguageContext - languages available:', Object.keys(translations || {}));
 
 type LanguageContextType = {
   language: LanguageCode;
@@ -33,8 +36,6 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  const { i18n } = useTranslation();
-  
   // Inicializar idioma desde localStorage o detectar del navegador
   const [language, setLanguage] = useState<LanguageCode>(() => {
     // Intentar cargar desde localStorage
@@ -53,26 +54,27 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     return "es";
   });
 
-  // Efecto inicial para establecer el idioma en el DOM y sincronizar con react-i18next
+  // Efecto inicial para establecer el idioma en el DOM
   useEffect(() => {
     document.documentElement.lang = language;
-    // Sincronizar con react-i18next
-    if (i18n.language !== language) {
-      i18n.changeLanguage(language);
-    }
-  }, [language, i18n]);
+  }, [language]);
 
   // Guardar el idioma en localStorage cuando cambie después de la inicialización
   const handleSetLanguage = (lang: LanguageCode) => {
     setLanguage(lang);
     localStorage.setItem("language", lang);
     document.documentElement.lang = lang;
-    // Sincronizar con react-i18next
-    i18n.changeLanguage(lang);
   };
 
   // Función para traducir textos con soporte para variables
   const t = (key: string, variables?: Record<string, string | number>): string => {
+    // Debug temporal
+    if (key.startsWith('reservations')) {
+      console.log('t() called with key:', key);
+      console.log('Current language:', language);
+      console.log('translations[language]:', translations[language]);
+    }
+    
     const keys = key.split(".");
     let current: unknown = translations[language];
     

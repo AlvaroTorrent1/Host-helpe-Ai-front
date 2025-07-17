@@ -3,6 +3,80 @@
 
 export const es = {
 
+  // Traducciones comunes
+  common: {
+    notAvailable: "No disponible",
+    loading: "Cargando...",
+    error: "Error",
+    success: "Éxito",
+    dismiss: "Cerrar"
+  },
+
+  // Reservas - Traducciones para el módulo de reservas
+  reservations: {
+    title: "Reservas",
+    newReservation: "Nueva reserva",
+    emptyState: "No hay reservas",
+    emptyStateDescription: "Comienza agregando tu primera reserva",
+    scrollIndicator: "Desplázate para ver más",
+    filters: {
+      search: "Buscar",
+      searchPlaceholder: "Buscar por huésped, propiedad o teléfono...",
+      property: "Propiedad",
+      allProperties: "Todas las propiedades",
+      checkInDate: "Fecha de entrada",
+      checkOutDate: "Fecha de salida",
+      clear: "Limpiar filtros"
+    },
+    table: {
+      guest: "Huésped",
+      property: "Propiedad",
+      phone: "Teléfono",
+      checkIn: "Check-in",
+      checkOut: "Check-out",
+      actions: "Acciones"
+    },
+    actions: {
+      viewDetails: "Ver detalles",
+      create: "Crear reserva",
+      delete: "Eliminar reserva"
+    },
+    status: {
+      confirmed: "Confirmada",
+      pending: "Pendiente",
+      cancelled: "Cancelada",
+      completed: "Completada"
+    },
+    reservationsTitle: "Reservas",
+    reservationDetails: "Detalles de la reserva",
+    editReservation: "Editar reserva",
+    backToReservations: "Volver a reservas",
+    cancel: "Cancelar",
+    delete: {
+      title: "¿Eliminar reserva?",
+      message: "¿Estás seguro de que quieres eliminar esta reserva?",
+      details: "Huésped: {{guestName}} | {{checkIn}} - {{checkOut}} | {{propertyName}}",
+      warning: "Esta acción no se puede deshacer.",
+      confirm: "Eliminar",
+      cancel: "Cancelar",
+      deleting: "Eliminando...",
+      tooltip: "Eliminar reserva"
+    },
+    errors: {
+      reservationNotFound: "Reserva no encontrada",
+      loadingData: "Error al cargar los datos",
+      propertyNotAvailable: "La propiedad no está disponible",
+      saving: "Error al guardar la reserva",
+      sendingToSES: "Error al enviar a SES",
+      deleting: "Error al eliminar la reserva"
+    },
+    successMessages: {
+      created: "Reserva creada con éxito",
+      updated: "Reserva actualizada con éxito",
+      deleted: "Reserva eliminada con éxito"
+    }
+  },
+
   // Propiedades - Sección completa de traducciones para propiedades
   properties: {
     title: "Propiedades",
@@ -568,6 +642,7 @@ export const es = {
   
   // Dashboard
   dashboard: {
+    title: "Dashboard",
     welcome: "Bienvenido al dashboard",
     description:
       "Esta es una versión preliminar del dashboard para Host Helper AI. Aquí podrás gestionar tus alojamientos, revisar reservas y acceder a todas las funcionalidades de nuestra plataforma.",
@@ -825,22 +900,35 @@ export const es = {
         sentToSES: "Datos enviados correctamente al Sistema de Entrada de Viajeros (SES)"
       },
       errors: {
-        saving: "Error al guardar la reserva. Por favor, intenta de nuevo.",
-        updating: "Error al actualizar la reserva. Por favor, inténtalo de nuevo.",
-        deleting: "Error al eliminar la reserva. Por favor, inténtalo de nuevo.",
-        sendingToSES: "Error al enviar datos al SES. Por favor, inténtalo de nuevo más tarde.",
-        reservationNotFound: "La reserva solicitada no fue encontrada",
-        propertyNotAvailable: "La propiedad no está disponible para las fechas seleccionadas",
-        loadingData: "Error al cargar los datos. Por favor, recarga la página."
+        loadingData: "Error al cargar los datos.",
+        reservationNotFound: "Reserva no encontrada.",
+        saving: "Error al guardar la reserva.",
+        sendingToSES: "Error al enviar a SES.",
+        dateNotAvailable: "Fecha no disponible",
+        propertyNotAvailable: "La propiedad no está disponible para las fechas seleccionadas"
       },
+      filters: {
+        search: "Buscar",
+        searchPlaceholder: "Nombre o email...",
+        property: "Propiedad",
+        allProperties: "Todas",
+        checkInDate: "Fecha desde",
+        checkOutDate: "Fecha hasta",
+        clear: "Limpiar filtros"
+      },
+      table: {
+        guest: "Huésped",
+        property: "Propiedad",
+        phone: "Teléfono",
+        checkIn: "Check-in",
+        checkOut: "Check-out",
+        actions: "Acciones"
+      },
+      scrollIndicator: "Mostrando {count} reservas • Desliza para ver más",
       successMessages: {
-        created: "La reserva se ha creado exitosamente",
-        updated: "La reserva se ha actualizado exitosamente"
-      },
-      mockNotes: {
-        confirmed: "Llegan tarde, después de las 8pm.",
-        pending: "Primera vez en el alojamiento."
-      },
+        created: "Reserva creada con éxito.",
+        updated: "Reserva actualizada con éxito."
+      }
     },
     registrations: {
       title: "Registro SES",
@@ -1077,41 +1165,6 @@ export const es = {
     contact: "Contacto",
     slogan: "Automatizando la gestión de alojamientos turísticos con IA",
     copyright: "© 2025 Host Helper AI. Todos los derechos reservados.",
-  },
-  
-  // Común
-  common: {
-    // General
-    appName: "Host Helper AI",
-    welcome: "Bienvenido",
-    error: "Error",
-    success: "Éxito",
-    loading: "Cargando...",
-    loadingSubtext: "Esto solo tomará unos segundos",
-    continue: "Continuar",
-    cancel: "Cancelar",
-    submit: "Enviar",
-    save: "Guardar",
-    delete: "Eliminar",
-    edit: "Editar",
-    update: "Actualizar",
-    dismiss: "Descartar",
-    important: "Importante",
-    documentation: "Documentación",
-    sesDocumentationDesc: "Consulta la documentación oficial para más detalles sobre el proceso de registro de viajeros.",
-    referenceCode: "Código de referencia",
-    openMenu: "Abrir menú",
-    closeMenu: "Cerrar menú",
-    language: "Idioma",
-    spanish: "Español",
-    english: "English",
-    property: "propiedad",
-    properties: "propiedades",
-    previous: "Anterior",
-    next: "Siguiente",
-    creating: "Creando...",
-    createProperty: "Crear Propiedad",
-    updateProperty: "Actualizar Propiedad",
   },
   
   // Datos de ejemplo

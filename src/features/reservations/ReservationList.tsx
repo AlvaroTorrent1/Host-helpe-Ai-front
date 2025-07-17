@@ -5,20 +5,27 @@ import {
   ReservationFilters,
 } from "../../types/reservation";
 import { Property } from "../../types/property";
+import { useTranslation } from "react-i18next";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
+import DeleteConfirmationModal from "@shared/components/DeleteConfirmationModal";
+import { reservationService } from "@/services/reservationService";
 
 interface ReservationListProps {
   reservations: Reservation[];
   properties: Property[];
-  onViewDetails: (reservationId: string) => void;
   onAddReservation: () => void;
+  onReservationDeleted?: (reservationId: string) => void;
 }
 
 const ReservationList: React.FC<ReservationListProps> = ({
   reservations,
   properties,
-  onViewDetails,
   onAddReservation,
+  onReservationDeleted,
 }) => {
+  const { t, i18n } = useTranslation();
+  
   // Estados para los filtros
   const [filters, setFilters] = useState<ReservationFilters>({
     propertyId: undefined,
@@ -30,6 +37,11 @@ const ReservationList: React.FC<ReservationListProps> = ({
   // Estado para almacenar las reservas filtradas
   const [filteredReservations, setFilteredReservations] =
     useState<Reservation[]>(reservations);
+
+  // Estados para eliminación
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Aplicar filtros cuando cambien o cuando cambien las reservas
   useEffect(() => {
@@ -94,13 +106,59 @@ const ReservationList: React.FC<ReservationListProps> = ({
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString("es-ES", {
+      return date.toLocaleDateString(i18n.language, {
         day: "numeric",
         month: "long",
         year: "numeric",
       });
     } catch {
-      return "Fecha no disponible";
+      return dateString;
+    }
+  };
+
+  // Manejar click en eliminar reserva
+  const handleDeleteClick = (reservation: Reservation) => {
+    setReservationToDelete(reservation);
+    setDeleteModalOpen(true);
+  };
+
+  // Cerrar modal de eliminación
+  const handleDeleteModalClose = () => {
+    if (!isDeleting) {
+      setDeleteModalOpen(false);
+      setReservationToDelete(null);
+    }
+  };
+
+  // Confirmar eliminación
+  const handleDeleteConfirm = async () => {
+    if (!reservationToDelete || isDeleting) return;
+
+    setIsDeleting(true);
+    try {
+      await reservationService.deleteReservation(reservationToDelete.id);
+      
+      // Actualizar estado local
+      setFilteredReservations(prev => 
+        prev.filter(r => r.id !== reservationToDelete.id)
+      );
+
+      // Notificar al componente padre
+      if (onReservationDeleted) {
+        onReservationDeleted(reservationToDelete.id);
+      }
+
+      // Mostrar mensaje de éxito
+      toast.success(t('reservations.successMessages.deleted'));
+      
+      // Cerrar modal
+      setDeleteModalOpen(false);
+      setReservationToDelete(null);
+    } catch (error) {
+      console.error('Error deleting reservation:', error);
+      toast.error(t('reservations.errors.deleting'));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -110,7 +168,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
       <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4 sm:mb-0">
-            Reservas
+            {t("dashboard.reservations.title")}
           </h3>
           <button
             type="button"
@@ -129,7 +187,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                 clipRule="evenodd"
               />
             </svg>
-            Nueva reserva
+            {t("dashboard.reservations.newReservation")}
           </button>
         </div>
       </div>
@@ -143,13 +201,13 @@ const ReservationList: React.FC<ReservationListProps> = ({
               htmlFor="search"
               className="block text-sm font-medium text-gray-700"
             >
-              Buscar
+              {t("reservations.filters.search")}
             </label>
             <input
               type="text"
               name="search"
               id="search"
-              placeholder="Nombre o email..."
+              placeholder={t("reservations.filters.searchPlaceholder")}
               value={filters.searchTerm || ""}
               onChange={(e) =>
                 handleFilterChange({ searchTerm: e.target.value })
@@ -164,7 +222,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
               htmlFor="property"
               className="block text-sm font-medium text-gray-700"
             >
-              Propiedad
+              {t("reservations.filters.property")}
             </label>
             <select
               id="property"
@@ -175,7 +233,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
               }
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             >
-              <option value="">Todas</option>
+              <option value="">{t("reservations.filters.allProperties")}</option>
               {properties.map((property) => (
                 <option key={property.id} value={property.id}>
                   {property.name}
@@ -190,7 +248,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
               htmlFor="startDate"
               className="block text-sm font-medium text-gray-700"
             >
-              Fecha desde
+              {t("reservations.filters.checkInDate")}
             </label>
             <input
               type="date"
@@ -210,7 +268,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
               htmlFor="endDate"
               className="block text-sm font-medium text-gray-700"
             >
-              Fecha hasta
+              {t("reservations.filters.checkOutDate")}
             </label>
             <input
               type="date"
@@ -232,7 +290,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
             onClick={handleClearFilters}
             className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
-            Limpiar filtros
+            {t("reservations.filters.clear")}
           </button>
         </div>
       </div>
@@ -254,14 +312,10 @@ const ReservationList: React.FC<ReservationListProps> = ({
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            No hay reservas
+            {t("reservations.emptyState")}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {Object.values(filters).some(
-              (val) => val !== undefined && val !== "",
-            )
-              ? "No hay reservas que coincidan con los filtros seleccionados."
-              : "Comienza añadiendo tu primera reserva."}
+            {t("reservations.emptyStateDescription")}
           </p>
           {!Object.values(filters).some(
             (val) => val !== undefined && val !== "",
@@ -284,7 +338,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                     clipRule="evenodd"
                   />
                 </svg>
-                Nueva reserva
+                {t("reservations.newReservation")}
               </button>
             </div>
           )}
@@ -306,7 +360,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       style={{ minWidth: '200px', width: '20%' }}
                     >
                       <div className="flex items-center justify-start">
-                        Huésped
+                        {t("reservations.table.guest")}
                       </div>
                     </th>
                     <th
@@ -315,7 +369,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       style={{ minWidth: '200px', width: '20%' }}
                     >
                       <div className="flex items-center justify-start">
-                        Propiedad
+                        {t("reservations.table.property")}
                       </div>
                     </th>
                     <th
@@ -324,35 +378,33 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       style={{ minWidth: '120px', width: '15%' }}
                     >
                       <div className="flex items-center justify-start">
-                        Teléfono
+                        {t("reservations.table.phone")}
                       </div>
                     </th>
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '120px', width: '15%' }}
+                      style={{ minWidth: '150px', width: '15%' }}
                     >
                       <div className="flex items-center justify-start">
-                        Check-in
+                        {t("reservations.table.checkIn")}
                       </div>
                     </th>
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '120px', width: '15%' }}
+                      style={{ minWidth: '150px', width: '15%' }}
                     >
                       <div className="flex items-center justify-start">
-                        Check-out
+                        {t("reservations.table.checkOut")}
                       </div>
                     </th>
                     <th
                       scope="col"
-                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                       style={{ minWidth: '100px', width: '15%' }}
                     >
-                      <div className="flex items-center justify-start">
-                        Acciones
-                      </div>
+                      {t("reservations.table.actions")}
                     </th>
                   </tr>
                 </thead>
@@ -381,10 +433,10 @@ const ReservationList: React.FC<ReservationListProps> = ({
                             <div className="text-sm font-medium text-gray-900">
                               {mainGuest
                                 ? `${mainGuest.firstName} ${mainGuest.lastName}`
-                                : "N/A"}
+                                : t("common.notAvailable")}
                             </div>
-                            <div className="text-xs text-gray-500 truncate max-w-[200px]" title={mainGuest?.email || "N/A"}>
-                              {mainGuest?.email || "N/A"}
+                            <div className="text-xs text-gray-500 truncate max-w-[200px]" title={mainGuest?.email || t("common.notAvailable")}>
+                              {mainGuest?.email || t("common.notAvailable")}
                             </div>
                           </div>
                         </td>
@@ -393,48 +445,41 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           style={{ minWidth: '200px', width: '20%' }}
                         >
                           <div className="flex flex-col">
-                            <div className="text-sm font-medium text-gray-900">
-                              {property?.name || "N/A"}
-                            </div>
-                            <div className="text-xs text-gray-500 break-words max-w-[200px]">
-                              {property?.address || "N/A"}
-                            </div>
+                            <span className="font-medium">{property?.name || t("common.notAvailable")}</span>
+                            <span className="text-xs text-gray-500">{property?.address || ""}</span>
                           </div>
                         </td>
                         <td 
                           className="px-4 py-4 text-sm text-gray-500 text-left"
                           style={{ minWidth: '120px', width: '15%' }}
                         >
-                          <div className="text-sm text-gray-900">
-                            {mainGuest?.phone || "No disponible"}
-                          </div>
+                          {mainGuest?.phone || t("common.notAvailable")}
                         </td>
                         <td 
                           className="px-4 py-4 text-sm text-gray-500 text-left"
-                          style={{ minWidth: '120px', width: '15%' }}
+                          style={{ minWidth: '150px', width: '15%' }}
                         >
-                          <div className="text-sm text-gray-900">
-                            {formatDate(reservation.checkInDate)}
-                          </div>
+                          {formatDate(reservation.checkInDate)}
                         </td>
                         <td 
                           className="px-4 py-4 text-sm text-gray-500 text-left"
-                          style={{ minWidth: '120px', width: '15%' }}
+                          style={{ minWidth: '150px', width: '15%' }}
                         >
-                          <div className="text-sm text-gray-900">
-                            {formatDate(reservation.checkOutDate)}
-                          </div>
+                          {formatDate(reservation.checkOutDate)}
                         </td>
                         <td 
-                          className="px-4 py-4 text-sm text-gray-500 text-left"
+                          className="px-4 py-4 text-sm text-center"
                           style={{ minWidth: '100px', width: '15%' }}
                         >
-                          <button
-                            onClick={() => onViewDetails(reservation.id)}
-                            className="text-primary-600 hover:text-primary-900 font-medium"
-                          >
-                            Ver
-                          </button>
+                          <div className="flex items-center justify-center">
+                            <button
+                              onClick={() => handleDeleteClick(reservation)}
+                              className="text-red-600 hover:text-red-800 transition-colors p-2 rounded hover:bg-red-50"
+                              title={t("reservations.delete.tooltip")}
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -448,12 +493,28 @@ const ReservationList: React.FC<ReservationListProps> = ({
           {filteredReservations.length > 5 && (
             <div className="text-center py-2 bg-gray-50 border-t border-gray-200">
               <p className="text-xs text-gray-500">
-                Mostrando {filteredReservations.length} reservas • Usa scroll para ver más
+                {t("reservations.scrollIndicator")}
               </p>
             </div>
           )}
         </div>
       )}
+
+      {/* Modal de confirmación de eliminación */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={handleDeleteModalClose}
+        onConfirm={handleDeleteConfirm}
+        title={t('reservations.delete.title')}
+        message={t('reservations.delete.message')}
+        details={reservationToDelete ? t('reservations.delete.details', {
+          guestName: `${reservationToDelete.guests.find(g => g.id === reservationToDelete.mainGuestId)?.firstName || ''} ${reservationToDelete.guests.find(g => g.id === reservationToDelete.mainGuestId)?.lastName || ''}`.trim(),
+          checkIn: formatDate(reservationToDelete.checkInDate),
+          checkOut: formatDate(reservationToDelete.checkOutDate),
+          propertyName: properties.find(p => p.id === reservationToDelete.propertyId)?.name || t("common.notAvailable")
+        }) : undefined}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 };

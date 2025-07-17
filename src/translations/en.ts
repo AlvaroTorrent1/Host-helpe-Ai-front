@@ -2,6 +2,81 @@
 // Archivo de traducciones en inglés
 
 export const en = {
+
+  // Common translations
+  common: {
+    notAvailable: "Not available",
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+    dismiss: "Dismiss"
+  },
+
+  // Reservations - Translations for reservations module
+  reservations: {
+    title: "Reservations",
+    newReservation: "New reservation",
+    emptyState: "No reservations",
+    emptyStateDescription: "Start by adding your first reservation",
+    scrollIndicator: "Scroll to see more",
+    filters: {
+      search: "Search",
+      searchPlaceholder: "Search by guest, property or phone...",
+      property: "Property",
+      allProperties: "All properties",
+      checkInDate: "Check-in date",
+      checkOutDate: "Check-out date",
+      clear: "Clear filters"
+    },
+    table: {
+      guest: "Guest",
+      property: "Property",
+      phone: "Phone",
+      checkIn: "Check-in",
+      checkOut: "Check-out",
+      actions: "Actions"
+    },
+    actions: {
+      viewDetails: "View details",
+      create: "Create reservation",
+      delete: "Delete reservation"
+    },
+    status: {
+      confirmed: "Confirmed",
+      pending: "Pending",
+      cancelled: "Cancelled",
+      completed: "Completed"
+    },
+    reservationsTitle: "Reservations",
+    reservationDetails: "Reservation details",
+    editReservation: "Edit reservation",
+    backToReservations: "Back to reservations",
+    cancel: "Cancel",
+    delete: {
+      title: "Delete reservation?",
+      message: "Are you sure you want to delete this reservation?",
+      details: "Guest: {{guestName}} | {{checkIn}} - {{checkOut}} | {{propertyName}}",
+      warning: "This action cannot be undone.",
+      confirm: "Delete",
+      cancel: "Cancel",
+      deleting: "Deleting...",
+      tooltip: "Delete reservation"
+    },
+    errors: {
+      reservationNotFound: "Reservation not found",
+      loadingData: "Error loading data",
+      propertyNotAvailable: "Property not available",
+      saving: "Error saving reservation",
+      sendingToSES: "Error sending to SES",
+      deleting: "Error deleting reservation"
+    },
+    successMessages: {
+      created: "Reservation created successfully",
+      updated: "Reservation updated successfully",
+      deleted: "Reservation deleted successfully"
+    }
+  },
+  
   // Navegación
   nav: {
     features: "Features",
@@ -469,6 +544,7 @@ export const en = {
   
   // Dashboard
   dashboard: {
+    title: "Dashboard",
     welcome: "Welcome to the dashboard",
     description:
       "This is a preliminary version of the dashboard for Host Helper AI. Here you will be able to manage your accommodations, review reservations and access all the features of our platform.",
@@ -661,22 +737,35 @@ export const en = {
         canceled: "Canceled"
       },
       errors: {
-        saving: "Error saving the reservation. Please try again.",
-        updating: "Error updating reservation. Please try again.",
-        deleting: "Error deleting reservation. Please try again.",
-        sendingToSES: "Error sending data to SES. Please try again later.",
-        reservationNotFound: "The requested reservation was not found",
-        propertyNotAvailable: "The property is not available for the selected dates",
-        loadingData: "Error loading data. Please reload the page."
+        loadingData: "Error loading data.",
+        reservationNotFound: "Reservation not found.",
+        saving: "Error saving reservation.",
+        sendingToSES: "Error sending to SES.",
+        dateNotAvailable: "Date not available",
+        propertyNotAvailable: "The property is not available for the selected dates"
       },
+      filters: {
+        search: "Search",
+        searchPlaceholder: "Name or email...",
+        property: "Property",
+        allProperties: "All",
+        checkInDate: "From date",
+        checkOutDate: "To date",
+        clear: "Clear filters"
+      },
+      table: {
+        guest: "Guest",
+        property: "Property",
+        phone: "Phone",
+        checkIn: "Check-in",
+        checkOut: "Check-out",
+        actions: "Actions"
+      },
+      scrollIndicator: "Showing {count} reservations • Scroll to see more",
       successMessages: {
-        created: "The reservation has been created successfully",
-        updated: "The reservation has been updated successfully"
-      },
-      mockNotes: {
-        confirmed: "Arriving late, after 8pm.",
-        pending: "First time in the accommodation."
-      },
+        created: "Reservation created successfully.",
+        updated: "Reservation updated successfully."
+      }
     },
     registrations: {
       title: "SES Registration",
@@ -912,41 +1001,6 @@ export const en = {
     contact: "Contact",
     slogan: "Automating tourist accommodation management with AI",
     copyright: "© 2025 Host Helper AI. All rights reserved.",
-  },
-  
-  // Común
-  common: {
-    // General
-    appName: "Host Helper AI",
-    welcome: "Welcome",
-    error: "Error",
-    success: "Success",
-    loading: "Loading...",
-    loadingSubtext: "This will only take a few seconds",
-    continue: "Continue",
-    cancel: "Cancel",
-    submit: "Submit",
-    save: "Save",
-    delete: "Delete",
-    edit: "Edit",
-    update: "Update",
-    dismiss: "Dismiss",
-    important: "Important",
-    documentation: "Documentation",
-    sesDocumentationDesc: "Check the official documentation for more details about the traveler registration process.",
-    referenceCode: "Reference code",
-    openMenu: "Open menu",
-    closeMenu: "Close menu",
-    language: "Language",
-    spanish: "Español",
-    english: "English",
-    property: "property",
-    properties: "properties",
-    previous: "Previous",
-    next: "Next",
-    creating: "Creating...",
-    createProperty: "Create Property",
-    updateProperty: "Update Property",
   },
   
   // Sample data

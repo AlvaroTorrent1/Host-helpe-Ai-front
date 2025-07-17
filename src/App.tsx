@@ -1,12 +1,14 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./shared/contexts/AuthContext";
-import { LanguageProvider } from "./shared/contexts/LanguageContext";
+import { LanguageProvider, useLanguage } from "./shared/contexts/LanguageContext";
 import { PaymentFlowProvider } from "./shared/contexts/PaymentFlowContext";
 import { GlobalLoadingProvider } from "./shared/contexts/GlobalLoadingContext";
 import { UserStatusProvider } from "./shared/contexts/UserStatusContext";
 import "./index.css";
 import "./App.css";
+import "./i18n"; // Importar i18n para inicializarlo
+import i18n from "./i18n";
 import { Toaster } from "react-hot-toast";
 import LoadingScreen from "./shared/components/LoadingScreen";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
@@ -65,6 +67,20 @@ const RouteTracker = () => {
   return null;
 };
 
+// Componente que sincroniza ambos sistemas de traducción
+const LanguageSyncWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { language } = useLanguage();
+  
+  useEffect(() => {
+    // Sincronizar i18next cuando cambie el idioma en LanguageContext
+    if (i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language]);
+  
+  return <>{children}</>;
+};
+
 function App() {
   // Obtenemos las rutas públicas y protegidas
   const protectedRoutes = getProtectedRoutes();
@@ -87,14 +103,15 @@ function App() {
     <div className="w-full min-h-screen">
       <HelmetProvider>
         <LanguageProvider>
-          <GlobalLoadingProvider>
-            <AuthProvider>
-              <UserStatusProvider>
-                <PaymentFlowProvider>
-                  <Router>
-                    <RouteTracker />
-                    <Suspense fallback={<LoadingScreen />}>
-                      <Routes>
+          <LanguageSyncWrapper>
+            <GlobalLoadingProvider>
+              <AuthProvider>
+                <UserStatusProvider>
+                  <PaymentFlowProvider>
+                    <Router>
+                      <RouteTracker />
+                      <Suspense fallback={<LoadingScreen />}>
+                        <Routes>
                         {/* Rutas públicas */}
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/chatbot" element={<ChatbotPage />} />
@@ -182,6 +199,7 @@ function App() {
               </UserStatusProvider>
             </AuthProvider>
           </GlobalLoadingProvider>
+          </LanguageSyncWrapper>
         </LanguageProvider>
       </HelmetProvider>
 

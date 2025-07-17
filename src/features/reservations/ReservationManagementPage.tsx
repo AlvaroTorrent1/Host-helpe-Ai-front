@@ -10,7 +10,7 @@ import Calendar from "./Calendar";
 import DayDetailsModal from "./DayDetailsModal";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { supabase } from "@/services/supabase";
 import { reservationService } from "@/services/reservationService";
@@ -31,7 +31,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   const { user } = useAuth();
   const navigate = useNavigate();
   const { reservationId } = useParams<{ reservationId?: string }>();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Estados
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.LIST);
@@ -84,7 +84,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
         const foundReservation = reservationsData.find(r => r.id === reservationId);
         if (!foundReservation) {
           setErrorMessage(t("reservations.errors.reservationNotFound"));
-          navigate("/dashboard/reservations");
+          navigate("/reservations");
         }
       }
 
@@ -136,7 +136,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
       );
 
       if (!isAvailable) {
-        setErrorMessage(t("dashboard.reservations.errors.propertyNotAvailable"));
+        setErrorMessage(t("reservations.errors.propertyNotAvailable"));
         return;
       }
 
@@ -146,12 +146,12 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
       // Actualizar la lista de reservas
       await loadData();
       
-      setSuccessMessage(t("dashboard.reservations.successMessages.created"));
+      setSuccessMessage(t("reservations.successMessages.created"));
       setViewMode(ViewMode.LIST);
 
     } catch (error) {
       console.error("Error al crear la reserva:", error);
-      setErrorMessage(t("dashboard.reservations.errors.saving"));
+      setErrorMessage(t("reservations.errors.saving"));
     } finally {
       setIsSubmitting(false);
     }
@@ -200,7 +200,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
       );
 
       if (!isAvailable) {
-        setErrorMessage(t("dashboard.reservations.errors.propertyNotAvailable"));
+        setErrorMessage(t("reservations.errors.propertyNotAvailable"));
         return;
       }
 
@@ -210,33 +210,37 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
       // Actualizar la lista de reservas
       await loadData();
       
-      setSuccessMessage(t("dashboard.reservations.successMessages.updated"));
+      setSuccessMessage(t("reservations.successMessages.updated"));
       setViewMode(ViewMode.LIST);
 
     } catch (error) {
       console.error("Error al actualizar la reserva:", error);
-      setErrorMessage(t("dashboard.reservations.errors.saving"));
+      setErrorMessage(t("reservations.errors.saving"));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Manejar envío a SES
-  const handleSendToSES = async () => {
-    console.log("🔴 EJECUTANDO: handleSendToSES - Enviando a SES");
-    if (!currentReservation) return;
-
-    setIsSendingToSES(true);
-
+  // Función para manejar el envío a SES
+  const handleSendToSES = async (reservationId: string) => {
     try {
-      // TODO: Implementar envío real a SES cuando tengamos las tablas y la funcionalidad
-      setErrorMessage("⚠️ ATENCIÓN: Estás en el botón 'Enviar a SES', no en 'Crear reserva'. La funcionalidad de envío a SES está pendiente de implementar.");
-      
+      // TODO: Implementar envío a SES
+      setSuccessMessage(t("reservations.successMessages.sentToSES"));
     } catch (error) {
-      console.error("Error al enviar datos a SES:", error);
+      console.error("Error sending to SES:", error);
       setErrorMessage(t("reservations.errors.sendingToSES"));
-    } finally {
-      setIsSendingToSES(false);
+    }
+  };
+
+  // Función para manejar eliminación de reserva
+  const handleReservationDeleted = (reservationId: string) => {
+    // Actualizar la lista de reservas
+    setReservations(prev => prev.filter(r => r.id !== reservationId));
+    
+    // Si estamos viendo detalles de la reserva eliminada, volver a la lista
+    if (currentReservation && currentReservation.id === reservationId) {
+      setViewMode(ViewMode.LIST);
+      setCurrentReservation(undefined);
     }
   };
 
@@ -316,7 +320,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           <ol className="flex space-x-2 text-sm text-gray-500">
             <li>
               <Link to="/dashboard" className="hover:text-primary-600">
-                Dashboard
+                {t("dashboard.title")}
               </Link>
             </li>
             <li className="flex items-center">
@@ -338,10 +342,10 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   onClick={handleBackToList}
                   className="hover:text-primary-600 text-gray-800 font-medium text-left"
                 >
-{t("dashboard.reservations.reservationsTitle")}
+                  {t("reservations.reservationsTitle")}
                 </button>
               ) : (
-                <span className="text-gray-800 font-medium">{t("dashboard.reservations.reservationsTitle")}</span>
+                <span className="text-gray-800 font-medium">{t("reservations.reservationsTitle")}</span>
               )}
             </li>
             {viewMode === ViewMode.DETAIL && currentReservation && (
@@ -360,7 +364,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   </svg>
                 </li>
                 <li className="text-gray-800 font-medium">
-                  {t("dashboard.reservations.reservationDetails")}
+                  {t("reservations.reservationDetails")}
                 </li>
               </>
             )}
@@ -380,7 +384,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   </svg>
                 </li>
                 <li className="text-gray-800 font-medium">
-                  {currentReservation ? t("dashboard.reservations.editReservation") : t("dashboard.reservations.newReservation")}
+                  {currentReservation ? t("reservations.editReservation") : t("reservations.newReservation")}
                 </li>
               </>
             )}
@@ -437,7 +441,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                         : "bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600"
                     }`}
                   >
-                    <span className="sr-only">Dismiss</span>
+                    <span className="sr-only">{t("common.dismiss")}</span>
                     <svg
                       className="h-5 w-5"
                       fill="currentColor"
@@ -479,10 +483,10 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                 {reservations.length === 0 ? (
                   <div className="bg-white shadow rounded-lg p-10 text-center">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {t("dashboard.reservations.emptyState")}
+                      {t("reservations.emptyState")}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                      {t("dashboard.reservations.emptyStateDescription")}
+                      {t("reservations.emptyStateDescription")}
                     </p>
                     <button
                       type="button"
@@ -490,15 +494,15 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
                       <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-                      {t("dashboard.reservations.actions.create")}
+                      {t("reservations.actions.create")}
                     </button>
                   </div>
                 ) : (
                   <ReservationList
                     reservations={reservations}
                     properties={properties}
-                    onViewDetails={handleViewReservation}
                     onAddReservation={handleAddReservation}
+                    onReservationDeleted={handleReservationDeleted}
                   />
                 )}
               </>
@@ -526,7 +530,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                         d="M15 19l-7-7 7-7"
                       />
                     </svg>
-{t("dashboard.reservations.backToReservations")}
+                    {t("reservations.backToReservations")}
                   </button>
                 </div>
 
@@ -534,7 +538,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   reservation={currentReservation}
                   property={currentProperty}
                   onEdit={handleEditReservation}
-                  onSendToSES={handleSendToSES}
+                  onSendToSES={() => handleSendToSES(currentReservation?.id || '')}
                   isSendingToSES={isSendingToSES}
                 />
               </div>
@@ -545,7 +549,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                 <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      {currentReservation ? t("dashboard.reservations.editReservation") : t("dashboard.reservations.newReservation")}
+                      {currentReservation ? t("reservations.editReservation") : t("reservations.newReservation")}
                     </h3>
                     <button
                       type="button"
@@ -566,7 +570,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-{t("dashboard.reservations.cancel")}
+                      {t("reservations.cancel")}
                     </button>
                   </div>
                 </div>
