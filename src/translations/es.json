@@ -393,6 +393,24 @@
     "freeReminder": "Puedes seguir explorando la aplicación con tu cuenta gratuita"
   },
   "auth": {
+    "loginTitle": "Bienvenido de vuelta a Host Helper AI",
+    "emailLabel": "Email",
+    "passwordLabel": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forceSync": "Forzar Sincronización",
+    "loggingIn": "Iniciando sesión...",
+    "login": "Iniciar sesión",
+    "noAccount": "¿No tienes una cuenta?",
+    "registerNow": "Regístrate ahora",
+    "invalidCredentials": "Email o contraseña incorrectos",
+    "emailNotConfirmed": "El email {email} no ha sido confirmado. Por favor revisa tu bandeja de entrada y haz clic en el enlace de confirmación.",
+    "connectionError": "Error de conexión. Por favor verifica tu conexión a internet e inténtalo de nuevo.",
+    "loginError": "Error al iniciar sesión",
+    "unknownError": "Ha ocurrido un error desconocido. Por favor inténtalo de nuevo.",
+    "login": {
+      "continueWithGoogle": "Continuar con Google",
+      "orWithEmail": "o con Email"
+    },
     "register": {
       "modalTitles": {
         "createAccount": "Crear cuenta",
@@ -405,70 +423,16 @@
         "planSelected": "Plan seleccionado",
         "fullName": "Nombre completo",
         "email": "Correo electrónico",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Mínimo 6 caracteres",
+        "confirmPassword": "Confirmar contraseña",
+        "confirmPasswordPlaceholder": "Repite tu contraseña",
         "fullNamePlaceholder": "Tu nombre completo",
         "emailPlaceholder": "tu@correo.com",
         "createAccountButton": "Crear cuenta con email",
         "processing": "Procesando...",
         "continueWithGoogle": "Continuar con Google",
-        "or": "o"
-      },
-      "confirmation": {
-        "authSuccess": "¡Autenticación exitosa!",
-        "authSuccessDescription": "Has iniciado sesión correctamente con tu cuenta de Google.",
-        "accountSelected": "Cuenta seleccionada:",
-        "planSelected": "Plan seleccionado:",
-        "paymentNote": "El pago se asociará a la cuenta mostrada arriba"
-      },
-      "payment": {
-        "loadingError": "Error cargando sistema de pago",
-        "invalidKeyError": "La clave pública puede ser inválida o hay problemas de conexión",
-        "reloadPage": "Recargar página",
-        "preparingPayment": "Preparando pago...",
-        "creatingSecureInfo": "Creando información de pago segura",
-        "initializingPayment": "Inicializando sistema de pago...",
-        "loadingStripe": "Cargando Stripe.js en modo",
-        "retryInitialization": "Reintentar inicialización"
-      },
-      "success": {
-        "paymentCompleted": "¡Pago completado exitosamente!",
-        "subscriptionActivated": "Tu suscripción al plan {planName} ha sido activada correctamente.",
-        "premiumAccess": "Ya puedes disfrutar de todas las funcionalidades premium. Serás redirigido automáticamente."
-      },
-      "callback": {
-        "processing": "Procesando autenticación...",
-        "success": "¡Autenticación exitosa!",
-        "errorTitle": "Oops, algo salió mal",
-        "backToLogin": "Volver al inicio de sesión",
-        "debugInfo": "Información técnica (desarrollo)",
-        "localhostError": "Error de redirección: Se está usando localhost en un entorno de producción. Verifica la configuración de VITE_SITE_URL."
-      },
-      "login": {
-        "continueWithGoogle": "Continuar con Google",
-        "orWithEmail": "O iniciar sesión con correo electrónico"
-      }
-    }
-  },
-  "payment": {
-    "subscriptionActivated": "¡Suscripción activada correctamente!"
-  },
-  "auth": {
-    "register": {
-      "modalTitles": {
-        "createAccount": "Crear Cuenta",
-        "subscriptionTo": "Suscripción a",
-        "confirmAccount": "Confirmar Cuenta",
-        "completePayout": "Completar Pago",
-        "paymentSuccess": "¡Pago Exitoso!"
-      },
-      "form": {
-        "password": "Contraseña",
-        "passwordPlaceholder": "Mínimo 6 caracteres",
-        "confirmPassword": "Confirmar contraseña",
-        "confirmPasswordPlaceholder": "Repite tu contraseña",
-        "continueWithGoogle": "Continuar con Google",
         "or": "o",
-        "processing": "Procesando...",
-        "createAccountButton": "Crear Cuenta",
         "passwordMismatch": "Las contraseñas no coinciden"
       },
       "confirmation": {
@@ -498,11 +462,26 @@
         "paymentCompletedTitle": "¡Pago completado exitosamente!",
         "subscriptionActivated": "Tu suscripción al plan {planName} ha sido activada correctamente.",
         "enjoyFeatures": "Ya puedes disfrutar de todas las funcionalidades premium. Serás redirigido automáticamente."
+      },
+      "callback": {
+        "processing": "Procesando autenticación...",
+        "success": "¡Autenticación exitosa!",
+        "errorTitle": "Oops, algo salió mal",
+        "backToLogin": "Volver al inicio de sesión",
+        "debugInfo": "Información técnica (desarrollo)",
+        "localhostError": "Error de redirección: Se está usando localhost en un entorno de producción. Verifica la configuración de VITE_SITE_URL."
+      },
+      "success": {
+        "completing": "Completando proceso de acceso..."
+      },
+      "login": {
+        "continueWithGoogle": "Continuar con Google",
+        "orWithEmail": "O iniciar sesión con correo electrónico"
       }
-    },
-    "success": {
-      "completing": "Completando proceso de acceso..."
     }
+  },
+  "payment": {
+    "subscriptionActivated": "¡Suscripción activada correctamente!"
   },
 
   "dashboard": {
