@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import DashboardNavigation from "./DashboardNavigation";
 import DashboardLanguageSelector from "./DashboardLanguageSelector";
 import DashboardHeader from "@shared/components/DashboardHeader";
@@ -11,6 +11,7 @@ import n8nTestService from "@services/n8nTestService";
 import documentService from "@services/documentService";
 import { PropertyDocument } from "@/types/property";
 import { useBodyScrollLock } from "@/hooks";
+import { LoadingScreen } from "@shared/components/loading";
 
 type Property = {
   id: string;
@@ -63,7 +64,8 @@ type Incident = {
 
 const DashboardPage: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { t, language } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const [isLoading, setIsLoading] = useState(true);
   const [properties, setProperties] = useState<Property[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -914,13 +916,16 @@ const DashboardPage: React.FC = () => {
   };
 
   if (isLoading) {
+  
+    
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-t-4 border-primary-500 border-solid rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t("common.loading")}</p>
-        </div>
-      </div>
+      <LoadingScreen
+        message={t("common.loadingData") || "Cargando datos del dashboard..."}
+        subtext={t("common.loadingSubtext") || "Esto solo tomará unos segundos"}
+        showLogo={false}
+        gradient={true}
+        data-testid="dashboard-loading"
+      />
     );
   }
 

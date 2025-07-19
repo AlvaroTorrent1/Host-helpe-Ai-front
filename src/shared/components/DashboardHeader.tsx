@@ -1,12 +1,13 @@
 /**
  * src/shared/components/DashboardHeader.tsx
  * Componente de header consistente para todas las páginas del dashboard
+ * MIGRADO a react-i18next
  */
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { useLanguage } from "@shared/contexts/LanguageContext";
-import DashboardLanguageSelector from "../../features/dashboard/DashboardLanguageSelector";
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from "./LanguageSelector";
 
 interface DashboardHeaderProps {
   onSignOut?: () => void;
@@ -14,7 +15,7 @@ interface DashboardHeaderProps {
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   return (
     <header className="bg-white shadow-sm w-full">
@@ -29,7 +30,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
           </Link>
         </div>
         <div className="flex justify-center md:justify-end items-center space-x-2 sm:space-x-4">
-          <DashboardLanguageSelector />
+          <LanguageSelector variant="dashboard" />
           <span className="text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full">
             {user?.email}
           </span>

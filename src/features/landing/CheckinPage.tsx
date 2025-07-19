@@ -1,12 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const CheckinPage = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  // Función para manejar clic en el logo
+  const handleLogoClick = () => {
+    navigate("/");
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  };
 
   // Estado para controlar las animaciones de scroll
   const [visibleSections, setVisibleSections] = useState({
@@ -174,13 +181,13 @@ const CheckinPage = () => {
       {/* Header - Same as LandingPage */}
       <header className="bg-white shadow-sm w-full sticky top-0 z-50">
         <div className="container-limited py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center">
+          <div onClick={handleLogoClick} className="flex items-center cursor-pointer">
             <img
               src="/imagenes/Logo_hosthelper_new.png"
               alt="Host Helper AI Logo"
               className="h-20 sm:h-36 responsive-img"
             />
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-4">

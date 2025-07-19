@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import LoadingScreen from '../../shared/components/LoadingScreen';
+import { LoadingScreen } from '../../shared/components/loading';
 
 // Simple test suite to verify testing setup is working
 describe('LoadingScreen component', () => {

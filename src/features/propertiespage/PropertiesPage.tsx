@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import PropertyManagementPage from "../properties/PropertyManagementPage";
 
 /**
@@ -11,7 +11,7 @@ import PropertyManagementPage from "../properties/PropertyManagementPage";
  */
 const PropertiesPage: React.FC = () => {
   const { signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     try {

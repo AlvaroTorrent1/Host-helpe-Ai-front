@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface TravelerFormData {
   firstName: string;
@@ -20,7 +20,7 @@ const TravelerRegistrationForm: React.FC<TravelerRegistrationFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState<TravelerFormData>({
     firstName: "",

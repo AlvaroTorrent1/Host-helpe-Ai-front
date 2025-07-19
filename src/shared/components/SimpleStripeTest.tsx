@@ -1,12 +1,14 @@
 // src/shared/components/SimpleStripeTest.tsx - Componente simple para probar Stripe
 import React from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useTranslation } from 'react-i18next';
 
 interface SimpleStripeTestProps {
   clientSecret: string;
 }
 
 const SimpleStripeTest: React.FC<SimpleStripeTestProps> = ({ clientSecret }) => {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -20,8 +22,8 @@ const SimpleStripeTest: React.FC<SimpleStripeTestProps> = ({ clientSecret }) => 
   if (!stripe || !elements) {
     return (
       <div className="p-4 border-2 border-yellow-300 bg-yellow-50 rounded">
-        <h3 className="font-bold text-yellow-800">🧪 Componente de Prueba Simple</h3>
-        <p className="text-yellow-700">Esperando inicialización de Stripe...</p>
+        <h3 className="font-bold text-yellow-800">{t("stripe.test.title")}</h3>
+        <p className="text-yellow-700">{t("stripe.test.waitingStripe")}</p>
         <div className="mt-2 text-xs">
           <div>Stripe: {stripe ? '✅' : '❌'}</div>
           <div>Elements: {elements ? '✅' : '❌'}</div>

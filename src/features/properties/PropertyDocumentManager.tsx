@@ -3,7 +3,7 @@ import { PropertyDocument } from "../../types/property";
 import documentService from "../../services/documentService";
 import PropertyDocumentsForm from "./PropertyDocumentsForm";
 import Modal from "../../shared/components/Modal";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyDocumentManagerProps {
   propertyId: string;
@@ -16,7 +16,7 @@ const PropertyDocumentManager: React.FC<PropertyDocumentManagerProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [documents, setDocuments] = useState<PropertyDocument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

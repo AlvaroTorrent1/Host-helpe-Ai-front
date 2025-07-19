@@ -1,10 +1,39 @@
-# Host Helper AI - Documentación Consolidada
+# Documentación Host Helper AI
 
-**Última actualización:** Junio 2025
+## 🌐 Sistema de Traducciones (ACTUALIZADO)
 
-## 📚 **Índice de Documentación**
+**Estado:** En migración hacia react-i18next como estándar oficial
 
-Bienvenido a la documentación consolidada de Host Helper AI. Toda la documentación del proyecto está organizada en esta estructura unificada.
+### 📖 Documentos Clave
+- **[Sistema de Traducciones](development/translation-system.md)** - Estándar oficial y guía de migración
+- **[Migración Sistema Traducciones](development/migracion-sistema-traducciones.md)** - Estado actual y plan completo de migración
+- **[Guía de Migración](development/react-i18next-migration-guide.md)** - Pasos prácticos para migrar componentes  
+- **[Troubleshooting](development/translation-troubleshooting.md)** - Solución de problemas comunes
+
+### ⚡ Quick Start para Desarrolladores
+
+#### Para NUEVO código (react-i18next):
+```typescript
+import { useTranslation } from 'react-i18next';
+
+const Component = () => {
+  const { t } = useTranslation();
+  return <h1>{t('mySection.title')}</h1>;
+};
+```
+
+#### Para CÓDIGO EXISTENTE:
+- Si ves `useLanguage()` → migrar gradualmente a `useTranslation()`
+- Si aparece `[CLAVE_NO_ENCONTRADA]` → agregar traducción a archivos JSON
+
+### 🚨 Reglas Importantes
+- ✅ **USAR:** `useTranslation()` para todo nuevo desarrollo
+- ❌ **NO USAR:** `useLanguage()` para nuevo código
+- 📝 **TRADUCCIONES:** Agregar a archivos JSON (`src/translations/`)
+
+---
+
+## 📁 Estructura de Documentación
 
 ---
 

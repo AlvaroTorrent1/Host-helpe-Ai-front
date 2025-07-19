@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Property } from "../../types/property";
 import PropertyDocumentManager from "./PropertyDocumentManager";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyDetailProps {
   property: Property;
@@ -14,7 +14,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
   onEdit,
   onClose,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"info" | "images" | "documents">(
     "info",
   );

@@ -6,7 +6,6 @@ import {
 } from "../../types/property";
 import PropertyImagesForm from "./PropertyImagesForm";
 import PropertyDocumentsForm from "./PropertyDocumentsForm";
-import { useLanguage } from "@shared/contexts/LanguageContext";
 import { useTranslation } from "react-i18next";
 
 interface PropertyFormProps {

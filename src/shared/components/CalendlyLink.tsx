@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const CalendlyLink: React.FC = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   return (
     <Link

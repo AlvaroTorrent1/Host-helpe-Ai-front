@@ -4,10 +4,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
-import { useTranslation } from 'react-i18next';
 import { SESSubmission } from '../../types/ses';
 
 interface SESSubmissionHistoryProps {

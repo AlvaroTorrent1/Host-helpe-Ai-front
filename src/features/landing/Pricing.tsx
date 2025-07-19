@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
 import Footer from "@shared/components/Footer";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useSubscription } from "@shared/hooks/useSubscription";
 import { usePaymentFlow } from "@shared/contexts/PaymentFlowContext";
@@ -20,7 +20,7 @@ import toast from "react-hot-toast";
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
   
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { user, signIn } = useAuth();
   const { hasActiveSubscription } = useSubscription();
   const navigate = useNavigate();

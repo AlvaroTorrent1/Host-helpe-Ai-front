@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Reservation } from '@/types/reservation';
 import { Property } from '@/types/property';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface CalendarProps {
   reservations: Reservation[];
@@ -18,7 +18,8 @@ interface CalendarDay {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateClick }) => {
-  const { language } = useLanguage();
+  const { i18n } = useTranslation();
+  const language = i18n.language;
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Obtener el primer día del mes actual

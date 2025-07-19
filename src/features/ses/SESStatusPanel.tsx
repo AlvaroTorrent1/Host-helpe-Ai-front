@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface SESSubmission {
   id: string;
@@ -13,7 +13,7 @@ interface SESSubmission {
 }
 
 const SESStatusPanel: React.FC = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   // Array vacío en lugar de mock data
   const [submissions] = useState<SESSubmission[]>([]);

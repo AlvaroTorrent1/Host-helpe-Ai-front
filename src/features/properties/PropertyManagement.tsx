@@ -9,7 +9,7 @@ import mediaService from "../../services/mediaService";
 import directImageWebhookService from "../../services/directImageWebhookService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { MessagingUrlsPanel } from "./components/MessagingUrlsPanel";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
@@ -59,7 +59,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
   const navigate = useNavigate();
   const isEditing = !!propertyId;
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const user = useUser();
 
   // Cargar propiedad si estamos en modo edición

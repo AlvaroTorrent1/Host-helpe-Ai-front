@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '@shared/components/Modal';
 import { Reservation } from '@/types/reservation';
 import { Property } from '@/types/property';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { CalendarDaysIcon, PhoneIcon, UserIcon, HomeIcon } from '@heroicons/react/24/outline';
 
 interface DayDetailsModalProps {
@@ -27,7 +27,7 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
   onClose,
   onViewReservation,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Formatear fecha para mostrar
   const formatSelectedDate = (date: Date | null): string => {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PropertyImage } from "../../types/property";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyImagesFormProps {
   images?: PropertyImage[];
@@ -11,7 +11,7 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
   images = [],
   onChange,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Generar un ID único para las nuevas imágenes

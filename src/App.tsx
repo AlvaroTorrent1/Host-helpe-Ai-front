@@ -1,22 +1,19 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./shared/contexts/AuthContext";
-import { LanguageProvider, useLanguage } from "./shared/contexts/LanguageContext";
 import { PaymentFlowProvider } from "./shared/contexts/PaymentFlowContext";
 import { GlobalLoadingProvider } from "./shared/contexts/GlobalLoadingContext";
 import { UserStatusProvider } from "./shared/contexts/UserStatusContext";
 import "./index.css";
 import "./App.css";
 import "./i18n"; // Importar i18n para inicializarlo
-import i18n from "./i18n";
 import { Toaster } from "react-hot-toast";
-import LoadingScreen from "./shared/components/LoadingScreen";
+import { LoadingScreen } from "./shared/components/loading";
 import ProtectedRoute from "./shared/components/ProtectedRoute";
 import { getProtectedRoutes } from "./config/routes";
 import { HelmetProvider } from "react-helmet-async";
-import PropertyManagement from './features/properties/PropertyManagement';
 
-// Lazy load pages with intelligent pre-loading
+// Lazy loading de componentes
 const LandingPage = lazy(() => import("./features/landing/LandingPage"));
 const ChatbotPage = lazy(() => import("./features/landing/ChatbotPage"));
 const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
@@ -27,32 +24,16 @@ const ScheduleDemoPage = lazy(() => import("./features/landing/ScheduleDemoPage"
 const LoginPage = lazy(() => import("./features/auth/pages/LoginPage"));
 const RegisterPage = lazy(() => import("./features/auth/pages/RegisterPage"));
 const AuthCallbackPage = lazy(() => import("./features/auth/pages/AuthCallbackPage"));
-
-// Pre-load critical components for authenticated users
-const DashboardPage = lazy(() => {
-  const dashboardImport = import("./features/dashboard/DashboardPage");
-  
-  // Pre-load related components in parallel
-  import("./features/reservations/ReservationManagementPage");
-  import("./features/properties/PropertyManagement");
-  
-  return dashboardImport;
-});
-
 const PaymentSuccessPage = lazy(() => import("./features/payment/PaymentSuccess"));
+const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
-const SESRegistrationPage = lazy(() => import('./features/ses/SESRegistrationPage'));
-
-// TEMPORAL: Componente de testing
-// const TestConnectivity = lazy(() => import("./components/TestConnectivity"));
+const PropertyManagement = lazy(() => import("./features/properties/PropertyManagement"));
 
 // Componente para rastrear navegación
 const RouteTracker = () => {
   const location = useLocation();
   
-  // Registrar cambio de página
   useEffect(() => {
-    // Uso de importación dinámica para evitar problemas
     import('./services/analytics').then(({ logPageView }) => {
       try {
         logPageView(location.pathname + location.search);
@@ -67,30 +48,12 @@ const RouteTracker = () => {
   return null;
 };
 
-// Componente que sincroniza ambos sistemas de traducción
-const LanguageSyncWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { language } = useLanguage();
-  
-  useEffect(() => {
-    // Sincronizar i18next cuando cambie el idioma en LanguageContext
-    if (i18n.language !== language) {
-      i18n.changeLanguage(language);
-    }
-  }, [language]);
-  
-  return <>{children}</>;
-};
-
 function App() {
-  // Obtenemos las rutas públicas y protegidas
   const protectedRoutes = getProtectedRoutes();
 
-  // Inicializar Google Analytics
   useEffect(() => {
-    // Obtener ID de medición del entorno
     const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
     if (measurementId) {
-      // Importación dinámica para evitar problemas de Server-Side Rendering
       import('./services/analytics').then(({ initGA }) => {
         initGA(measurementId);
       });
@@ -100,131 +63,118 @@ function App() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen">
-      <HelmetProvider>
-        <LanguageProvider>
-          <LanguageSyncWrapper>
-            <GlobalLoadingProvider>
-              <AuthProvider>
-                <UserStatusProvider>
-                  <PaymentFlowProvider>
-                    <Router>
-                      <RouteTracker />
-                      <Suspense fallback={<LoadingScreen />}>
-                        <Routes>
-                        {/* Rutas públicas */}
-                        <Route path="/" element={<LandingPage />} />
-                        <Route path="/chatbot" element={<ChatbotPage />} />
-                        <Route path="/check-in" element={<CheckinPage />} />
-                        <Route path="/upselling" element={<UpsellingPage />} />
-                        <Route path="/pricing" element={<PricingPage />} />
-                        <Route path="/testimonios" element={<TestimoniosPage />} />
-                        <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-                        <Route path="/auth/callback" element={<AuthCallbackPage />} />
-                        <Route path="/payment/success" element={<PaymentSuccessPage />} />
+    <GlobalLoadingProvider>
+      <AuthProvider>
+        <UserStatusProvider>
+          <PaymentFlowProvider>
+            <div className="w-full min-h-screen">
+              <HelmetProvider>
+                <Router>
+                  <RouteTracker />
+                  <Suspense fallback={<LoadingScreen />}>
+                    <Routes>
+                      {/* Rutas públicas */}
+                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/chatbot" element={<ChatbotPage />} />
+                      <Route path="/check-in" element={<CheckinPage />} />
+                      <Route path="/upselling" element={<UpsellingPage />} />
+                      <Route path="/pricing" element={<PricingPage />} />
+                      <Route path="/testimonios" element={<TestimoniosPage />} />
+                      <Route path="/schedule-demo" element={<ScheduleDemoPage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                      <Route path="/payment/success" element={<PaymentSuccessPage />} />
 
-                        {/* TEMPORAL: Ruta de testing */}
-                        {/* <Route path="/test-connectivity" element={<TestConnectivity />} /> */}
+                      {/* Rutas protegidas */}
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <DashboardPage />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                        {/* Rutas protegidas */}
-                        <Route
-                          path="/dashboard"
-                          element={
-                            <ProtectedRoute>
-                              <DashboardPage />
-                            </ProtectedRoute>
-                          }
-                        />
-
-                        {/* Definir el resto de rutas protegidas de forma dinámica */}
-                        {protectedRoutes
-                          .filter((route) => route.path !== "/dashboard") // Excluimos la ruta que ya definimos
-                          .map((route) => {
-                            const Component = lazy(
-                              () => {
-                                // Intentar diferentes combinaciones de rutas para manejar estructuras de carpetas inconsistentes
-                                const componentName = route.componentName;
-                                const folderName = componentName.toLowerCase();
-                                const alternativeFolderName = componentName.toLowerCase().replace('page', '');
-                                
-                                // Para PropertiesPage y ReservationsPage, usar nombres específicos
-                                if (componentName === 'PropertiesPage') {
-                                  return import(/* @vite-ignore */ './features/propertiespage/PropertiesPage.tsx');
-                                }
-                                
-                                if (componentName === 'ReservationsPage') {
-                                  return import(/* @vite-ignore */ './features/reservations/ReservationsPage.tsx');
-                                }
-                                
-                                // Para la página SES, usar la ruta específica
-                                if (componentName === 'SESRegistrationPage') {
-                                  return import(/* @vite-ignore */ './features/ses/SESRegistrationPage.tsx');
-                                }
-                                
-                                // Para otros componentes, usar la estructura general
-                                return import(/* @vite-ignore */ `./features/${alternativeFolderName}/${componentName}.tsx`);
+                      {/* Definir el resto de rutas protegidas de forma dinámica */}
+                      {protectedRoutes
+                        .filter((route) => route.path !== "/dashboard")
+                        .map((route) => {
+                          const Component = lazy(() => {
+                            const componentName = route.componentName;
+                            
+                            if (componentName === 'PropertiesPage') {
+                              return import('./features/propertiespage/PropertiesPage.tsx');
+                            }
+                            
+                            if (componentName === 'ReservationsPage') {
+                              return import('./features/reservations/ReservationsPage.tsx');
+                            }
+                            
+                            if (componentName === 'SESRegistrationPage') {
+                              return import('./features/ses/SESRegistrationPage.tsx');
+                            }
+                            
+                            const alternativeFolderName = componentName.toLowerCase().replace('page', '');
+                            return import(`./features/${alternativeFolderName}/${componentName}.tsx`);
+                          });
+                          
+                          return (
+                            <Route
+                              key={route.path}
+                              path={route.path}
+                              element={
+                                <ProtectedRoute>
+                                  <Component />
+                                </ProtectedRoute>
                               }
-                            );
-                            return (
-                              <Route
-                                key={route.path}
-                                path={route.path}
-                                element={
-                                  <ProtectedRoute>
-                                    <Component />
-                                  </ProtectedRoute>
-                                }
-                              />
-                            );
-                          })}
+                            />
+                          );
+                        })}
 
-                        {/* Ruta 404 para cualquier otra URL */}
-                        <Route path="*" element={<NotFoundPage />} />
+                      {/* Ruta 404 para cualquier otra URL */}
+                      <Route path="*" element={<NotFoundPage />} />
 
-                        {/* Nueva ruta temporal para acceder al PropertyManagement correcto */}
-                        <Route 
-                          path="/properties/management" 
-                          element={
-                            <ProtectedRoute>
-                              <PropertyManagement />
-                            </ProtectedRoute>
-                          } 
-                        />
-                      </Routes>
-                    </Suspense>
-                  </Router>
-                </PaymentFlowProvider>
-              </UserStatusProvider>
-            </AuthProvider>
-          </GlobalLoadingProvider>
-          </LanguageSyncWrapper>
-        </LanguageProvider>
-      </HelmetProvider>
+                      {/* Nueva ruta temporal para acceder al PropertyManagement correcto */}
+                      <Route 
+                        path="/properties/management" 
+                        element={
+                          <ProtectedRoute>
+                            <PropertyManagement />
+                          </ProtectedRoute>
+                        } 
+                      />
+                    </Routes>
+                  </Suspense>
+                </Router>
+              </HelmetProvider>
 
-      {/* Toast notifications */}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: "#fff",
-            color: "#333",
-          },
-          success: {
-            style: {
-              border: "1px solid #10b981",
-            },
-          },
-          error: {
-            style: {
-              border: "1px solid #ef4444",
-            },
-          },
-        }}
-      />
-    </div>
+              {/* Toast notifications */}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                  style: {
+                    background: "#fff",
+                    color: "#333",
+                  },
+                  success: {
+                    style: {
+                      border: "1px solid #10b981",
+                    },
+                  },
+                  error: {
+                    style: {
+                      border: "1px solid #ef4444",
+                    },
+                  },
+                }}
+              />
+            </div>
+          </PaymentFlowProvider>
+        </UserStatusProvider>
+      </AuthProvider>
+    </GlobalLoadingProvider>
   );
 }
 

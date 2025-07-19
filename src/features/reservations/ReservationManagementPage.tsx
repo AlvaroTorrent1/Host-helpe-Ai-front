@@ -13,6 +13,7 @@ import DashboardHeader from "@shared/components/DashboardHeader";
 import { useTranslation } from "react-i18next";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { supabase } from "@/services/supabase";
+import { LoadingInlineVariants } from "@shared/components/loading";
 import { reservationService } from "@/services/reservationService";
 
 // Enum eliminado - se usa el tipo ReservationStatus del archivo types/reservation.ts
@@ -474,7 +475,10 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
         {/* Contenido según el modo de visualización */}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-12 h-12 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
+            {(() => {
+          
+              return LoadingInlineVariants.list(t("common.loadingData") || "Cargando reservas...");
+            })()}
           </div>
         ) : (
           <>

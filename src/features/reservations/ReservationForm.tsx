@@ -6,7 +6,7 @@ import {
   ReservationStatus,
 } from "../../types/reservation";
 import { Property } from "../../types/property";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface ReservationFormProps {
   reservation?: Reservation;
@@ -23,7 +23,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
   onCancel,
   isSubmitting,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   // Estado para los datos del formulario
   const [formData, setFormData] = useState<ReservationCreateData>({
     propertyId: "",

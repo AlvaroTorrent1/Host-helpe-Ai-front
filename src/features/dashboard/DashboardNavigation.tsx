@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const DashboardNavigation: React.FC = () => {
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const currentPath = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

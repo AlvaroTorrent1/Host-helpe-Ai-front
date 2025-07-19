@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface SESRegistrationPageProps {
   className?: string;
@@ -11,7 +11,7 @@ interface SESRegistrationPageProps {
 
 const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '' }) => {
   const { user, signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Fallback text in case translations are missing
   const fallbackText = {

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ const Modal: React.FC<ModalProps> = ({
   noPadding = false,
   children,
 }) => {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -111,9 +113,9 @@ const Modal: React.FC<ModalProps> = ({
                   type="button"
                   className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   onClick={onClose}
-                  aria-label="Cerrar modal"
+                  aria-label={t("common.closeModal")}
                 >
-                  <span className="sr-only">Cerrar</span>
+                  <span className="sr-only">{t("common.close")}</span>
                   <svg
                     className="h-6 w-6"
                     fill="none"

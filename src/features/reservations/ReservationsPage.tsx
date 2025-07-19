@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@shared/contexts/AuthContext";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import ReservationManagementPage from "./ReservationManagementPage";
 
 /**
@@ -11,7 +11,7 @@ import ReservationManagementPage from "./ReservationManagementPage";
  */
 const ReservationsPage: React.FC = () => {
   const { signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     try {

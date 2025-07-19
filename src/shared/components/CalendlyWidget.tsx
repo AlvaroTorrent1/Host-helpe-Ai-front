@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface CalendlyWidgetProps {
   url?: string;
@@ -10,7 +10,7 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
   url = "https://calendly.com/hosthelperai-services",
   text,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Load Calendly script

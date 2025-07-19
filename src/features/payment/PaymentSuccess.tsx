@@ -4,7 +4,8 @@ import { useAuth } from '@shared/contexts/AuthContext';
 import { useSubscription } from '@shared/hooks/useSubscription';
 import { updateSubscriptionStatus } from '@/services/stripeApi';
 import supabase from '@/services/supabase';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
+import { LoadingScreen } from '@shared/components/loading';
 
 /**
  * Página de éxito después del pago
@@ -17,7 +18,7 @@ const PaymentSuccess = () => {
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -118,18 +119,17 @@ const PaymentSuccess = () => {
   }, [user, authLoading, subLoading, hasActiveSubscription, navigate, searchParams]);
 
   if (authLoading || subLoading || checking) {
+  
+    
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-lg text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {t('payment.processing')}
-          </h1>
-          <p className="text-gray-600">
-            {t('payment.verifying')}
-          </p>
-        </div>
-      </div>
+      <LoadingScreen
+        message={t('payment.processing') || 'Procesando pago...'}
+        subtext={t('payment.verifying') || 'Verificando información de pago...'}
+        showLogo={false}
+        gradient={false}
+        className="bg-gray-50"
+        data-testid="payment-success-loading"
+      />
     );
   }
 

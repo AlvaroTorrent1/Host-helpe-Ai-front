@@ -1,25 +1,64 @@
+// src/shared/components/LanguageSelector.tsx
+// Selector de idioma - MIGRADO a react-i18next
+
 import React, { useState } from "react";
-import { useLanguage } from "../contexts/LanguageContext";
-import { LanguageCode } from "../../translations";
+import { useTranslation } from 'react-i18next';
 
 interface LanguageSelectorProps {
   isMobile?: boolean;
+  variant?: 'default' | 'dashboard'; // Nueva prop para variante dashboard
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   isMobile = false,
+  variant = 'default',
 }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Obtener idioma actual de react-i18next
+  const currentLanguage = i18n.language;
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLanguageChange = (lang: LanguageCode) => {
-    setLanguage(lang);
+  const handleLanguageChange = (lang: string) => {
+    // Usar changeLanguage de react-i18next
+    i18n.changeLanguage(lang);
     setIsOpen(false);
   };
+
+  // Variante dashboard - botones simples
+  if (variant === 'dashboard') {
+    return (
+      <div className="flex items-center space-x-1 text-sm">
+        <button
+          onClick={() => handleLanguageChange("es")}
+          className={`px-2 py-1 rounded ${
+            currentLanguage === "es"
+              ? "bg-white text-gray-800 border border-gray-300"
+              : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
+          }`}
+          aria-label="Español"
+        >
+          ES
+        </button>
+        <span className="text-gray-300">|</span>
+        <button
+          onClick={() => handleLanguageChange("en")}
+          className={`px-2 py-1 rounded ${
+            currentLanguage === "en"
+              ? "bg-white text-gray-800 border border-gray-300"
+              : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
+          }`}
+          aria-label="English"
+        >
+          EN
+        </button>
+      </div>
+    );
+  }
 
   // Para versión móvil
   if (isMobile) {
@@ -30,7 +69,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <button
             onClick={() => handleLanguageChange("es")}
             className={`px-2 py-1 rounded ${
-              language === "es"
+              currentLanguage === "es"
                 ? "bg-white text-gray-800 border border-gray-300"
                 : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
             }`}
@@ -40,7 +79,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <button
             onClick={() => handleLanguageChange("en")}
             className={`px-2 py-1 rounded ${
-              language === "en"
+              currentLanguage === "en"
                 ? "bg-white text-gray-800 border border-gray-300"
                 : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
             }`}
@@ -52,14 +91,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     );
   }
 
-  // Para versión desktop
+  // Para versión desktop (default)
   return (
     <div className="relative group mr-4">
       <button
         className="flex items-center space-x-1 text-gray-600 hover:text-primary-500 focus:outline-none"
         onClick={toggleDropdown}
       >
-        <span>{language.toUpperCase()}</span>
+        <span>{currentLanguage.toUpperCase()}</span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
           fill="none"

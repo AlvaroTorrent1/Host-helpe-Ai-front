@@ -3,7 +3,7 @@
 
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface UpgradePromptProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   recommendedPlan = 'basic'
 }) => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Función segura para cerrar el modal
   const handleClose = useCallback(() => {
@@ -139,9 +139,9 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
               <button
                 onClick={handleClose}
                 className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                aria-label="Cerrar"
+                aria-label={t('common.close')}
               >
-                <span className="sr-only">Cerrar</span>
+                <span className="sr-only">{t('common.close')}</span>
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>

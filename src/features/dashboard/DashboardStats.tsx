@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface StatCardProps {
   title: string;
@@ -97,7 +97,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   activeUsers = 0,
   className = '',
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   // Calcular porcentaje de reservas pendientes
   const pendingReservationRate = totalReservations > 0

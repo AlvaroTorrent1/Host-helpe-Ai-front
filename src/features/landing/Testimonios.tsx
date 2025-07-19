@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
 import Footer from "@shared/components/Footer";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 const Testimonios = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Animation states
@@ -15,19 +15,13 @@ const Testimonios = () => {
   const [mediaCarouselVisible, setMediaCarouselVisible] = useState(false);
   const [featuredHeaderVisible, setFeaturedHeaderVisible] = useState(false);
   const [featuredTestimonials, setFeaturedTestimonials] = useState([false, false, false]);
-  const [moreHeaderVisible, setMoreHeaderVisible] = useState(false);
-  const [moreTestimonials, setMoreTestimonials] = useState([false, false, false, false]);
-  const [ctaVisible, setCtaVisible] = useState(false);
 
   // Refs for Intersection Observer
   const pageHeaderRef = useRef(null);
   const mediaHeaderRef = useRef(null);
   const mediaCarouselRef = useRef(null);
   const featuredHeaderRef = useRef(null);
-  const featuredTestimonialRefs = useRef([]);
-  const moreHeaderRef = useRef(null);
-  const moreTestimonialRefs = useRef([]);
-  const ctaRef = useRef(null);
+  const featuredTestimonialRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Scroll to top on component mount
   useEffect(() => {
@@ -70,28 +64,11 @@ const Testimonios = () => {
           if (target === featuredHeaderRef.current) {
             setFeaturedHeaderVisible(true);
           }
-          if (target === moreHeaderRef.current) {
-            setMoreHeaderVisible(true);
-          }
-          if (target === ctaRef.current) {
-            setCtaVisible(true);
-          }
 
           // Featured testimonials
           featuredTestimonialRefs.current.forEach((ref, index) => {
             if (target === ref) {
               setFeaturedTestimonials(prev => {
-                const newState = [...prev];
-                newState[index] = true;
-                return newState;
-              });
-            }
-          });
-
-          // More testimonials
-          moreTestimonialRefs.current.forEach((ref, index) => {
-            if (target === ref) {
-              setMoreTestimonials(prev => {
                 const newState = [...prev];
                 newState[index] = true;
                 return newState;
@@ -108,11 +85,8 @@ const Testimonios = () => {
       mediaHeaderRef.current,
       mediaCarouselRef.current,
       featuredHeaderRef.current,
-      moreHeaderRef.current,
-      ctaRef.current,
-      ...featuredTestimonialRefs.current,
-      ...moreTestimonialRefs.current
-    ].filter(Boolean);
+      ...featuredTestimonialRefs.current
+    ].filter(Boolean) as Element[];
 
     elementsToObserve.forEach(el => observer.observe(el));
 
@@ -263,7 +237,7 @@ const Testimonios = () => {
               }`}
             >
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Testimonios
+                {t("testimonials.pageTitle")}
               </h1>
             </div>
           </div>
@@ -281,10 +255,10 @@ const Testimonios = () => {
               }`}
             >
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                Apariciones en Medios
+                {t("testimonials.mediaSection.title")}
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Descubre lo que dicen los medios de comunicación sobre Host Helper AI
+                {t("testimonials.mediaSection.subtitle")}
               </p>
             </div>
 
@@ -472,7 +446,7 @@ const Testimonios = () => {
               }`}
             >
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
-                Testimonios Destacados
+                {t("testimonials.title")}
               </h2>
             </div>
 
@@ -542,217 +516,8 @@ const Testimonios = () => {
             </div>
           </div>
         </section>
-
-        {/* More Testimonials (Text-based) */}
-        <section className="py-16 bg-gray-50">
-          <div className="container-limited">
-            <h2 
-              ref={moreHeaderRef}
-              className={`text-2xl md:text-3xl font-bold text-gray-900 mb-10 text-center transition-all duration-1000 ease-out ${
-                moreHeaderVisible 
-                  ? 'opacity-100 translate-y-0 scale-100' 
-                  : 'opacity-0 translate-y-8 scale-95'
-              }`}
-            >
-              {t("testimonials.more")}
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div 
-                ref={el => moreTestimonialRefs.current[0] = el}
-                className={`bg-white p-6 rounded-lg shadow-md transition-all duration-1000 ease-out ${
-                  moreTestimonials[0] 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ 
-                  transitionDelay: moreTestimonials[0] ? '200ms' : '0ms'
-                }}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">
-                      AM
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial1.author",
-                      )}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial1.company",
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  "{t("testimonials.additionalTestimonials.testimonial1.text")}"
-                </p>
-              </div>
-
-              <div 
-                ref={el => moreTestimonialRefs.current[1] = el}
-                className={`bg-white p-6 rounded-lg shadow-md transition-all duration-1000 ease-out ${
-                  moreTestimonials[1] 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ 
-                  transitionDelay: moreTestimonials[1] ? '400ms' : '0ms'
-                }}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">
-                      JL
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial2.author",
-                      )}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial2.company",
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  "{t("testimonials.additionalTestimonials.testimonial2.text")}"
-                </p>
-              </div>
-
-              <div 
-                ref={el => moreTestimonialRefs.current[2] = el}
-                className={`bg-white p-6 rounded-lg shadow-md transition-all duration-1000 ease-out ${
-                  moreTestimonials[2] 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ 
-                  transitionDelay: moreTestimonials[2] ? '600ms' : '0ms'
-                }}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">
-                      PG
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial3.author",
-                      )}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial3.company",
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  "{t("testimonials.additionalTestimonials.testimonial3.text")}"
-                </p>
-              </div>
-
-              <div 
-                ref={el => moreTestimonialRefs.current[3] = el}
-                className={`bg-white p-6 rounded-lg shadow-md transition-all duration-1000 ease-out ${
-                  moreTestimonials[3] 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ 
-                  transitionDelay: moreTestimonials[3] ? '800ms' : '0ms'
-                }}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold">
-                      RF
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial4.author",
-                      )}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t(
-                        "testimonials.additionalTestimonials.testimonial4.company",
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  "{t("testimonials.additionalTestimonials.testimonial4.text")}"
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-[#ECA408] to-[#F5B730]">
-          <div 
-            ref={ctaRef}
-            className={`container-limited text-center transition-all duration-1000 ease-out ${
-              ctaVisible 
-                ? 'opacity-100 translate-y-0 scale-100' 
-                : 'opacity-0 translate-y-8 scale-95'
-            }`}
-          >
-            <h2 
-              className={`text-2xl md:text-3xl font-bold text-white mb-4 transition-all duration-1000 ease-out ${
-                ctaVisible 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 translate-y-4'
-              }`}
-              style={{ 
-                transitionDelay: ctaVisible ? '200ms' : '0ms'
-              }}
-            >
-              {t("testimonials.cta.title")}
-            </h2>
-            <p 
-              className={`text-white text-lg mb-8 max-w-2xl mx-auto transition-all duration-1000 ease-out ${
-                ctaVisible 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 translate-y-4'
-              }`}
-              style={{ 
-                transitionDelay: ctaVisible ? '400ms' : '0ms'
-              }}
-            >
-              {t("testimonials.cta.subtitle")}
-            </p>
-            <Link
-              to="/schedule-demo"
-              className={`inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-all duration-300 ${
-                ctaVisible 
-                  ? 'opacity-100 translate-y-0 scale-100' 
-                  : 'opacity-0 translate-y-4 scale-95'
-              }`}
-              style={{ 
-                transitionDelay: ctaVisible ? '600ms' : '0ms'
-              }}
-            >
-              {t("testimonials.cta.button")}
-            </Link>
-          </div>
-        </section>
       </main>
 
-      {/* Footer compartido */}
       <Footer />
     </div>
   );

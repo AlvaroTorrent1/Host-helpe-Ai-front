@@ -1,7 +1,160 @@
 {
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "testimonials": "Testimonials",
+    "login": "Log in"
+  },
+  "pricing": {
+    "title": "Plans and Pricing",
+    "subtitle": "Solutions tailored to your needs",
+    "scheduleDemo": "Schedule demo",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "annualDiscount": "Save 20%",
+    "month": "/month",
+    "billedAnnually": "Billed annually",
+    "mostPopular": "Most popular",
+    "customPrice": "Custom",
+    "basic": "Basic",
+    "pro": "Professional",
+    "enterprise": "Enterprise",
+    "cta": "Get Started",
+    "contact": "Contact Us",
+    "features": {
+      "aiAgentVoiceCalls": "AI Agent with voice calls",
+      "whatsappIntegrated": "WhatsApp integrated",
+      "interactionDashboard": "Interaction dashboard",
+      "support247": "24/7 Support",
+      "upTo": "Up to",
+      "allFrom": "Everything from",
+      "priorityAttention": "Priority attention",
+      "advancedAnalyticsReports": "Advanced analytics and reports",
+      "legalTourismConsulting": "Legal tourism consulting",
+      "programmableAutomaticCalls": "Programmable automatic calls",
+      "unlimitedProperties": "Unlimited properties",
+      "dedicatedPersonalizedAPI": "Dedicated and personalized API",
+      "prioritySupport247": "Priority support 24/7",
+      "completeCustomization": "Complete customization",
+      "advancedMultichannelIntegration": "Advanced multichannel integration"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q5": "Is it easy to implement Host Helper AI?",
+      "a5": "Yes, implementation is very simple. Our team will guide you through the entire process and you will have your AI agents up and running in less than 24 hours.",
+      "q6": "Is there a trial period?",
+      "a6": "We offer a free personalized demonstration where you can see how the AI agents work with your own data and specific use cases.",
+      "q2": "Can I change plans later?",
+      "a2": "Yes, you can upgrade or change your plan at any time on a prorated basis.",
+      "q3": "In which languages is the assistant available?",
+      "a3": "The assistant is available in multiple languages, with the ability to automatically detect the guest's language and respond appropriately in their native language.",
+      "q4": "How does the extra income system work?",
+      "a4": "The assistant proactively offers additional services to your guests, such as transfers, show tickets, or restaurant reservations, generating commissions for you.",
+      "q7": "What technical support is included?",
+      "a7": "All plans include email technical support. Pro and Enterprise plans also include priority support and access to a dedicated account manager."
+    },
+    "ctaSection": {
+      "title": "Ready to revolutionize your accommodation management?",
+      "subtitle": "Start saving time and increasing your income with Host Helper AI today"
+    }
+  },
+  "upsellingPage": {
+    "meta": {
+      "title": "Upselling and Commissions - Host Helper AI",
+      "description": "Generate additional income by recommending relevant services and experiences to your guests, enhancing their stay while increasing your profitability."
+    },
+    "hero": {
+      "title": "Upselling and Commissions",
+      "subtitle": "Increase Your Revenue",
+      "description": "Generate additional income by recommending relevant services and experiences to your guests, enhancing their stay while increasing your profitability."
+    },
+    "benefits": {
+      "passiveIncome": {
+        "title": "Passive Income",
+        "description": "Earn commissions for each service contracted through your recommendations, creating an additional income stream without extra effort."
+      },
+      "betterExperience": {
+        "title": "Better Experience",
+        "description": "Your guests value personalized recommendations, which improves their overall experience and increases positive ratings."
+      },
+      "totalControl": {
+        "title": "Total Control",
+        "description": "Access detailed reports on generated commissions, most popular services, and conversion rates to optimize your strategies."
+      }
+    },
+    "features": {
+      "title": "Features and Possibilities",
+      "subtitle": "Our upselling system is designed to maximize your additional income while providing real value to your guests with relevant recommendations.",
+      "description": "Our upselling system is designed to maximize your additional income while providing real value to your guests with relevant recommendations.",
+      "utmLinks": {
+        "title": "Personalized UTM Links",
+        "description": "Automatically generate tracking links for each recommendation, allowing precise tracking of conversions and commissions."
+      },
+      "smartRecommendations": {
+        "title": "Smart Recommendations",
+        "description": "The system analyzes your guests' preferences and behaviors to offer personalized, high-conversion suggestions."
+      },
+      "localIntegration": {
+        "title": "Local Provider Integration",
+        "description": "Connect with high-quality services in your area: from tours and activities to transfers and dining services."
+      },
+      "dashboard": {
+        "title": "Commission Dashboard",
+        "description": "Visualize your commission income in real time, with detailed reports by service type, season, and properties."
+      },
+      "incomeIncrease": {
+        "title": "Average increase",
+        "value": "+15%",
+        "description": "in revenue"
+      }
+    }
+  },
+  "testimonials": {
+    "pageTitle": "Testimonials",
+    "mediaSection": {
+      "title": "Media Appearances",
+      "subtitle": "Discover what the media says about Host Helper AI"
+    },
+    "title": "Featured Testimonials",
+    "testimonial1": {
+      "description": "Charming rural accommodation in Sierra de Gata, Extremadura.",
+      "text": "Host Helper has transformed our reservation management. Guests are delighted with 24/7 attention and we save time answering repetitive questions.",
+      "author": "María González",
+      "position": "Owner"
+    },
+    "testimonial2": {
+      "description": "Holiday home in the authentic Spanish village of Ojen, Andalusia, with mountain views and close to the beach.",
+      "text": "Host Helper AI has been essential for managing Casa María Flora from the Netherlands. A perfect solution for international property owners!",
+      "author": "Elske Lena",
+      "position": "Owner"
+    },
+    "testimonial3": {
+      "description": "Boutique accommodation in the historic center of Lucena.",
+      "text": "The additional services sales feature has allowed us to increase our income by 30%. Guests really appreciate the ease of requesting extra services.",
+      "author": "Lola Martínez",
+      "position": "Manager"
+    },
+    "visitWebsite": "Visit Website",
+    "more": "Show More",
+    "additionalTestimonials": {
+      "testimonial1": {
+        "text": "Host Helper AI has transformed our guest experience. The AI responses are so human-like and helpful that our guests consistently rate their communication experience as excellent."
+      },
+      "testimonial2": {
+        "text": "We've saved over 20 hours per week since implementing Host Helper AI. The system handles everything from check-in instructions to local recommendations automatically."
+      }
+    },
+    "satisfaction": {
+      "title": "Guest Satisfaction",
+      "subtitle": "Real results from our clients",
+      "happy": "98% of guests rate their experience as excellent",
+      "support": "24/7 automated support without human intervention",
+      "response": "Average response time: under 30 seconds"
+    }
+  },
   "properties": {
-    "title": "Properties",
-    "subtitle": "Manage all your properties",
+    "title": "Your Properties",
+    "subtitle": "Manage all your properties from here",
     "deleteSuccess": "Property deleted successfully",
     "form": {
       "titles": {
@@ -48,8 +201,22 @@
           "houseRules": "House Rules",
           "houseRulesDescription": "Specific rules that guests must follow",
           "inventory": "Inventory",
-          "inventoryDescription": "List of available objects and equipment"
-        }
+          "inventoryDescription": "List of available objects and equipment",
+          "other": "Other"
+        },
+        "addNewDocument": "Add New Document",
+        "documentName": "Document Name",
+        "documentNamePlaceholder": "Enter document name...",
+        "documentType": "Document Type",
+        "documentFile": "Document File",
+        "selectFile": "Select file",
+        "dragAndDrop": "or drag and drop here",
+        "fileSizeLimit": "Maximum file size: 10MB",
+        "uploadDocument": "Upload Document",
+        "pendingDocuments": "Pending Documents",
+        "pendingDescription": "The following documents are being processed:",
+        "pendingProcess": "Processing...",
+        "selectDocumentType": "Select document type"
       },
       "fields": {
         "name": "Property name",
@@ -157,6 +324,15 @@
     "createProperty": "Create Property",
     "updateProperty": "Update Property",
     "cancel": "Cancel",
+    "property": "property",
+    "properties": "properties",
+    "loading": "Loading...",
+    "loadingSubtext": "This will only take a few seconds",
+    "loadingAuth": "Processing authentication...",
+    "loadingPayment": "Processing payment...",
+    "loadingData": "Loading data...",
+    "processing": "Processing...",
+    "preparing": "Preparing...",
     "pagination": {
       "showing": "Showing",
       "to": "to",
@@ -166,7 +342,16 @@
       "next": "Next",
       "first": "First",
       "last": "Last"
-    }
+    },
+    "close": "Close",
+    "closeModal": "Close modal",
+    "important": "Important",
+    "language": "Language",
+    "spanish": "Spanish",
+    "english": "English",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mobileMenu": "Mobile menu"
   },
   "ses": {
     "history": {
@@ -257,5 +442,516 @@
       "viewPlans": "View available plans"
     },
     "freeReminder": "You can continue exploring the app with your free account"
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "menu": {
+      "dashboard": "Dashboard",
+      "reservations": "Reservations", 
+      "properties": "Properties",
+      "registrations": "SES Registration",
+      "logout": "Log out"
+    },
+    "stats": {
+      "properties": "Properties",
+      "activePropertiesFooter": "Active properties",
+      "pendingReservations": "Pending Reservations",
+      "pendingReservationsFooter": "{{percent}}% of reservations are pending",
+      "noReservations": "No reservations",
+      "incidents": "Incidents",
+      "resolutionRate": "Resolution rate: {{rate}}%"
+    },
+    "properties": {
+      "title": "Your Properties",
+      "empty": {
+        "title": "No properties available"
+      },
+      "templates": {
+        "download": "Download templates",
+        "dropdownTitle": "Document templates",
+        "description": "Download pre-designed templates and models to create useful documents for your properties",
+        "faqTemplate": "FAQ Template",
+        "faqDescription": "Frequently asked questions model for guests",
+        "inventoryTemplate": "Inventory", 
+        "inventoryDescription": "List of property items and equipment",
+        "welcomeTemplate": "Welcome message",
+        "welcomeDescription": "Template for personalized welcome message"
+      }
+    },
+    "incidents": {
+      "title": "Recent Incidents",
+      "noIncidents": "No incidents found",
+      "filters": {
+        "property": "Property",
+        "category": "Category", 
+        "status": "Status",
+        "month": "Month",
+        "allProperties": "All properties",
+        "allCategories": "All",
+        "allStatus": "All",
+        "allMonths": "All months",
+        "withSelectedFilters": "with the selected filters"
+      },
+      "table": {
+        "title": "TITLE",
+        "property": "PROPERTY",
+        "category": "CATEGORY", 
+        "status": "STATUS",
+        "phoneNumber": "PHONE NUMBER",
+        "date": "DATE"
+      },
+      "categories": {
+        "others": "Others",
+        "maintenance": "Maintenance",
+        "cleaning": "Cleaning",
+        "checkin": "Check-in",
+        "checkout": "Check-out"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "resolved": "Resolved",
+        "inProgress": "In Progress"
+      },
+      "types": {
+        "inappropriateLanguage": "Inappropriate Language",
+        "noiseComplaint": "Noise Complaint",
+        "maintenance": "Maintenance Request",
+        "cleaning": "Cleaning Issue",
+        "checkinProblem": "Check-in Problem"
+      },
+      "chat": {
+        "user": "User",
+        "agent": "Agent",
+        "messages": "messages",
+        "hostHelper": "Host Helper",
+        "noMessages": "No messages in this conversation",
+        "conversationCompleted": "Conversation completed",
+        "closeChat": "Close chat"
+      }
+    },
+    "propertyDetails": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "description": "Description",
+      "documents": "Documents",
+      "loadingDocuments": "Loading documents...",
+      "noDocuments": "No documents available",
+      "manageProperty": "Manage Property",
+      "close": "Close",
+      "documentTypes": {
+        "faq": "FAQ",
+        "guide": "Guide",
+        "rules": "House Rules",
+        "inventory": "Inventory",
+        "other": "Other"
+      }
+    },
+    "reservations": {
+      "title": "Reservations",
+      "newReservation": "New Reservation",
+      "reservationInformation": "Reservation Information",
+      "mainGuest": "Main Guest",
+      "additionalGuests": "Additional Guests",
+      "addGuest": "Add Guest",
+      "noAdditionalGuests": "No additional guests",
+      "guestNumber": "Guest",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "updateReservation": "Update Reservation",
+      "createReservation": "Create Reservation",
+      "form": {
+        "property": "Property",
+        "selectProperty": "Select a property",
+        "checkInDate": "Check-in Date",
+        "checkOutDate": "Check-out Date",
+        "notes": "Notes",
+        "notesPlaceholder": "Additional notes about the reservation...",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phone": "Phone",
+        "nationality": "Nationality",
+        "selectNationality": "Select nationality"
+      }
+    },
+    "ses": {
+      "title": "SES Registration",
+      "workInProgress": "This section is under development",
+      "importantNotice": "SES integration will be available soon. You will be able to automatically submit guest data to comply with Spanish tourism regulations.",
+      "backToDashboard": "Back to Dashboard"
+    }
+  },
+  "auth": {
+    "register": {
+      "modalTitles": {
+        "createAccount": "Create account",
+        "subscriptionTo": "Subscription to",
+        "confirmAccount": "Confirm account",
+        "completePayout": "Complete payment",
+        "paymentSuccess": "Payment successful!"
+      },
+      "form": {
+        "planSelected": "Selected plan",
+        "fullName": "Full name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "fullNamePlaceholder": "Your full name",
+        "emailPlaceholder": "your@email.com",
+        "passwordPlaceholder": "Minimum 6 characters",
+        "confirmPasswordPlaceholder": "Repeat your password",
+        "createAccountButton": "Create account with email",
+        "processing": "Processing...",
+        "continueWithGoogle": "Continue with Google",
+        "or": "or",
+        "passwordMismatch": "Passwords do not match"
+      },
+      "confirmation": {
+        "authSuccessTitle": "Authentication successful!",
+        "authSuccessMessage": "You have successfully logged in with your Google account.",
+        "accountSelectedTitle": "Selected account:",
+        "planSelectedTitle": "Selected plan:",
+        "paymentAssociationNote": "Payment will be associated with the account shown above",
+        "continueToPayment": "Continue to payment",
+        "preparingPayment": "Preparing payment...",
+        "useOtherAccount": "Use another Google account",
+        "logoutSuccess": "Session closed. You can choose another account."
+      },
+      "payment": {
+        "purchaseSummary": "Purchase summary",
+        "subscriptionStartsNote": "Your subscription will start immediately after payment",
+        "loadingPaymentSystem": "Error loading payment system",
+        "invalidKeyMessage": "The public key may be invalid or there are connection issues",
+        "reloadPage": "Reload page",
+        "preparingPaymentTitle": "Preparing payment...",
+        "creatingSecureInfo": "Creating secure payment information",
+        "initializingSystem": "Initializing payment system...",
+        "loadingStripe": "Loading Stripe.js in mode",
+        "retryInitialization": "Retry initialization"
+      },
+      "success": {
+        "paymentCompletedTitle": "Payment completed successfully!",
+        "subscriptionActivated": "Your subscription to the {planName} plan has been activated successfully.",
+        "enjoyFeatures": "You can now enjoy all premium features. You will be redirected automatically."
+      },
+      "callback": {
+        "processing": "Processing authentication...",
+        "success": "Authentication successful!",
+        "errorTitle": "Oops, something went wrong",
+        "backToLogin": "Back to login",
+        "debugInfo": "Technical information (development)",
+        "localhostError": "Redirect error: Using localhost in a production environment. Check VITE_SITE_URL configuration."
+      },
+      "login": {
+        "continueWithGoogle": "Continue with Google",
+        "orWithEmail": "Or sign in with email"
+      }
+    }
+  },
+  "footer": {
+    "support": "Supported by",
+    "follow": "Follow us",
+    "contact": "Contact",
+    "slogan": "Automating tourist accommodation management with AI",
+    "copyright": "© 2025 Host Helper AI. All rights reserved."
+  },
+  "reservations": {
+    "reservationsTitle": "Reservations",
+    "newReservation": "New Reservation",
+    "editReservation": "Edit Reservation",
+    "reservationDetails": "Reservation Details",
+    "backToReservations": "Back to Reservations",
+    "cancel": "Cancel",
+    "actions": {
+      "create": "Create Reservation"
+    },
+    "emptyState": "No reservations found",
+    "emptyStateDescription": "Start by creating your first reservation or adjust your search filters",
+    "scrollIndicator": "Scroll to see more",
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Search by guest, property or phone...",
+      "property": "Property",
+      "allProperties": "All properties",
+      "checkInDate": "Check-in date",
+      "checkOutDate": "Check-out date",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "guest": "GUEST",
+      "property": "PROPERTY", 
+      "phone": "PHONE",
+      "checkIn": "CHECK-IN",
+      "checkOut": "CHECK-OUT",
+      "actions": "ACTIONS"
+    },
+    "delete": {
+      "title": "Delete Reservation",
+      "message": "Are you sure you want to delete the reservation for {{guestName}} at {{propertyName}}?",
+      "tooltip": "Delete reservation",
+      "warning": "This action cannot be undone.",
+      "deleting": "Deleting...",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "reservationNotFound": "Reservation not found",
+      "loadingData": "Error loading data",
+      "propertyNotAvailable": "Property not available",
+      "saving": "Error saving reservation",
+      "deleting": "Error deleting reservation",
+      "sendingToSES": "Error sending to SES"
+    },
+    "successMessages": {
+      "created": "Reservation created successfully",
+      "updated": "Reservation updated successfully",
+      "deleted": "Reservation deleted successfully",
+      "sentToSES": "Successfully sent to SES"
+    }
+  },
+  "calendly": {
+    "linkText": "Schedule a demo",
+    "pageTitle": "Schedule Demo",
+    "backToHome": "Back to Home", 
+    "pageSubtitle": "Schedule a personalized demo to see how Host Helper AI can transform your accommodation management."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "Sorry, the page you are looking for does not exist or has been moved.",
+    "buttons": {
+      "goHome": "Go back home",
+      "goDashboard": "Go to dashboard"
+    }
+  },
+  "stripe": {
+    "test": {
+      "title": "🧪 Simple Test Component",
+      "waitingStripe": "Waiting for Stripe initialization..."
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "AI Agents for Tourist Accommodations",
+      "subtitle": "Automate with artificial intelligence",
+      "cta": "Get Started",
+      "scheduleDemo": "Schedule a demo"
+    },
+    "features": {
+      "title": "Main Features",
+      "subtitle": "Everything you need to efficiently manage your tourist accommodations",
+      "chatbot": "AI Agents 24/7",
+      "chatbotDesc": "AI agents for guests that resolve queries in real time",
+      "checkIn": "Automated check-in",
+      "checkInDesc": "Automate traveler registration and document verification. Save time and avoid documentation issues.",
+      "upselling": "Intelligent upselling",
+      "upsellingDesc": "Generate additional income by offering complementary services at the right time. Transfers, local activities, late check-out and more."
+    },
+    "howItWorks": {
+      "title": "Getting started with <span class=\"text-black\">Host Helper</span> <span style=\"color: #ECA404\">Ai</span> is very simple",
+      "step1": {
+        "title": "1. Register and add your property",
+        "description": "Create your account in minutes and add the details of your property. Upload photos, description and accommodation rules."
+      },
+      "step2": {
+        "title": "2. Configure your AI agents",
+        "description": "Customize chatbot responses, accommodation information and additional services you want to offer."
+      },
+      "step3": {
+        "title": "3. Share the phone number with your guests",
+        "description": "Provide our AI agents' phone number to your guests. Our agent takes care of everything with complete access to property information and reservation details."
+      }
+    },
+    "cta": {
+      "title": "Join property owners who are automating their management",
+      "subtitle": "Save time, increase your income and improve guest satisfaction.",
+      "button": "Start now"
+    }
+  },
+  "chatbotPage": {
+    "meta": {
+      "title": "Intelligent AI Agents - Host Helper AI",
+      "description": "24/7 phone support for your accommodations with intelligent AI agents that handle calls, coordinate with maintenance teams, and provide personalized recommendations to your guests."
+    },
+    "hero": {
+      "title": "Intelligent AI Agents",
+      "subtitle": "24/7 Phone Support for Your Accommodations",
+      "description": "Our AI agents handle phone calls 24 hours a day, manage incidents in real time and coordinate with maintenance or cleaning teams. Integrated with WhatsApp and Telegram to send multimedia information, locations and links. When they need help, they collaborate with each other or escalate to your human team."
+    },
+    "benefits": {
+      "phoneService": {
+        "title": "Intelligent Phone Support",
+        "description": "Your guests call a phone number and have voice conversations with our AI agents. Available 24 hours, they understand multiple languages and resolve queries instantly."
+      },
+      "multichannel": {
+        "title": "WhatsApp & Telegram Integrated",
+        "description": "During calls, agents send images, locations, links and documents via WhatsApp or Telegram. They combine voice conversation with multimedia content instantly."
+      },
+      "teamwork": {
+        "title": "Intelligent Teamwork",
+        "description": "When an agent cannot resolve something, it collaborates with other specialist agents or escalates to your human team. They can coordinate with maintenance or cleaning teams during the same call."
+      }
+    },
+    "features": {
+      "title": "Capabilities of Our AI Agents",
+      "subtitle": "Reduce your workload while your guests receive professional attention 24 hours a day.",
+      "multilingual": {
+        "title": "Natural Multilingual Conversation",
+        "description": "They converse by voice like humans in Spanish, English, French, German and more languages. They understand accents and context to provide accurate responses."
+      },
+      "maintenanceCoordination": {
+        "title": "Coordination with Maintenance Teams",
+        "description": "During the call with the guest, they can simultaneously contact plumbers, electricians or cleaning teams. They coordinate appointments and confirm with the guest in real time."
+      },
+      "intelligentEscalation": {
+        "title": "Intelligent Escalation",
+        "description": "When they cannot resolve something, they collaborate with specialist agents or transfer the call to your team with full conversation context."
+      },
+      "personalizedRecommendations": {
+        "title": "Personalized Recommendations",
+        "description": "They know your area perfectly and send restaurant photos, location maps, booking links and personalized recommendations via WhatsApp based on guest preferences."
+      },
+      "responseTime": {
+        "title": "Response Time",
+        "value": "< 3 seconds",
+        "description": "Instant resolution"
+      }
+    },
+    "demo": {
+      "subtitle": "Real Practical Case",
+      "title": "Example: Plumbing Issue",
+      "description": "Discover how our AI agents resolve real incidents step by step, coordinating with maintenance teams during the same guest call.",
+      "steps": {
+        "step1": {
+          "title": "Guest calls:",
+          "description": "No hot water in the apartment"
+        },
+        "step2": {
+          "title": "Diagnosis and escalation:",
+          "description": "The agent understands the problem and unable to resolve it transfers the call to a specialist agent who contacts the plumber directly"
+        },
+        "step3": {
+          "title": "Specialized coordination:",
+          "description": "The specialist agent explains the breakdown to the plumber with all details and schedules the repair appointment"
+        },
+        "step4": {
+          "title": "Guest confirmation:",
+          "description": "The plumber will arrive tomorrow at 10:00. I'm sending you their details via WhatsApp"
+        }
+      },
+      "workflow": {
+        "guest": "Guest",
+        "aiAgent": "AI Agent",
+        "whatsapp": "WhatsApp",
+        "plumber": "Plumber",
+        "coordination": "Real-Time Coordination",
+        "resolution": "Everything resolved in one call"
+      }
+    }
+  },
+  "checkinPage": {
+    "meta": {
+      "title": "Check-in Automation - Host Helper AI",
+      "description": "Automate traveler registration according to Spanish regulations (SES) and optimize the check-in process, saving time for your guests and reducing your administrative burden."
+    },
+    "hero": {
+      "title": "Check-in Automation",
+      "subtitle": "Benefits of Automated Registration",
+      "description": "Simplify traveler registration according to Spanish regulations (SES) and optimize the check-in process, saving time for your guests and reducing your administrative burden."
+    },
+    "benefits": {
+      "compliance": {
+        "title": "Legal Compliance",
+        "description": "Automatically comply with Spanish traveler registration regulations (SES) without worries or risk of penalties for non-compliance."
+      },
+      "timeSaving": {
+        "title": "Time Saving",
+        "description": "Reduce management time by up to 90%. The registration process that used to take hours is now completed in minutes without your intervention."
+      },
+      "experience": {
+        "title": "Better Experience",
+        "description": "Provide your guests with a modern and smooth digital experience that they can complete before arrival, facilitating a hassle-free check-in."
+      }
+    },
+    "features": {
+      "title": "Features and Capabilities",
+      "subtitle": "Our check-in automation system is specifically designed to comply with Spanish regulations and optimize the management of tourist accommodations.",
+      "description": "Our check-in automation system is specifically designed to comply with Spanish regulations and optimize the management of tourist accommodations.",
+      "sesIntegration": {
+        "title": "SES Integration",
+        "description": "Direct connection with the Interior Ministry's SES system, ensuring compliance with Spanish traveler registration regulations."
+      },
+      "customForms": {
+        "title": "Customizable Forms",
+        "description": "Adapt registration forms to your brand and style, including all mandatory fields according to current regulations."
+      },
+      "documentCapture": {
+        "title": "Document Capture",
+        "description": "Allows guests to securely upload photographs of their identity documents before arrival."
+      },
+      "reservationManagement": {
+        "title": "Reservation Management",
+        "description": "Manual creation or automatic import of reservations from Airbnb, Booking and other platforms, keeping all data synchronized."
+      },
+      "registrationTime": {
+        "title": "Average registration time",
+        "value": "< 2 min",
+        "description": "per guest"
+      }
+    },
+    "demo": {
+      "subtitle": "See in action",
+      "title": "Simplified Check-in Process",
+      "description": "Our system automates the entire traveler registration process, from data collection to SES submission, saving you time and avoiding errors.",
+      "capabilities": {
+        "dataCollection": "Automatic data collection from reservations on Airbnb, Booking and other platforms",
+        "links": "Sending personalized links to guests to complete their registration",
+        "validation": "Automatic validation of data and identity documents",
+        "transmission": "Secure and direct transmission of information to the SES system"
+      },
+      "videoPlaceholder": "Check-in System Demo Video"
+    }
+  },
+  "testimonials": {
+    "pageTitle": "Testimonials",
+    "mediaSection": {
+      "title": "Media Appearances",
+      "subtitle": "Discover what the media says about Host Helper AI"
+    },
+    "title": "Featured Testimonials",
+    "testimonial1": {
+      "description": "Charming rural accommodation in Sierra de Gata, Extremadura.",
+      "text": "Host Helper has transformed our reservation management. Guests are delighted with 24/7 attention and we save time answering repetitive questions.",
+      "author": "María González",
+      "position": "Owner"
+    },
+    "testimonial2": {
+      "description": "Holiday home in the authentic Spanish village of Ojen, Andalusia, with mountain views and close to the beach.",
+      "text": "Host Helper AI has been essential for managing Casa María Flora from the Netherlands. A perfect solution for international property owners!",
+      "author": "Elske Lena",
+      "position": "Owner"
+    },
+    "testimonial3": {
+      "description": "Boutique accommodation in the historic center of Lucena.",
+      "text": "The additional services sales feature has allowed us to increase our income by 30%. Guests really appreciate the ease of requesting extra services.",
+      "author": "Lola Martínez",
+      "position": "Manager"
+    },
+    "visitWebsite": "Visit Website",
+    "more": "Show More",
+    "additionalTestimonials": {
+      "testimonial1": {
+        "text": "Host Helper AI has transformed our guest experience. The AI responses are so human-like and helpful that our guests consistently rate their communication experience as excellent."
+      },
+      "testimonial2": {
+        "text": "We've saved over 20 hours per week since implementing Host Helper AI. The system handles everything from check-in instructions to local recommendations automatically."
+      }
+    },
+    "satisfaction": {
+      "title": "Guest Satisfaction",
+      "subtitle": "Real results from our clients",
+      "happy": "98% of guests rate their experience as excellent",
+      "support": "24/7 automated support without human intervention",
+      "response": "Average response time: under 30 seconds"
+    }
   }
 } 

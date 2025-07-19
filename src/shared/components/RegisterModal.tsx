@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@shared/contexts/AuthContext';
-import { useLanguage } from '@shared/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { usePaymentFlow } from '@shared/contexts/PaymentFlowContext';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
@@ -113,7 +113,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   const [showAccountConfirmation, setShowAccountConfirmation] = useState(false);
   
   const { signUp, user, signInWithGoogle } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { refetchSubscription } = useSubscription();
   const { clearFlow } = usePaymentFlow();
   
@@ -296,7 +296,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   const handlePaymentSuccessAndNavigate = async () => {
     console.log('🎉 Modal: Pago exitoso, preparando para navegar al dashboard...');
     setPaymentStep('success');
-    toast.success("¡Suscripción activada! Redirigiendo al dashboard...");
+                    toast.success(t('payment.subscriptionActivated') || "¡Suscripción activada correctamente!");
     
     // SOLUCIÓN TEMPORAL DE RESPALDO: Actualizar directamente el status a 'active'
     // Esto asegura que funcione mientras verificamos el webhook
@@ -418,7 +418,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
     
     // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError(t("auth.register.form.passwordMismatch"));
       return;
     }
     
@@ -461,18 +461,18 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   // Título del modal según el paso actual
   const getModalTitle = () => {
     if (showAccountConfirmation) {
-      return "Confirmar cuenta";
+      return t("auth.register.modalTitles.confirmAccount");
     }
     
     switch (paymentStep) {
       case 'register':
-        return selectedPlan ? `Suscripción a ${selectedPlan.name}` : "Crear cuenta";
+        return selectedPlan ? `${t("auth.register.modalTitles.subscriptionTo")} ${selectedPlan.name}` : t("auth.register.modalTitles.createAccount");
       case 'payment':
-        return "Completar pago";
+        return t("auth.register.modalTitles.completePayout");
       case 'success':
-        return "¡Pago exitoso!";
+        return t("auth.register.modalTitles.paymentSuccess");
       default:
-        return "Crear cuenta";
+        return t("auth.register.modalTitles.createAccount");
     }
   };
   
@@ -606,13 +606,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       <svg className="w-5 h-5 text-primary-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
-                      <h4 className="text-sm font-medium text-primary-800">Plan seleccionado</h4>
+                      <h4 className="text-sm font-medium text-primary-800">{t("auth.register.confirmation.planSelectedTitle")}</h4>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-primary-700">{selectedPlan.name}</span>
                       <span className="text-lg font-bold text-primary-800">{selectedPlan.price}€</span>
                     </div>
-                    <p className="text-xs text-primary-600 mt-1">El pago se realizará en el siguiente paso</p>
+                    <p className="text-xs text-primary-600 mt-1">{t("auth.register.confirmation.paymentAssociationNote")}</p>
                   </div>
                 )}
 
@@ -620,7 +620,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                     {/* Nombre completo */}
                   <div>
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre completo
+                      {t("auth.register.form.fullName")}
                     </label>
                     <input
                         id="fullName"
@@ -629,14 +629,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       onChange={(e) => setFullName(e.target.value)}
                       required
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
-                        placeholder="Tu nombre completo"
+                        placeholder={t("auth.register.form.fullNamePlaceholder")}
                     />
                   </div>
                   
                     {/* Email */}
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Correo electrónico
+                      {t("auth.register.form.email")}
                     </label>
                     <input
                         id="email"
@@ -645,14 +645,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
-                        placeholder="tu@correo.com"
+                        placeholder={t("auth.register.form.emailPlaceholder")}
                     />
                   </div>
                   
                     {/* Contraseña */}
                   <div>
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                      Contraseña
+                      {t("auth.register.form.password")}
                     </label>
                     <input
                         id="password"
@@ -662,14 +662,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       required
                       minLength={6}
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
-                        placeholder="Mínimo 6 caracteres"
+                        placeholder={t("auth.register.form.passwordPlaceholder")}
                     />
                   </div>
                   
                     {/* Confirmar contraseña */}
                   <div>
                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                      Confirmar contraseña
+                      {t("auth.register.form.confirmPassword")}
                     </label>
                     <input
                         id="confirmPassword"
@@ -678,7 +678,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm"
-                        placeholder="Repite tu contraseña"
+                        placeholder={t("auth.register.form.confirmPasswordPlaceholder")}
                     />
                   </div>
                   
@@ -697,7 +697,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                             d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"
                           />
                         </svg>
-                      Continuar con Google
+{t("auth.register.form.continueWithGoogle")}
                       </button>
                       
                       {/* Separador */}
@@ -706,7 +706,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                           <div className="w-full border-t border-gray-300"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                        <span className="px-2 text-gray-500 bg-white">o</span>
+                        <span className="px-2 text-gray-500 bg-white">{t("auth.register.form.or")}</span>
                         </div>
                       </div>
                       
@@ -722,10 +722,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                          Procesando...
+                          {t("auth.register.form.processing")}
                           </>
                         ) : (
-                        'Crear cuenta con email'
+                        t("auth.register.form.createAccountButton")
                         )}
                   </button>
                     </div>
@@ -744,10 +744,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       </svg>
                     </div>
                   <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">
-                      ¡Autenticación exitosa!
+                      {t("auth.register.confirmation.authSuccessTitle")}
                     </h3>
                   <p className="text-sm text-gray-600">
-                      Has iniciado sesión correctamente con tu cuenta de Google.
+                      {t("auth.register.confirmation.authSuccessMessage")}
                     </p>
                   </div>
                   
@@ -757,7 +757,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
                     </svg>
-                    Cuenta seleccionada:
+                    {t("auth.register.confirmation.accountSelectedTitle")}
                     </h4>
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
@@ -786,14 +786,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
-                    Plan seleccionado:
+                    {t("auth.register.confirmation.planSelectedTitle")}
                     </h4>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-700">{selectedPlan.name}</span>
                       <span className="text-lg font-bold text-gray-900">{selectedPlan.price}€</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      El pago se asociará a la cuenta mostrada arriba
+                      {t("auth.register.confirmation.paymentAssociationNote")}
                     </p>
                   </div>
                   
@@ -810,10 +810,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
-                        Preparando pago...
+                        {t("auth.register.confirmation.preparingPayment")}
                         </>
                       ) : (
-                      "Continuar al pago"
+                      t("auth.register.confirmation.continueToPayment")
                       )}
                     </button>
                     
@@ -822,12 +822,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         await supabase.auth.signOut();
                         setShowAccountConfirmation(false);
                         setError('');
-                        toast.success('Sesión cerrada. Puedes elegir otra cuenta.');
+                        toast.success(t("auth.register.confirmation.logoutSuccess"));
                       }}
                       disabled={isLoading}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                    Usar otra cuenta de Google
+                    {t("auth.register.confirmation.useOtherAccount")}
                     </button>
                   </div>
                 </div>
@@ -839,13 +839,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   {/* Mostrar resumen del plan seleccionado */}
                   {selectedPlan && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Resumen de la compra</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t("auth.register.payment.purchaseSummary")}</h4>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-700">{selectedPlan.name}</span>
                       <span className="text-lg font-bold text-gray-900">{selectedPlan.price}€</span>
                       </div>
                     <p className="text-xs text-gray-500 mt-2">
-                        Tu suscripción comenzará inmediatamente después del pago
+                        {t("auth.register.payment.subscriptionStartsNote")}
                       </p>
                     </div>
                   )}
@@ -870,26 +870,26 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   ) : clientSecret && !stripe ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-4"></div>
-                    <p className="text-red-600 font-medium">Error cargando sistema de pago</p>
-                    <p className="text-sm text-gray-500 mb-4">La clave pública puede ser inválida o hay problemas de conexión</p>
+                    <p className="text-red-600 font-medium">{t("auth.register.payment.loadingPaymentSystem")}</p>
+                    <p className="text-sm text-gray-500 mb-4">{t("auth.register.payment.invalidKeyMessage")}</p>
                         <button 
                           onClick={() => window.location.reload()}
                       className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 text-sm"
                         >
-                          Recargar página
+                          {t("auth.register.payment.reloadPage")}
                     </button>
                     </div>
                   ) : !clientSecret ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600 font-medium">Preparando pago...</p>
-                      <p className="text-sm text-gray-500">Creando información de pago segura</p>
+                    <p className="text-gray-600 font-medium">{t("auth.register.payment.preparingPaymentTitle")}</p>
+                      <p className="text-sm text-gray-500">{t("auth.register.payment.creatingSecureInfo")}</p>
                     </div>
                   ) : (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600 font-medium">Inicializando sistema de pago...</p>
-                    <p className="text-sm text-gray-500 mb-4">Cargando Stripe.js en modo {stripeMode}...</p>
+                    <p className="text-gray-600 font-medium">{t("auth.register.payment.initializingSystem")}</p>
+                    <p className="text-sm text-gray-500 mb-4">{t("auth.register.payment.loadingStripe")} {stripeMode}...</p>
                       <button 
                         onClick={() => {
                           // Limpiar estado y reiniciar
@@ -904,7 +904,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         }}
                       className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
                       >
-                        Reintentar inicialización
+                        {t("auth.register.payment.retryInitialization")}
                       </button>
                     </div>
                   )}
@@ -919,13 +919,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">¡Pago completado exitosamente!</h3>
+                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-3">{t("auth.register.success.paymentCompletedTitle")}</h3>
                 <div className="space-y-2">
                   <p className="text-sm text-gray-600">
-                    Tu suscripción al plan <strong>{selectedPlan?.name}</strong> ha sido activada correctamente.
+                    {t("auth.register.success.subscriptionActivated", { planName: selectedPlan?.name })}
                   </p>
                   <p className="text-sm text-gray-500">
-                      Ya puedes disfrutar de todas las funcionalidades premium. Serás redirigido automáticamente.
+                      {t("auth.register.success.enjoyFeatures")}
                     </p>
                   </div>
                 </div>

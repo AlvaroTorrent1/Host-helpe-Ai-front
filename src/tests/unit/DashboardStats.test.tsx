@@ -6,34 +6,22 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import DashboardStats from '../../features/dashboard/DashboardStats';
+import DashboardStats from '@features/dashboard/DashboardStats';
 
-// Mock del contexto de idioma
-vi.mock('@shared/contexts/LanguageContext', () => ({
-  useLanguage: () => ({
-    t: (key: string, params?: any) => {
-      // Simulación simple de traducciones para tests
-      const translations: Record<string, string> = {
-        'dashboard.stats.properties': 'Properties',
-        'dashboard.stats.activePropertiesFooter': 'Active properties',
-        'dashboard.stats.pendingReservations': 'Pending Reservations',
-        'dashboard.stats.pendingReservationsFooter': 'Percentage: {{percent}}%',
-        'dashboard.stats.noReservations': 'No reservations yet',
-        'dashboard.stats.incidents': 'Pending Incidents',
-        'dashboard.stats.resolutionRate': 'Resolution rate: {{rate}}%'
-      };
-      
-      // Si hay parámetros, reemplazar los placeholders
-      if (params) {
-        let result = translations[key] || key;
-        Object.entries(params).forEach(([paramKey, paramValue]) => {
-          result = result.replace(`{{${paramKey}}}`, paramValue);
-        });
-        return result;
-      }
-      
-      return translations[key] || key;
+// Mock de react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key, // Retorna la clave como está para testing
+    i18n: {
+      language: 'es'
     }
+  })
+}));
+
+// Mock de AuthContext
+vi.mock('@shared/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: { id: '1' }
   })
 }));
 

@@ -1,93 +1,46 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from 'react-i18next';
+import { LoadingInlineVariants } from "@shared/components/loading";
 
 const ScheduleDemoPage: React.FC = () => {
-  const { t } = useLanguage();
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const [errorDetails, setErrorDetails] = useState<string>("");
-  const widgetRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Pre-calcular el texto de carga
+  const loadingText = t("common.loading") || "Cargando calendario de citas...";
   
   // La URL de Calendly debe estar correcta y activa
   const calendlyUrl = "https://calendly.com/hosthelperai-services/30min";
 
-  // Función para inicializar explícitamente el widget después de cargar el script
-  const initCalendly = () => {
-    if (typeof window.Calendly !== 'undefined' && widgetRef.current) {
-      console.log('Inicializando widget de Calendly manualmente');
-      try {
-        // Limpiar el contenedor antes de inicializar
-        while (widgetRef.current.firstChild) {
-          widgetRef.current.removeChild(widgetRef.current.firstChild);
-        }
-        
-        // Inicializar Calendly manualmente
-        window.Calendly.initInlineWidget({
-          url: calendlyUrl,
-          parentElement: widgetRef.current,
-          prefill: {},
-          utm: {}
-        });
-      } catch (err) {
-        console.error('Error al inicializar Calendly:', err);
-        setErrorDetails(`Error de inicialización: ${err instanceof Error ? err.message : 'Desconocido'}`);
-        setHasError(true);
-      }
-    } else {
-      console.error('API de Calendly no disponible o contenedor no encontrado');
-      setErrorDetails('API de Calendly no disponible o contenedor no encontrado');
-      setHasError(true);
-    }
-  };
-
   useEffect(() => {
-    // Definir el objeto global Calendly para TypeScript
-    if (typeof window !== 'undefined' && !window.Calendly) {
-      window.Calendly = {} as any;
-    }
-    
-    // Verificar si ya está cargado el script
-    if (document.getElementById('calendly-script')) {
-      console.log('Script de Calendly ya cargado');
-      setIsScriptLoaded(true);
-      
-      // Si el script ya está cargado, intentar inicializar directamente
-      setTimeout(() => {
-        initCalendly();
-      }, 500);
-      
-      return;
-    }
-
-    // Load Calendly script
+    // Cargar el script de Calendly de forma simple
     const script = document.createElement("script");
-    script.id = 'calendly-script';
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
     
     script.onload = () => {
-      console.log('Script de Calendly cargado correctamente');
-      setIsScriptLoaded(true);
-      
-      // Esperar un poco para que el script se inicialice completamente
-      setTimeout(() => {
-        initCalendly();
-      }, 1000);
+      console.log('Script de Calendly cargado');
+      setIsLoading(false);
     };
     
-    script.onerror = (error) => {
-      console.error('Error al cargar el script de Calendly:', error);
-      setErrorDetails('No se pudo cargar el script de Calendly');
-      setHasError(true);
+    script.onerror = () => {
+      console.error('Error al cargar Calendly');
+      setIsLoading(false);
     };
     
-    document.body.appendChild(script);
+    // Verificar si ya existe
+    if (!document.querySelector('script[src*="calendly"]')) {
+      document.body.appendChild(script);
+    } else {
+      setIsLoading(false);
+    }
 
     return () => {
-      // Cleanup
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
+      // Cleanup solo si el script existe
+      const existingScript = document.querySelector('script[src*="calendly"]');
+      if (existingScript && document.body.contains(existingScript)) {
+        document.body.removeChild(existingScript);
       }
     };
   }, []);
@@ -223,41 +176,33 @@ const ScheduleDemoPage: React.FC = () => {
             </div>
 
             <div className="md:w-2/3">
-              {hasError ? (
-                <div className="bg-red-50 p-6 rounded-lg text-center">
-                  <p className="text-red-600 mb-2">No se pudo cargar el calendario de citas.</p>
-                  <p className="text-gray-700 mb-2">Error: {errorDetails}</p>
-                  <p className="text-gray-700">Por favor, intenta visitando directamente:</p>
-                  <a 
-                    href={calendlyUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary-600 hover:underline mt-2 inline-block"
-                  >
-                    {calendlyUrl}
-                  </a>
-                </div>
-              ) : !isScriptLoaded ? (
+              {isLoading ? (
                 <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                  <p className="text-gray-600">Cargando calendario de citas...</p>
-                  <div className="mt-4 w-8 h-8 border-t-2 border-primary-500 border-solid rounded-full animate-spin mx-auto"></div>
+                  {LoadingInlineVariants.card(loadingText)}
                 </div>
               ) : (
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                   <div
-                    ref={widgetRef}
                     className="w-full mx-auto"
                     style={{ height: "650px", minWidth: "320px" }}
-                  ></div>
+                  >
+                    <div
+                      className="calendly-inline-widget"
+                      data-url={calendlyUrl}
+                      style={{ minWidth: '320px', height: '630px' }}
+                    ></div>
+                  </div>
                   
                   {/* Botón de reinicio en caso de problemas */}
                   <div className="p-4 border-t border-gray-100 text-center">
-                    <button 
-                      onClick={() => initCalendly()}
+                    <a 
+                      href={calendlyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-sm text-primary-600 hover:text-primary-700"
                     >
-                      ↻ Reiniciar calendario si no se muestra correctamente
-                    </button>
+                      ↗ Abrir en nueva ventana si no se muestra correctamente
+                    </a>
                   </div>
                 </div>
               )}
@@ -274,12 +219,5 @@ const ScheduleDemoPage: React.FC = () => {
     </div>
   );
 };
-
-// Añadir tipado para el objeto global Calendly
-declare global {
-  interface Window {
-    Calendly: any;
-  }
-}
 
 export default ScheduleDemoPage;

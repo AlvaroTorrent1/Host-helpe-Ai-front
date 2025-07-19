@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { supabase, checkEmailConfirmation } from "@services/supabase";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import SmartAuthRouter from "@shared/components/SmartAuthRouter";
 
 export const LoginPage = () => {
@@ -15,7 +15,7 @@ export const LoginPage = () => {
 
   const { signIn, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Si el usuario ya está autenticado, mostrar SmartRouter
   if (user && !showSmartRouter) {
@@ -183,7 +183,7 @@ export const LoginPage = () => {
                 <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
                 <path fill="none" d="M0 0h48v48H0z"></path>
               </svg>
-              Continuar con Google
+              {t("auth.login.continueWithGoogle")}
             </button>
           </div>
 
@@ -192,7 +192,7 @@ export const LoginPage = () => {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">O iniciar sesión con correo electrónico</span>
+              <span className="px-2 bg-white text-gray-500">{t("auth.login.orWithEmail")}</span>
             </div>
           </div>
 

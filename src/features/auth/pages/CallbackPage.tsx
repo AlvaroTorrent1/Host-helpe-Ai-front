@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@services/supabase';
+import { LoadingScreen } from '@shared/components/loading';
 
 export const CallbackPage = () => {
   const navigate = useNavigate();
@@ -56,16 +58,18 @@ export const CallbackPage = () => {
     handleAuthCallback();
   }, [navigate]);
 
+
+      const { t } = useTranslation();
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold text-gray-700">Procesando tu inicio de sesión...</h2>
-        <p className="mt-2 text-gray-500">Por favor, espera un momento.</p>
-        <div className="mt-4 flex justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-        </div>
-      </div>
-    </div>
+    <LoadingScreen
+      message={t('common.loadingAuth')}
+      subtext={t('common.loadingSubtext')}
+      showLogo={false}
+      gradient={false}
+      className="bg-gray-50"
+      data-testid="callback-loading"
+    />
   );
 };
 

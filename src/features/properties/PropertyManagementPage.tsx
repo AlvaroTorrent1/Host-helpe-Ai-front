@@ -7,12 +7,13 @@ import Modal from "../../shared/components/Modal";
 import DashboardHeader from "../../shared/components/DashboardHeader";
 import DashboardNavigation from "../../features/dashboard/DashboardNavigation";
 import { useAuth } from "../../shared/contexts/AuthContext";
-import { useLanguage } from "../../shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 import { supabase } from "../../services/supabase";
 // documentService removido - ahora se usa mediaService unificado
 import { toast } from "react-hot-toast";
 import propertyWebhookService from "../../services/propertyWebhookService";
 import webhookTestService from "../../services/webhookTestService";
+import { LoadingInlineVariants } from "../../shared/components/loading";
 import mediaService from "../../services/mediaService";
 import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
 import UpgradePrompt from "@shared/components/UpgradePrompt";
@@ -42,7 +43,7 @@ interface PropertyManagementPageProps {
 
 const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignOut }) => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { canCreate, remainingProperties, loading: statusLoading } = useCanCreateProperty();
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -537,7 +538,10 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="w-12 h-12 border-t-4 border-b-4 border-primary-500 rounded-full animate-spin"></div>
+            {(() => {
+          
+              return LoadingInlineVariants.list(t("common.loadingData") || "Cargando propiedades...");
+            })()}
           </div>
         ) : (
           <PropertyList

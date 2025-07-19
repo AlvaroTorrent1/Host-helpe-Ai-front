@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
 
 interface NavLink {
@@ -13,6 +14,7 @@ interface MobileMenuProps {
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -97,7 +99,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
         onClick={toggleMenu}
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
-        aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-label={isOpen ? t("common.closeMenu") : t("common.openMenu")}
       >
         {isOpen ? (
           <svg
@@ -147,7 +149,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
             ref={menuRef}
             className="fixed top-20 left-0 right-0 bg-white shadow-md py-4 px-6 z-50 max-h-[80vh] overflow-y-auto transition-transform duration-300 ease-in-out"
             role="navigation"
-            aria-label="Menú móvil"
+            aria-label={t("common.mobileMenu")}
           >
             <ul className="space-y-3">
               {links.map((link, index) => (

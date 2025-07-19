@@ -3,7 +3,7 @@ import { Property } from "@/types/property";
 import PropertyCard from "./PropertyCard";
 import PropertyDetail from "./PropertyDetail";
 import Modal from "@shared/components/Modal";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyListProps {
   properties: Property[];
@@ -18,7 +18,8 @@ const PropertyList: React.FC<PropertyListProps> = ({
   onDelete,
   onAdd,
 }) => {
-  const { t, language } = useLanguage(); // Obtener idioma aquí en el nivel superior
+  const { t, i18n } = useTranslation();
+  const language = i18n.language; // Obtener idioma actual
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
   const [search, setSearch] = useState("");
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(

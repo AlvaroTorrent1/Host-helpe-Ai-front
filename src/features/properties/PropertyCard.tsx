@@ -1,6 +1,6 @@
 import React from "react";
 import { Property } from "../../types/property";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 interface PropertyCardProps {
   property: Property;
@@ -15,7 +15,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   onDelete,
   onView,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   return (
     <div className="bg-white overflow-hidden shadow rounded-lg border border-gray-200">

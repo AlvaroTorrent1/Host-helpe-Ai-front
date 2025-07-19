@@ -4,7 +4,7 @@ import MobileMenu from "@shared/components/MobileMenu";
 import LanguageSelector from "@shared/components/LanguageSelector";
 import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
-import { useLanguage } from "@shared/contexts/LanguageContext";
+import { useTranslation } from "react-i18next";
 
 // Definición de estilos CSS adicionales
 const styles = {
@@ -17,10 +17,11 @@ const styles = {
 };
 
 const LandingPage = () => {
-  const { t, language } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language as 'es' | 'en';
 
   // Configuración de videos según idioma
-  const videoConfig = {
+  const videoConfig: Record<'es' | 'en', { videoId: string; thumbnail: string }> = {
     es: {
       videoId: "MX8ypfuCieU",
       thumbnail: "https://img.youtube.com/vi/MX8ypfuCieU/maxresdefault.jpg"

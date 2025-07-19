@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useLanguage } from './LanguageContext';
+import { useTranslation } from 'react-i18next';
+import { LoadingScreen } from '../components/loading';
 
 interface LoadingState {
   isLoading: boolean;
@@ -32,7 +33,7 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
   const [loadingStates, setLoadingStates] = useState<Map<string, LoadingState>>(new Map());
   const [isVisible, setIsVisible] = useState(false);
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Determinar si hay algún loading activo (prioridad más alta gana)
   const isLoading = Array.from(loadingStates.values()).some(state => state.isLoading);
@@ -105,29 +106,13 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
 
 // Componente de loading unificado
 const GlobalLoadingScreen: React.FC = () => {
-  const { t } = useLanguage();
-
-  const getLoadingMessage = () => {
-    return t ? (t('common.loading') || 'Cargando...') : 'Cargando...';
-  };
-
+  // Usar el nuevo LoadingScreen unificado del sistema modular
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-95 z-50 transition-opacity duration-200 ease-in-out">
-      <div className="text-center transform transition-transform duration-200 ease-in-out">
-        {/* Spinner unificado con color primary */}
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mb-4"></div>
-        
-        {/* Mensaje unificado */}
-        <p className="text-gray-700 text-lg font-medium">
-          {getLoadingMessage()}
-        </p>
-        
-        {/* Indicador sutil de progreso */}
-        <div className="mt-2 text-sm text-gray-500">
-          {t ? (t('common.loadingSubtext') || 'Esto solo tomará unos segundos') : 'Esto solo tomará unos segundos'}
-        </div>
-      </div>
-    </div>
+    <LoadingScreen
+      gradient={true}
+      transparent={false}
+      data-testid="global-loading-screen"
+    />
   );
 };
 
