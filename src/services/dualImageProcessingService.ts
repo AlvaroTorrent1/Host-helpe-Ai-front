@@ -253,7 +253,7 @@ class DualImageProcessingService {
       documenti_casa: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>,
       documenti_elettrodomestici: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>
     };
-
+    
     // Convert image files to uploaded files format
     for (let index = 0; index < imageFiles.length; index++) {
       const file = imageFiles[index];
@@ -262,7 +262,7 @@ class DualImageProcessingService {
         `Preparando imagen ${index + 1} de ${imageFiles.length}`,
         progressPercent
       );
-
+      
       // For now, add all images to 'interni' category
       // In a more sophisticated version, we could analyze file names/descriptions
       uploadedFiles.interni.push({
