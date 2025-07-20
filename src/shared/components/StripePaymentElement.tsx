@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { LoadingInline, LoadingSpinner, LoadingSize, LoadingVariant } from '@shared/components/loading';
 
 interface StripePaymentElementProps {
   clientSecret: string;
@@ -146,8 +147,12 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   if (!stripe || !elements) {
   return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Cargando sistema de pago...</p>
+        <LoadingInline 
+          message="Cargando sistema de pago..."
+          size={LoadingSize.LG}
+          variant={LoadingVariant.PRIMARY}
+          direction="vertical"
+        />
         <p className="text-sm text-gray-500 mt-2">
           Inicializando Stripe en modo {isTestMode ? 'TEST' : 'PRODUCCIÓN'}
         </p>

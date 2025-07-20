@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@shared/contexts/AuthContext';
 import { useSubscription } from '@shared/hooks/useSubscription';
+import { LoadingScreen } from '@shared/components/loading';
 
 interface SubscriptionRouteProps {
   children: React.ReactNode;
@@ -20,12 +21,14 @@ export const SubscriptionRoute: React.FC<SubscriptionRouteProps> = ({
   const { user, loading: authLoading } = useAuth();
   const { hasActiveSubscription, loading: subLoading } = useSubscription();
   
-  // Mostrar indicador de carga mientras verificamos autenticación y suscripción
+  // Mostrar sistema modular de loading mientras verificamos autenticación y suscripción
   if (authLoading || subLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+      <LoadingScreen 
+        message="Verificando suscripción..."
+        subtext="Validando permisos de acceso"
+        gradient={true}
+      />
     );
   }
   

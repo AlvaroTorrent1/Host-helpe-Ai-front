@@ -9,6 +9,8 @@ export interface DirectImageProcessingCallbacks {
 }
 
 class DirectImageWebhookService {
+  // NOTA: Este servicio usa un formato diferente (FormData) que no es compatible con n8n-webhook-simple
+  // Se mantiene la URL original por compatibilidad. Usar dualImageProcessingService para el flujo principal
   private webhookUrl = 'https://hosthelperai.app.n8n.cloud/webhook/images';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes for processing

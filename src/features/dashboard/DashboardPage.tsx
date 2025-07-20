@@ -11,7 +11,7 @@ import n8nTestService from "@services/n8nTestService";
 import documentService from "@services/documentService";
 import { PropertyDocument } from "@/types/property";
 import { useBodyScrollLock } from "@/hooks";
-import { LoadingScreen } from "@shared/components/loading";
+import { LoadingScreen, LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
 
 type Property = {
   id: string;
@@ -838,9 +838,13 @@ const DashboardPage: React.FC = () => {
                
                {isLoadingDocuments ? (
                  <div className="flex items-center justify-center py-8">
-                   <div className="w-8 h-8 border-t-2 border-primary-500 rounded-full animate-spin"></div>
-                   <span className="ml-3 text-gray-600">{t('dashboard.propertyDetails.loadingDocuments')}</span>
-                </div>
+                   <LoadingInline 
+                     message={t('dashboard.propertyDetails.loadingDocuments')}
+                     size={LoadingSize.MD}
+                     variant={LoadingVariant.PRIMARY}
+                     direction="horizontal"
+                   />
+                 </div>
               ) : documents.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {documents.map((doc) => (

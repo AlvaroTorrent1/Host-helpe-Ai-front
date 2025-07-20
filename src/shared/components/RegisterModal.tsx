@@ -13,6 +13,7 @@ import { createPaymentIntent } from '@/services/stripeApi';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@shared/hooks/useSubscription';
 import { stripeConfig } from '../../../config/stripe-config';
+import { LoadingSpinner, LoadingInline, LoadingSize, LoadingVariant } from '@shared/components/loading';
 
 // Configuración de Stripe - Usando sistema centralizado
 const STRIPE_PUBLIC_KEY = stripeConfig.publicKey;

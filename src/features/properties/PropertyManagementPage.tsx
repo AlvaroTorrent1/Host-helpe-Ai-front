@@ -401,6 +401,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
               savedProperty.id,
               savedProperty.name,
               imageFiles,
+              user?.id || '',
               {
                 onProgress: (message: string, percent?: number) => {
                   setProgressPhase(message);

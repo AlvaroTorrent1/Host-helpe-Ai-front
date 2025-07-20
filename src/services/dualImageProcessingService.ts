@@ -46,7 +46,7 @@ export interface WebhookImageResponse {
 }
 
 class DualImageProcessingService {
-  private webhookUrl = 'https://hosthelperai.app.n8n.cloud/webhook/images';
+  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/n8n-webhook-simple-public`;
   private bucketName = 'property-files';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes
@@ -89,6 +89,7 @@ class DualImageProcessingService {
     propertyId: string,
     propertyName: string,
     imageFiles: File[],
+    userId: string,
     callbacks?: DualProcessingCallbacks
   ): Promise<MediaFileRecord[]> {
     try {
@@ -104,7 +105,7 @@ class DualImageProcessingService {
       
       const [mediaFileRecords, webhookResponse] = await Promise.all([
         this.uploadToStorageAndMediaFiles(propertyId, imageFiles, callbacks),
-        this.sendBinariesToWebhook(propertyId, propertyName, imageFiles, callbacks)
+        this.sendBinariesToWebhook(propertyId, propertyName, imageFiles, userId, callbacks)
       ]);
 
       callbacks?.onStatusChange?.('updating');
@@ -239,43 +240,64 @@ class DualImageProcessingService {
     propertyId: string,
     propertyName: string,
     imageFiles: File[],
+    userId: string,
     callbacks?: DualProcessingCallbacks
   ): Promise<WebhookImageResponse> {
-    callbacks?.onProgress?.('Enviando archivos binarios al webhook...', 45);
+    callbacks?.onProgress?.('Enviando datos al webhook Edge Function...', 45);
 
-    // Create FormData with binary files
-    const formData = new FormData();
-    
-    // Add property metadata
-    formData.append('property_id', propertyId);
-    formData.append('property_name', propertyName);
-    formData.append('total_images', imageFiles.length.toString());
-    
-    // Add each image file as binary
-    imageFiles.forEach((file, index) => {
-      const progressPercent = 45 + (index / imageFiles.length) * 20; // 45-65%
+    // Prepare uploaded files in the format expected by Edge Function
+    const uploadedFiles = {
+      interni: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>,
+      esterni: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>,
+      elettrodomestici_foto: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>,
+      documenti_casa: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>,
+      documenti_elettrodomestici: [] as Array<{filename: string, url: string, type: string, size: number, description: string}>
+    };
+
+    // Convert image files to uploaded files format
+    for (let index = 0; index < imageFiles.length; index++) {
+      const file = imageFiles[index];
+      const progressPercent = 45 + (index / imageFiles.length) * 15; // 45-60%
       callbacks?.onProgress?.(
-        `Preparando archivo binario ${index + 1} de ${imageFiles.length}`,
+        `Preparando imagen ${index + 1} de ${imageFiles.length}`,
         progressPercent
       );
-      
-      // Append file with consistent naming
-      formData.append(`image_${index}`, file, file.name);
-      formData.append(`image_${index}_size`, file.size.toString());
-      formData.append(`image_${index}_type`, file.type);
-    });
 
-    callbacks?.onProgress?.('Enviando al webhook...', 65);
+      // For now, add all images to 'interni' category
+      // In a more sophisticated version, we could analyze file names/descriptions
+      uploadedFiles.interni.push({
+        filename: file.name,
+        url: URL.createObjectURL(file), // Create blob URL for the file
+        type: file.type,
+        size: file.size,
+        description: file.name.replace(/\.[^/.]+$/, '') // Remove extension
+      });
+    }
 
-    // Send to webhook with retry logic
-    return await this.sendWithRetry(formData, callbacks);
+    // Prepare webhook payload
+    const webhookPayload = {
+      property_id: propertyId,
+      user_id: userId,
+      property_data: {
+        name: propertyName,
+        address: 'Webhook generated property'
+      },
+      uploaded_files: uploadedFiles,
+      timestamp: new Date().toISOString(),
+      request_id: `dual-${Date.now()}`
+    };
+
+    callbacks?.onProgress?.('Enviando al webhook Edge Function...', 60);
+
+    // Send to Edge Function with retry logic
+    return await this.sendWithRetry(webhookPayload, callbacks);
   }
 
   /**
    * Send request to webhook with retry logic
    */
   private async sendWithRetry(
-    formData: FormData,
+    payload: FormData | object,
     callbacks?: DualProcessingCallbacks
   ): Promise<WebhookImageResponse> {
     let lastError: Error | null = null;
@@ -287,11 +309,28 @@ class DualImageProcessingService {
           65 + (attempt - 1) * 5
         );
 
-        const response = await fetch(this.webhookUrl, {
+        // Prepare request options based on payload type
+        const requestOptions: RequestInit = {
           method: 'POST',
-          body: formData,
+          headers: {
+            'X-N8N-Token': import.meta.env.VITE_N8N_WEBHOOK_TOKEN || 'hosthelper-n8n-secure-token-2024',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+          },
           signal: AbortSignal.timeout(this.timeoutMs)
-        });
+        };
+
+        if (payload instanceof FormData) {
+          requestOptions.body = payload;
+        } else {
+          requestOptions.headers = {
+            ...requestOptions.headers,
+            'Content-Type': 'application/json'
+          };
+          requestOptions.body = JSON.stringify(payload);
+        }
+
+        const response = await fetch(this.webhookUrl, requestOptions);
 
         if (!response.ok) {
           const errorText = await response.text();

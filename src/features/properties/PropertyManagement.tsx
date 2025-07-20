@@ -11,6 +11,7 @@ import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { MessagingUrlsPanel } from "./components/MessagingUrlsPanel";
+import { LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
 interface PropertyFormData extends Omit<Property, "id"> {
@@ -542,7 +543,12 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        <LoadingInline 
+          message="Cargando propiedad..."
+          size={LoadingSize.LG}
+          variant={LoadingVariant.PRIMARY}
+          direction="vertical"
+        />
       </div>
     );
   }

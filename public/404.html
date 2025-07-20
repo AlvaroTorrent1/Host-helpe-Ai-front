@@ -3,56 +3,290 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Host Helper AI - Página no encontrada</title>
+  <title>Host Helper AI - Cargando</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f9fafb;
+    /* Reset básico */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* ESTRUCTURA EXACTA DEL LoadingScreen.tsx */
+    .loading-screen {
+      /* fixed inset-0 */
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      
+      /* bg-gradient-to-br from-gray-50 to-gray-100 */
+      background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
+      
+      /* flex items-center justify-center */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      /* z-50 */
+      z-index: 50;
+      
+      /* transition-opacity duration-300 ease-in-out */
+      transition: opacity 300ms ease-in-out;
+    }
+    
+    /* Contenedor principal: text-center space-y-6 max-w-sm mx-auto px-4 */
+    .loading-container {
+      text-align: center;
+      max-width: 384px; /* max-w-sm */
+      margin: 0 auto;
+      padding: 0 16px; /* px-4 */
+      display: flex;
+      flex-direction: column;
+      gap: 24px; /* space-y-6 */
+    }
+    
+    /* SPINNER SECTION - Estructura exacta del LoadingSpinner */
+    .spinner-container {
+      /* relative */
+      position: relative;
+    }
+    
+    .spinner-wrapper {
+      /* relative flex justify-center */
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .loading-spinner {
+      /* relative inline-block w-12 h-12 (XL size) */
+      position: relative;
+      display: inline-block;
+      width: 48px; /* w-12 */
+      height: 48px; /* h-12 */
+    }
+    
+    /* Spinner principal */
+    .spinner-main {
+      /* w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin */
+      width: 48px;
+      height: 48px;
+      border: 4px solid #bae6fd; /* border-primary-200 */
+      border-top: 4px solid #0284c7; /* border-t-primary-600 */
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      
+      /* transition-all duration-200 ease-in-out */
+      transition: all 200ms ease-in-out;
+    }
+    
+    /* Anillo de brillo sutil */
+    .spinner-glow {
+      /* absolute inset-0 w-12 h-12 border-4 border-transparent border-t-primary-600 rounded-full animate-pulse opacity-50 */
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 48px;
+      height: 48px;
+      border: 4px solid transparent;
+      border-top: 4px solid #0284c7; /* border-t-primary-600 */
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+      opacity: 0.5;
+    }
+    
+    /* Efecto de pulso sutil en el fondo */
+    .background-pulse {
+      /* absolute inset-0 flex justify-center items-center */
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+    }
+    
+    .pulse-circle {
+      /* w-20 h-20 rounded-full bg-primary-500/10 animate-ping */
+      width: 80px; /* w-20 */
+      height: 80px; /* h-20 */
+      border-radius: 50%;
+      background-color: rgba(14, 165, 233, 0.1); /* bg-primary-500/10 */
+      animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+      animation-delay: 0.5s;
+    }
+    
+    /* MENSAJE PRINCIPAL - Estructura exacta del LoadingScreen */
+    .loading-content {
+      /* space-y-3 con animación fadeInUp */
+      display: flex;
       flex-direction: column;
-      text-align: center;
+      gap: 12px; /* space-y-3 */
+      animation: fadeInUp 0.8s ease-out 0.2s both;
     }
-    .logo {
-      margin-bottom: 20px;
-      max-width: 150px;
+    
+    .loading-title {
+      /* text-xl font-semibold text-gray-800 tracking-wide */
+      font-size: 20px; /* text-xl */
+      font-weight: 600; /* font-semibold */
+      color: #1f2937; /* text-gray-800 */
+      letter-spacing: 0.025em; /* tracking-wide */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    h1 {
-      color: #333;
-      margin-bottom: 10px;
+    
+    .loading-subtitle {
+      /* text-gray-600 text-sm leading-relaxed */
+      color: #4b5563; /* text-gray-600 */
+      font-size: 14px; /* text-sm */
+      line-height: 1.625; /* leading-relaxed */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    p {
-      color: #666;
-      margin-bottom: 25px;
+    
+    /* INDICADOR DE PROGRESO - Estructura exacta del LoadingScreen */
+    .progress-container {
+      /* w-32 mx-auto */
+      width: 128px; /* w-32 */
+      margin: 0 auto;
     }
-    .redirect-message {
-      color: #888;
-      font-size: 14px;
-      margin-top: 15px;
+    
+    .progress-bar {
+      /* h-1 bg-gray-200 rounded-full overflow-hidden */
+      height: 4px; /* h-1 */
+      background-color: #e5e7eb; /* bg-gray-200 */
+      border-radius: 9999px; /* rounded-full */
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      /* h-full bg-primary-500 rounded-full */
+      height: 100%;
+      background-color: #0ea5e9; /* bg-primary-500 */
+      border-radius: 9999px;
+      animation: loadingBar 2s ease-in-out infinite;
+    }
+    
+    /* ANIMACIONES EXACTAS DEL SISTEMA MODULAR */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    @keyframes loadingBar {
+      0% { 
+        transform: translateX(-100%); 
+        width: 0%; 
+      }
+      50% { 
+        width: 40%; 
+      }
+      100% { 
+        transform: translateX(100%); 
+        width: 0%; 
+      }
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.2; }
+    }
+    
+    @keyframes ping {
+      0% { 
+        transform: scale(1);
+        opacity: 1;
+      }
+      75%, 100% { 
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+    
+    /* Screen reader */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
   <script type="text/javascript">
-    // Guardar la URL que causó el 404
+    // Lógica de redirección existente
     const path = window.location.pathname;
     const search = window.location.search;
     
-    // Redirigir a la página principal manteniendo la ruta
-    // Usando un pequeño retraso para mostrar el mensaje de redirección
+    // Redirigir manteniendo la ruta
     setTimeout(function() {
       window.location.href = '/' + (path && path !== '/' ? '#' + path : '') + (search || '');
     }, 1500);
   </script>
 </head>
 <body>
-  <img src="/imagenes/Logo_hosthelper_new.png" alt="Host Helper AI Logo" class="logo">
-  <h1>Redirigiendo...</h1>
-  <p>La página que buscas está siendo cargada</p>
-  <div class="redirect-message">
-    Si no eres redirigido automáticamente, <a href="/">haz clic aquí</a> para volver a la página principal.
+  <!-- ESTRUCTURA EXACTA DEL LoadingScreen.tsx -->
+  <div class="loading-screen" role="dialog" aria-live="polite" aria-label="Cargando...">
+    <div class="loading-container">
+      
+      <!-- Contenido del spinner - Estructura exacta -->
+      <div class="spinner-container">
+        <div class="spinner-wrapper">
+          <div class="loading-spinner" role="status" aria-label="Cargando">
+            <!-- Spinner principal -->
+            <div class="spinner-main"></div>
+            
+            <!-- Anillo de brillo sutil -->
+            <div class="spinner-glow"></div>
+            
+            <!-- Texto de accesibilidad -->
+            <span class="sr-only">Cargando contenido...</span>
+          </div>
+          
+          <!-- Efecto de pulso sutil en el fondo -->
+          <div class="background-pulse">
+            <div class="pulse-circle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje principal - Estructura exacta -->
+      <div class="loading-content">
+        <h2 class="loading-title">Cargando...</h2>
+        <p class="loading-subtitle">Esto solo tomará unos segundos</p>
+      </div>
+
+      <!-- Indicador de progreso visual - Estructura exacta -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+      
+    </div>
   </div>
 </body>
 </html> 
