@@ -45,13 +45,12 @@ interface UploadedFile {
 interface ProcessedFile {
   property_id: string;
   file_type: 'image' | 'document';
-  category: string;
-  subcategory: string;
   title: string;
   file_url: string;
   public_url: string;
   file_size?: number;
   mime_type?: string;
+  // Removido: category y subcategory (campos inexistentes en media_files)
 }
 
 Deno.serve(async (req: Request) => {
@@ -245,8 +244,6 @@ async function processFilesWithAI(payload: PropertyWebhookPayload): Promise<Proc
           const processedFile: ProcessedFile = {
             property_id: payload.property_id,
             file_type: categorization.file_type,
-            category: categorization.category,
-            subcategory: categorization.subcategory,
             title: file.description || file.filename,
             file_url: file.url,
             public_url: file.url, // En producción, podría ser una URL optimizada
@@ -254,7 +251,7 @@ async function processFilesWithAI(payload: PropertyWebhookPayload): Promise<Proc
             mime_type: file.type,
           };
           
-          console.log(`✅ File processed: ${file.filename} -> ${categorization.category}/${categorization.subcategory}`);
+          console.log(`✅ File processed: ${file.filename} -> ${categorization.file_type}`);
           processedFiles.push(processedFile);
           
         } catch (fileError) {
@@ -295,17 +292,19 @@ async function createPropertyWithFiles(payload: PropertyWebhookPayload, processe
       files_count: processedFiles.length
     });
 
-    // Preparar archivos como array de JSONB
+    // Preparar archivos como array de JSONB - SOLO CAMPOS EXISTENTES
     const mediaFilesArray = processedFiles.map((file, index) => ({
       file_type: file.file_type,
-      category: file.category,
-      subcategory: file.subcategory,
       title: file.title,
       file_url: file.file_url,
       public_url: file.public_url,
       file_size: file.file_size,
       mime_type: file.mime_type,
-      sort_order: index
+      sort_order: index,
+      is_shareable: true,
+      ai_description_status: 'pending',
+      n8n_processing_status: 'pending'
+      // Removido: category y subcategory (campos inexistentes)
     }));
 
     console.log('📁 Media files array prepared, count:', mediaFilesArray.length);
@@ -357,12 +356,12 @@ function generateCategorizationSummary(processedFiles: ProcessedFile[]) {
   processedFiles.forEach(file => {
     if (file.file_type === 'image') {
       summary.total_images++;
-      summary.images_by_category[file.subcategory] = 
-        (summary.images_by_category[file.subcategory] || 0) + 1;
+      // summary.images_by_category[file.subcategory] = 
+      //   (summary.images_by_category[file.subcategory] || 0) + 1; // Removed as per new interface
     } else {
       summary.total_documents++;
-      summary.documents_by_category[file.category] = 
-        (summary.documents_by_category[file.category] || 0) + 1;
+      // summary.documents_by_category[file.category] = 
+      //   (summary.documents_by_category[file.category] || 0) + 1; // Removed as per new interface
     }
   });
 
