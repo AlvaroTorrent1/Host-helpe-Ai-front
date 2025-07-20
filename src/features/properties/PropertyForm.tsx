@@ -575,7 +575,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 {[1, 2, 3, 4].map((step) => (
                   <div
                     key={step}
-                    className={`flex-1 ${step < 4 ? "mr-2" : ""}`}
+                    className={`flex-1 ${step < 4 ? "mr-1 sm:mr-2" : ""}`}
                   >
                     <div
                       className={`h-2 rounded-full ${
@@ -585,16 +585,37 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                       }`}
                     />
                     <p
-                      className={`mt-2 text-xs text-center ${
+                      className={`mt-2 text-xs sm:text-sm text-center truncate px-1 max-w-full ${
                         step <= currentStep
                           ? "text-primary-600 font-medium"
                           : "text-gray-400"
                       }`}
                     >
-                      {step === 1 && t("properties.form.steps.basic")}
-                      {step === 2 && t("properties.form.steps.images")}
-                      {step === 3 && t("properties.form.steps.documents")}
-                      {step === 4 && t("properties.form.steps.google")}
+                      {/* Texto responsive: versión corta en móvil, completa en desktop */}
+                      {step === 1 && (
+                        <>
+                          <span className="sm:hidden">{t("properties.form.steps.basicShort")}</span>
+                          <span className="hidden sm:inline">{t("properties.form.steps.basic")}</span>
+                        </>
+                      )}
+                      {step === 2 && (
+                        <>
+                          <span className="sm:hidden">{t("properties.form.steps.imagesShort")}</span>
+                          <span className="hidden sm:inline">{t("properties.form.steps.images")}</span>
+                        </>
+                      )}
+                      {step === 3 && (
+                        <>
+                          <span className="sm:hidden">{t("properties.form.steps.documentsShort")}</span>
+                          <span className="hidden sm:inline">{t("properties.form.steps.documents")}</span>
+                        </>
+                      )}
+                      {step === 4 && (
+                        <>
+                          <span className="sm:hidden">{t("properties.form.steps.googleShort")}</span>
+                          <span className="hidden sm:inline">{t("properties.form.steps.google")}</span>
+                        </>
+                      )}
                     </p>
                   </div>
                 ))}

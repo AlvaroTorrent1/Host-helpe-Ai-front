@@ -113,10 +113,14 @@
       "steps": {
         "basic": "Información Básica",
         "basicInfo": "Información básica",
+        "basicShort": "Info",
         "images": "Imágenes",
+        "imagesShort": "Imgs",
         "documents": "Documentos",
+        "documentsShort": "Docs",
         "google": "Enlaces de Negocio",
-        "googleBusiness": "Enlaces de Negocio"
+        "googleBusiness": "Enlaces de Negocio",
+        "googleShort": "Enlaces"
       },
       "propertyName": "Nombre de la propiedad",
       "propertyNamePlaceholder": "Ej: Apartamento Céntrico",
