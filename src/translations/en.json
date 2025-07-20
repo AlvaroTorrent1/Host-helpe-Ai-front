@@ -596,7 +596,7 @@
     "connectionError": "Connection error. Please check your internet connection and try again.",
     "loginError": "Login error",
     "unknownError": "An unknown error occurred. Please try again.",
-    "login": {
+    "loginButtons": {
       "continueWithGoogle": "Continue with Google",
       "orWithEmail": "or with Email"
     },
@@ -659,10 +659,6 @@
         "backToLogin": "Back to login",
         "debugInfo": "Technical information (development)",
         "localhostError": "Redirect error: Using localhost in a production environment. Check VITE_SITE_URL configuration."
-      },
-      "login": {
-        "continueWithGoogle": "Continue with Google",
-        "orWithEmail": "Or sign in with email"
       }
     }
   },

@@ -407,7 +407,7 @@
     "connectionError": "Error de conexión. Por favor verifica tu conexión a internet e inténtalo de nuevo.",
     "loginError": "Error al iniciar sesión",
     "unknownError": "Ha ocurrido un error desconocido. Por favor inténtalo de nuevo.",
-    "login": {
+    "loginButtons": {
       "continueWithGoogle": "Continuar con Google",
       "orWithEmail": "o con Email"
     },
@@ -470,13 +470,6 @@
         "backToLogin": "Volver al inicio de sesión",
         "debugInfo": "Información técnica (desarrollo)",
         "localhostError": "Error de redirección: Se está usando localhost en un entorno de producción. Verifica la configuración de VITE_SITE_URL."
-      },
-      "success": {
-        "completing": "Completando proceso de acceso..."
-      },
-      "login": {
-        "continueWithGoogle": "Continuar con Google",
-        "orWithEmail": "O iniciar sesión con correo electrónico"
       }
     }
   },

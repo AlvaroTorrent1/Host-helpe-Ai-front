@@ -153,11 +153,18 @@ class DualImageProcessingService {
 
     console.log(`Iniciando la subida de ${imageFiles.length} imágenes para la propiedad ${propertyId}`);
 
-    const uploadPromises = imageFiles.map(async (file, index) => {
-      const progressPercent = 15 + (index / imageFiles.length) * 30; // Progreso de 15% a 45%
-      callbacks?.onProgress?.(`Subiendo ${file.name}...`, progressPercent);
+    // Pre-calcular sort_order antes del Promise.all para evitar race conditions en producción
+    const filesWithSortOrder = imageFiles.map((file, index) => ({
+      file,
+      sortOrder: index,
+      fileName: file.name
+    }));
 
-      console.log(`Procesando archivo en índice ${index}. Asignando sort_order: ${index}`);
+    const uploadPromises = filesWithSortOrder.map(async ({ file, sortOrder, fileName }, arrayIndex) => {
+      const progressPercent = 15 + (arrayIndex / filesWithSortOrder.length) * 30; // Progreso de 15% a 45%
+      callbacks?.onProgress?.(`Subiendo ${fileName}...`, progressPercent);
+
+      console.log(`Procesando archivo ${fileName} en índice ${arrayIndex}. Asignando sort_order: ${sortOrder}`);
 
       const fileExtension = file.name.split('.').pop() || 'jpg';
       const uniqueFilename = `${Date.now()}_${crypto.randomUUID()}.${fileExtension}`;
@@ -179,18 +186,17 @@ class DualImageProcessingService {
           .from(this.bucketName)
           .getPublicUrl(filePath);
 
-        console.log(`Archivo ${file.name} subido a ${publicUrl}. Insertando en DB con sort_order: ${index}`);
+        console.log(`Archivo ${fileName} subido a ${publicUrl}. Insertando en DB con sort_order: ${sortOrder}`);
 
         const { data: insertedMedia, error: insertError } = await supabase
           .from('media_files')
           .insert({
             property_id: propertyId,
             user_id: user.id,
-            file_url: publicUrl, // Asegúrate que el nombre de la columna es correcto
+            file_url: publicUrl,
             public_url: publicUrl,
-            file_path: filePath,
             description: "Property image",
-            sort_order: index,
+            sort_order: sortOrder,
             file_type: 'image',
             title: file.name.replace(/\.[^/.]+$/, ''),
             file_size: file.size,
@@ -206,13 +212,13 @@ class DualImageProcessingService {
           throw new Error(`Error insertando en DB para ${file.name}: ${insertError.message}`);
         }
 
-        console.log(`Éxito al insertar en DB para ${file.name}. ID: ${insertedMedia.id}, sort_order: ${insertedMedia.sort_order}`);
+        console.log(`Éxito al insertar en DB para ${fileName}. ID: ${insertedMedia.id}, sort_order: ${insertedMedia.sort_order}`);
         
         return insertedMedia as MediaFileRecord;
 
       } catch (error) {
-        console.error(`Fallo al procesar ${file.name} en el índice ${index}:`, error);
-        callbacks?.onError?.(`Error con ${file.name}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+        console.error(`Fallo al procesar ${fileName} en el índice ${sortOrder}:`, error);
+        callbacks?.onError?.(`Error con ${fileName}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
         return null; // Retorna null para filtrar después
       }
     });
