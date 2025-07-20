@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@shared/contexts/AuthContext";
 import DashboardNavigation from "@features/dashboard/DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
@@ -12,6 +12,7 @@ interface SESRegistrationPageProps {
 const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '' }) => {
   const { user, signOut } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // Fallback text in case translations are missing
   const fallbackText = {
@@ -23,6 +24,8 @@ const SESRegistrationPage: React.FC<SESRegistrationPageProps> = ({ className = '
   const handleSignOut = async () => {
     try {
       await signOut();
+      // Redirigir a la landing page después de cerrar sesión exitosamente
+      navigate("/");
     } catch (error) {
       console.error('Error signing out:', error);
     }

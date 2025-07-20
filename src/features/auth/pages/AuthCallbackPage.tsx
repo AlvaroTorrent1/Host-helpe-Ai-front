@@ -7,7 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { supabase } from "@services/supabase";
 import { supabaseConfig, environment } from "@/config/environment";
-import { LoadingScreen } from "@shared/components/loading";
+import { LoadingSpinner, LoadingSize, LoadingVariant } from "@shared/components/loading";
 
 // Tipos para mejor manejo de errores
 interface AuthDebugInfo {
@@ -23,7 +23,6 @@ interface AuthDebugInfo {
 
 const AuthCallbackPage = () => {
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [debug, setDebug] = useState<AuthDebugInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -47,8 +46,7 @@ const AuthCallbackPage = () => {
     // Función para manejar el callback de autenticación
     const handleAuthCallback = async () => {
       try {
-        // Establecer mensaje inicial
-        setMessage(t("auth.callback.processing"));
+        // Procesando autenticación
         
         // Registrar información de debug extendida
         const debugInfo = collectDebugInfo();
@@ -79,10 +77,8 @@ const AuthCallbackPage = () => {
         }
 
         if (data?.session) {
-          // Si hay una sesión activa, redirigir al dashboard
-          setMessage(t("auth.callback.success"));
-          setIsLoading(false);
-          setTimeout(() => navigate("/dashboard"), 1500);
+          // Si hay una sesión activa, redirigir al dashboard directamente
+          setTimeout(() => navigate("/dashboard"), 500);
         } else {
           // Si no hay sesión, verificar si hay un hash en la URL (para confirmación de correo)
           const hash = window.location.hash;
@@ -93,7 +89,6 @@ const AuthCallbackPage = () => {
           
           // Si hay un error en los parámetros de la URL, mostrarlo
           if (errorParam || errorCode) {
-            setMessage(null);
             setIsLoading(false);
             const errorMsg = errorDescription 
               ? `Error: ${errorDescription}` 
@@ -107,7 +102,6 @@ const AuthCallbackPage = () => {
           
           // Comprobar si hay un token o hash para procesar
           if (hash || query.get('token_hash') || query.get('type') === 'recovery') {
-            setMessage("Verificando autenticación...");
             try {
               // Intenta procesar manualmente el hash para recuperar la sesión
               // Esto es útil cuando el token ha expirado o cuando hay problemas con la redirección
@@ -140,13 +134,11 @@ const AuthCallbackPage = () => {
               // Volvemos a verificar si ya hay una sesión
               const { data: sessionData } = await supabase.auth.getSession();
               if (sessionData?.session) {
-                setMessage("¡Correo confirmado!");
-                setIsLoading(false);
-                setTimeout(() => navigate("/dashboard"), 1500);
+                // Redirigir directamente al dashboard sin mensaje de éxito
+                setTimeout(() => navigate("/dashboard"), 500);
               } else {
                 // Si no hay sesión a pesar del hash/token, puede que el token haya expirado
                 const expiredMsg = "No se pudo completar la autenticación. El enlace puede haber expirado o la URL de redirección es incorrecta.";
-                setMessage(null);
                 setIsLoading(false);
                 setError(expiredMsg);
                 setDebug({...debugInfo, errorDetails: expiredMsg});
@@ -155,7 +147,6 @@ const AuthCallbackPage = () => {
             } catch (tokenError) {
               const tokenErrorMsg = `Error al procesar el token de autenticación: ${tokenError instanceof Error ? tokenError.message : 'Desconocido'}`;
               console.error("Error processing token:", tokenError);
-              setMessage(null);
               setIsLoading(false);
               setError(tokenErrorMsg);
               setDebug({...debugInfo, errorDetails: tokenErrorMsg});
@@ -164,7 +155,6 @@ const AuthCallbackPage = () => {
           } else {
             // No hay hash ni token, redirigir al login
             const noAuthInfoMsg = "No se encontró información de autenticación.";
-            setMessage(null);
             setIsLoading(false);
             setError(noAuthInfoMsg);
             setDebug({...debugInfo, errorDetails: noAuthInfoMsg});
@@ -174,7 +164,6 @@ const AuthCallbackPage = () => {
       } catch (error) {
         const generalErrorMsg = `Error de autenticación: ${error instanceof Error ? error.message : 'Desconocido'}`;
         console.error("Error en la autenticación:", error);
-        setMessage(null);
         setIsLoading(false);
         setError(generalErrorMsg);
         setDebug(collectDebugInfo(generalErrorMsg));
@@ -185,61 +174,16 @@ const AuthCallbackPage = () => {
     handleAuthCallback();
   }, [navigate, t]);
 
-  // 🚀 PANTALLA DE LOADING UNIFICADA con animación multiidioma
+  // 🚀 PANTALLA DE LOADING UNIFICADA - Spinner simple consistente con toda la web
   if (isLoading) {
-  
-          const { t } = useTranslation();
-    
     return (
-      <LoadingScreen
-        message={message || t('common.loadingAuth') || "Procesando autenticación..."}
-        subtext={t('common.loadingSubtext') || "Esto solo tomará unos segundos"}
-        showLogo={true}
-        gradient={true}
-        data-testid="auth-callback-loading"
-      />
-    );
-  }
-          
-  // 🎉 PANTALLA DE ÉXITO
-  if (message && !error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
-        <div className="text-center space-y-8 max-w-md mx-auto px-6">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <img 
-              src="/imagenes/Logo_hosthelper_new.png" 
-              alt="Host Helper AI" 
-              className="h-24 w-auto"
-            />
-          </div>
-          
-          {/* Icono de éxito */}
-          <div className="flex justify-center">
-            <div className="rounded-full bg-green-100 p-4">
-              <svg className="h-12 w-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-          </div>
-          
-          {/* Mensaje */}
-          <div className="space-y-4">
-            <h2 className="text-3xl font-bold text-gray-800">
-              {message}
-            </h2>
-            <p className="text-gray-600">
-              {t('auth.success.completing') || 'Completando proceso de acceso...'}
-            </p>
-            
-            {/* Barra de progreso */}
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-primary-600 h-2 rounded-full animate-pulse" style={{width: '100%'}}></div>
-            </div>
-                </div>
-              </div>
-            </div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <LoadingSpinner 
+          size={LoadingSize.XL} 
+          variant={LoadingVariant.PRIMARY}
+          data-testid="auth-callback-loading"
+        />
+      </div>
     );
   }
 

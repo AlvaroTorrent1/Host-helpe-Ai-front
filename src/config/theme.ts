@@ -7,19 +7,19 @@
  * Colores principales de la aplicación
  */
 export const COLORS = {
-  // Colores primarios
+  // Colores primarios - Alineados con tailwind.config.js (marca dorada #ECA408)
   primary: {
-    50: "#f0f9ff",
-    100: "#e0f2fe",
-    200: "#bae6fd",
-    300: "#7dd3fc",
-    400: "#38bdf8",
-    500: "#0ea5e9",
-    600: "#0284c7",
-    700: "#0369a1",
-    800: "#075985",
-    900: "#0c4a6e",
-    950: "#082f49",
+    50: "#FFF8E6",
+    100: "#FEEFC3",
+    200: "#FDE29A",
+    300: "#FCD56F",
+    400: "#FBC748",
+    500: "#ECA408", // Color principal de la marca
+    600: "#BC8306",
+    700: "#8B6205",
+    800: "#5A4003",
+    900: "#2D2001",
+    950: "#1A1000", // Agregado para consistencia completa
   },
 
   // Colores de acento

@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import { getPropertyMediaForMessaging, formatForWhatsApp, formatForTelegram, generateMediaSummary, validateMediaUrls, type PropertyMediaSummary, type MediaFileForMessaging } from '../../../services/mediaService';
 import Button from '../../../components/ui/Button';
+import LoadingSpinner from '../../../shared/components/loading/LoadingSpinner';
+import { LoadingSize, LoadingVariant } from '../../../shared/components/loading/types';
 
 interface MessagingUrlsPanelProps {
   propertyId: string;
@@ -94,7 +96,7 @@ export const MessagingUrlsPanel: React.FC<MessagingUrlsPanelProps> = ({
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <LoadingSpinner size={LoadingSize.LG} variant={LoadingVariant.PRIMARY} />
         </div>
       </div>
     );
