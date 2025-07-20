@@ -12,23 +12,16 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Token de autenticación para seguridad
 const WEBHOOK_TOKEN = Deno.env.get('N8N_WEBHOOK_TOKEN') || 'hosthelper-n8n-secure-token-2024';
 
-// Interfaces para los datos
+// Interfaces para los datos - ACTUALIZADAS para usar solo campos existentes
 interface PropertyWebhookPayload {
   property_id: string;
   user_id: string;
   property_data: {
     name: string;
     address: string;
-    city?: string;
-    state?: string;
-    postal_code?: string;
-    country?: string;
-    property_type?: string;
-    num_bedrooms?: number;
-    num_bathrooms?: number;
-    max_guests?: number;
     description?: string;
     google_business_profile_url?: string;
+    // Campos legacy removidos: city, state, postal_code, country, property_type, num_bedrooms, num_bathrooms, max_guests
   };
   uploaded_files: {
     interni: Array<UploadedFile>;
@@ -52,7 +45,7 @@ interface UploadedFile {
 interface ProcessedFile {
   property_id: string;
   file_type: 'image' | 'document';
-    category: string;
+  category: string;
   subcategory: string;
   title: string;
   file_url: string;
@@ -287,20 +280,13 @@ async function createPropertyWithFiles(payload: PropertyWebhookPayload, processe
   try {
     console.log('🔍 Starting atomic property creation...');
     
-    // Preparar datos de la propiedad como JSONB
+    // Preparar datos de la propiedad como JSONB - SOLO CAMPOS EXISTENTES
     const propertyData = {
       name: payload.property_data.name,
       address: payload.property_data.address,
-      city: payload.property_data.city,
-      state: payload.property_data.state,
-      postal_code: payload.property_data.postal_code,
-      country: payload.property_data.country,
-      property_type: payload.property_data.property_type,
-      num_bedrooms: payload.property_data.num_bedrooms,
-      num_bathrooms: payload.property_data.num_bathrooms,
-      max_guests: payload.property_data.max_guests,
       description: payload.property_data.description,
       google_business_profile_url: payload.property_data.google_business_profile_url
+      // Campos legacy removidos para evitar errores de columna inexistente
     };
 
     console.log('📋 Property data prepared:', {
