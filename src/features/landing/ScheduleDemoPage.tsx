@@ -10,78 +10,84 @@ const ScheduleDemoPage: React.FC = () => {
   // Pre-calcular el texto de carga
   const loadingText = t("common.loading") || "Cargando calendario de citas...";
   
-  // URL operativa confirmada por el usuario
+  // URL primaria (confirmar si existe)
   const calendlyUrl = "https://calendly.com/hosthelperai-services/30min";
   
+  // URL de fallback para testing (conocida que funciona)
+  const fallbackUrl = "https://calendly.com/acmecorp/30min";
+  
   console.log('📅 Calendly URL configurada:', calendlyUrl);
+  console.log('🔄 URL de fallback disponible:', fallbackUrl);
 
   useEffect(() => {
-    console.log('🔄 Iniciando carga del widget de Calendly...');
+    console.log('🔄 Iniciando carga SIMPLIFICADA del widget de Calendly...');
     
-    // Función para inicializar el widget de Calendly
-    const initializeCalendlyWidget = () => {
-      // Verificar si Calendly está disponible globalmente
-      if (typeof window !== 'undefined' && (window as any).Calendly) {
-        console.log('✅ Calendly API disponible, inicializando widget...');
+    // Función simplificada para verificar carga del widget
+    const checkWidgetLoaded = () => {
+      const widget = document.querySelector('.calendly-inline-widget') as HTMLElement;
+      if (widget) {
+        // Verificar si el widget tiene contenido (iframe de Calendly)
+        const iframe = widget.querySelector('iframe');
+        const hasContent = widget.children.length > 0 || widget.innerHTML.trim() !== '';
         
-        const widget = document.querySelector('.calendly-inline-widget') as HTMLElement;
-        if (widget) {
-          // Limpiar contenido previo
-          widget.innerHTML = '';
-          
-          // Inicializar widget usando la API de Calendly
-          (window as any).Calendly.initInlineWidget({
-            url: calendlyUrl,
-            parentElement: widget,
-            prefill: {},
-            utm: {}
-          });
-          
-          console.log('✅ Widget de Calendly inicializado con API');
+        if (iframe || hasContent) {
+          console.log('✅ Widget de Calendly cargado - contenido detectado');
           setIsLoading(false);
+          return true;
         }
+      }
+      return false;
+    };
+    
+    // Cargar el script de Calendly de forma simple
+    const loadCalendlyScript = () => {
+      const existingScript = document.querySelector('script[src*="calendly"]');
+      
+      if (!existingScript) {
+        console.log('📥 Cargando script de Calendly...');
+        const script = document.createElement("script");
+        script.src = "https://assets.calendly.com/assets/external/widget.js";
+        script.async = true;
+        
+        script.onload = () => {
+          console.log('✅ Script de Calendly cargado');
+          // Dar tiempo para que Calendly se auto-inicialice
+          setTimeout(() => {
+            if (!checkWidgetLoaded()) {
+              console.log('⏳ Widget no listo, verificando en 2s más...');
+              setTimeout(checkWidgetLoaded, 2000);
+            }
+          }, 1500);
+        };
+        
+        script.onerror = (error) => {
+          console.error('❌ Error cargando Calendly:', error);
+          setIsLoading(false);
+        };
+        
+        document.head.appendChild(script);
       } else {
-        console.log('⏳ Esperando que la API de Calendly esté disponible...');
-        // Reintentar después de un breve delay
-        setTimeout(initializeCalendlyWidget, 500);
+        console.log('♻️ Script de Calendly ya existe');
+        // Verificar si ya está cargado
+        setTimeout(() => {
+          if (!checkWidgetLoaded()) {
+            console.log('⏳ Verificando carga del widget existente...');
+            setTimeout(checkWidgetLoaded, 2000);
+          }
+        }, 500);
       }
     };
     
-    // Cargar el script de Calendly
-    const script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    
-    script.onload = () => {
-      console.log('✅ Script de Calendly cargado exitosamente');
-      
-      // Inicializar widget después de que el script esté listo
-      setTimeout(initializeCalendlyWidget, 1000);
-    };
-    
-    script.onerror = (error) => {
-      console.error('❌ Error al cargar script de Calendly:', error);
-      console.error('🔍 Verificar:', {
-        scriptSrc: script.src,
-        networkConnection: 'Conexión a internet',
-        contentSecurityPolicy: 'CSP del sitio',
-        adBlocker: 'Bloqueador de anuncios'
-      });
+    // Timeout de seguridad - máximo 15 segundos en loading
+    const timeout = setTimeout(() => {
+      console.log('⏰ Timeout - saliendo del estado de loading');
       setIsLoading(false);
-    };
+    }, 15000);
     
-    // Verificar si ya existe el script
-    const existingScript = document.querySelector('script[src*="calendly"]');
-    if (!existingScript) {
-      console.log('📥 Agregando script de Calendly al DOM');
-      document.head.appendChild(script); // Agregar al head en lugar de body
-    } else {
-      console.log('♻️ Script de Calendly ya existe, reinicializando');
-      setTimeout(initializeCalendlyWidget, 500);
-    }
+    loadCalendlyScript();
 
     return () => {
-      // Cleanup mejorado - no remover el script para evitar problemas en navegación
+      clearTimeout(timeout);
       console.log('🧹 Cleanup del componente Calendly');
     };
   }, [calendlyUrl]);
@@ -238,6 +244,15 @@ const ScheduleDemoPage: React.FC = () => {
                         overflow: 'hidden'
                       }}
                     ></div>
+                    
+                    {/* Debug info para desarrollo */}
+                    {import.meta.env.DEV && (
+                      <div className="text-xs text-gray-400 mt-2 p-2 bg-gray-50 rounded">
+                        <p>🔍 Debug Info:</p>
+                        <p>URL: {calendlyUrl}</p>
+                        <p>Fallback: {fallbackUrl}</p>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Opciones de fallback mejoradas */}
