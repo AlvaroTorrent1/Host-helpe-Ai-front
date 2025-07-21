@@ -21,75 +21,112 @@ const ScheduleDemoPage: React.FC = () => {
   console.log('🔄 URL de fallback disponible:', fallbackUrl);
 
   useEffect(() => {
-    console.log('🔄 Iniciando carga ULTRA-SIMPLIFICADA del widget de Calendly...');
-    console.log('🎯 URL confirmada como funcional:', primaryUrl);
+    console.log('🔄 MÉTODO PROGRAMÁTICO - Iniciando Calendly con API directa...');
+    console.log('🎯 URL confirmada funcional:', primaryUrl);
     
-    // Método más simple y directo - como recomienda Calendly oficialmente
-    const loadCalendlyWidget = () => {
+    const initCalendlyWidget = () => {
       const script = document.createElement("script");
       script.src = "https://assets.calendly.com/assets/external/widget.js";
-      script.type = "text/javascript";
       script.async = true;
       
       script.onload = () => {
-        console.log('✅ Script de Calendly cargado exitosamente');
+        console.log('✅ Script Calendly cargado - iniciando método programático');
         
-        // Forzar inicialización después de script load
-        setTimeout(() => {
-          // Verificar si hay iframe o contenido
-          const widget = document.querySelector('.calendly-inline-widget');
-          const iframe = widget?.querySelector('iframe');
-          
-          if (iframe || (widget && widget.children.length > 0)) {
-            console.log('✅ Widget inicializado - iframe detectado');
-            setIsLoading(false);
-            setCurrentUrl(primaryUrl);
-          } else {
-            console.log('⚠️ Widget sin contenido visible');
-            // Forzar re-scan del DOM
-            setTimeout(() => {
-              const secondCheck = document.querySelector('.calendly-inline-widget iframe');
-              if (secondCheck) {
-                console.log('✅ Widget encontrado en segundo intento');
+        // Función para verificar disponibilidad de Calendly API
+        const checkCalendlyAPI = () => {
+          // @ts-ignore - Calendly se agrega globalmente
+          if (window.Calendly && window.Calendly.initInlineWidget) {
+            console.log('🎯 API de Calendly disponible - inicializando widget...');
+            
+            // Obtener container y limpiar completamente
+            const container = document.querySelector('.calendly-inline-widget') as HTMLElement;
+            if (container) {
+              // Limpiar cualquier contenido previo
+              container.innerHTML = '';
+              console.log('🧹 Container limpiado, inicializando...');
+              
+              try {
+                // Inicialización programática - el método más confiable
+                // @ts-ignore
+                window.Calendly.initInlineWidget({
+                  url: primaryUrl,
+                  parentElement: container,
+                  prefill: {},
+                  utm: {}
+                });
+                
+                console.log('✅ Widget inicializado programáticamente');
                 setIsLoading(false);
                 setCurrentUrl(primaryUrl);
-              } else {
-                console.log('❌ Widget no se inicializó después de múltiples intentos');
-                setError('Widget no pudo cargar');
+                
+                // Verificar que el iframe aparezca en unos segundos
+                setTimeout(() => {
+                  const iframe = container.querySelector('iframe');
+                  if (iframe) {
+                    console.log('✅ Iframe confirmado - widget totalmente cargado');
+                  } else {
+                    console.log('⚠️ Widget inicializado pero iframe no visible aún');
+                  }
+                }, 2000);
+                
+              } catch (error) {
+                console.error('❌ Error en inicialización programática:', error);
+                setError('Error inicializando widget');
                 setIsLoading(false);
               }
-            }, 3000);
+            } else {
+              console.error('❌ Container .calendly-inline-widget no encontrado');
+              setError('Container no encontrado');
+              setIsLoading(false);
+            }
+          } else {
+            // Calendly API no disponible aún, reintentar
+            console.log('⏳ Esperando API de Calendly...');
+            setTimeout(checkCalendlyAPI, 200);
           }
-        }, 2000);
+        };
+        
+        // Iniciar verificación de API
+        checkCalendlyAPI();
       };
       
       script.onerror = () => {
-        console.error('❌ Error fatal cargando script de Calendly');
-        setError('Error cargando Calendly');
+        console.error('❌ Error cargando script de Calendly');
+        setError('Error cargando script');
         setIsLoading(false);
       };
       
-      // Limpiar scripts existentes primero
+      // Limpiar scripts existentes
       const existingScripts = document.querySelectorAll('script[src*="calendly"]');
       existingScripts.forEach(s => s.remove());
       
-      console.log('📥 Agregando script fresco de Calendly');
+      console.log('📥 Cargando script de Calendly...');
       document.head.appendChild(script);
     };
     
-    // Timeout más largo para dar más tiempo
+    // Timeout de seguridad
     const timeout = setTimeout(() => {
-      console.log('⏰ Timeout final - mostrando widget aunque no se detecte iframe');
+      console.log('⏰ Timeout - forzando salida de loading');
       setIsLoading(false);
-      setCurrentUrl(primaryUrl);
-    }, 20000); // 20 segundos
+      if (!currentUrl) setCurrentUrl(primaryUrl);
+    }, 15000);
     
-    // Pequeño delay inicial para asegurar DOM ready
-    setTimeout(loadCalendlyWidget, 100);
+    // Inicializar después de un pequeño delay para asegurar DOM
+    setTimeout(initCalendlyWidget, 100);
 
     return () => {
       clearTimeout(timeout);
-      console.log('🧹 Cleanup del componente');
+      // Cleanup específico de Calendly si está disponible
+      // @ts-ignore
+      if (window.Calendly && window.Calendly.closePopupWidget) {
+        try {
+          // @ts-ignore
+          window.Calendly.closePopupWidget();
+        } catch (e) {
+          // Ignorar errores de cleanup
+        }
+      }
+      console.log('🧹 Cleanup completado');
     };
   }, [primaryUrl]);
 
@@ -236,7 +273,6 @@ const ScheduleDemoPage: React.FC = () => {
                   >
                     <div
                       className="calendly-inline-widget"
-                      data-url={currentUrl || primaryUrl}
                       style={{ 
                         minWidth: '320px', 
                         height: '630px', 
@@ -245,46 +281,6 @@ const ScheduleDemoPage: React.FC = () => {
                         overflow: 'hidden'
                       }}
                     ></div>
-                    
-                    {/* Status info */}
-                    {(usingFallback || error) && (
-                      <div className="text-xs text-center mt-2 p-2 bg-blue-50 text-blue-700 rounded">
-                        {error ? (
-                          <p>⚠️ {error} - Usando calendario de demostración</p>
-                        ) : usingFallback ? (
-                          <p>🔄 Usando calendario temporal mientras se configura el oficial</p>
-                        ) : null}
-                      </div>
-                    )}
-                    
-                    {/* Debug info para desarrollo */}
-                    {import.meta.env.DEV && (
-                      <div className="text-xs text-gray-400 mt-2 p-2 bg-gray-50 rounded">
-                        <p>🔍 Debug Info:</p>
-                        <p>URL actual: {currentUrl || primaryUrl}</p>
-                        <p>Fallback: {fallbackUrl}</p>
-                        <p>Estado: {error ? 'Error' : usingFallback ? 'Fallback' : 'Principal'}</p>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Opciones de fallback mejoradas */}
-                  <div className="p-4 border-t border-gray-100 text-center space-y-2">
-                    <a 
-                      href={currentUrl || primaryUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block text-sm text-primary-600 hover:text-primary-700 underline"
-                    >
-                      ↗ Abrir en nueva ventana si no se muestra correctamente
-                    </a>
-                    <div className="text-xs text-gray-500">
-                      <p>¿Problemas para cargar? También puedes contactarnos por:</p>
-                      <div className="mt-1 space-x-4">
-                        <a href="mailto:contact@hosthelperai.com" className="hover:text-primary-600">📧 Email</a>
-                        <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600">📱 WhatsApp</a>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
