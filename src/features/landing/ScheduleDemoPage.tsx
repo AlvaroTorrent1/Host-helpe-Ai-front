@@ -10,37 +10,67 @@ const ScheduleDemoPage: React.FC = () => {
   // Pre-calcular el texto de carga
   const loadingText = t("common.loading") || "Cargando calendario de citas...";
   
-  // La URL de Calendly debe estar correcta y activa
+  // CORREGIDO: Verificar si esta URL está activa en Calendly
+  // TODO: Actualizar con la URL real de la cuenta de Calendly
   const calendlyUrl = "https://calendly.com/hosthelperai-services/30min";
+  
+  console.log('📅 Calendly URL configurada:', calendlyUrl);
 
   useEffect(() => {
-    // Cargar el script de Calendly de forma simple
+    console.log('🔄 Iniciando carga del widget de Calendly...');
+    
+    // Cargar el script de Calendly con mejor manejo de errores
     const script = document.createElement("script");
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
     
     script.onload = () => {
-      console.log('Script de Calendly cargado');
+      console.log('✅ Script de Calendly cargado exitosamente');
+      
+      // Dar tiempo al widget para inicializarse
+      setTimeout(() => {
+        const widget = document.querySelector('.calendly-inline-widget');
+        if (widget && widget.innerHTML.trim() !== '') {
+          console.log('✅ Widget de Calendly inicializado');
+          setIsLoading(false);
+        } else {
+          console.warn('⚠️ Widget cargado pero sin contenido. Verificar URL de Calendly');
+          setIsLoading(false);
+        }
+      }, 2000);
+    };
+    
+    script.onerror = (error) => {
+      console.error('❌ Error al cargar script de Calendly:', error);
+      console.error('🔍 Verificar:', {
+        scriptSrc: script.src,
+        networkConnection: 'Conexión a internet',
+        contentSecurityPolicy: 'CSP del sitio',
+        adBlocker: 'Bloqueador de anuncios'
+      });
       setIsLoading(false);
     };
     
-    script.onerror = () => {
-      console.error('Error al cargar Calendly');
-      setIsLoading(false);
-    };
-    
-    // Verificar si ya existe
-    if (!document.querySelector('script[src*="calendly"]')) {
+    // Verificar si ya existe el script
+    const existingScript = document.querySelector('script[src*="calendly"]');
+    if (!existingScript) {
+      console.log('📥 Agregando script de Calendly al DOM');
       document.body.appendChild(script);
     } else {
+      console.log('♻️ Script de Calendly ya existe, reinicializando');
       setIsLoading(false);
     }
 
     return () => {
-      // Cleanup solo si el script existe
-      const existingScript = document.querySelector('script[src*="calendly"]');
-      if (existingScript && document.body.contains(existingScript)) {
-        document.body.removeChild(existingScript);
+      // Cleanup mejorado
+      try {
+        const scriptToRemove = document.querySelector('script[src*="calendly"]');
+        if (scriptToRemove && document.body.contains(scriptToRemove)) {
+          console.log('🧹 Limpiando script de Calendly');
+          document.body.removeChild(scriptToRemove);
+        }
+      } catch (error) {
+        console.warn('⚠️ Error durante cleanup:', error);
       }
     };
   }, []);
@@ -193,16 +223,23 @@ const ScheduleDemoPage: React.FC = () => {
                     ></div>
                   </div>
                   
-                  {/* Botón de reinicio en caso de problemas */}
-                  <div className="p-4 border-t border-gray-100 text-center">
+                  {/* Opciones de fallback mejoradas */}
+                  <div className="p-4 border-t border-gray-100 text-center space-y-2">
                     <a 
                       href={calendlyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-primary-600 hover:text-primary-700"
+                      className="inline-block text-sm text-primary-600 hover:text-primary-700 underline"
                     >
                       ↗ Abrir en nueva ventana si no se muestra correctamente
                     </a>
+                    <div className="text-xs text-gray-500">
+                      <p>¿Problemas para cargar? También puedes contactarnos por:</p>
+                      <div className="mt-1 space-x-4">
+                        <a href="mailto:contact@hosthelperai.com" className="hover:text-primary-600">📧 Email</a>
+                        <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="hover:text-primary-600">📱 WhatsApp</a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
