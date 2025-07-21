@@ -6,15 +6,7 @@ import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
 import { useTranslation } from "react-i18next";
 
-// Definición de estilos CSS adicionales
-const styles = {
-  textShadowSm: {
-    textShadow: "0 2px 4px rgba(0,0,0,0.4)",
-  },
-  textShadowLg: {
-    textShadow: "0 4px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8)",
-  },
-};
+
 
 const LandingPage = () => {
   const { t, i18n } = useTranslation();
@@ -42,6 +34,9 @@ const LandingPage = () => {
   
   // Estado para controlar si el video está reproduciéndose
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  
+  // Estado para controlar el video promocional entre secciones
+  const [isPromoVideoPlaying, setIsPromoVideoPlaying] = useState(false);
   
   // Referencias para los pasos
   const step1Ref = useRef<HTMLDivElement>(null);
@@ -127,6 +122,23 @@ const LandingPage = () => {
     import('@services/analytics').then(async ({ logEvent }) => {
       try {
         await logEvent('Landing', 'Hero Video Play', 'User clicked to play demo video');
+      } catch (error) {
+        console.error('Error al registrar evento:', error);
+      }
+    }).catch(error => {
+      console.error('Error al importar servicio de analytics:', error);
+    });
+  };
+
+  // Función para manejar clic en video promocional
+  const handlePromoVideoClick = () => {
+    // Activar el video promocional al hacer clic
+    setIsPromoVideoPlaying(true);
+    
+    // Analytics
+    import('@services/analytics').then(async ({ logEvent }) => {
+      try {
+        await logEvent('Landing', 'Promo Video Play', 'User clicked to play promotional video');
       } catch (error) {
         console.error('Error al registrar evento:', error);
       }
@@ -628,6 +640,56 @@ const LandingPage = () => {
           </div>
         </section>
 
+        {/* Video Promocional */}
+        <section className="py-16 bg-gray-50">
+          <div className="container-limited">
+            <div className="max-w-4xl mx-auto">
+              <div 
+                className="relative w-full cursor-pointer group"
+                onClick={handlePromoVideoClick}
+              >
+                {!isPromoVideoPlaying ? (
+                  // Imagen miniatura con botón de play personalizado
+                  <div className="relative w-full h-full">
+                    <img
+                      src="https://img.youtube.com/vi/m7SL2_w5yP0/maxresdefault.jpg"
+                      alt="Host Helper AI - Video promocional"
+                      className="w-full h-full object-cover rounded-2xl shadow-2xl transition-all duration-700 ease-in-out group-hover:scale-[1.02]"
+                      style={{
+                        aspectRatio: "16/9",
+                      }}
+                    />
+                    {/* Overlay con botón de play personalizado */}
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all duration-300 rounded-2xl">
+                      <div className="bg-white/95 rounded-full p-6 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <svg 
+                          className="w-12 h-12 text-primary-600 ml-1" 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Video de YouTube cuando está activado
+                  <iframe
+                    src="https://www.youtube.com/embed/m7SL2_w5yP0?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
+                    className="w-full h-full rounded-2xl shadow-2xl"
+                    style={{
+                      aspectRatio: "16/9",
+                    }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="Host Helper AI - Video Promocional"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* How it works */}
         <section className="py-24 bg-white" id="how-it-works">
           <div className="container-limited">
@@ -750,7 +812,6 @@ const LandingPage = () => {
                     src="/imagenes/Helpy_checklist.jpeg"
                     alt="Configuración de Agentes de IA"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
-                    style={{ transform: 'scale(1.15)' }}
                   />
                   <div className="absolute -bottom-10 left-0 w-32 h-32 bg-primary-600 rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-all duration-500"></div>
                 </div>
@@ -813,48 +874,6 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-10 md:py-20 w-full relative overflow-hidden">
-          {/* Video de fondo */}
-          <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-            <iframe
-              src="https://www.youtube.com/embed/-WDQlVH614M?autoplay=1&mute=1&loop=1&playlist=-WDQlVH614M&controls=0"
-              className="absolute w-full h-full object-cover"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{
-                pointerEvents: "none",
-                filter: "contrast(1.05) brightness(0.9)",
-                transform: "scale(1.25)",
-              }}
-            />
-            {/* Overlay cinematográfico más claro */}
-            <div className="absolute inset-0 bg-black/15 mix-blend-multiply"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/15"></div>
-          </div>
-
-          <div className="container-limited text-center relative z-10">
-            <h2
-              className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4"
-              style={styles.textShadowLg}
-            >
-              {t("landing.cta.title")}
-            </h2>
-            <p
-              className="text-lg sm:text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto"
-              style={styles.textShadowLg}
-            >
-              {t("landing.cta.subtitle")}
-            </p>
-            <Link
-              to="/pricing"
-              className="inline-block px-6 py-3 sm:px-8 sm:py-4 bg-white/30 backdrop-blur-sm text-white font-medium rounded-md border border-white/20 hover:bg-white/40 transition-colors shadow-lg text-lg"
-            >
-              {t("landing.cta.button")}
-            </Link>
           </div>
         </section>
 
