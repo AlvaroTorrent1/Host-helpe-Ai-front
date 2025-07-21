@@ -48,8 +48,8 @@ export interface WebhookImageResponse {
 }
 
 class DualImageProcessingService {
-  // CORREGIDO: Cambiar al webhook externo de n8n en lugar del Edge Function interno
-  private webhookUrl = 'https://hosthelperai.app.n8n.cloud/webhook/images';
+  // SOLUCION CORS: Usar Edge Function proxy para evitar bloqueos CORS del navegador
+  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-n8n-webhook`;
   private bucketName = 'property-files';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes
@@ -308,11 +308,16 @@ class DualImageProcessingService {
         if (payload instanceof FormData) {
           // For FormData, let browser set Content-Type with boundary automatically
           requestOptions.body = payload;
-          // No Content-Type header for FormData - browser handles multipart/form-data boundary
+          requestOptions.headers = {
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+          };
         } else {
           // For JSON payloads (fallback compatibility)
           requestOptions.headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
           };
           requestOptions.body = JSON.stringify(payload);
         }
