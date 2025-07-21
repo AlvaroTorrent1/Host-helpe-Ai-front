@@ -12,6 +12,7 @@ import documentService from "@services/documentService";
 import { PropertyDocument } from "@/types/property";
 import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen, LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
+import { IncidentCategory, INCIDENT_CATEGORIES } from '@/types/incident';
 
 type Property = {
   id: string;
@@ -31,21 +32,7 @@ type Reservation = {
   property_name: string;
 };
 
-// Tipos de categorías de incidencias - valores reales de Supabase
-type IncidentCategory =
-  | "Check-in"
-  | "Conversation Summary"
-  | "Property Info"
-  | "Property Information"
-  | "Property Issue"
-  | "Propriety Issue"  // typo en DB
-  | "Propriety Info"   // typo en DB
-  | "Reservation Issue"
-  | "Restaurant Recommendation"
-  | "Richiesta immagini"  // italiano
-  | "Tourist Information"
-  | "emergency"   // futuras categorías
-  | "other"       // futuras categorías
+
 
 type Incident = {
   id: string;
@@ -109,19 +96,31 @@ const DashboardPage: React.FC = () => {
   };
 
   const getIncidentConversation = (incident: Incident): string => {
+    // Intentar obtener el contenido de conversación según idioma
+    let conversationBody = '';
+    
     if (language === 'en') {
       // Priorizar inglés, fallback a español
-      return incident.conversation_body_english && incident.conversation_body_english.trim() 
+      conversationBody = incident.conversation_body_english && incident.conversation_body_english.trim() 
         ? incident.conversation_body_english.trim()
         : incident.conversation_body_spanish && incident.conversation_body_spanish.trim()
         ? incident.conversation_body_spanish.trim()
         : '';
+    } else {
+      // Para español, usar directamente el campo español, fallback a inglés
+      conversationBody = incident.conversation_body_spanish && incident.conversation_body_spanish.trim()
+        ? incident.conversation_body_spanish.trim()
+        : incident.conversation_body_english && incident.conversation_body_english.trim()
+        ? incident.conversation_body_english.trim()
+        : '';
     }
     
-    // Para español, usar directamente el campo español
-    return incident.conversation_body_spanish && incident.conversation_body_spanish.trim()
-      ? incident.conversation_body_spanish.trim()
-      : '';
+    // Si no hay conversación, usar la descripción como fallback
+    if (!conversationBody && incident.description) {
+      conversationBody = incident.description.trim();
+    }
+    
+    return conversationBody;
   };
 
   // Obtener datos del usuario actual y cargar datos reales
@@ -297,73 +296,58 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // Mapeo de categorías de DB a claves de traducción
+  // Mapeo directo de nuestras 10 categorías hardcodeadas a claves de traducción
   const getCategoryTranslationKey = (dbCategory: string): string => {
-    const categoryKeyMap: Record<string, string> = {
-      // Categorías reales de Supabase → Claves de traducción
-      "Check-in": "checkInOut",
-      "Conversation Summary": "conversationSummary",
-      "Property Info": "propertyIssue", 
-      "Property Information": "propertyIssue",
-      "Property Issue": "propertyIssue",
-      "Propriety Issue": "propertyIssue",  // Fix typo
-      "Propriety Info": "propertyIssue",   // Fix typo  
-      "Reservation Issue": "reservationIssue",
-      "Restaurant Recommendation": "touristInfo",
-      "Richiesta immagini": "imageRequest",  // Italiano
-      "Tourist Information": "touristInfo",
-      // Futuras categorías
+    // Para nuestras categorías nuevas, usar directamente el nombre de la categoría
+    if (INCIDENT_CATEGORIES.includes(dbCategory as any) || dbCategory === "all") {
+      return dbCategory;
+    }
+    
+    // Fallback para categorías legacy que puedan existir en la DB
+    const legacyCategoryKeyMap: Record<string, string> = {
+      "Check-in": "checkin",
+      "Conversation Summary": "others",
+      "Property Info": "others", 
+      "Property Information": "others",
+      "Property Issue": "maintenance",
+      "Propriety Issue": "maintenance",  // Fix typo
+      "Propriety Info": "others",   // Fix typo  
+      "Reservation Issue": "others",
+      "Restaurant Recommendation": "others",
+      "Richiesta immagini": "others",  // Italiano
+      "Tourist Information": "others",
       "emergency": "emergency",
-      "other": "other",
-      // Fallback
-      "all": "all"
+      "other": "others"
     };
     
-    return categoryKeyMap[dbCategory] || "other";
+    return legacyCategoryKeyMap[dbCategory] || "others";
   };
 
   // Función para obtener etiqueta de categoría traducida
   const getLabel = (category: string): string => {
     const translationKey = getCategoryTranslationKey(category);
+    
+    // Caso especial para "all"
+    if (category === "all") {
+      return language === 'es' ? 'Todas' : 'All';
+    }
+    
     const translated = t(`dashboard.incidents.categories.${translationKey}`);
     
-    // Si la traducción no existe, usar fallback en español/inglés
+    // Si la traducción no existe, usar fallback simple
     if (!translated || translated.includes('dashboard.incidents.categories')) {
-      const fallbacks: Record<string, Record<string, string>> = {
-        en: {
-          conversationSummary: "Conversation Summary",
-          reservationIssue: "Reservation Issues", 
-          imageRequest: "Image Requests",
-          checkInOut: "Check-in/Check-out",
-          propertyIssue: "Property Issues",
-          touristInfo: "Tourist Information",
-          emergency: "Emergencies",
-          other: "Others",
-          all: "All"
-        },
-        es: {
-          conversationSummary: "Resumen de Conversación",
-          reservationIssue: "Problemas de Reserva",
-          imageRequest: "Solicitudes de Imágenes", 
-          checkInOut: "Check-in/Check-out",
-          propertyIssue: "Problemas de Propiedad",
-          touristInfo: "Información Turística",
-          emergency: "Emergencias",
-          other: "Otros",
-          all: "Todas"
-        }
-      };
-      
-      return fallbacks[language]?.[translationKey] || category;
+      // Fallback básico para categorías que no estén traducidas
+      return translationKey.charAt(0).toUpperCase() + translationKey.slice(1);
     }
     
     return translated;
   };
 
-  // Obtener categorías únicas presentes en las incidencias actuales
+  // Obtener categorías disponibles usando las constantes definidas
   const getAvailableCategories = (): string[] => {
-    const uniqueCategories = Array.from(new Set(incidents.map(incident => incident.category)));
-    return ["all", ...uniqueCategories.sort()];
+    // Usar las categorías definidas en lugar de las categorías presentes en los datos
+    // Esto garantiza consistencia y permite filtrar por categorías aunque no haya incidencias
+    return ["all", ...INCIDENT_CATEGORIES];
   };
 
   // Función para obtener los meses disponibles basados en las fechas de las incidencias
@@ -487,7 +471,12 @@ const DashboardPage: React.FC = () => {
 
   // Funciones para manejar modal de conversación
   const handleTitleClick = (incident: Incident) => {
+    console.log('🐛 handleTitleClick - incident:', incident);
+    console.log('🐛 conversation_body_spanish:', incident.conversation_body_spanish);
+    console.log('🐛 conversation_body_english:', incident.conversation_body_english);
+    
     const conversationBody = getIncidentConversation(incident);
+    console.log('🐛 getIncidentConversation result:', conversationBody);
     
     // ✅ Lógica más permisiva: abrir modal si hay CUALQUIER contenido
     if (conversationBody && conversationBody.length > 0) {
@@ -499,6 +488,7 @@ const DashboardPage: React.FC = () => {
     } else {
       // ✅ Fallback: usar descripción si no hay conversación
       const fallbackContent = incident.description || 'No hay contenido de conversación disponible';
+      console.log('🐛 Using fallback content:', fallbackContent);
       
       if (fallbackContent && fallbackContent.trim().length > 0) {
         setSelectedConversation({
@@ -577,27 +567,36 @@ const DashboardPage: React.FC = () => {
 
     const messages: ChatMessage[] = [];
     
-    // Dividir por "Usuario:" y "Agente:" manteniendo los delimitadores
-    const parts = conversationText.split(/(Usuario:|Agente:)/g);
-    
-    let currentSender: 'usuario' | 'agente' | null = null;
-    
-    for (let i = 1; i < parts.length; i += 2) {
-      const delimiter = parts[i];
-      const text = parts[i + 1]?.trim();
+    // Comprobar si es formato estructurado (Usuario:/Agente:) o texto plano
+    if (conversationText.includes('Usuario:') || conversationText.includes('Agente:')) {
+      // Formato estructurado - dividir por "Usuario:" y "Agente:"
+      const parts = conversationText.split(/(Usuario:|Agente:)/g);
       
-      if (delimiter === 'Usuario:') {
-        currentSender = 'usuario';
-      } else if (delimiter === 'Agente:') {
-        currentSender = 'agente';
-      }
+      let currentSender: 'usuario' | 'agente' | null = null;
       
-      if (currentSender && text) {
-        messages.push({
-          sender: currentSender,
-          text: text
-        });
+      for (let i = 1; i < parts.length; i += 2) {
+        const delimiter = parts[i];
+        const text = parts[i + 1]?.trim();
+        
+        if (delimiter === 'Usuario:') {
+          currentSender = 'usuario';
+        } else if (delimiter === 'Agente:') {
+          currentSender = 'agente';
+        }
+        
+        if (currentSender && text) {
+          messages.push({
+            sender: currentSender,
+            text: text
+          });
+        }
       }
+    } else {
+      // Texto plano - mostrar como mensaje del usuario
+      messages.push({
+        sender: 'usuario',
+        text: conversationText.trim()
+      });
     }
     
     return messages;

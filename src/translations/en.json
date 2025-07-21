@@ -506,11 +506,17 @@
         "date": "DATE"
       },
       "categories": {
-        "others": "Others",
-        "maintenance": "Maintenance",
-        "cleaning": "Cleaning",
+        "all": "All",
         "checkin": "Check-in",
-        "checkout": "Check-out"
+        "checkout": "Check-out",
+        "maintenance": "Maintenance", 
+        "cleaning": "Cleaning",
+        "wifi": "WiFi",
+        "noise": "Noise",
+        "amenities": "Amenities",
+        "security": "Security",
+        "emergency": "Emergency",
+        "others": "Others"
       },
       "statuses": {
         "pending": "Pending",
@@ -765,7 +771,7 @@
       "upsellingDesc": "Generate additional income by offering complementary services at the right time. Transfers, local activities, late check-out and more."
     },
     "howItWorks": {
-      "title": "Getting started with <span class=\"text-black\">Host Helper</span> <span style=\"color: #ECA404\">Ai</span> is very simple",
+      "title": "Getting started is very simple",
       "step1": {
         "title": "1. Register and add your property",
         "description": "Create your account in minutes and add the details of your property. Upload photos, description and accommodation rules."

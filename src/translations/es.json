@@ -539,11 +539,17 @@
         "date": "FECHA"
       },
       "categories": {
-        "others": "Otros",
+        "all": "Todas",
+        "checkin": "Check-in",
+        "checkout": "Check-out", 
         "maintenance": "Mantenimiento",
         "cleaning": "Limpieza",
-        "checkin": "Check-in",
-        "checkout": "Check-out"
+        "wifi": "WiFi",
+        "noise": "Ruido",
+        "amenities": "Servicios",
+        "security": "Seguridad",
+        "emergency": "Emergencia",
+        "others": "Otros"
       },
       "statuses": {
         "pending": "Pendiente",

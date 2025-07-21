@@ -2,6 +2,7 @@
 // Servicio para gestionar incidencias desde agentes n8n
 
 import { supabase } from './supabase';
+import { mapN8nCategory, IncidentCategory } from '@/types/incident';
 
 export interface IncidentData {
   id?: string;
@@ -9,7 +10,7 @@ export interface IncidentData {
   title_english?: string;
   description?: string;
   property_id: string;
-  category: 'check-in-out' | 'property-issue' | 'tourist-info' | 'emergency' | 'other';
+  category: IncidentCategory;
   status?: 'pending' | 'resolved';
   phone_number?: string;
   // Removed obsolete n8n tracking fields after architecture simplification
@@ -168,16 +169,8 @@ class IncidentService {
    * Mapear categoría de n8n a categorías de base de datos
    */
   private mapCategory(category: string): IncidentData['category'] {
-    const categoryMap: Record<string, IncidentData['category']> = {
-      'technical_issue': 'property-issue',
-      'access_problem': 'check-in-out',
-      'general_inquiry': 'tourist-info',
-      'emergency': 'emergency',
-      'checkout': 'check-in-out',
-      'amenities': 'property-issue'
-    };
-
-    return categoryMap[category] || 'other';
+    // Usar función de mapeo desde el archivo de tipos
+    return mapN8nCategory(category);
   }
 
   /**
