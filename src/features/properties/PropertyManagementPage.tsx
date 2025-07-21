@@ -11,8 +11,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "../../services/supabase";
 // documentService removido - ahora se usa mediaService unificado
 import { toast } from "react-hot-toast";
-import propertyWebhookService from "../../services/propertyWebhookService";
-import webhookTestService from "../../services/webhookTestService";
+// Removed obsolete webhook services - now using direct n8n webhook approach
 import { LoadingInlineVariants } from "../../shared/components/loading";
 import mediaService from "../../services/mediaService";
 import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
@@ -57,7 +56,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [useWebhook, setUseWebhook] = useState(true);
+  // Removed useWebhook - now using direct n8n webhook approach
   const [progressPhase, setProgressPhase] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
@@ -282,38 +281,10 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
         toast.success("Propiedad actualizada exitosamente");
       } else {
         // MODO CREACIÓN: Nueva propiedad
-        const hasFiles = (additional_images?.length || 0) > 0 || (_temporaryDocuments?.length || 0) > 0;
+        console.log('🏗️ Creando nueva propiedad con procesamiento dual (Storage + Webhook n8n)');
         
-        console.log('🏗️ Creando nueva propiedad directamente en Supabase (evitando webhook n8n)');
-        
-        // Temporalmente deshabilitamos el webhook n8n para evitar errores de columna status
-        // El webhook tiene problemas con campos legacy que ya no existen en la base de datos
+        // SIMPLIFICADO: Crear directamente en Supabase con procesamiento dual de imágenes
         await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
-        
-        /* WEBHOOK N8N TEMPORALMENTE DESHABILITADO - CAUSA ERRORES DE COLUMNA STATUS
-        if (useWebhook && hasFiles) {
-          // USAR WEBHOOK CON IA para procesamiento inteligente (LEGACY - mantener por compatibilidad)
-          console.log('🚀 Usando webhook n8n para procesamiento inteligente de archivos');
-          
-          const onProgress = (phase: string, progress: number) => {
-            setProgressPhase(phase);
-            setProgressPercent(progress);
-          };
-          
-          try {
-            // ... resto del código del webhook ...
-          } catch (error) {
-            console.error('❌ Error con webhook n8n:', error);
-            toast.error("Error al procesar con IA. Creando propiedad de forma estándar...");
-            
-            // Fallback: crear directamente en Supabase
-            await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
-          }
-        } else {
-          // Crear directamente en Supabase sin webhook n8n
-          await createPropertyDirectly(propertyDataToSend, additional_images, _temporaryDocuments, _googleBusinessUrls);
-        }
-        */
       }
 
       // Cerrar modal después de crear/actualizar exitosamente
@@ -602,7 +573,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
                 style={{ width: `${progressPercent}%` }}
               ></div>
             </div>
-            {useWebhook && progressPercent > 0 && progressPercent < 100 && (
+            {progressPercent > 0 && progressPercent < 100 && (
               <p className="text-xs text-blue-600 mt-1">
                 ⚡ Sistema inteligente procesando archivos...
               </p>

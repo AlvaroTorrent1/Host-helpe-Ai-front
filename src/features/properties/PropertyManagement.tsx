@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Property, PropertyDocument } from "../../types/property";
 import propertyService from "../../services/propertyService";
-import propertyWebhookService from "../../services/propertyWebhookService";
-import { webhookTestService } from "../../services/webhookTestService";
+// Removed obsolete webhook services - now using direct n8n webhook approach
 import { updateTempDocumentsPropertyId } from "../../services/documentService";
 import mediaService from "../../services/mediaService";
-import directImageWebhookService from "../../services/directImageWebhookService";
+import { dualImageProcessingService } from "../../services/dualImageProcessingService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -52,7 +51,6 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
   // Estado para feedback de progreso del webhook
   const [progressPhase, setProgressPhase] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState<number>(0);
-  const [useWebhook, setUseWebhook] = useState<boolean>(true); // Usar webhook por defecto
   const [useImageProcessing, setUseImageProcessing] = useState<boolean>(true); // Usar procesamiento de imágenes con IA
   
   // Estado para panel de URLs de mensajería
@@ -204,102 +202,12 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         const hasImages = (propertyData.additional_images?.length || 0) > 0;
         const hasOtherFiles = (propertyData.documents?.length || 0) > 0;
         
-        // NUEVO: Usar procesamiento de imágenes con IA si hay imágenes
+        // SIMPLIFICADO: Usar procesamiento de imágenes con IA directo si hay imágenes
         if (useImageProcessing && hasImages) {
           console.log(t('propertyManagement.usingImageProcessing'));
           savedProperty = await createPropertyWithImageProcessing(propertyData);
-        }
-        // Usar webhook tradicional si tiene archivos y la opción está habilitada
-        else if (useWebhook && (hasImages || hasOtherFiles)) {
-          console.log(t('propertyManagement.usingN8nWebhook'));
-          
-          // Callback para mostrar progreso al usuario
-          const onProgress = (phase: string, progress: number) => {
-            setProgressPhase(phase);
-            setProgressPercent(progress);
-          };
-          
-          try {
-            // Organizar archivos por categoría para el webhook
-            const organizedFiles = {
-              interni: propertyData.additional_images?.filter(img => 
-                img.description?.toLowerCase().includes('interior') || 
-                img.description?.toLowerCase().includes('sala') ||
-                img.description?.toLowerCase().includes('cocina')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                description: img.description || ''
-              })) || [],
-              esterni: propertyData.additional_images?.filter(img => 
-                img.description?.toLowerCase().includes('exterior') ||
-                img.description?.toLowerCase().includes('fachada') ||
-                img.description?.toLowerCase().includes('terraza')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                description: img.description || ''
-              })) || [],
-              elettrodomestici_foto: propertyData.additional_images?.filter(img => 
-                img.description?.toLowerCase().includes('electrodomestico') ||
-                img.description?.toLowerCase().includes('nevera') ||
-                img.description?.toLowerCase().includes('lavadora')
-              ).map(img => ({
-                filename: img.description || 'image.jpg',
-                url: img.file_url,
-                type: 'image/jpeg',
-                description: img.description || ''
-              })) || [],
-              documenti_casa: propertyData.documents?.filter(doc => 
-                doc.name?.toLowerCase().includes('contrato') ||
-                doc.name?.toLowerCase().includes('plano')
-              ).map(doc => ({
-                filename: doc.name || 'document.pdf',
-                url: doc.file_url,
-                type: 'application/pdf',
-                description: doc.description || doc.name || ''
-              })) || [],
-              documenti_elettrodomestici: propertyData.documents?.filter(doc => 
-                doc.name?.toLowerCase().includes('manual') ||
-                doc.name?.toLowerCase().includes('garantia')
-              ).map(doc => ({
-                filename: doc.name || 'document.pdf',
-                url: doc.file_url,
-                type: 'application/pdf',
-                description: doc.description || doc.name || ''
-              })) || []
-            };
-
-            // Crear propiedad vía webhook n8n
-            const result = await propertyWebhookService.processPropertyWithWebhook(
-              propertyData, 
-              organizedFiles,
-              { onProgress }
-            );
-            
-            savedProperty = { 
-              ...propertyData, 
-              id: result.property_id 
-            } as Property;
-            
-            console.log('✅ Propiedad creada exitosamente vía webhook:', savedProperty.id);
-            
-          } catch (webhookError) {
-            console.warn('⚠️ Webhook falló, fallback a método directo:', webhookError);
-            toast('El procesamiento inteligente no está disponible. Usando método estándar...', { 
-              icon: '⚠️',
-              duration: 3000 
-            });
-            
-            // Fallback: crear directamente en Supabase
-            savedProperty = await createPropertyDirectly(propertyData);
-          }
         } else {
-          console.log('📝 Usando creación directa (sin archivos o webhook deshabilitado)');
-          
-          // Crear directamente en Supabase
+          console.log('📝 Usando creación directa');
           savedProperty = await createPropertyDirectly(propertyData);
         }
       }
@@ -372,24 +280,25 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         if (imageFiles.length > 0) {
           console.log(`🖼️ Procesando ${imageFiles.length} imágenes con IA para propiedad ${draftProperty.id}`);
 
-          // Llamar al nuevo servicio de procesamiento de imágenes
-          await directImageWebhookService.sendImagesToWebhook(
+          // Usar servicio de procesamiento dual para storage + webhook n8n
+          await dualImageProcessingService.processImagesForProperty(
             draftProperty.id,
             draftProperty.name,
             imageFiles,
+            user.id,
             {
               onProgress: (message: string, percent?: number) => {
                 setProgressPhase(message);
                 if (percent) setProgressPercent(20 + (percent * 0.6)); // 20% a 80%
               },
-              onStatusChange: (status: string) => {
-                console.log(`📊 Image processing status: ${status}`);
+              onStatusChange: (status) => {
+                console.log(`📊 Dual processing status: ${status}`);
               },
-              onSuccess: (results: any[]) => {
-                console.log(`✅ Procesamiento de imágenes completado: ${results.length} imágenes`);
+              onSuccess: (results) => {
+                console.log(`✅ Procesamiento dual completado: ${results.length} imágenes`);
               },
               onError: (error: string) => {
-                console.error(`❌ Error en procesamiento de imágenes: ${error}`);
+                console.error(`❌ Error en procesamiento dual: ${error}`);
                 // En caso de error, continuar sin descripciones IA
                 toast.error(`Error procesando imágenes: ${error}`);
               }
@@ -582,7 +491,7 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
               style={{ width: `${progressPercent}%` }}
             ></div>
           </div>
-          {useWebhook && progressPercent > 0 && progressPercent < 100 && (
+          {progressPercent > 0 && progressPercent < 100 && (
             <p className="text-xs text-blue-600 mt-1">
               ⚡ Sistema inteligente procesando archivos...
             </p>
