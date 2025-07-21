@@ -483,10 +483,10 @@
 
   "dashboard": {
     "title": "Dashboard",
-    "menu": {
+        "menu": {
       "dashboard": "Dashboard",
-      "reservations": "Reservaciones",
-      "properties": "Propiedades", 
+      "reservations": "Reservas", 
+      "properties": "Propiedades",
       "registrations": "Registro SES",
       "logout": "Cerrar sesión"
     },
@@ -585,25 +585,25 @@
       }
     },
     "reservations": {
-      "title": "Reservaciones",
-      "newReservation": "Nueva Reservación",
-      "reservationInformation": "Información de la Reservación",
+          "title": "Reservas",
+    "newReservation": "Nueva Reserva",
+    "reservationInformation": "Información de la Reserva",
       "mainGuest": "Huésped Principal",
       "additionalGuests": "Huéspedes Adicionales",
       "addGuest": "Agregar Huésped",
       "noAdditionalGuests": "Sin huéspedes adicionales",
       "guestNumber": "Huésped",
       "cancel": "Cancelar",
-      "saving": "Guardando...",
-      "updateReservation": "Actualizar Reservación",
-      "createReservation": "Crear Reservación",
+              "saving": "Guardando...",
+        "updateReservation": "Actualizar Reserva",
+        "createReservation": "Crear Reserva",
       "form": {
         "property": "Propiedad",
         "selectProperty": "Selecciona una propiedad",
         "checkInDate": "Fecha de Entrada",
         "checkOutDate": "Fecha de Salida",
         "notes": "Notas",
-        "notesPlaceholder": "Notas adicionales sobre la reservación...",
+                  "notesPlaceholder": "Notas adicionales sobre la reserva...",
         "firstName": "Nombre",
         "lastName": "Apellido",
         "phone": "Teléfono",
@@ -626,17 +626,17 @@
     "copyright": "© 2025 Host Helper AI. Todos los derechos reservados."
   },
   "reservations": {
-    "reservationsTitle": "Reservaciones",
-    "newReservation": "Nueva Reservación",
-    "editReservation": "Editar Reservación",
-    "reservationDetails": "Detalles de la Reservación",
-    "backToReservations": "Volver a Reservaciones",
+    "reservationsTitle": "Reservas",
+    "newReservation": "Nueva Reserva",
+    "editReservation": "Editar Reserva",
+    "reservationDetails": "Detalles de la Reserva",
+    "backToReservations": "Volver a Reservas",
     "cancel": "Cancelar",
-    "actions": {
-      "create": "Crear Reservación"
-    },
-    "emptyState": "No se encontraron reservaciones",
-    "emptyStateDescription": "Comienza creando tu primera reservación o ajusta los filtros de búsqueda",
+          "actions": {
+        "create": "Crear Reserva"
+      },
+      "emptyState": "No se encontraron reservas",
+      "emptyStateDescription": "Comienza creando tu primera reserva o ajusta los filtros de búsqueda",
     "scrollIndicator": "Desliza para ver más",
     "filters": {
       "search": "Buscar",
@@ -655,27 +655,27 @@
       "checkOut": "SALIDA",
       "actions": "ACCIONES"
     },
-    "delete": {
-      "title": "Eliminar Reservación",
-      "message": "¿Estás seguro de que quieres eliminar la reservación de {{guestName}} en {{propertyName}}?",
-      "tooltip": "Eliminar reservación",
+          "delete": {
+        "title": "Eliminar Reserva",
+        "message": "¿Estás seguro de que quieres eliminar la reserva de {{guestName}} en {{propertyName}}?",
+        "tooltip": "Eliminar reserva",
       "warning": "Esta acción no se puede deshacer.",
       "deleting": "Eliminando...",
       "confirm": "Eliminar",
       "cancel": "Cancelar"
     },
-    "errors": {
-      "reservationNotFound": "Reservación no encontrada",
-      "loadingData": "Error cargando datos",
-      "propertyNotAvailable": "Propiedad no disponible",
-      "saving": "Error guardando reservación",
-      "deleting": "Error eliminando reservación",
+          "errors": {
+        "reservationNotFound": "Reserva no encontrada",
+        "loadingData": "Error cargando datos",
+        "propertyNotAvailable": "Propiedad no disponible",
+        "saving": "Error guardando reserva",
+        "deleting": "Error eliminando reserva",
       "sendingToSES": "Error enviando al SES"
     },
-    "successMessages": {
-      "created": "Reservación creada exitosamente",
-      "updated": "Reservación actualizada exitosamente",
-      "deleted": "Reservación eliminada exitosamente",
+          "successMessages": {
+        "created": "Reserva creada exitosamente",
+        "updated": "Reserva actualizada exitosamente",
+        "deleted": "Reserva eliminada exitosamente",
       "sentToSES": "Enviado al SES exitosamente"
     }
   },
@@ -912,7 +912,7 @@
       "upsellingDesc": "Genera ingresos adicionales ofreciendo servicios complementarios en el momento adecuado. Traslados, actividades locales, late check-out y más."
     },
     "howItWorks": {
-      "title": "Comenzar con <span class=\"text-black\">Host Helper</span> <span style=\"color: #ECA404\">Ai</span> es muy simple",
+      "title": "Comenzar es muy simple",
       "step1": {
         "title": "1. Regístrate y añade tu propiedad",
         "description": "Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y reglas del alojamiento."
