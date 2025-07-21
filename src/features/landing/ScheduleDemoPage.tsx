@@ -10,8 +10,7 @@ const ScheduleDemoPage: React.FC = () => {
   // Pre-calcular el texto de carga
   const loadingText = t("common.loading") || "Cargando calendario de citas...";
   
-  // CORREGIDO: Verificar si esta URL está activa en Calendly
-  // TODO: Actualizar con la URL real de la cuenta de Calendly
+  // URL operativa confirmada por el usuario
   const calendlyUrl = "https://calendly.com/hosthelperai-services/30min";
   
   console.log('📅 Calendly URL configurada:', calendlyUrl);
@@ -19,7 +18,36 @@ const ScheduleDemoPage: React.FC = () => {
   useEffect(() => {
     console.log('🔄 Iniciando carga del widget de Calendly...');
     
-    // Cargar el script de Calendly con mejor manejo de errores
+    // Función para inicializar el widget de Calendly
+    const initializeCalendlyWidget = () => {
+      // Verificar si Calendly está disponible globalmente
+      if (typeof window !== 'undefined' && (window as any).Calendly) {
+        console.log('✅ Calendly API disponible, inicializando widget...');
+        
+        const widget = document.querySelector('.calendly-inline-widget') as HTMLElement;
+        if (widget) {
+          // Limpiar contenido previo
+          widget.innerHTML = '';
+          
+          // Inicializar widget usando la API de Calendly
+          (window as any).Calendly.initInlineWidget({
+            url: calendlyUrl,
+            parentElement: widget,
+            prefill: {},
+            utm: {}
+          });
+          
+          console.log('✅ Widget de Calendly inicializado con API');
+          setIsLoading(false);
+        }
+      } else {
+        console.log('⏳ Esperando que la API de Calendly esté disponible...');
+        // Reintentar después de un breve delay
+        setTimeout(initializeCalendlyWidget, 500);
+      }
+    };
+    
+    // Cargar el script de Calendly
     const script = document.createElement("script");
     script.src = "https://assets.calendly.com/assets/external/widget.js";
     script.async = true;
@@ -27,17 +55,8 @@ const ScheduleDemoPage: React.FC = () => {
     script.onload = () => {
       console.log('✅ Script de Calendly cargado exitosamente');
       
-      // Dar tiempo al widget para inicializarse
-      setTimeout(() => {
-        const widget = document.querySelector('.calendly-inline-widget');
-        if (widget && widget.innerHTML.trim() !== '') {
-          console.log('✅ Widget de Calendly inicializado');
-          setIsLoading(false);
-        } else {
-          console.warn('⚠️ Widget cargado pero sin contenido. Verificar URL de Calendly');
-          setIsLoading(false);
-        }
-      }, 2000);
+      // Inicializar widget después de que el script esté listo
+      setTimeout(initializeCalendlyWidget, 1000);
     };
     
     script.onerror = (error) => {
@@ -55,25 +74,17 @@ const ScheduleDemoPage: React.FC = () => {
     const existingScript = document.querySelector('script[src*="calendly"]');
     if (!existingScript) {
       console.log('📥 Agregando script de Calendly al DOM');
-      document.body.appendChild(script);
+      document.head.appendChild(script); // Agregar al head en lugar de body
     } else {
       console.log('♻️ Script de Calendly ya existe, reinicializando');
-      setIsLoading(false);
+      setTimeout(initializeCalendlyWidget, 500);
     }
 
     return () => {
-      // Cleanup mejorado
-      try {
-        const scriptToRemove = document.querySelector('script[src*="calendly"]');
-        if (scriptToRemove && document.body.contains(scriptToRemove)) {
-          console.log('🧹 Limpiando script de Calendly');
-          document.body.removeChild(scriptToRemove);
-        }
-      } catch (error) {
-        console.warn('⚠️ Error durante cleanup:', error);
-      }
+      // Cleanup mejorado - no remover el script para evitar problemas en navegación
+      console.log('🧹 Cleanup del componente Calendly');
     };
-  }, []);
+  }, [calendlyUrl]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -213,13 +224,19 @@ const ScheduleDemoPage: React.FC = () => {
               ) : (
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                   <div
-                    className="w-full mx-auto"
+                    className="w-full mx-auto relative"
                     style={{ height: "650px", minWidth: "320px" }}
                   >
                     <div
                       className="calendly-inline-widget"
                       data-url={calendlyUrl}
-                      style={{ minWidth: '320px', height: '630px' }}
+                      style={{ 
+                        minWidth: '320px', 
+                        height: '630px', 
+                        width: '100%',
+                        border: 'none',
+                        overflow: 'hidden'
+                      }}
                     ></div>
                   </div>
                   

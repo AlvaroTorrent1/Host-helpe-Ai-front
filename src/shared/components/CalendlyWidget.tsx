@@ -7,23 +7,45 @@ interface CalendlyWidgetProps {
 }
 
 const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
-  url = "https://calendly.com/hosthelperai-services",
+  url = "https://calendly.com/hosthelperai-services/30min",
   text,
 }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Load Calendly script
-    const script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    document.body.appendChild(script);
+    // Load Calendly script with improved handling
+    const existingScript = document.querySelector('script[src*="calendly"]');
+    
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.src = "https://assets.calendly.com/assets/external/widget.js";
+      script.async = true;
+      document.head.appendChild(script);
+      
+      script.onload = () => {
+        console.log('✅ CalendlyWidget: Script cargado');
+        
+        // Inicializar widget usando API cuando esté disponible
+        setTimeout(() => {
+          if ((window as any).Calendly) {
+            const widget = document.querySelector('.calendly-inline-widget') as HTMLElement;
+            if (widget) {
+              (window as any).Calendly.initInlineWidget({
+                url,
+                parentElement: widget,
+                prefill: {},
+                utm: {}
+              });
+            }
+          }
+        }, 1000);
+      };
+    }
 
     return () => {
-      // Cleanup
-      document.body.removeChild(script);
+      // No cleanup to avoid navigation issues
     };
-  }, []);
+  }, [url]);
 
   return (
     <section className="py-12 md:py-16 bg-gray-50 w-full">
@@ -40,7 +62,13 @@ const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({
         <div
           className="calendly-inline-widget"
           data-url={url}
-          style={{ minWidth: "320px", height: "630px" }}
+          style={{ 
+            minWidth: "320px", 
+            height: "630px",
+            width: "100%",
+            border: "none",
+            overflow: "hidden"
+          }}
         ></div>
       </div>
     </section>
