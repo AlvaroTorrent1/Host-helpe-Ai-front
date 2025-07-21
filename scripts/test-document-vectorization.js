@@ -54,7 +54,7 @@ async function testDocumentVectorization() {
     console.log('\n3️⃣ Checking media_files table structure...');
     const { data: mediaFiles, error: mediaError } = await supabase
       .from('media_files')
-      .select('id, property_id, file_type, category, title, file_url, mime_type, n8n_execution_id')
+              .select('id, property_id, file_type, title, file_url, mime_type')
       .eq('file_type', 'document')
       .limit(5);
     
@@ -107,7 +107,7 @@ async function testDocumentVectorization() {
     console.log('\n5️⃣ Looking for PDF documents that could be vectorized...');
     const { data: pdfDocs, error: pdfError } = await supabase
       .from('media_files')
-      .select('id, property_id, title, file_url, mime_type, n8n_execution_id, property_name')
+              .select('id, property_id, title, file_url, mime_type, property_name')
       .eq('file_type', 'document')
       .or('mime_type.ilike.%pdf%,title.ilike.%.pdf%')
       .limit(10);
@@ -123,12 +123,13 @@ async function testDocumentVectorization() {
           console.log(`  ${index + 1}. ${doc.title}`);
           console.log(`     Property: ${doc.property_name || 'Unknown'}`);
           console.log(`     MIME: ${doc.mime_type}`);
-          console.log(`     Vectorized: ${doc.n8n_execution_id ? 'Yes' : 'No'}`);
+          console.log(`     Status: Available for processing`);
           console.log('');
         });
 
         // Show pending documents (not yet sent for vectorization)
-        const pendingDocs = pdfDocs.filter(doc => !doc.n8n_execution_id);
+        // Simplified: all documents are available for processing
+      const pendingDocs = pdfDocs;
         console.log(`📋 Pending for vectorization: ${pendingDocs.length} documents`);
       }
     }
@@ -230,12 +231,8 @@ async function testRealVectorization(documentId) {
     const { error: updateError } = await supabase
       .from('media_files')
       .update({
-        n8n_execution_id: result.executionId || 'manual-test',
-        n8n_metadata: {
-          sent_for_vectorization: true,
-          timestamp: new Date().toISOString(),
-          test_run: true
-        }
+        // Simplified: just update timestamp after processing (obsolete n8n fields removed)
+        updated_at: new Date().toISOString()
       })
       .eq('id', documentId);
 

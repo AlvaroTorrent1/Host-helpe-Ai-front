@@ -35,29 +35,27 @@ async function checkRecentProperties() {
   return properties?.[0]?.id;
 }
 
-async function checkMediaFiles(propertyId) {
-  if (!propertyId) return;
-
-  console.log(`\n2️⃣ Verificando archivos media para propiedad ${propertyId}...`);
+async function checkMediaFiles() {
+  console.log('\n📁 Checking media files (simplified schema)...');
   
   const { data: mediaFiles, error } = await supabase
     .from('media_files')
-    .select('id, title, file_url, n8n_processing_status, ai_description, description_source')
-    .eq('property_id', propertyId)
-    .eq('file_type', 'image');
+    .select('id, title, file_url, ai_description, file_type')
+    .eq('file_type', 'image')
+    .limit(10);
 
   if (error) {
-    console.error('❌ Error al obtener media files:', error);
+    console.error('❌ Error fetching media files:', error);
     return;
   }
 
-  console.log(`✅ Encontrados ${mediaFiles?.length || 0} archivos de imagen:`);
-  mediaFiles?.forEach(m => {
-    console.log(`   - ${m.title} (${m.id})`);
-    console.log(`     Estado n8n: ${m.n8n_processing_status}`);
-    console.log(`     Descripción AI: ${m.ai_description ? 'Sí' : 'No'}`);
-    console.log(`     Fuente: ${m.description_source || 'N/A'}`);
-    console.log(`     URL: ${m.file_url.substring(0, 50)}...`);
+  console.log(`\n📄 Found ${mediaFiles.length} image files:`);
+  mediaFiles.forEach((m, i) => {
+    console.log(`\n${i + 1}. ${m.title}`);
+    console.log(`     ID: ${m.id}`);
+    console.log(`     URL: ${m.file_url}`);
+    console.log(`     AI Description: ${m.ai_description || 'Not generated'}`);
+    // Removed obsolete status fields after database cleanup
   });
 }
 

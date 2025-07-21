@@ -63,14 +63,12 @@ export class DocumentVectorizationService {
    */
   private static async markAsVectorized(fileId: string, executionId?: string) {
     try {
+      // Simplified: just update the timestamp since n8n fields were removed
       const { data, error } = await supabase
         .from('media_files')
         .update({
-          n8n_execution_id: executionId,
-          n8n_metadata: {
-            sent_for_vectorization: true,
-            timestamp: new Date().toISOString()
-          }
+          updated_at: new Date().toISOString()
+          // Removed obsolete n8n_execution_id and n8n_metadata fields
         })
         .eq('id', fileId);
 
@@ -91,12 +89,12 @@ export class DocumentVectorizationService {
    */
   static async getPendingDocuments(propertyId?: string) {
     try {
+      // Simplified query without obsolete n8n_execution_id field
       let query = supabase
         .from('media_files')
         .select('*')
         .eq('file_type', 'document')
-        .like('mime_type', '%pdf%')
-        .is('n8n_execution_id', null);
+        .like('mime_type', '%pdf%');
 
       if (propertyId) {
         query = query.eq('property_id', propertyId);

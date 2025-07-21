@@ -42,16 +42,17 @@ async function testAIDescriptionGeneration() {
     
     const { data: statusData, error: statusError } = await supabase
       .from('media_files')
-      .select('ai_description_status')
-      .not('ai_description_status', 'is', null);
+      .select('ai_description')
+      .not('ai_description', 'is', null);
 
     if (statusError) {
       console.error('Error obteniendo estado:', statusError);
     } else {
-      const statusCounts = statusData.reduce((acc, curr) => {
-        acc[curr.ai_description_status] = (acc[curr.ai_description_status] || 0) + 1;
-        return acc;
-      }, {});
+      // Simplified status check - just count files with AI descriptions
+      const statusCounts = {
+        'with_description': statusData.filter(item => item.ai_description).length,
+        'total': statusData.length
+      };
 
       console.log('   Estado de archivos:');
       Object.entries(statusCounts).forEach(([status, count]) => {
@@ -65,7 +66,7 @@ async function testAIDescriptionGeneration() {
     const { data: updateResult, error: updateError } = await supabase
       .from('media_files')
       .update({ updated_at: new Date().toISOString() })
-      .eq('ai_description_status', 'pending')
+      .is('ai_description', null)
       .is('ai_description', null)
       .select('id, title');
 
@@ -142,12 +143,9 @@ async function showFileDetails(fileId) {
       title,
       description,
       ai_description,
-      ai_description_status,
-      ai_description_generated_at,
       file_type,
-      category,
       public_url,
-      n8n_metadata
+      updated_at
     `)
     .eq('id', fileId)
     .single();
@@ -160,16 +158,13 @@ async function showFileDetails(fileId) {
   console.log('\n📄 === DETALLES DEL ARCHIVO ===');
   console.log(`ID: ${file.id}`);
   console.log(`Título: ${file.title}`);
-  console.log(`Tipo: ${file.file_type} - ${file.category}`);
+  console.log(`Tipo: ${file.file_type}`);
   console.log(`Descripción original: ${file.description || 'Sin descripción'}`);
-  console.log(`AI Description Status: ${file.ai_description_status}`);
   console.log(`AI Description: ${file.ai_description || 'No generada aún'}`);
-  console.log(`Generada el: ${file.ai_description_generated_at || 'N/A'}`);
+  console.log(`Last Updated: ${file.updated_at || 'N/A'}`);
   console.log(`URL: ${file.public_url}`);
   
-  if (file.n8n_metadata?.ai_description_prompt) {
-    console.log(`\nPrompt de IA: ${file.n8n_metadata.ai_description_prompt.substring(0, 200)}...`);
-  }
+  // Removed obsolete status and metadata fields after schema simplification
 }
 
 // Ejecutar test si es llamado directamente

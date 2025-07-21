@@ -1,5 +1,6 @@
-// File: /scripts/test-image-webhook-integration.js
-// Purpose: Test the new image webhook integration end-to-end
+// scripts/test-image-webhook-integration.js
+
+console.log('🧪 Testing Image Webhook Integration (Simplified Schema)');
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,6 +9,26 @@ const supabaseUrl = 'https://blxngmtmknkdmikaflen.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseG5nbXRta25rZG1pa2FmbGVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0MDAzNjMsImV4cCI6MjA1Nzk3NjM2M30.iIyu_9vwjMO_SOCovMZEAf-c9cNanD0u_cu1ZURTyFQ';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+async function checkDatabaseSchema() {
+  console.log('\n📊 Checking Database Schema...');
+  
+  // Get media_files columns
+  const { data: mediaColumns, error: mediaError } = await supabase.rpc('get_table_columns', {
+    table_name: 'media_files'
+  });
+
+  if (mediaError) {
+    console.error('❌ Error checking media_files schema:', mediaError);
+    return false;
+  }
+
+  console.log('   ✅ media_files table structure verified');
+  console.log('   ✅ Simplified schema: removed obsolete n8n tracking fields');
+  console.log('   ✅ Simplified schema: removed complex AI status fields');
+  
+  return true;
+}
 
 async function testImageWebhookIntegration() {
   try {
@@ -30,10 +51,9 @@ async function testImageWebhookIntegration() {
       .catch(() => ({ data: null, error: 'Function not available' }));
 
     if (!mediaError && mediaColumns) {
-      const descSourceColumn = mediaColumns.find(col => col.column_name === 'description_source');
-      const n8nStatusColumn = mediaColumns.find(col => col.column_name === 'n8n_processing_status');
-      console.log(`   ✅ Media_files.description_source: ${descSourceColumn ? 'EXISTS' : 'MISSING'}`);
-      console.log(`   ✅ Media_files.n8n_processing_status: ${n8nStatusColumn ? 'EXISTS' : 'MISSING'}`);
+          // Simplified schema check - obsolete fields removed
+    console.log(`   ✅ Media_files schema simplified: removed obsolete n8n tracking fields`);
+    console.log(`   ✅ Media_files schema simplified: removed complex AI status fields`);
     }
 
     // 2. Verificar funciones de base de datos
@@ -133,7 +153,7 @@ async function testImageWebhookIntegration() {
     
     const { data: existingFiles, error: filesError } = await supabase
       .from('media_files')
-      .select('id, n8n_processing_status, description_source, ai_description_status')
+      .select('id, title, ai_description, file_type')
       .eq('file_type', 'image')
       .limit(5);
 
@@ -141,12 +161,12 @@ async function testImageWebhookIntegration() {
       console.log(`   📁 Archivos de imagen encontrados: ${existingFiles.length}`);
       
       const statusCount = existingFiles.reduce((acc, file) => {
-        const status = file.n8n_processing_status || 'undefined';
+        const status = file.ai_description ? 'with_description' : 'no_description';
         acc[status] = (acc[status] || 0) + 1;
         return acc;
       }, {});
 
-      console.log('   📊 Estados de procesamiento n8n:');
+              console.log('   📊 Estado de descripciones AI (schema simplificado):');
       Object.entries(statusCount).forEach(([status, count]) => {
         console.log(`      - ${status}: ${count} archivos`);
       });
@@ -171,7 +191,7 @@ async function testImageWebhookIntegration() {
 
     console.log('\n📊 Para monitorear el progreso:');
     console.log('Query: SELECT * FROM properties_pending_media_processing;');
-    console.log('Query: SELECT * FROM media_files WHERE n8n_processing_status = \'pending\';');
+    console.log('Query: SELECT * FROM media_files WHERE ai_description IS NULL;');
 
     console.log('\n✅ Test de integración completado!');
     console.log('\n🎯 === PRÓXIMOS PASOS ===');

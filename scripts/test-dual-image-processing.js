@@ -113,7 +113,6 @@ class DualImageProcessingTester {
           file_size: file.size,
           mime_type: file.type || 'image/jpeg',
           is_shareable: true,
-          ai_description_status: 'pending',
           processing_status: 'pending'
         })
         .select()
@@ -211,7 +210,6 @@ class DualImageProcessingTester {
           .from('media_files')
           .update({
             description: processedImage.ai_description,
-            ai_description_status: 'completed',
             processing_status: 'completed'
           })
           .eq('id', mediaRecord.id)
@@ -235,7 +233,6 @@ class DualImageProcessingTester {
         await supabase
           .from('media_files')
           .update({
-            ai_description_status: 'failed',
             processing_status: 'failed'
           })
           .eq('id', mediaRecord.id);

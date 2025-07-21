@@ -28,7 +28,9 @@ export interface MediaFileRecord {
   mime_type: string;
   is_shareable: boolean;
   ai_description?: string;
-  n8n_processing_status?: 'pending' | 'completed' | 'failed';
+  // Removed obsolete fields: n8n_processing_status, ai_description_status after DB cleanup
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**
@@ -204,8 +206,7 @@ class DualImageProcessingService {
             file_size: file.size,
             mime_type: file.type,
             is_shareable: true,
-            ai_description_status: 'pending',
-            n8n_processing_status: 'pending',
+            // Removed obsolete status fields - now using simplified approach
           })
           .select()
           .single();
@@ -400,8 +401,8 @@ class DualImageProcessingService {
             .from('media_files')
             .update({
               description: processedImage.ai_description,
-              ai_description_status: 'completed',
-              n8n_processing_status: 'completed'
+              ai_description: processedImage.ai_description,
+              updated_at: new Date().toISOString()
             })
             .eq('id', mediaRecord.id)
             .select()
@@ -414,7 +415,7 @@ class DualImageProcessingService {
               ...mediaRecord,
               description: processedImage.ai_description,
               ai_description: processedImage.ai_description,
-              n8n_processing_status: 'completed'
+              updated_at: new Date().toISOString()
             };
             console.log(`✅ Updated description: ${mediaRecord.title}`);
           }
@@ -423,14 +424,14 @@ class DualImageProcessingService {
           await supabase
             .from('media_files')
             .update({
-              ai_description_status: 'failed',
-              n8n_processing_status: 'failed'
+              ai_description: `Property image - ${mediaRecord.title}`,
+              updated_at: new Date().toISOString()
             })
             .eq('id', mediaRecord.id);
 
           updatedRecords[i] = {
             ...mediaRecord,
-            n8n_processing_status: 'failed'
+            updated_at: new Date().toISOString()
           };
         }
       } catch (error) {

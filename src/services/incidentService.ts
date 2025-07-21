@@ -12,8 +12,7 @@ export interface IncidentData {
   category: 'check-in-out' | 'property-issue' | 'tourist-info' | 'emergency' | 'other';
   status?: 'pending' | 'resolved';
   phone_number?: string;
-  n8n_workflow_id?: string;
-  n8n_execution_id?: string;
+  // Removed obsolete n8n tracking fields after architecture simplification
   csv_data?: any;
   created_at?: string;
   updated_at?: string;
@@ -63,8 +62,6 @@ class IncidentService {
         category: this.mapCategory(payload.classification.category),
         status: 'pending',
         phone_number: payload.conversation.guest_phone,
-        n8n_workflow_id: payload.workflow.id,
-        n8n_execution_id: payload.workflow.execution_id,
         csv_data: {
           conversation: payload.conversation,
           classification: payload.classification,

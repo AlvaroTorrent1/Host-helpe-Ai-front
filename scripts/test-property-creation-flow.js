@@ -179,7 +179,7 @@ async function testDocumentWorkflow() {
     // Check for recent PDF documents
     const { data: pdfDocs, error: pdfError } = await supabase
       .from('media_files')
-      .select('id, title, file_url, mime_type, n8n_execution_id, created_at')
+      .select('id, title, file_url, mime_type, created_at')
       .eq('file_type', 'document')
       .or('mime_type.ilike.%pdf%,title.ilike.%.pdf%')
       .order('created_at', { ascending: false })
@@ -193,9 +193,10 @@ async function testDocumentWorkflow() {
       if (pdfDocs && pdfDocs.length > 0) {
         console.log('\nRecent PDF documents:');
         pdfDocs.forEach((doc, index) => {
-          const vectorized = doc.n8n_execution_id ? 'Sent for vectorization' : 'Pending';
+          // Simplified: removed obsolete vectorization status check
+        const status = 'Available for processing';
           console.log(`  ${index + 1}. ${doc.title}`);
-          console.log(`     Status: ${vectorized}`);
+                      console.log(`     Status: ${status}`);
           console.log(`     Created: ${new Date(doc.created_at).toLocaleDateString()}`);
         });
       }

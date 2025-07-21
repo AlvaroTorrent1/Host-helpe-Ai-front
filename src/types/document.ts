@@ -25,7 +25,6 @@ export interface DocumentMetadata {
   original_filename?: string;
   file_size?: number;
   processed_at?: string;
-  n8n_execution_id?: string;
   [key: string]: any; // Permitir campos adicionales
 }
 
