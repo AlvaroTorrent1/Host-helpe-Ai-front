@@ -1,0 +1,11 @@
+# supabase/config.toml
+# Configuración de Supabase Edge Functions
+
+[functions.n8n-webhook]
+# Desactivar verificación JWT para permitir webhooks públicos
+# Esta función actúa como proxy hacia n8n que tiene su propia autenticación
+verify_jwt = false
+
+[functions.proxy-n8n-webhook]
+# Esta función también maneja webhooks sin JWT
+verify_jwt = false 

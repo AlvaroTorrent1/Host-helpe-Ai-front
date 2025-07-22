@@ -48,8 +48,8 @@ export interface WebhookImageResponse {
 }
 
 class DualImageProcessingService {
-  // SOLUCION CORS: Usar Edge Function que SÍ existe para evitar bloqueos CORS del navegador
-  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/n8n-webhook`;
+      // SOLUCION 401: Usar proxy-n8n-webhook que tiene verify_jwt=false configurado
+  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-n8n-webhook`;
   private bucketName = 'property-files';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes
@@ -57,6 +57,18 @@ class DualImageProcessingService {
   /**
    * Ensure the storage bucket exists before uploading
    */
+  /**
+   * Get appropriate headers for webhook request based on function type
+   * proxy-n8n-webhook está configurado con verify_jwt=false para permitir webhooks públicos
+   */
+  private getWebhookHeaders(): Record<string, string> {
+    // Todas las funciones Supabase Edge usan la misma autenticación JWT
+    return {
+      'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+    };
+  }
+
   private async ensureBucket(): Promise<void> {
     try {
       const { data: buckets } = await supabase.storage.listBuckets();
@@ -308,16 +320,12 @@ class DualImageProcessingService {
         if (payload instanceof FormData) {
           // For FormData, let browser set Content-Type with boundary automatically
           requestOptions.body = payload;
-          requestOptions.headers = {
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
-          };
+          requestOptions.headers = this.getWebhookHeaders();
         } else {
           // For JSON payloads (fallback compatibility)
           requestOptions.headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+            ...this.getWebhookHeaders()
           };
           requestOptions.body = JSON.stringify(payload);
         }
