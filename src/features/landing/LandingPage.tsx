@@ -643,6 +643,19 @@ const LandingPage = () => {
         {/* Video Promocional */}
         <section className="py-16 bg-gray-50">
           <div className="container-limited">
+            <div className="text-center mb-12">
+              <h2 
+                className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+                dangerouslySetInnerHTML={{
+                  __html: t("landing.promoVideo.title").replace('Host Helper Ai', (match) => 
+                    match.replace('Ai', `<span style="color: #ECA404;">Ai</span>`)
+                  )
+                }}
+              />
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                {t("landing.promoVideo.subtitle")}
+              </p>
+            </div>
             <div className="max-w-4xl mx-auto">
               <div 
                 className="relative w-full cursor-pointer group"
@@ -661,9 +674,9 @@ const LandingPage = () => {
                     />
                     {/* Overlay con botón de play personalizado */}
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all duration-300 rounded-2xl">
-                      <div className="bg-white/95 rounded-full p-6 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                      <div className="bg-white/95 rounded-full p-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <svg 
-                          className="w-12 h-12 text-primary-600 ml-1" 
+                          className="w-6 h-6 text-primary-600 ml-0.5" 
                           fill="currentColor" 
                           viewBox="0 0 20 20"
                         >

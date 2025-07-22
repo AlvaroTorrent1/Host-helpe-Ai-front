@@ -770,6 +770,10 @@
       "upselling": "Intelligent upselling",
       "upsellingDesc": "Generate additional income by offering complementary services at the right time. Transfers, local activities, late check-out and more."
     },
+    "promoVideo": {
+      "title": "How does it work?",
+      "subtitle": "Create your AI agents in minutes, no technical knowledge required"
+    },
     "howItWorks": {
       "title": "Getting started is very simple",
       "step1": {

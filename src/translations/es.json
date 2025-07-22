@@ -917,6 +917,10 @@
       "upselling": "Upselling inteligente",
       "upsellingDesc": "Genera ingresos adicionales ofreciendo servicios complementarios en el momento adecuado. Traslados, actividades locales, late check-out y más."
     },
+    "promoVideo": {
+      "title": "¿Cómo funciona?",
+      "subtitle": "Crea tus agentes de IA en minutos, sin conocimientos técnicos"
+    },
     "howItWorks": {
       "title": "Comenzar es muy simple",
       "step1": {
