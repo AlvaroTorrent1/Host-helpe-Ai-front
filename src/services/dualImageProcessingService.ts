@@ -48,8 +48,8 @@ export interface WebhookImageResponse {
 }
 
 class DualImageProcessingService {
-  // SOLUCION CORS: Usar Edge Function proxy para evitar bloqueos CORS del navegador
-  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/proxy-n8n-webhook`;
+  // SOLUCION CORS: Usar Edge Function que SÍ existe para evitar bloqueos CORS del navegador
+  private webhookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/n8n-webhook`;
   private bucketName = 'property-files';
   private maxRetries = 3;
   private timeoutMs = 120000; // 2 minutes
