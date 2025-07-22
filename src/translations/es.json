@@ -304,7 +304,8 @@
     "english": "Inglés",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
-    "mobileMenu": "Menú móvil"
+    "mobileMenu": "Menú móvil",
+    "notAvailable": "No disponible"
   },
   "ses": {
     "history": {

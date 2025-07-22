@@ -355,7 +355,8 @@
     "english": "English",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "mobileMenu": "Mobile menu"
+    "mobileMenu": "Mobile menu",
+    "notAvailable": "Not available"
   },
   "ses": {
     "history": {
