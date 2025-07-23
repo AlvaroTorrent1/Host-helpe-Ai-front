@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import DashboardNavigation from "./DashboardNavigation";
-import DashboardLanguageSelector from "./DashboardLanguageSelector";
+// import DashboardLanguageSelector from "./DashboardLanguageSelector"; // Temporalmente comentado
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
-import n8nTestService from "@services/n8nTestService";
+// import n8nTestService from "@services/n8nTestService"; // Temporalmente comentado
 import documentService from "@services/documentService";
 import { PropertyDocument } from "@/types/property";
 import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen, LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
 import { IncidentCategory, INCIDENT_CATEGORIES } from '@/types/incident';
+import { interpolateColor } from "@/utils/animationUtils";
 
 type Property = {
   id: string;
@@ -47,6 +48,60 @@ type Incident = {
   phone_number?: string;
   conversation_body_spanish?: string;
   conversation_body_english?: string;
+};
+
+// Hook personalizado para gradientes dinámicos con scroll
+const useScrollGradient = () => {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+        const maxScroll = scrollHeight - clientHeight;
+        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+        setScrollProgress(Math.min(Math.max(progress, 0), 1));
+      }
+    };
+
+    const element = scrollRef.current;
+    if (element) {
+      element.addEventListener('scroll', handleScroll);
+      return () => element.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  // Calcular estilos dinámicos para burbujas del usuario
+  const getUserBubbleStyle = (): React.CSSProperties => {
+    const baseColor = '#ECA408'; // naranja base
+    const targetColor = '#F59E0B'; // amarillo más intenso
+    const backgroundColor = interpolateColor(baseColor, targetColor, scrollProgress);
+    return {
+      background: `linear-gradient(135deg, ${backgroundColor} 0%, #FCD34D 100%)`,
+      boxShadow: `0 4px 12px rgba(236, 164, 8, ${0.2 + scrollProgress * 0.3})`,
+      transform: `scale(${1 + scrollProgress * 0.02})`, // Efecto de escala sutil
+    };
+  };
+
+  // Calcular estilos dinámicos para burbujas del agente
+  const getAgentBubbleStyle = (): React.CSSProperties => {
+    const baseColor = '#F3F4F6'; // gris base
+    const targetColor = '#E0F2FE'; // azul suave
+    const backgroundColor = interpolateColor(baseColor, targetColor, scrollProgress);
+    return {
+      background: `linear-gradient(135deg, ${backgroundColor} 0%, #DBEAFE 100%)`,
+      boxShadow: `0 4px 12px rgba(59, 130, 246, ${0.1 + scrollProgress * 0.2})`,
+      transform: `scale(${1 + scrollProgress * 0.02})`, // Efecto de escala sutil
+    };
+  };
+
+  return { 
+    scrollRef, 
+    scrollProgress, 
+    getUserBubbleStyle, 
+    getAgentBubbleStyle 
+  };
 };
 
 const DashboardPage: React.FC = () => {
@@ -561,16 +616,23 @@ const DashboardPage: React.FC = () => {
     timestamp?: string;
   }
 
-  // Función para parsear conversaciones en mensajes individuales
+  // Función para parsear conversaciones en mensajes individuales (bilingüe)
   const parseConversation = (conversationText: string): ChatMessage[] => {
     if (!conversationText?.trim()) return [];
 
     const messages: ChatMessage[] = [];
     
-    // Comprobar si es formato estructurado (Usuario:/Agente:) o texto plano
-    if (conversationText.includes('Usuario:') || conversationText.includes('Agente:')) {
-      // Formato estructurado - dividir por "Usuario:" y "Agente:"
-      const parts = conversationText.split(/(Usuario:|Agente:)/g);
+    // Detectar si es formato estructurado en español o inglés
+    const hasSpanishFormat = conversationText.includes('Usuario:') || conversationText.includes('Agente:');
+    const hasEnglishFormat = conversationText.includes('User:') || conversationText.includes('Agent:');
+    
+    if (hasSpanishFormat || hasEnglishFormat) {
+      // Usar el patrón correcto según el idioma detectado
+      const pattern = hasSpanishFormat 
+        ? /(Usuario:|Agente:)/g 
+        : /(User:|Agent:)/g;
+      
+      const parts = conversationText.split(pattern);
       
       let currentSender: 'usuario' | 'agente' | null = null;
       
@@ -578,9 +640,10 @@ const DashboardPage: React.FC = () => {
         const delimiter = parts[i];
         const text = parts[i + 1]?.trim();
         
-        if (delimiter === 'Usuario:') {
+        // Mapear tanto español como inglés a los valores internos
+        if (delimiter === 'Usuario:' || delimiter === 'User:') {
           currentSender = 'usuario';
-        } else if (delimiter === 'Agente:') {
+        } else if (delimiter === 'Agente:' || delimiter === 'Agent:') {
           currentSender = 'agente';
         }
         
@@ -603,25 +666,40 @@ const DashboardPage: React.FC = () => {
   };
 
     // Componente para renderizar cada mensaje como burbuja de chat
-  const ChatBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
+  const ChatBubble: React.FC<{ 
+    message: ChatMessage; 
+    style?: React.CSSProperties;
+  }> = ({ message, style }) => {
     const isUser = message.sender === 'usuario';
     
     return (
-      <div className={`flex mb-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
-              <div className={`group max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md ${
-        isUser 
-          ? 'bg-primary-500 text-white rounded-br-md hover:bg-primary-600' 
-          : 'bg-secondary-50 text-gray-800 border border-secondary-200 rounded-bl-md hover:border-secondary-300'
-      }`}>
-          {/* Etiqueta del remitente */}
+      <div className={`flex mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div 
+          className={`group max-w-xs lg:max-w-md px-5 py-4 rounded-2xl transition-all duration-300 hover:scale-105 ${
+            isUser 
+              ? 'text-white rounded-br-md shadow-lg' 
+              : 'text-gray-800 border border-gray-100 rounded-bl-md shadow-md'
+          }`}
+          style={style || (isUser 
+            ? { 
+                background: 'linear-gradient(135deg, #ECA408 0%, #F59E0B 100%)',
+                boxShadow: '0 4px 12px rgba(236, 164, 8, 0.25)'
+              }
+            : { 
+                background: 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+              }
+          )}
+        >
+          {/* Etiqueta del remitente con mejor diseño */}
           <div className={`text-xs font-semibold mb-2 ${
-            isUser ? 'text-primary-100' : 'text-secondary-600'
+            isUser ? 'text-white/90' : 'text-gray-500'
           }`}>
             {message.sender === 'usuario' ? t('dashboard.incidents.chat.user') : t('dashboard.incidents.chat.agent')}
           </div>
           
-          {/* Texto del mensaje */}
-          <div className="text-sm leading-relaxed">
+          {/* Texto del mensaje con mejor tipografía */}
+          <div className="text-sm leading-relaxed font-medium">
             {message.text}
           </div>
         </div>
@@ -636,6 +714,9 @@ const DashboardPage: React.FC = () => {
     // Parsear conversación en mensajes individuales
     const messages = parseConversation(selectedConversation.body);
 
+    // Hook para gradientes dinámicos
+    const { scrollRef, getUserBubbleStyle, getAgentBubbleStyle } = useScrollGradient();
+
     // Manejar click outside para cerrar modal
     const handleOverlayClick = (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) {
@@ -649,8 +730,8 @@ const DashboardPage: React.FC = () => {
         onClick={handleOverlayClick}
       >
         <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
-          {/* Header estilo chat */}
-          <div className="flex justify-between items-center p-4 bg-primary-500 text-white rounded-t-lg">
+          {/* Header estilo chat con gradiente naranja-amarillo */}
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-[#ECA408] to-[#F5B730] text-white rounded-t-lg shadow-lg">
             <div className="flex items-center space-x-3">
               {/* Avatar del chat */}
               <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -677,14 +758,22 @@ const DashboardPage: React.FC = () => {
             </button>
           </div>
           
-          {/* Chat Area */}
-          <div className="flex-1 overflow-y-auto bg-gray-50 p-4" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.4'%3E%3Ccircle cx='5' cy='5' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}>
+          {/* Chat Area con scroll dinámico */}
+          <div 
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100 p-6" 
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.3'%3E%3Ccircle cx='5' cy='5' r='5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          >
             {messages.length > 0 ? (
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {messages.map((message, index) => (
-                  <ChatBubble key={index} message={message} />
+                  <ChatBubble 
+                    key={index} 
+                    message={message} 
+                    style={message.sender === 'usuario' ? getUserBubbleStyle() : getAgentBubbleStyle()}
+                  />
                 ))}
               </div>
             ) : (
@@ -709,7 +798,7 @@ const DashboardPage: React.FC = () => {
              </div>
              <button
                onClick={closeConversationModal}
-               className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium"
+               className="px-6 py-2 bg-gradient-to-r from-[#ECA408] to-[#F5B730] text-white rounded-lg hover:from-[#D69E07] hover:to-[#E6A42A] transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
              >
                {t('dashboard.incidents.chat.closeChat')}
             </button>
