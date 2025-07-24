@@ -216,7 +216,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="mt-6 pt-3 border-t border-gray-200/50 text-center">
-          <div className="mb-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2">
             <a
               href="/privacy-policy"
               target="_blank"
@@ -224,6 +224,15 @@ const Footer: React.FC = () => {
               className="text-gray-600 hover:text-primary-600 text-sm font-medium transition-colors"
             >
               {t("footer.privacyPolicy")}
+            </a>
+            <span className="hidden sm:inline text-gray-400 text-xs">•</span>
+            <a
+              href="/data-deletion"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-red-600 text-sm font-medium transition-colors"
+            >
+              {t("footer.dataDeletion")}
             </a>
           </div>
           <p className="text-gray-500 text-xs">{t("footer.copyright")}</p>

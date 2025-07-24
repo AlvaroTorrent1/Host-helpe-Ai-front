@@ -679,6 +679,7 @@
     "contact": "Contact",
     "slogan": "Automating tourist accommodation management with AI",
     "privacyPolicy": "Privacy Policy",
+    "dataDeletion": "Data Deletion",
     "copyright": "© 2025 Host Helper AI. All rights reserved."
   },
   "reservations": {
@@ -1034,6 +1035,68 @@
         "title": "Privacy Policy Updates",
         "content": "We reserve the right to modify this policy. Any changes will be published on this Website. We recommend reviewing it periodically."
       }
+    }
+  },
+  "dataDeletion": {
+    "title": "Data Deletion Procedure",
+    "subtitle": "How to exercise your right to be forgotten under GDPR",
+    "lastUpdated": "Last updated: July 24, 2025",
+    "tableOfContents": "Table of Contents",
+    "sections": {
+      "introduction": {
+        "title": "Introduction",
+        "content": "At Iterator dataworks sl (we, our), operating as www.hosthelperai.com, we are committed to complying with the General Data Protection Regulation (GDPR) of the European Union, including users' right to request deletion of their personal data (known as the right to be forgotten under Article 17 of GDPR). This document details how we manage personal data deletion requests to ensure transparency and regulatory compliance."
+      },
+      "dataController": {
+        "title": "Data Controller",
+        "content": "Identity: ITERATOR DATAWORKS S.L.\n\nTax ID: B22732358\n\nPostal address: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, Spain\n\nPhone: +34 687472327\n\nEmail: support@hosthelperai.com"
+      },
+      "deletionRights": {
+        "title": "Right to Data Deletion",
+        "content": "In accordance with Article 17 of GDPR, you have the right to request deletion of your personal data in the following cases:\n\n• The data is no longer necessary for the purposes for which it was collected or processed.\n\n• You have withdrawn your consent for processing, and there is no other legal basis for its processing.\n\n• You have objected to processing, and there are no overriding legitimate grounds to continue with it.\n\n• The data has been processed unlawfully.\n\n• The data must be deleted to comply with a legal obligation.\n\n• The data was collected in relation to information society services offered to minors."
+      },
+      "exceptions": {
+        "title": "Exceptions to the Right of Deletion",
+        "content": "We may deny the deletion request if processing your data is necessary for:\n\n• Exercising the right to freedom of expression and information.\n\n• Complying with an applicable legal obligation, such as tax or accounting requirements.\n\n• Archiving purposes in the public interest, scientific or historical research, or statistics, provided appropriate anonymization measures are applied.\n\n• Establishing, exercising, or defending legal claims.\n\nIf we cannot comply with your deletion request due to one of these exceptions, we will inform you of the specific reasons in writing."
+      },
+      "requestProcess": {
+        "title": "How to Request Data Deletion",
+        "content": "To exercise your right to data deletion, follow these steps:\n\n1. Send your request: Contact us by email at support@hosthelperai.com, clearly stating that you wish to exercise your right to data deletion.\n\n2. Provide information: Include your full name, email address associated with our services, and any relevant details that help us identify your data (for example, customer ID or registered phone number).\n\n3. Identity verification: To protect your privacy, we will ask you to verify your identity, usually through a copy of an official identity document (such as national ID or passport). Data provided for verification will be used only for this purpose and will be deleted after completing the process.\n\n4. Confirmation: You will receive acknowledgment of your request within 72 hours."
+      },
+      "deletionProcess": {
+        "title": "Deletion Process",
+        "content": "Once your request is received and verified:\n\n1. Evaluation: We will review whether your request meets the criteria of Article 17 of GDPR and if any exception applies.\n\n2. Data deletion: If the request is valid, we will delete your personal data from our active systems, databases, and any backups within a reasonable timeframe, generally not exceeding one month.\n\n3. Third-party notification: If your data has been shared with third parties (for example, technology service providers such as cloud hosting services), we will notify them to also delete your data, unless this is impossible or involves disproportionate effort.\n\n4. Confirmation: We will send you written confirmation once deletion has been completed or, if not possible, an explanation of the reasons."
+      },
+      "responseTime": {
+        "title": "Response Time",
+        "content": "We will respond to your request within a maximum of one month from its receipt. In complex cases or with a high volume of requests, this period may be extended up to two additional months, in which case we will inform you of the extension and reasons within the first month."
+      },
+      "technicalMeasures": {
+        "title": "Technical and Organizational Measures",
+        "content": "To ensure effective deletion of your data, we have implemented the following measures:\n\n• Data identification: We use data management systems that allow us to locate and delete personal data efficiently.\n\n• Secure deletion: We apply secure deletion techniques to ensure data cannot be recovered (for example, data overwriting in digital systems).\n\n• Backup management: Data in backups is deleted in scheduled update cycles, ensuring it does not persist beyond what is necessary.\n\n• Regular audits: We conduct periodic audits to verify compliance with our data deletion policies."
+      },
+      "anonymizedData": {
+        "title": "Anonymized Data",
+        "content": "In some cases, we use aggregated and anonymized data derived from interactions with our services to train and improve our artificial intelligence models. This data does not identify you personally and is not subject to the right of deletion, as it is not considered personal data under GDPR."
+      },
+      "dataProcessor": {
+        "title": "ITERATOR DATAWORKS S.L. as Data Processor",
+        "content": "When we act as Data Processor for our clients (for example, when processing data from their end users through our messaging services), we will forward any deletion requests received to the corresponding clients, who act as Data Controllers. We will comply with the Data Controller's instructions according to the Data Processing Agreement (DPA) signed, in compliance with Article 28 of GDPR."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "For any questions about this procedure or exercising your rights, contact us at:\n\nEmail: support@hosthelperai.com\n\nPostal address: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, Spain\n\nIf you are not satisfied with our response, you have the right to file a complaint with the Spanish Data Protection Agency (AEPD) (www.aepd.es)."
+      },
+      "updates": {
+        "title": "Updates to this Procedure",
+        "content": "We reserve the right to update this procedure to reflect changes in regulations or our data processing practices. Changes will be published on our website www.hosthelperai.com, and we recommend reviewing it periodically."
+      }
+    },
+    "action": {
+      "title": "Want to delete your data?",
+      "subtitle": "Contact our team to start the data deletion process",
+      "email": "Request by Email",
+      "phone": "Call Support"
     }
   }
 } 

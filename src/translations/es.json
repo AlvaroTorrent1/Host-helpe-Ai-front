@@ -631,6 +631,7 @@
     "contact": "Contacto",
     "slogan": "Automatizando la gestión de alojamientos turísticos con IA",
     "privacyPolicy": "Política de Privacidad",
+    "dataDeletion": "Eliminación de Datos",
     "copyright": "© 2025 Host Helper AI. Todos los derechos reservados."
   },
   "reservations": {
@@ -994,6 +995,68 @@
         "title": "Actualizaciones de la Política de Privacidad",
         "content": "Nos reservamos el derecho a modificar esta política. Cualquier cambio será publicado en este Sitio Web. Te recomendamos revisarla periódicamente."
       }
+    }
+  },
+  "dataDeletion": {
+    "title": "Procedimiento de Eliminación de Datos",
+    "subtitle": "Cómo ejercer tu derecho al olvido según el RGPD",
+    "lastUpdated": "Última actualización: 24 de julio de 2025",
+    "tableOfContents": "Tabla de Contenidos",
+    "sections": {
+      "introduction": {
+        "title": "Introducción",
+        "content": "En Iterator dataworks sl (nosotros), operando como www.hosthelperai.com, nos comprometemos a cumplir con el Reglamento General de Protección de Datos (RGPD) de la Unión Europea, incluyendo el derecho de los usuarios a solicitar la eliminación de sus datos personales (conocido como derecho al olvido según el artículo 17 del RGPD). Este documento detalla cómo gestionamos las solicitudes de eliminación de datos personales para garantizar la transparencia y el cumplimiento normativo."
+      },
+      "dataController": {
+        "title": "Responsable del Tratamiento",
+        "content": "Identidad: ITERATOR DATAWORKS S.L.\n\nNIF: B22732358\n\nDirección postal: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, España\n\nTeléfono: +34 687472327\n\nCorreo electrónico: support@hosthelperai.com"
+      },
+      "deletionRights": {
+        "title": "Derecho a la Eliminación de Datos",
+        "content": "De acuerdo con el artículo 17 del RGPD, tienes derecho a solicitar la eliminación de tus datos personales en los siguientes casos:\n\n• Los datos ya no son necesarios para los fines para los que fueron recopilados o tratados.\n\n• Has retirado tu consentimiento para el tratamiento, y no existe otra base legal para su procesamiento.\n\n• Te has opuesto al tratamiento, y no existen motivos legítimos prevalecientes para continuar con el mismo.\n\n• Los datos han sido tratados de manera ilícita.\n\n• Los datos deben eliminarse para cumplir con una obligación legal.\n\n• Los datos se recopilaron en relación con servicios de la sociedad de la información ofrecidos a menores."
+      },
+      "exceptions": {
+        "title": "Excepciones al Derecho de Eliminación",
+        "content": "Podemos denegar la solicitud de eliminación si el tratamiento de tus datos es necesario para:\n\n• Ejercer el derecho a la libertad de expresión e información.\n\n• Cumplir con una obligación legal aplicable, como requisitos fiscales o contables.\n\n• Fines de archivo de interés público, investigación científica o histórica, o estadísticas, siempre que se apliquen medidas de anonimización adecuadas.\n\n• Establecer, ejercer o defender reclamaciones legales.\n\nSi no podemos cumplir con tu solicitud de eliminación debido a una de estas excepciones, te informaremos de los motivos específicos por escrito."
+      },
+      "requestProcess": {
+        "title": "Cómo Solicitar la Eliminación de Datos",
+        "content": "Para ejercer tu derecho a la eliminación de datos, sigue estos pasos:\n\n1. Envía tu solicitud: Contáctanos por correo electrónico a support@hosthelperai.com, indicando claramente que deseas ejercer tu derecho a la supresión de datos.\n\n2. Proporciona información: Incluye tu nombre completo, dirección de correo electrónico asociada a nuestros servicios, y cualquier detalle relevante que nos ayude a identificar tus datos (por ejemplo, ID de cliente o número de teléfono registrado).\n\n3. Verificación de identidad: Para proteger tu privacidad, te pediremos que verifiques tu identidad, generalmente mediante una copia de un documento de identidad oficial (como DNI o pasaporte). Los datos proporcionados para la verificación se utilizarán únicamente para este propósito y se eliminarán tras completar el proceso.\n\n4. Confirmación: Recibirás un acuse de recibo de tu solicitud en un plazo de 72 horas."
+      },
+      "deletionProcess": {
+        "title": "Proceso de Eliminación",
+        "content": "Una vez recibida y verificada tu solicitud:\n\n1. Evaluación: Revisaremos si tu solicitud cumple con los criterios del artículo 17 del RGPD y si aplica alguna excepción.\n\n2. Eliminación de datos: Si la solicitud es válida, eliminaremos tus datos personales de nuestros sistemas activos, bases de datos, y cualquier copia de seguridad en un plazo razonable, generalmente no superior a un mes.\n\n3. Notificación a terceros: Si tus datos han sido compartidos con terceros (por ejemplo, proveedores de servicios tecnológicos como servicios de alojamiento en la nube), les notificaremos para que también eliminen tus datos, salvo que esto sea imposible o implique un esfuerzo desproporcionado.\n\n4. Confirmación: Te enviaremos una confirmación por escrito una vez que la eliminación se haya completado o, si no es posible, una explicación de los motivos."
+      },
+      "responseTime": {
+        "title": "Plazo de Respuesta",
+        "content": "Responderemos a tu solicitud en un plazo máximo de un mes desde su recepción. En casos complejos o con un volumen elevado de solicitudes, este plazo puede extenderse hasta dos meses adicionales, en cuyo caso te informaremos de la extensión y los motivos dentro del primer mes."
+      },
+      "technicalMeasures": {
+        "title": "Medidas Técnicas y Organizativas",
+        "content": "Para garantizar la eliminación efectiva de tus datos, hemos implementado las siguientes medidas:\n\n• Identificación de datos: Utilizamos sistemas de gestión de datos que permiten localizar y eliminar datos personales de manera eficiente.\n\n• Eliminación segura: Aplicamos técnicas de eliminación segura para garantizar que los datos no puedan recuperarse (por ejemplo, sobrescritura de datos en sistemas digitales).\n\n• Gestión de copias de seguridad: Los datos en copias de seguridad se eliminan en los ciclos de actualización programados, asegurando que no persistan más allá de lo necesario.\n\n• Auditorías regulares: Realizamos auditorías periódicas para verificar el cumplimiento de nuestras políticas de eliminación de datos."
+      },
+      "anonymizedData": {
+        "title": "Datos Anonimizados",
+        "content": "En algunos casos, utilizamos datos agregados y anonimizados derivados de las interacciones con nuestros servicios para entrenar y mejorar nuestros modelos de inteligencia artificial. Estos datos no te identifican personalmente y no están sujetos al derecho de eliminación, ya que no son considerados datos personales según el RGPD."
+      },
+      "dataProcessor": {
+        "title": "ITERATOR DATAWORKS S.L. como Encargado del Tratamiento",
+        "content": "Cuando actuamos como Encargado del Tratamiento para nuestros clientes (por ejemplo, al procesar datos de sus usuarios finales a través de nuestros servicios de mensajería), trasladaremos cualquier solicitud de eliminación recibida a los clientes correspondientes, quienes actúan como Responsables del Tratamiento. Cumpliremos con las instrucciones del Responsable del Tratamiento según el Contrato de Encargo de Tratamiento (DPA) suscrito, en cumplimiento del artículo 28 del RGPD."
+      },
+      "contact": {
+        "title": "Contacto",
+        "content": "Para cualquier consulta sobre este procedimiento o el ejercicio de tus derechos, contáctanos en:\n\nCorreo electrónico: support@hosthelperai.com\n\nDirección postal: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, España\n\nSi no estás satisfecho con nuestra respuesta, tienes derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) (www.aepd.es)."
+      },
+      "updates": {
+        "title": "Actualizaciones de este Procedimiento",
+        "content": "Nos reservamos el derecho a actualizar este procedimiento para reflejar cambios en la normativa o en nuestras prácticas de tratamiento de datos. Los cambios se publicarán en nuestro sitio web www.hosthelperai.com, y te recomendamos revisarlo periódicamente."
+      }
+    },
+    "action": {
+      "title": "¿Quieres eliminar tus datos?",
+      "subtitle": "Contacta con nuestro equipo para iniciar el proceso de eliminación de datos",
+      "email": "Solicitar por Email",
+      "phone": "Llamar Soporte"
     }
   }
 } 
