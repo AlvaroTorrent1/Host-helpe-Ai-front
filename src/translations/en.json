@@ -678,6 +678,7 @@
     "follow": "Follow us",
     "contact": "Contact",
     "slogan": "Automating tourist accommodation management with AI",
+    "privacyPolicy": "Privacy Policy",
     "copyright": "© 2025 Host Helper AI. All rights reserved."
   },
   "reservations": {
@@ -981,6 +982,58 @@
       "happy": "98% of guests rate their experience as excellent",
       "support": "24/7 automated support without human intervention",
       "response": "Average response time: under 30 seconds"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "subtitle": "We protect your personal information with the highest security standards",
+    "lastUpdated": "Last updated: July 24, 2025",
+    "tableOfContents": "Table of Contents",
+    "sections": {
+      "introduction": {
+        "title": "Introduction",
+        "content": "At ITERATOR DATAWORKS S.L., we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use and protect your information when using our website www.hosthelperai.com and our services."
+      },
+      "dataController": {
+        "title": "Data Controller",
+        "content": "• Identity: ITERATOR DATAWORKS S.L.\n• Tax ID: B22732358\n• Postal address: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga\n• Phone: +34 687472327\n• Email: support@hosthelperai.com"
+      },
+      "processingPurposes": {
+        "title": "Data Processing Purposes",
+        "content": "At ITERATOR DATAWORKS S.L. we process the information provided by interested parties in order to:\n\n• Manage the sending of information requested through contact forms.\n• Provide and manage the services contracted by our clients.\n• Improve your user experience on our website.\n• Provide interested parties with offers of products and services of their interest, provided we have their explicit consent.\n• Use aggregated and anonymized data derived from conversations to train, validate and improve the Artificial Intelligence models that power our Services, with the aim of improving their accuracy and efficiency.\n• Comply with legal, tax and accounting obligations that apply to us."
+      },
+      "legalBasis": {
+        "title": "Legal Basis for Processing",
+        "content": "The legal basis for processing your data varies according to purpose:\n\n• Contract performance: For the provision of services you contract with us.\n• Data subject consent: For sending commercial communications and using non-essential cookies.\n• Legitimate interest: To improve our services, including training our AI models anonymously, and for fraud prevention.\n• Legal obligation: For compliance with tax, accounting and other regulations."
+      },
+      "dataProcessor": {
+        "title": "ITERATOR DATAWORKS S.L. as Data Processor",
+        "content": "When our clients use our messaging services, they process personal data from their own end users. In this context, the client acts as Data Controller and ITERATOR DATAWORKS S.L. acts as Data Processor. Our obligations as Data Processor are regulated through a specific Data Processing Agreement (DPA) that is signed with each client, in compliance with Article 28 of the GDPR."
+      },
+      "retentionPeriod": {
+        "title": "Data Retention Period",
+        "content": "The personal data provided will be retained as long as the business relationship is maintained or its deletion is not requested by the interested party. Once the relationship ends, they will be kept blocked for the periods necessary to comply with applicable legal obligations."
+      },
+      "recipientsTransfers": {
+        "title": "Recipients and International Transfers",
+        "content": "Data will not be transferred to third parties except in cases where there is a legal obligation. To provide our Services, we may rely on technology providers (sub-processors), such as cloud hosting services. If any of these entities is located outside the European Economic Area, we ensure that such international data transfers are carried out with adequate guarantees, such as adherence to the EU-US Data Privacy Framework or signing Standard Contractual Clauses (SCCs) approved by the European Commission."
+      },
+      "userRights": {
+        "title": "Data Protection Rights",
+        "content": "Any person has the right to obtain confirmation about whether ITERATOR DATAWORKS S.L. is processing personal data concerning them. Interested parties have the right to:\n\n• Request access to personal data relating to the data subject.\n• Request their rectification or deletion.\n• Object to processing.\n• Request limitation of their processing.\n• Request data portability.\n\nTo exercise your rights you can contact us through our email support@hosthelperai.com, attaching a copy of your identity document to verify your identity."
+      },
+      "securityMeasures": {
+        "title": "Security Measures",
+        "content": "ITERATOR DATAWORKS S.L. has implemented appropriate technical and organizational measures to protect your personal data against loss, misuse, unauthorized access, disclosure, alteration and destruction."
+      },
+      "cookies": {
+        "title": "Use of Cookies and Tracking Technologies",
+        "content": "We use cookies and similar technologies to improve the functionality of our website, analyze its use and offer personalized content. Cookies are small text files that are stored on your device when you visit our website.\n\nTypes of cookies we use:\n• Necessary cookies: Essential for the functioning of the site, such as user authentication and session management.\n• Analytical cookies: Allow us to collect information about how users interact with our site (for example, Google Analytics) to improve our services.\n• Personalization cookies: Allow us to remember your preferences, such as language or region.\n• Advertising cookies: Used to show you relevant ads based on your interests.\n\nCookie management: You can accept, reject or configure your cookie preferences through the cookie banner that appears when visiting our website. You can also manage cookies in your browser settings. Note that disabling certain cookies may affect site functionality.\n\nThird parties: Some cookies are installed by third parties, such as Google Analytics, to analyze site traffic. These third parties may collect data independently, and we recommend reviewing their privacy policies for more information.\n\nFor more details, consult our Cookie Policy or contact us at support@hosthelperai.com."
+      },
+      "policyUpdates": {
+        "title": "Privacy Policy Updates",
+        "content": "We reserve the right to modify this policy. Any changes will be published on this Website. We recommend reviewing it periodically."
+      }
     }
   }
 } 

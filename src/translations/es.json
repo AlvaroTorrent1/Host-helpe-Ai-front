@@ -630,6 +630,7 @@
     "follow": "Síguenos",
     "contact": "Contacto",
     "slogan": "Automatizando la gestión de alojamientos turísticos con IA",
+    "privacyPolicy": "Política de Privacidad",
     "copyright": "© 2025 Host Helper AI. Todos los derechos reservados."
   },
   "reservations": {
@@ -941,6 +942,58 @@
       "title": "Únete a propietarios que están automatizando su gestión",
       "subtitle": "Ahorra tiempo, incrementa tus ingresos y mejora la satisfacción de los huéspedes.",
       "button": "Comenzar ahora"
+    }
+  },
+  "privacy": {
+    "title": "Política de Privacidad",
+    "subtitle": "Protegemos tu información personal con los más altos estándares de seguridad",
+    "lastUpdated": "Última actualización: 24 de julio de 2025",
+    "tableOfContents": "Tabla de Contenidos",
+    "sections": {
+      "introduction": {
+        "title": "Introducción",
+        "content": "En ITERATOR DATAWORKS S.L. (nosotros), respetamos tu privacidad y nos comprometemos a proteger tus datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tu información al utilizar nuestro sitio web www.hosthelperai.com y nuestros servicios."
+      },
+      "dataController": {
+        "title": "Responsable del Tratamiento",
+        "content": "• Identidad: ITERATOR DATAWORKS S.L.\n• NIF: B22732358\n• Dirección postal: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga\n• Teléfono: +34 687472327\n• Correo electrónico: support@hosthelperai.com"
+      },
+      "processingPurposes": {
+        "title": "Finalidades del Tratamiento de Datos",
+        "content": "En ITERATOR DATAWORKS S.L. tratamos la información que nos facilitan las personas interesadas con el fin de:\n\n• Gestionar el envío de la información que nos soliciten a través de los formularios de contacto.\n• Proveer y gestionar los servicios contratados por nuestros clientes.\n• Mejorar su experiencia de usuario en nuestro sitio web.\n• Facilitar a los interesados ofertas de productos y servicios de su interés, siempre que contemos con su consentimiento explícito.\n• Utilizar datos agregados y anonimizados derivados de las conversaciones para entrenar, validar y mejorar los modelos de Inteligencia Artificial que potencian nuestros Servicios, con el objetivo de mejorar su precisión y eficiencia.\n• Cumplir con las obligaciones legales, fiscales y contables que nos sean de aplicación."
+      },
+      "legalBasis": {
+        "title": "Base Legal para el Tratamiento",
+        "content": "La base legal para el tratamiento de tus datos varía según la finalidad:\n\n• Ejecución de un contrato: Para la prestación de los servicios que contrates con nosotros.\n• Consentimiento del interesado: Para el envío de comunicaciones comerciales y el uso de cookies no esenciales.\n• Interés legítimo: Para mejorar nuestros servicios, incluyendo el entrenamiento de nuestros modelos de IA de forma anonimizada, y para la prevención del fraude.\n• Obligación legal: Para el cumplimiento de la normativa fiscal, contable y de otra índole."
+      },
+      "dataProcessor": {
+        "title": "ITERATOR DATAWORKS S.L. como Encargado del Tratamiento",
+        "content": "Cuando nuestros clientes utilizan nuestros servicios de mensajería, tratan datos personales de sus propios usuarios finales. En este contexto, el cliente actúa como Responsable del Tratamiento e ITERATOR DATAWORKS S.L. actúa como Encargado del Tratamiento. Nuestras obligaciones como Encargado del Tratamiento se regulan mediante un Contrato de Encargo de Tratamiento (DPA) específico que se suscribe con cada cliente, en cumplimiento del Artículo 28 del RGPD."
+      },
+      "retentionPeriod": {
+        "title": "Plazo de Conservación de los Datos",
+        "content": "Los datos personales proporcionados se conservarán mientras se mantenga la relación comercial o no se solicite su supresión por el interesado. Una vez finalizada la relación, se mantendrán bloqueados durante los plazos necesarios para cumplir con las obligaciones legales aplicables."
+      },
+      "recipientsTransfers": {
+        "title": "Destinatarios y Transferencias Internacionales",
+        "content": "Los datos no se cederán a terceros salvo en los casos en que exista una obligación legal. Para prestar nuestros Servicios, podemos apoyarnos en proveedores tecnológicos (sub-encargados del tratamiento), como servicios de alojamiento en la nube. Si alguna de estas entidades se encuentra fuera del Espacio Económico Europeo, nos aseguramos de que dichas transferencias internacionales de datos se realizan con las garantías adecuadas, como la adhesión al Marco de Privacidad de Datos UE-EE.UU. (Data Privacy Framework) o la firma de Cláusulas Contractuales Tipo (CCT) aprobadas por la Comisión Europea."
+      },
+      "userRights": {
+        "title": "Derechos de Protección de Datos",
+        "content": "Cualquier persona tiene derecho a obtener confirmación sobre si en ITERATOR DATAWORKS S.L. estamos tratando datos personales que les conciernan. Las personas interesadas tienen derecho a:\n\n• Solicitar el acceso a los datos personales relativos al interesado.\n• Solicitar su rectificación o supresión.\n• Oponerse al tratamiento.\n• Solicitar la limitación de su tratamiento.\n• Solicitar la portabilidad de los datos.\n\nPara ejercer sus derechos puede contactarnos a través de nuestro correo electrónico support@hosthelperai.com, adjuntando una copia de su documento de identidad para verificar su identidad."
+      },
+      "securityMeasures": {
+        "title": "Medidas de Seguridad",
+        "content": "ITERATOR DATAWORKS S.L. ha implementado las medidas técnicas y organizativas apropiadas para proteger sus datos personales contra la pérdida, el uso indebido, el acceso no autorizado, la divulgación, la alteración y la destrucción."
+      },
+      "cookies": {
+        "title": "Uso de Cookies y Tecnologías de Seguimiento",
+        "content": "Utilizamos cookies y tecnologías similares para mejorar la funcionalidad de nuestro sitio web, analizar su uso y ofrecer contenido personalizado. Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas nuestro sitio web.\n\nTipos de cookies que utilizamos:\n• Cookies necesarias: Esenciales para el funcionamiento del sitio, como la autenticación de usuarios y la gestión de sesiones.\n• Cookies analíticas: Nos permiten recopilar información sobre cómo los usuarios interactúan con nuestro sitio (por ejemplo, Google Analytics) para mejorar nuestros servicios.\n• Cookies de personalización: Permiten recordar tus preferencias, como el idioma o la región.\n• Cookies publicitarias: Usadas para mostrarte anuncios relevantes según tus intereses.\n\nGestión de cookies: Puedes aceptar, rechazar o configurar tus preferencias de cookies a través del banner de cookies que aparece al visitar nuestro sitio web. También puedes gestionar las cookies en la configuración de tu navegador. Ten en cuenta que deshabilitar ciertas cookies puede afectar la funcionalidad del sitio.\n\nTerceros: Algunas cookies son instaladas por terceros, como Google Analytics, para analizar el tráfico del sitio. Estos terceros pueden recopilar datos de forma independiente, y te recomendamos revisar sus políticas de privacidad para más información.\n\nPara más detalles, consulta nuestra Política de Cookies o contáctanos en support@hosthelperai.com."
+      },
+      "policyUpdates": {
+        "title": "Actualizaciones de la Política de Privacidad",
+        "content": "Nos reservamos el derecho a modificar esta política. Cualquier cambio será publicado en este Sitio Web. Te recomendamos revisarla periódicamente."
+      }
     }
   }
 } 
