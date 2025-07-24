@@ -981,7 +981,7 @@
       },
       "userRights": {
         "title": "Derechos de Protección de Datos",
-        "content": "Cualquier persona tiene derecho a obtener confirmación sobre si en ITERATOR DATAWORKS S.L. estamos tratando datos personales que les conciernan. Las personas interesadas tienen derecho a:\n\n• Solicitar el acceso a los datos personales relativos al interesado.\n• Solicitar su rectificación o supresión.\n• Oponerse al tratamiento.\n• Solicitar la limitación de su tratamiento.\n• Solicitar la portabilidad de los datos.\n\nPara ejercer sus derechos puede contactarnos a través de nuestro correo electrónico support@hosthelperai.com, adjuntando una copia de su documento de identidad para verificar su identidad."
+        "content": "Cualquier persona tiene derecho a obtener confirmación sobre si en ITERATOR DATAWORKS S.L. estamos tratando datos personales que les conciernan. Las personas interesadas tienen derecho a:\n\n• Solicitar el acceso a los datos personales relativos al interesado.\n• Solicitar su rectificación o supresión.\n• Oponerse al tratamiento.\n• Solicitar la limitación de su tratamiento.\n• Solicitar la portabilidad de los datos.\n\nPara ejercer sus derechos puede contactarnos a través de nuestro correo electrónico support@hosthelperai.com, adjuntando una copia de su documento de identidad para verificar su identidad.\n\n**Eliminación de Datos**: Para información detallada sobre cómo solicitar la eliminación completa de sus datos personales, incluyendo el proceso específico, plazos y códigos de confirmación, consulte nuestro Procedimiento de Eliminación de Datos disponible en: www.hosthelperai.com/data-deletion"
       },
       "securityMeasures": {
         "title": "Medidas de Seguridad",
@@ -1021,11 +1021,15 @@
       },
       "requestProcess": {
         "title": "Cómo Solicitar la Eliminación de Datos",
-        "content": "Para ejercer tu derecho a la eliminación de datos, sigue estos pasos:\n\n1. Envía tu solicitud: Contáctanos por correo electrónico a support@hosthelperai.com, indicando claramente que deseas ejercer tu derecho a la supresión de datos.\n\n2. Proporciona información: Incluye tu nombre completo, dirección de correo electrónico asociada a nuestros servicios, y cualquier detalle relevante que nos ayude a identificar tus datos (por ejemplo, ID de cliente o número de teléfono registrado).\n\n3. Verificación de identidad: Para proteger tu privacidad, te pediremos que verifiques tu identidad, generalmente mediante una copia de un documento de identidad oficial (como DNI o pasaporte). Los datos proporcionados para la verificación se utilizarán únicamente para este propósito y se eliminarán tras completar el proceso.\n\n4. Confirmación: Recibirás un acuse de recibo de tu solicitud en un plazo de 72 horas."
+        "content": "Para ejercer tu derecho a la eliminación de datos, existen varios métodos disponibles:\n\n**Método 1 - Solicitud Directa por Email:**\n1. Envía tu solicitud: Contáctanos por correo electrónico a support@hosthelperai.com, indicando claramente que deseas ejercer tu derecho a la supresión de datos.\n2. Proporciona información: Incluye tu nombre completo, dirección de correo electrónico asociada a nuestros servicios, y cualquier detalle relevante que nos ayude a identificar tus datos (por ejemplo, ID de cliente o número de teléfono registrado).\n3. Verificación de identidad: Para proteger tu privacidad, te pediremos que verifiques tu identidad, generalmente mediante una copia de un documento de identidad oficial (como DNI o pasaporte).\n4. Confirmación: Recibirás un acuse de recibo de tu solicitud en un plazo de 72 horas.\n\n**Método 2 - Apps con Facebook Login:**\nSi accediste a nuestros servicios a través de Facebook Login, también puedes solicitar la eliminación:\n1. Ve a la configuración de tu cuenta de Facebook\n2. Navega a 'Apps y sitios web'\n3. Encuentra Host Helper AI y elimina la app\n4. Esto enviará automáticamente una solicitud de eliminación de datos a nuestros sistemas\n5. Recibirás un código de confirmación para hacer seguimiento del proceso"
       },
       "deletionProcess": {
         "title": "Proceso de Eliminación",
         "content": "Una vez recibida y verificada tu solicitud:\n\n1. Evaluación: Revisaremos si tu solicitud cumple con los criterios del artículo 17 del RGPD y si aplica alguna excepción.\n\n2. Eliminación de datos: Si la solicitud es válida, eliminaremos tus datos personales de nuestros sistemas activos, bases de datos, y cualquier copia de seguridad en un plazo razonable, generalmente no superior a un mes.\n\n3. Notificación a terceros: Si tus datos han sido compartidos con terceros (por ejemplo, proveedores de servicios tecnológicos como servicios de alojamiento en la nube), les notificaremos para que también eliminen tus datos, salvo que esto sea imposible o implique un esfuerzo desproporcionado.\n\n4. Confirmación: Te enviaremos una confirmación por escrito una vez que la eliminación se haya completado o, si no es posible, una explicación de los motivos."
+      },
+      "confirmationCodes": {
+        "title": "Códigos de Confirmación y Seguimiento",
+        "content": "Para proporcionar transparencia y cumplir con los requisitos de plataformas como Meta/Facebook, implementamos un sistema de códigos de confirmación:\n\n**¿Qué es un código de confirmación?**\nEs un identificador único alfanumérico que se genera para cada solicitud de eliminación de datos, permitiendo hacer seguimiento del estado del proceso.\n\n**¿Cómo obtener tu código?**\n• Solicitudes por email: Se incluye en la confirmación de recepción\n• Apps con Facebook Login: Se proporciona automáticamente tras la solicitud\n• Solicitudes telefónicas: Se envía por email de confirmación\n\n**Seguimiento del estado:**\nCon tu código de confirmación podrás consultar el estado de tu solicitud y obtener una explicación legible del progreso. En el futuro, habilitaremos una página de consulta en línea para mayor comodidad.\n\n**Ejemplo de código:** DEL-2025-ABC123XYZ\n\n**Tiempo de validez:** Los códigos son válidos durante todo el proceso de eliminación y 90 días adicionales para consultas posteriores."
       },
       "responseTime": {
         "title": "Plazo de Respuesta",
@@ -1058,5 +1062,58 @@
       "email": "Solicitar por Email",
       "phone": "Llamar Soporte"
     }
-  }
+  },
+  "deletionStatus": {
+    "title": "Estado de Eliminación de Datos",
+    "subtitle": "Consulta el progreso de tu solicitud de eliminación de datos usando tu código de confirmación",
+    "searchForm": {
+      "title": "Consultar Estado de Solicitud",
+      "codeLabel": "Código de Confirmación",
+      "codePlaceholder": "DEL-2025-XXXXXXXX",
+      "codeHelp": "Introduce el código de confirmación que recibiste por email o desde Facebook",
+      "searchButton": "Consultar Estado",
+      "searching": "Consultando..."
+    },
+    "results": {
+      "code": "Código",
+      "details": "Detalles de la Solicitud",
+      "requestDate": "Fecha de Solicitud",
+      "completionDate": "Fecha de Finalización",
+      "denialReason": "Motivo de Denegación",
+      "source": "Origen",
+      "sourceFacebook": "Facebook Login",
+      "sourceEmail": "Email",
+      "completedTitle": "Eliminación Completada",
+      "completedMessage": "Tus datos personales han sido eliminados exitosamente de nuestros sistemas de acuerdo con el Artículo 17 del RGPD.",
+      "contactTitle": "¿Necesitas ayuda?",
+      "contactEmail": "Email",
+      "contactPhone": "Teléfono",
+      "includeCode": "Incluye tu código de confirmación"
+    },
+    "info": {
+      "title": "Información sobre Códigos de Confirmación",
+      "whatIsCode": {
+        "title": "¿Qué es un código de confirmación?",
+        "content": "Es un identificador único que te permite hacer seguimiento del estado de tu solicitud de eliminación de datos. Se genera automáticamente al crear la solicitud."
+      },
+      "howLong": {
+        "title": "¿Cuánto tiempo toma el proceso?",
+        "content": "El proceso de eliminación normalmente toma entre 7-30 días laborables, dependiendo de la complejidad y el volumen de datos a eliminar."
+      },
+      "gdprCompliance": {
+        "title": "Cumplimiento RGPD",
+        "content": "Este sistema cumple con el Artículo 17 del RGPD (derecho al olvido) y proporciona transparencia completa sobre el proceso de eliminación."
+      },
+      "metaIntegration": {
+        "title": "Integración con Meta/Facebook",
+        "content": "Si usaste Facebook Login, el código se genera automáticamente cuando eliminas la app desde la configuración de Facebook."
+      }
+    },
+    "errors": {
+      "emptyCode": "Por favor introduce un código de confirmación",
+      "notFound": "No se encontró ninguna solicitud con ese código de confirmación",
+      "network": "Error de conexión. Por favor inténtalo de nuevo."
+    }
+  },
+  "locale": "es-ES"
 } 

@@ -1021,7 +1021,7 @@
       },
       "userRights": {
         "title": "Data Protection Rights",
-        "content": "Any person has the right to obtain confirmation about whether ITERATOR DATAWORKS S.L. is processing personal data concerning them. Interested parties have the right to:\n\n• Request access to personal data relating to the data subject.\n• Request their rectification or deletion.\n• Object to processing.\n• Request limitation of their processing.\n• Request data portability.\n\nTo exercise your rights you can contact us through our email support@hosthelperai.com, attaching a copy of your identity document to verify your identity."
+        "content": "Any person has the right to obtain confirmation about whether ITERATOR DATAWORKS S.L. is processing personal data concerning them. Interested parties have the right to:\n\n• Request access to personal data relating to the data subject.\n• Request their rectification or deletion.\n• Object to processing.\n• Request limitation of their processing.\n• Request data portability.\n\nTo exercise your rights you can contact us through our email support@hosthelperai.com, attaching a copy of your identity document to verify your identity.\n\n**Data Deletion**: For detailed information on how to request complete deletion of your personal data, including the specific process, timelines and confirmation codes, please see our Data Deletion Procedure available at: www.hosthelperai.com/data-deletion"
       },
       "securityMeasures": {
         "title": "Security Measures",
@@ -1061,11 +1061,15 @@
       },
       "requestProcess": {
         "title": "How to Request Data Deletion",
-        "content": "To exercise your right to data deletion, follow these steps:\n\n1. Send your request: Contact us by email at support@hosthelperai.com, clearly stating that you wish to exercise your right to data deletion.\n\n2. Provide information: Include your full name, email address associated with our services, and any relevant details that help us identify your data (for example, customer ID or registered phone number).\n\n3. Identity verification: To protect your privacy, we will ask you to verify your identity, usually through a copy of an official identity document (such as national ID or passport). Data provided for verification will be used only for this purpose and will be deleted after completing the process.\n\n4. Confirmation: You will receive acknowledgment of your request within 72 hours."
+        "content": "To exercise your right to data deletion, several methods are available:\n\n**Method 1 - Direct Email Request:**\n1. Send your request: Contact us by email at support@hosthelperai.com, clearly stating that you wish to exercise your right to data deletion.\n2. Provide information: Include your full name, email address associated with our services, and any relevant details that help us identify your data (for example, customer ID or registered phone number).\n3. Identity verification: To protect your privacy, we will ask you to verify your identity, usually through a copy of an official identity document (such as national ID or passport).\n4. Confirmation: You will receive acknowledgment of your request within 72 hours.\n\n**Method 2 - Apps with Facebook Login:**\nIf you accessed our services through Facebook Login, you can also request deletion:\n1. Go to your Facebook account settings\n2. Navigate to 'Apps and Websites'\n3. Find Host Helper AI and remove the app\n4. This will automatically send a data deletion request to our systems\n5. You will receive a confirmation code to track the process"
       },
       "deletionProcess": {
         "title": "Deletion Process",
         "content": "Once your request is received and verified:\n\n1. Evaluation: We will review whether your request meets the criteria of Article 17 of GDPR and if any exception applies.\n\n2. Data deletion: If the request is valid, we will delete your personal data from our active systems, databases, and any backups within a reasonable timeframe, generally not exceeding one month.\n\n3. Third-party notification: If your data has been shared with third parties (for example, technology service providers such as cloud hosting services), we will notify them to also delete your data, unless this is impossible or involves disproportionate effort.\n\n4. Confirmation: We will send you written confirmation once deletion has been completed or, if not possible, an explanation of the reasons."
+      },
+      "confirmationCodes": {
+        "title": "Confirmation Codes and Tracking",
+        "content": "To provide transparency and comply with platform requirements such as Meta/Facebook, we implement a confirmation code system:\n\n**What is a confirmation code?**\nIt is a unique alphanumeric identifier generated for each data deletion request, allowing you to track the status of the process.\n\n**How to get your code?**\n• Email requests: Included in the receipt confirmation\n• Apps with Facebook Login: Provided automatically after the request\n• Phone requests: Sent via confirmation email\n\n**Status tracking:**\nWith your confirmation code you can check the status of your request and get a human-readable explanation of the progress. In the future, we will enable an online consultation page for greater convenience.\n\n**Code example:** DEL-2025-ABC123XYZ\n\n**Validity period:** Codes are valid throughout the deletion process and 90 additional days for subsequent inquiries."
       },
       "responseTime": {
         "title": "Response Time",
@@ -1098,5 +1102,58 @@
       "email": "Request by Email",
       "phone": "Call Support"
     }
-  }
+  },
+  "deletionStatus": {
+    "title": "Data Deletion Status",
+    "subtitle": "Check the progress of your data deletion request using your confirmation code",
+    "searchForm": {
+      "title": "Check Request Status",
+      "codeLabel": "Confirmation Code",
+      "codePlaceholder": "DEL-2025-XXXXXXXX",
+      "codeHelp": "Enter the confirmation code you received by email or from Facebook",
+      "searchButton": "Check Status",
+      "searching": "Checking..."
+    },
+    "results": {
+      "code": "Code",
+      "details": "Request Details",
+      "requestDate": "Request Date",
+      "completionDate": "Completion Date",
+      "denialReason": "Denial Reason",
+      "source": "Source",
+      "sourceFacebook": "Facebook Login",
+      "sourceEmail": "Email",
+      "completedTitle": "Deletion Completed",
+      "completedMessage": "Your personal data has been successfully removed from our systems in accordance with GDPR Article 17.",
+      "contactTitle": "Need assistance?",
+      "contactEmail": "Email",
+      "contactPhone": "Phone",
+      "includeCode": "Include your confirmation code"
+    },
+    "info": {
+      "title": "About Confirmation Codes",
+      "whatIsCode": {
+        "title": "What is a confirmation code?",
+        "content": "It's a unique identifier that allows you to track the status of your data deletion request. It's automatically generated when creating the request."
+      },
+      "howLong": {
+        "title": "How long does the process take?",
+        "content": "The deletion process normally takes 7-30 business days, depending on the complexity and volume of data to be deleted."
+      },
+      "gdprCompliance": {
+        "title": "GDPR Compliance",
+        "content": "This system complies with GDPR Article 17 (right to be forgotten) and provides complete transparency about the deletion process."
+      },
+      "metaIntegration": {
+        "title": "Meta/Facebook Integration",
+        "content": "If you used Facebook Login, the code is automatically generated when you remove the app from Facebook settings."
+      }
+    },
+    "errors": {
+      "emptyCode": "Please enter a confirmation code",
+      "notFound": "No request found with that confirmation code",
+      "network": "Connection error. Please try again."
+    }
+  },
+  "locale": "en-US"
 } 

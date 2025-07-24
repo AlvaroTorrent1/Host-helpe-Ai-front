@@ -16,7 +16,7 @@ const DataDeletion = () => {
   // Estado para controlar las animaciones de scroll
   const [visibleSections, setVisibleSections] = useState({
     pageHeader: false,
-    contentSections: [false, false, false, false, false, false, false, false, false, false, false, false]
+    contentSections: [false, false, false, false, false, false, false, false, false, false, false, false, false]
   });
   
   // Referencias para las secciones que queremos animar
@@ -118,6 +118,11 @@ const DataDeletion = () => {
       id: "deletionProcess",
       title: t("dataDeletion.sections.deletionProcess.title"),
       content: t("dataDeletion.sections.deletionProcess.content")
+    },
+    {
+      id: "confirmationCodes",
+      title: t("dataDeletion.sections.confirmationCodes.title"),
+      content: t("dataDeletion.sections.confirmationCodes.content")
     },
     {
       id: "responseTime",
