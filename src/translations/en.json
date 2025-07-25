@@ -580,6 +580,7 @@
         "notesPlaceholder": "Additional notes about the reservation...",
         "firstName": "First Name",
         "lastName": "Last Name",
+        "email": "Email",
         "phone": "Phone",
         "nationality": "Nationality",
         "selectNationality": "Select nationality"

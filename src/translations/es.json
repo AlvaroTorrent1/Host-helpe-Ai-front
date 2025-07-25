@@ -613,6 +613,7 @@
                   "notesPlaceholder": "Notas adicionales sobre la reserva...",
         "firstName": "Nombre",
         "lastName": "Apellido",
+        "email": "Email",
         "phone": "Teléfono",
         "nationality": "Nacionalidad",
         "selectNationality": "Selecciona nacionalidad"
