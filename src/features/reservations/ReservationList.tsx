@@ -448,9 +448,6 @@ const ReservationList: React.FC<ReservationListProps> = ({
                                 ? `${mainGuest.firstName} ${mainGuest.lastName}`
                                 : t("common.notAvailable")}
                             </div>
-                            <div className="text-xs text-gray-500 truncate max-w-[200px]" title={mainGuest?.email || t("common.notAvailable")}>
-                              {mainGuest?.email || t("common.notAvailable")}
-                            </div>
                           </div>
                         </td>
                         <td 

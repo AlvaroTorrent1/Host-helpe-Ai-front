@@ -206,12 +206,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       newErrors["mainGuest.lastName"] = "El apellido es obligatorio";
     }
 
-    if (!formData.mainGuest.email.trim()) {
-      newErrors["mainGuest.email"] = "El email es obligatorio";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.mainGuest.email)) {
-      newErrors["mainGuest.email"] = "El email no tiene un formato válido";
-    }
-
     if (!formData.mainGuest.nationality.trim()) {
       newErrors["mainGuest.nationality"] = "La nacionalidad es obligatoria";
     }
@@ -622,31 +616,6 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {getError("mainGuest.lastName") && (
                 <p className="mt-2 text-sm text-red-600">
                   {getError("mainGuest.lastName")}
-                </p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="mainGuest.email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {t("dashboard.reservations.form.email")} *
-              </label>
-              <input
-                type="email"
-                name="mainGuest.email"
-                id="mainGuest.email"
-                value={formData.mainGuest.email}
-                onChange={handleChange}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm ${
-                  getError("mainGuest.email") ? "border-red-300" : ""
-                }`}
-              />
-              {getError("mainGuest.email") && (
-                <p className="mt-2 text-sm text-red-600">
-                  {getError("mainGuest.email")}
                 </p>
               )}
             </div>
