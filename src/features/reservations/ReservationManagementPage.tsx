@@ -15,6 +15,12 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { supabase } from "@/services/supabase";
 import { LoadingInlineVariants } from "@shared/components/loading";
 import { reservationService } from "@/services/reservationService";
+import ReservationTabs from "./components/ReservationTabs";
+import {
+  ReservationTabType,
+  filterReservationsByTab,
+  getReservationCounts,
+} from "./utils/reservationFilters";
 
 // Enum eliminado - se usa el tipo ReservationStatus del archivo types/reservation.ts
 
@@ -51,6 +57,9 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   const [isDayDetailsModalOpen, setIsDayDetailsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDateReservations, setSelectedDateReservations] = useState<Reservation[]>([]);
+  
+  // Estado para las pestañas de reservas
+  const [activeTab, setActiveTab] = useState<ReservationTabType>('current');
 
   // Cargar datos reales desde Supabase
   const loadData = useCallback(async () => {
@@ -281,6 +290,19 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     setSuccessMessage(null);
   };
 
+  // Manejar cambio de pestaña
+  const handleTabChange = (tab: ReservationTabType) => {
+    setActiveTab(tab);
+  };
+
+  // Obtener reservas filtradas según la pestaña activa
+  const getFilteredReservations = () => {
+    return filterReservationsByTab(reservations, activeTab);
+  };
+
+  // Obtener conteos de reservas para las pestañas
+  const reservationCounts = getReservationCounts(reservations);
+
   // Manejar clic en fecha del calendario
   const handleDateClick = (date: Date, dayReservations: Reservation[]) => {
     setSelectedDate(date);
@@ -503,10 +525,19 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                   </div>
                 ) : (
                   <ReservationList
-                    reservations={reservations}
+                    reservations={getFilteredReservations()}
                     properties={properties}
                     onAddReservation={handleAddReservation}
                     onReservationDeleted={handleReservationDeleted}
+                    activeTab={activeTab}
+                    tabsComponent={
+                      <ReservationTabs
+                        activeTab={activeTab}
+                        onTabChange={handleTabChange}
+                        currentCount={reservationCounts.current}
+                        pastCount={reservationCounts.past}
+                      />
+                    }
                   />
                 )}
               </>

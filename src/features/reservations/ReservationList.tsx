@@ -16,6 +16,8 @@ interface ReservationListProps {
   properties: Property[];
   onAddReservation: () => void;
   onReservationDeleted?: (reservationId: string) => void;
+  tabsComponent?: React.ReactNode;
+  activeTab?: 'current' | 'past';
 }
 
 const ReservationList: React.FC<ReservationListProps> = ({
@@ -23,6 +25,8 @@ const ReservationList: React.FC<ReservationListProps> = ({
   properties,
   onAddReservation,
   onReservationDeleted,
+  tabsComponent,
+  activeTab = 'current',
 }) => {
   const { t, i18n } = useTranslation();
   
@@ -167,9 +171,13 @@ const ReservationList: React.FC<ReservationListProps> = ({
       {/* Cabecera y filtros */}
       <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4 sm:mb-0">
-            {t("dashboard.reservations.title")}
-          </h3>
+          <div className="mb-4 sm:mb-0">
+            {tabsComponent || (
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                {t("dashboard.reservations.title")}
+              </h3>
+            )}
+          </div>
           <button
             type="button"
             onClick={onAddReservation}
@@ -312,14 +320,19 @@ const ReservationList: React.FC<ReservationListProps> = ({
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            {t("reservations.emptyState")}
+            {tabsComponent ? t(`reservations.empty.${activeTab}`) : t("reservations.emptyState")}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            {t("reservations.emptyStateDescription")}
+            {tabsComponent 
+              ? (activeTab === 'current' 
+                ? t("reservations.emptyStateDescription") 
+                : t("reservations.emptyPastDescription"))
+              : t("reservations.emptyStateDescription")
+            }
           </p>
           {!Object.values(filters).some(
             (val) => val !== undefined && val !== "",
-          ) && (
+          ) && activeTab === 'current' && (
             <div className="mt-6">
               <button
                 type="button"
