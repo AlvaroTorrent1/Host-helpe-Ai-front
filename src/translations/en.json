@@ -697,8 +697,8 @@
     "emptyStateDescription": "Start by creating your first reservation or adjust your search filters",
     "emptyPastDescription": "You have no past reservations. When you have guests who have completed their stay, they will appear here.",
     "tabs": {
-      "current": "Current Reservations",
-      "past": "Past Reservations"
+      "current": "Current",
+      "past": "Past"
     },
     "empty": {
       "current": "No current reservations",

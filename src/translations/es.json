@@ -649,8 +649,8 @@
       "emptyStateDescription": "Comienza creando tu primera reserva o ajusta los filtros de búsqueda",
       "emptyPastDescription": "No tienes reservas pasadas. Cuando tengas huéspedes que hayan completado su estancia, aparecerán aquí.",
     "tabs": {
-      "current": "Reservas Actuales",
-      "past": "Reservas Pasadas"
+      "current": "Actuales",
+      "past": "Pasadas"
     },
     "empty": {
       "current": "No hay reservas actuales",
