@@ -459,9 +459,7 @@ const LandingPage = () => {
             <div 
               className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide pl-4 pr-8 md:px-0 mobile-carousel"
               style={{
-                overflowY: 'hidden',
-                touchAction: 'pan-x',
-                overscrollBehaviorY: 'none',
+                touchAction: 'auto',
                 overscrollBehaviorX: 'auto',
                 WebkitOverflowScrolling: 'touch'
               }}
@@ -475,7 +473,7 @@ const LandingPage = () => {
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
                 style={{
-                  touchAction: 'pan-x'
+                  touchAction: 'pan-y pinch-zoom'
                 }}
               >
                 <div className="mb-4">
@@ -538,7 +536,7 @@ const LandingPage = () => {
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
                 style={{
-                  touchAction: 'pan-x'
+                  touchAction: 'pan-y pinch-zoom'
                 }}
               >
                 <div className="mb-4">
@@ -601,7 +599,7 @@ const LandingPage = () => {
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
                 style={{
-                  touchAction: 'pan-x'
+                  touchAction: 'pan-y pinch-zoom'
                 }}
               >
                 <div className="mb-4">
