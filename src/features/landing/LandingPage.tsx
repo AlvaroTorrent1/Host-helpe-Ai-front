@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import MobileMenu from "@shared/components/MobileMenu";
-import LanguageSelector from "@shared/components/LanguageSelector";
+import LandingHeader from "@shared/components/LandingHeader";
 import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
 import { useTranslation } from "react-i18next";
@@ -48,13 +47,7 @@ const LandingPage = () => {
   const feature2Ref = useRef<HTMLDivElement>(null);
   const feature3Ref = useRef<HTMLDivElement>(null);
 
-  // Navigation links configuration
-  const navLinks = [
-    { text: t("nav.features"), href: "#features" },
-    { text: t("nav.pricing"), href: "/pricing" },
-    { text: t("nav.testimonials"), href: "/testimonios" },
-    { text: t("nav.login"), href: "/login", isButton: true },
-  ];
+  // Navigation links configuration - now handled by LandingHeader
 
   // Intersection Observer para animaciones de scroll
   useEffect(() => {
@@ -149,53 +142,8 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm w-full">
-        <div className="container-limited py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center">
-            <img
-              src="/imagenes/Logo_hosthelper_new.png"
-              alt="Host Helper AI Logo"
-              className="h-20 sm:h-36 responsive-img"
-            />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
-            <ul className="flex space-x-4 mr-4">
-              {navLinks.map((link, index) => (
-                <li key={index}>
-                  {link.href.startsWith("/") ? (
-                    <Link
-                      to={link.href}
-                      className={
-                        link.isButton
-                          ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md"
-                          : "text-gray-600 hover:text-primary-500"
-                      }
-                    >
-                      {link.text}
-                    </Link>
-                  ) : (
-                    <a
-                      href={link.href}
-                      className="text-gray-600 hover:text-primary-500"
-                    >
-                      {link.text}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            {/* Language Selector */}
-            <LanguageSelector />
-          </nav>
-
-          {/* Mobile Menu */}
-          <MobileMenu links={navLinks} />
-        </div>
-      </header>
+      {/* Header - Now using modular LandingHeader component */}
+      <LandingHeader />
 
       <main>
         {/* Hero Section */}
