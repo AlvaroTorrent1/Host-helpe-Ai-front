@@ -227,6 +227,15 @@ const Footer: React.FC = () => {
             </a>
             <span className="hidden sm:inline text-gray-400 text-xs">•</span>
             <a
+              href="/terminos-condiciones"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-primary-600 text-sm font-medium transition-colors"
+            >
+              {t("footer.termsConditions")}
+            </a>
+            <span className="hidden sm:inline text-gray-400 text-xs">•</span>
+            <a
               href="/data-deletion"
               target="_blank"
               rel="noopener noreferrer"

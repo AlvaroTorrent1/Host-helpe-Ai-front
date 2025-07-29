@@ -21,6 +21,7 @@ const UpsellingPage = lazy(() => import("./features/landing/UpsellingPage"));
 const PricingPage = lazy(() => import("./features/landing/Pricing"));
 const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
 const PrivacyPolicyPage = lazy(() => import("./features/landing/PrivacyPolicy"));
+const TerminosCondicionesPage = lazy(() => import("./features/landing/TerminosYCondiciones"));
 const DataDeletionPage = lazy(() => import("./features/landing/DataDeletion"));
 const DeletionStatusPage = lazy(() => import("./features/landing/DeletionStatus"));
 const ScheduleDemoPage = lazy(() => import("./features/landing/ScheduleDemoPage"));
@@ -84,6 +85,7 @@ function App() {
                       <Route path="/pricing" element={<PricingPage />} />
                       <Route path="/testimonios" element={<TestimoniosPage />} />
                       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                      <Route path="/terminos-condiciones" element={<TerminosCondicionesPage />} />
                       <Route path="/data-deletion" element={<DataDeletionPage />} />
                       <Route path="/deletion-status" element={<DeletionStatusPage />} />
                       <Route path="/schedule-demo" element={<ScheduleDemoPage />} />

@@ -632,6 +632,7 @@
     "contact": "Contacto",
     "slogan": "Automatizando la gestión de alojamientos turísticos con IA",
     "privacyPolicy": "Política de Privacidad",
+    "termsConditions": "Términos y Condiciones",
     "termsOfService": "Términos de Servicio",
     "dataDeletion": "Eliminación de Datos",
     "copyright": "© 2025 Host Helper AI. Todos los derechos reservados."
@@ -1005,6 +1006,88 @@
       "policyUpdates": {
         "title": "Actualizaciones de la Política de Privacidad",
         "content": "Nos reservamos el derecho a modificar esta política. Cualquier cambio será publicado en este Sitio Web. Te recomendamos revisarla periódicamente."
+      }
+    }
+  },
+  "termsConditions": {
+    "title": "Términos y Condiciones",
+    "subtitle": "Condiciones que rigen el uso de nuestros servicios",
+    "lastUpdated": "Última actualización: 24 de julio de 2025",
+    "tableOfContents": "Índice de Contenidos",
+    "contactInfo": "Información de Contacto",
+    "generalInfo": "Estos términos y condiciones regulan el uso de la plataforma Host Helper AI. Al utilizar nuestros servicios, usted acepta cumplir con estos términos en su totalidad.",
+    "sections": {
+      "introduction": {
+        "title": "Introducción",
+        "content": "Las presentes Condiciones de Servicio (en adelante, \"Condiciones\") regulan el acceso y uso del sitio web www.hosthelperai.com (en adelante, \"el Sitio Web\") y los servicios ofrecidos por Iterator dataworks sl (en adelante, \"HostHelperAI\" o \"el Titular\"), así como la contratación de dichos servicios. La navegación por el Sitio Web y/o la contratación de servicios atribuyen la condición de usuario (en adelante, \"Usuario\" o \"Cliente\") e implican la aceptación plena y sin reservas de todas las disposiciones incluidas en estas Condiciones, que podrán ser modificadas según se indica en la sección correspondiente."
+      },
+      "identification": {
+        "title": "Identificación del Titular",
+        "content": "En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSI), se informa que el titular del Sitio Web es:\n\n• Identidad: Iterator dataworks sl\n• NIF: B22732358\n• Domicilio: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, España\n• Teléfono: 687472327\n• Correo electrónico: support@hosthelperai.com"
+      },
+      "object": {
+        "title": "Objeto",
+        "content": "Estas Condiciones tienen por objeto regular:\n\n• El acceso y uso del Sitio Web por parte de los Usuarios.\n• La contratación de los servicios de mensajería automatizada y soluciones de atención al cliente ofrecidos por HostHelperAI a través del Sitio Web.\n• Los derechos y obligaciones de HostHelperAI y los Usuarios/Clientes en el marco de la prestación de servicios."
+      },
+      "websiteUse": {
+        "title": "Uso del Sitio Web",
+        "content": "4.1. Normas de uso\n\nEl Usuario se compromete a utilizar el Sitio Web, sus contenidos y servicios de conformidad con:\n• La legislación vigente, en particular el RGPD, la LSSI, y la Ley General para la Defensa de los Consumidores y Usuarios (LGDCU).\n• Las presentes Condiciones.\n• Las buenas costumbres y el orden público.\n\nEl Usuario se obliga a no utilizar el Sitio Web con fines ilícitos, contrarios a estas Condiciones, lesivos de los derechos de terceros, o que puedan dañar, inutilizar, sobrecargar o deteriorar el Sitio Web o los servicios ofrecidos.\n\n4.2. Registro de Usuarios\n\nPara acceder a ciertos servicios, como la contratación de soluciones de mensajería, el Usuario deberá registrarse mediante el formulario disponible en el Sitio Web, proporcionando datos veraces, exactos y actualizados. El Usuario es responsable de la custodia de sus credenciales de acceso y notificará inmediatamente a HostHelperAI cualquier uso no autorizado de su cuenta.\n\n4.3. Prohibiciones\n\nQueda expresamente prohibido:\n• Reproducir, distribuir o modificar los contenidos del Sitio Web sin autorización.\n• Utilizar los servicios para enviar contenido ilegal, ofensivo o que infrinja derechos de terceros.\n• Interferir en el funcionamiento del Sitio Web mediante software malicioso o cualquier acción que comprometa su seguridad."
+      },
+      "servicesOffered": {
+        "title": "Servicios Ofrecidos",
+        "content": "Host Helper AI ofrece servicios de mensajería automatizada basados en inteligencia artificial para la gestión de comunicaciones con clientes, incluyendo:\n\n• Respuestas automáticas personalizadas.\n• Análisis y mejora de la experiencia del cliente.\n\nLos detalles específicos de cada servicio, incluyendo características y precios, están disponibles en el Sitio Web."
+      },
+      "contractingProcess": {
+        "title": "Proceso de Contratación",
+        "content": "6.1. Pasos para la contratación\n\nEl proceso de contratación de los servicios se realiza a través del Sitio Web y consta de los siguientes pasos:\n• Selección del plan o servicio deseado.\n• Registro o inicio de sesión en la cuenta del Usuario.\n• Introducción de los datos de facturación y, si aplica, de integración con plataformas externas.\n• Selección del método de pago.\n• Confirmación de la contratación mediante la aceptación de estas Condiciones.\n\n6.2. Información precontractual\n\nAntes de confirmar la contratación, el Cliente recibirá información clara sobre:\n• Las características principales del servicio.\n• El precio total, incluyendo impuestos.\n• Los métodos de pago aceptados.\n• La duración del contrato y las condiciones de renovación o cancelación.\n\n6.3. Confirmación\n\nUna vez confirmada la contratación, el Cliente recibirá un correo electrónico con el resumen del pedido, las Condiciones aceptadas y la factura correspondiente."
+      },
+      "pricesPayment": {
+        "title": "Precios y Formas de Pago",
+        "content": "• Precios: Los precios de los servicios están indicados en el Sitio Web en euros (€) e incluyen los impuestos aplicables (por ejemplo, IVA). HostHelperAI se reserva el derecho de modificar los precios, notificando cualquier cambio con antelación.\n\n• Formas de pago: Se aceptan los siguientes métodos:\n- Tarjeta de crédito/débito.\n- Transferencia bancaria.\n- Otros métodos indicados en el Sitio Web.\n\n• Facturación: Las facturas se emitirán según el ciclo de facturación elegido (mensual, anual, etc.) y se enviarán al correo electrónico proporcionado por el Cliente."
+      },
+      "compliance": {
+        "title": "Cumplimiento de Obligaciones",
+        "content": "Host Helper AI se compromete a prestar los servicios contratados con la máxima diligencia y profesionalidad, cumpliendo con los estándares de calidad establecidos y manteniendo la disponibilidad del servicio según lo acordado en el plan contratado."
+      },
+      "liability": {
+        "title": "Responsabilidad",
+        "content": "Host Helper AI no será responsable de los daños y perjuicios que puedan derivarse del uso incorrecto del servicio, interrupciones del servicio por causas de fuerza mayor, o del uso de información proporcionada por terceros. La responsabilidad se limitará al importe abonado por el servicio en el período correspondiente."
+      },
+      "intellectualProperty": {
+        "title": "Propiedad Intelectual e Industrial",
+        "content": "Todos los contenidos del Sitio Web (textos, imágenes, software, diseños, marcas, logotipos, etc.) y los servicios ofrecidos son propiedad de HostHelperAI o de sus licenciantes. El Usuario no adquiere ningún derecho de explotación sobre dichos contenidos más allá de lo necesario para el uso del Sitio Web y los servicios contratados. Queda prohibida la reproducción, distribución o modificación de estos contenidos sin autorización expresa."
+      },
+      "dataProtection": {
+        "title": "Protección de Datos Personales",
+        "content": "HostHelperAI trata los datos personales de los Usuarios y Clientes conforme a su Política de Privacidad (disponible en www.hosthelperai.com). En resumen:\n\n• Los datos se recopilan para gestionar los servicios, mejorar la experiencia del usuario y cumplir con obligaciones legales.\n• Los datos no se cederán a terceros salvo obligación legal o con el consentimiento del Cliente.\n• Los Clientes pueden ejercer sus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad contactando a support@hosthelperai.com."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "content": "El Sitio Web utiliza cookies para mejorar la experiencia del usuario y proporcionar funcionalidades personalizadas. Al utilizar el sitio web, el usuario acepta el uso de cookies según se describe en nuestra Política de Cookies."
+      },
+      "applicableLaw": {
+        "title": "Legislación Aplicable",
+        "content": "Estas Condiciones se rigen por la legislación española, en particular:\n\n• Reglamento (UE) 2016/679 (RGPD).\n• Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSI).\n• Real Decreto Legislativo 1/2007, de 16 de noviembre, por el que se aprueba el texto refundido de la Ley General para la Defensa de los Consumidores y Usuarios (LGDCU).\n• Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD)."
+      },
+      "jurisdiction": {
+        "title": "Jurisdicción",
+        "content": "Para la resolución de controversias, las partes se someten a los juzgados y tribunales de la ciudad de Málaga, España, renunciando a cualquier otro fuero que pudiera corresponderles."
+      },
+      "modifications": {
+        "title": "Modificaciones",
+        "content": "HostHelperAI podrá modificar estas Condiciones en cualquier momento, publicando la versión actualizada en el Sitio Web. Las modificaciones entrarán en vigor desde su publicación, y se notificará a los Clientes con contratos activos por correo electrónico. El uso continuado del Sitio Web o los servicios implica la aceptación de las nuevas Condiciones."
+      },
+      "contact": {
+        "title": "Contacto",
+        "content": "Para cualquier consulta sobre estas Condiciones, contáctanos en:\n\n• Correo electrónico: support@hosthelperai.com\n• Dirección postal: Avenida Imperio Argentina 7, portal 4, 4a, 29004 Málaga, España\n• Teléfono: 687472327"
+      },
+      "effectiveDate": {
+        "title": "Fecha de Entrada en Vigor",
+        "content": "Estas Condiciones entran en vigor el 24 de julio de 2025 y permanecen vigentes hasta su modificación o derogación."
+      },
+      "severability": {
+        "title": "Divisibilidad",
+        "content": "Si alguna disposición de estas Condiciones fuera declarada nula o inaplicable por resolución judicial o administrativa, el resto de las disposiciones mantendrán su plena validez y eficacia."
       }
     }
   },
