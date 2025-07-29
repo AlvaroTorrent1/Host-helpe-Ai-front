@@ -208,7 +208,7 @@ const Footer: React.FC = () => {
           <img
             src="/imagenes/Logo_hosthelper_new.png"
             alt="Host Helper AI Logo"
-            className="h-28 md:h-28 responsive-img mb-2"
+            className="h-14 md:h-28 responsive-img mb-2"
           />
           <div className="h-0.5 w-16 bg-gradient-to-r from-primary-400 to-amber-300 rounded mb-2"></div>
           <p className="text-gray-600 text-sm max-w-xs text-center mt-1">
