@@ -2,6 +2,7 @@
 // Componente Footer global - MIGRADO a react-i18next
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const Footer: React.FC = () => {
@@ -217,32 +218,26 @@ const Footer: React.FC = () => {
 
         <div className="mt-6 pt-3 border-t border-gray-200/50 text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2">
-            <a
-              href="/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/privacy-policy"
               className="text-gray-600 hover:text-primary-600 text-sm font-medium transition-colors"
             >
               {t("footer.privacyPolicy")}
-            </a>
+            </Link>
             <span className="hidden sm:inline text-gray-400 text-xs">•</span>
-            <a
-              href="/terminos-condiciones"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/terminos-condiciones"
               className="text-gray-600 hover:text-primary-600 text-sm font-medium transition-colors"
             >
               {t("footer.termsConditions")}
-            </a>
+            </Link>
             <span className="hidden sm:inline text-gray-400 text-xs">•</span>
-            <a
-              href="/data-deletion"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/data-deletion"
               className="text-gray-600 hover:text-red-600 text-sm font-medium transition-colors"
             >
               {t("footer.dataDeletion")}
-            </a>
+            </Link>
           </div>
           <p className="text-gray-500 text-xs">{t("footer.copyright")}</p>
         </div>

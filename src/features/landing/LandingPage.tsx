@@ -456,25 +456,15 @@ const LandingPage = () => {
               </p>
             </div>
 
-            <div 
-              className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide pl-4 pr-8 md:px-0 mobile-carousel"
-              style={{
-                touchAction: 'auto',
-                overscrollBehaviorX: 'auto',
-                WebkitOverflowScrolling: 'touch'
-              }}
-            >
+            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
               {/* Primera tarjeta de características - Agentes IA 24/7 */}
               <div 
                 ref={feature1Ref}
-                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out w-[calc(100vw-4rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
+                className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out ${
                   visibleFeatures[0] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
-                style={{
-                  touchAction: 'pan-y pinch-zoom'
-                }}
               >
                 <div className="mb-4">
                   <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-200 ${
@@ -530,14 +520,11 @@ const LandingPage = () => {
               {/* Segunda tarjeta de características - Check-in automatizado */}
               <div 
                 ref={feature2Ref}
-                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-200 w-[calc(100vw-4rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
+                className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-200 ${
                   visibleFeatures[1] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
-                style={{
-                  touchAction: 'pan-y pinch-zoom'
-                }}
               >
                 <div className="mb-4">
                   <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-400 ${
@@ -593,14 +580,11 @@ const LandingPage = () => {
               {/* Tercera tarjeta de características - Upselling inteligente */}
               <div 
                 ref={feature3Ref}
-                className={`bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-400 w-[calc(100vw-4rem)] md:w-auto mobile-carousel-item flex-shrink-0 ${
+                className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-400 ${
                   visibleFeatures[2] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
                 }`}
-                style={{
-                  touchAction: 'pan-y pinch-zoom'
-                }}
               >
                 <div className="mb-4">
                   <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-600 ${

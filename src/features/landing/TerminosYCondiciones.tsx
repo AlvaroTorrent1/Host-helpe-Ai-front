@@ -267,16 +267,6 @@ const TerminosYCondiciones = () => {
         {/* Terms and Conditions Content */}
         <section className="py-16 bg-white">
           <div className="container-limited">
-            {/* General Information */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg mb-8 border border-blue-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Información General
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                {t("termsConditions.generalInfo")}
-              </p>
-            </div>
-
             {/* Table of Contents */}
             <div className="bg-gray-50 p-6 rounded-lg mb-12 border border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -323,31 +313,7 @@ const TerminosYCondiciones = () => {
               ))}
             </div>
 
-            {/* Contact Information */}
-            <div className="mt-16 bg-gradient-to-r from-primary-50 to-amber-50 p-8 rounded-lg border border-primary-200">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                {t("termsConditions.contactInfo", "Información de Contacto")}
-              </h3>
-              <div className="space-y-2 text-gray-700">
-                <p><strong>Iterator Dataworks SL</strong></p>
-                <p>Avenida Imperio Argentina 7, portal 4, 4a</p>
-                <p>29004 Málaga, España</p>
-                <p>NIF: B22732358</p>
-                <a 
-                  href="mailto:support@hosthelperai.com"
-                  className="text-primary-600 hover:text-primary-800 hover:underline transition-colors"
-                >
-                  support@hosthelperai.com
-                </a>
-                <br />
-                <a 
-                  href="tel:+34687472327"
-                  className="text-primary-600 hover:text-primary-800 hover:underline transition-colors"
-                >
-                  +34 687 472 327
-                </a>
-              </div>
-            </div>
+
           </div>
         </section>
       </main>
