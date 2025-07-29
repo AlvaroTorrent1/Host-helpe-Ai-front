@@ -24,15 +24,6 @@
         "SUPABASE_ACCESS_TOKEN": "sbp_14888d63f86c3e52498f822bc1877646e31f94cb"
       }
     },
-    "ElevenLabs": {
-      "command": "C:\\Python312\\python.exe",
-      "args": [
-        "C:\\Users\\Usuario\\AppData\\Roaming\\Python\\Python312\\site-packages\\elevenlabs_mcp\\server.py"
-      ],
-      "env": {
-        "ELEVENLABS_API_KEY": "sk_5c889e6b3f36e9e06f7d374742d616b73143637a9e7078e9"
-      }
-    },
     "server-sequential-thinking": {
       "command": "cmd",
       "args": [

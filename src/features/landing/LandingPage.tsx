@@ -910,7 +910,7 @@ const LandingPage = () => {
         <section className="py-8 bg-white">
           <div className="container-limited">
             <div dangerouslySetInnerHTML={{ 
-              __html: '<elevenlabs-convai agent-id="NWSYeahhc7b5XrxzO7eU"></elevenlabs-convai>' 
+              __html: '<elevenlabs-convai agent-id="agent_4701k1b4fxnne09t8vzy2y52wma1"></elevenlabs-convai>' 
             }} />
           </div>
         </section>
