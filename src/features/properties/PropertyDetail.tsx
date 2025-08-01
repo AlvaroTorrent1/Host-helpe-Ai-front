@@ -5,21 +5,20 @@ import { useTranslation } from "react-i18next";
 
 interface PropertyDetailProps {
   property: Property;
-  onEdit: (property: Property) => void;
   onClose: () => void;
 }
 
 const PropertyDetail: React.FC<PropertyDetailProps> = ({
   property,
-  onEdit,
   onClose,
 }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<"info" | "images" | "documents">(
+  const [activeTab, setActiveTab] = useState<"info" | "images" | "documents" | "links">(
     "info",
   );
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
 
   // Obtener icono según el tipo de archivo
   const getFileIcon = (fileType: string) => {
@@ -89,6 +88,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
       <div className="relative h-64 w-full">
         <img
           src={
+            property.additional_images?.[0]?.file_url ||
             property.image ||
             "https://via.placeholder.com/800x400?text=Sin+imagen"
           }
@@ -121,47 +121,66 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
         </button>
       </div>
 
-      {/* Pestañas de navegación */}
+      {/* Pestañas de navegación - Diseño responsivo */}
       <div className="border-b border-gray-200">
-        <nav className="-mb-px flex px-6 pt-4">
+        <nav className="-mb-px flex px-2 sm:px-6 pt-4">
           <button
-            className={`whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm ${
+            className={`flex-1 py-4 px-1 sm:px-4 border-b-2 font-medium text-xs sm:text-sm text-center ${
               activeTab === "info"
                 ? "border-primary-500 text-primary-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
             onClick={() => setActiveTab("info")}
           >
-            {t("properties.detail.tabs.info")}
+            <span className="sm:hidden">{t("properties.detail.tabs.infoShort")}</span>
+            <span className="hidden sm:inline">{t("properties.detail.tabs.info")}</span>
           </button>
           <button
-            className={`whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm ${
+            className={`flex-1 py-4 px-1 sm:px-4 border-b-2 font-medium text-xs sm:text-sm text-center ${
               activeTab === "images"
                 ? "border-primary-500 text-primary-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
             onClick={() => setActiveTab("images")}
           >
-            {t("properties.detail.tabs.additionalImages")}
+            <span className="sm:hidden">{t("properties.detail.tabs.additionalImagesShort")}</span>
+            <span className="hidden sm:inline">{t("properties.detail.tabs.additionalImages")}</span>
             {property.additional_images &&
               property.additional_images.length > 0 && (
-                <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-gray-100">
+                <span className="ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 text-xs rounded-full bg-gray-100">
                   {property.additional_images.length}
                 </span>
               )}
           </button>
           <button
-            className={`whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm ${
+            className={`flex-1 py-4 px-1 sm:px-4 border-b-2 font-medium text-xs sm:text-sm text-center ${
               activeTab === "documents"
                 ? "border-primary-500 text-primary-600"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
             onClick={() => setActiveTab("documents")}
           >
-            {t("properties.detail.tabs.documents")}
+            <span className="sm:hidden">{t("properties.detail.tabs.documentsShort")}</span>
+            <span className="hidden sm:inline">{t("properties.detail.tabs.documents")}</span>
             {property.documents && property.documents.length > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-gray-100">
+              <span className="ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 text-xs rounded-full bg-gray-100">
                 {property.documents.length}
+              </span>
+            )}
+          </button>
+          <button
+            className={`flex-1 py-4 px-1 sm:px-4 border-b-2 font-medium text-xs sm:text-sm text-center ${
+              activeTab === "links"
+                ? "border-primary-500 text-primary-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+            onClick={() => setActiveTab("links")}
+          >
+            <span className="sm:hidden">{t("properties.detail.tabs.linksShort")}</span>
+            <span className="hidden sm:inline">{t("properties.detail.tabs.links")}</span>
+            {property.shareable_links && property.shareable_links.length > 0 && (
+              <span className="ml-1 sm:ml-2 px-1 sm:px-2 py-0.5 text-xs rounded-full bg-gray-100">
+                {property.shareable_links.length}
               </span>
             )}
           </button>
@@ -204,29 +223,6 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                 </ul>
               </div>
             )}
-
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => onEdit(property)}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
-                <svg
-                  className="-ml-1 mr-2 h-5 w-5 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-                {t("properties.buttons.edit")}
-              </button>
-            </div>
           </div>
         )}
 
@@ -253,20 +249,22 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                           alt={image.description}
                           className="h-40 w-full object-cover rounded-md"
                         />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-opacity">
-                          <svg
-                            className="h-8 w-8 text-white opacity-0 group-hover:opacity-100"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zm-3 0v3m0 0v3m0-6h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-all duration-300">
+                          <div className="bg-white bg-opacity-90 rounded-full p-3 shadow-lg opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300">
+                            <svg
+                              className="h-6 w-6 text-gray-700"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                              />
+                            </svg>
+                          </div>
                         </div>
                       </div>
                       <div className="mt-2">
@@ -311,30 +309,10 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
           <div>
             {property.documents && property.documents.length > 0 ? (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
+                <div>
                   <p className="text-sm text-gray-500">
-                    {t("properties.detail.documentsInfo")}
+                    Documentos relacionados con la propiedad
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => setIsDocumentModalOpen(true)}
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
-                    <svg
-                      className="h-4 w-4 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                    Gestionar documentos
-                  </button>
                 </div>
                 <div className="space-y-3">
                   {property.documents.map((doc) => (
@@ -398,6 +376,134 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
                   {t("properties.detail.addDocumentsWhileEditing")}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Nueva pestaña: Enlaces compartibles */}
+        {activeTab === "links" && (
+          <div>
+            {property.shareable_links && property.shareable_links.length > 0 ? (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">Enlaces de Negocio</h3>
+                  <p className="text-sm text-gray-500">
+                    Enlaces compartibles para promover tu propiedad en diferentes plataformas
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {property.shareable_links.map((link) => (
+                    <div
+                      key={link.id}
+                      className="flex items-center justify-between p-4 border rounded-lg bg-white hover:bg-gray-50 transition"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex-shrink-0">
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                              <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M7.414 15.414a2 2 0 01-2.828-2.828l3-3a2 2 0 012.828 0 1 1 0 001.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-gray-900 truncate">
+                              {link.title}
+                            </h4>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className="text-xs text-gray-500 capitalize">
+                                {link.link_type.replace('_', ' ')}
+                              </span>
+                              {link.created_for !== 'general' && (
+                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                  {link.created_for}
+                                </span>
+                              )}
+                              <span className="text-xs text-gray-500">
+                                {link.click_count || 0} clics
+                              </span>
+                            </div>
+                            {link.description && (
+                              <p className="text-xs text-gray-600 mt-1 truncate">
+                                {link.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2 ml-4">
+                        {/* Botón Copiar con icono */}
+                        <button
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(link.public_url);
+                              setCopiedLinkId(link.id);
+                              // Limpiar el feedback después de 2 segundos
+                              setTimeout(() => setCopiedLinkId(null), 2000);
+                            } catch (err) {
+                              console.error('Error al copiar:', err);
+                            }
+                          }}
+                          className={`inline-flex items-center px-3 py-1.5 border text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 ${
+                            copiedLinkId === link.id
+                              ? 'border-green-200 text-green-700 bg-green-50 hover:bg-green-100'
+                              : 'border-primary-200 text-primary-700 bg-primary-50 hover:bg-primary-100 hover:border-primary-300 focus:ring-primary-500'
+                          }`}
+                          title="Copiar enlace"
+                        >
+                          {copiedLinkId === link.id ? (
+                            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                          )}
+                          {copiedLinkId === link.id ? '¡Copiado!' : 'Copiar'}
+                        </button>
+                        
+                        {/* Botón Visitar con icono */}
+                        <a
+                          href={link.public_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-3 py-1.5 border border-accent-200 text-sm font-medium rounded-md text-accent-700 bg-accent-50 hover:bg-accent-100 hover:border-accent-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 transition-colors duration-200"
+                          title="Abrir enlace en nueva pestaña"
+                        >
+                          <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Visitar
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  />
+                </svg>
+                <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  No hay enlaces de negocio
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Los enlaces se generan automáticamente al añadir imágenes y documentos a la propiedad.
                 </p>
               </div>
             )}

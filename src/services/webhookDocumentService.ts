@@ -2,6 +2,8 @@
 // Service for sending documents to n8n webhook for processing and vectorization
 
 import { supabase } from './supabase';
+import { environment, webhookConfig } from '../config/environment';
+import { uploadDocument } from './documentService';
 
 interface DocumentMetadata {
   name: string;
@@ -46,17 +48,30 @@ interface ProcessingCallbacks {
 
 class WebhookDocumentService {
   private readonly webhookUrl: string;
-  private readonly maxRetries: number = 3;
-  private readonly retryDelay: number = 2000; // 2 seconds
+  private readonly maxRetries: number;
+  private readonly retryDelay: number;
+  private readonly enableWebhookInDev: boolean;
 
   constructor() {
-    // URL del webhook de n8n para procesamiento de documentos
-    this.webhookUrl = 'https://hosthelperai.app.n8n.cloud/webhook/file';
+    // Configuración desde variables de entorno
+    this.webhookUrl = webhookConfig.documentWebhookUrl;
+    this.maxRetries = webhookConfig.maxRetries;
+    this.retryDelay = webhookConfig.retryDelay;
+    this.enableWebhookInDev = webhookConfig.enableWebhookInDevelopment;
+    
+    // Log de configuración en desarrollo
+    if (environment.development) {
+      console.log('🔧 WebhookDocumentService Configuration:', {
+        webhookUrl: this.webhookUrl,
+        enableWebhookInDev: this.enableWebhookInDev,
+        environment: environment.current
+      });
+    }
   }
 
   /**
    * Enviar documento al webhook de n8n para procesamiento
-   * ACTUALIZADO: Ahora envía archivos en formato binario usando FormData
+   * ACTUALIZADO: Incluye fallback local para desarrollo
    */
   async sendDocumentToWebhook(
     propertyId: string,
@@ -71,8 +86,8 @@ class WebhookDocumentService {
         throw new Error('Archivo vacío o inválido');
       }
 
-      if (file.size > 10 * 1024 * 1024) { // 10MB límite
-        throw new Error('El archivo excede el tamaño máximo de 10MB');
+      if (file.size > webhookConfig.maxFileSizeMB * 1024 * 1024) {
+        throw new Error(`El archivo excede el tamaño máximo de ${webhookConfig.maxFileSizeMB}MB`);
       }
 
       // Obtener usuario actual
@@ -83,6 +98,12 @@ class WebhookDocumentService {
 
       callbacks?.onStatusChange?.('uploading');
       callbacks?.onProgress?.('Preparando documento para envío...');
+
+      // NUEVO: Fallback para desarrollo si webhook está deshabilitado
+      if (environment.development && !this.enableWebhookInDev) {
+        console.log('🔄 Modo desarrollo: Procesando documento localmente (webhook deshabilitado)');
+        return await this.processDocumentLocally(propertyId, file, metadata, callbacks);
+      }
 
       // NUEVO: Crear FormData con archivo binario
       const formData = new FormData();
@@ -197,6 +218,43 @@ class WebhookDocumentService {
 
     // Si llegamos aquí, todos los intentos fallaron
     throw lastError || new Error('No se pudo enviar el documento después de varios intentos');
+  }
+
+  /**
+   * Procesar documento localmente (fallback para desarrollo)
+   */
+  private async processDocumentLocally(
+    propertyId: string,
+    file: File,
+    metadata: DocumentMetadata,
+    callbacks?: ProcessingCallbacks
+  ): Promise<WebhookResponse> {
+    try {
+      callbacks?.onStatusChange?.('processing');
+      callbacks?.onProgress?.('Procesando documento localmente...');
+
+      // Usar el documentService existente para subir el documento
+      const result = await uploadDocument(propertyId, file, metadata);
+      
+      if (result) {
+        callbacks?.onStatusChange?.('completed');
+        callbacks?.onProgress?.('Documento procesado exitosamente (modo local)');
+        callbacks?.onSuccess?.(result.id);
+        
+        return {
+          success: true,
+          documentId: result.id,
+          message: 'Documento procesado localmente'
+        };
+      } else {
+        throw new Error('No se pudo procesar el documento localmente');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error en procesamiento local';
+      callbacks?.onStatusChange?.('failed');
+      callbacks?.onError?.(errorMessage);
+      throw error;
+    }
   }
 
   /**

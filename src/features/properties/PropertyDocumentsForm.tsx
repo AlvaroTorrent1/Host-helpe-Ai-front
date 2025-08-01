@@ -95,9 +95,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
         description: currentDocument.description || "",
         type: currentDocument.type,
         file_url: "#", // URL temporal
-        file_type: selectedFile.type.includes("pdf") ? "pdf" : 
-                  selectedFile.type.includes("doc") ? "doc" : 
-                  selectedFile.type.includes("text") ? "txt" : "other",
+        file_type: "document", // CORREGIDO: Todos los documentos deben tener file_type = 'document'
         uploaded_at: new Date().toISOString(),
         // Almacenar el archivo File para procesarlo después
         file: selectedFile,

@@ -156,6 +156,27 @@ export const fileTypes = {
 };
 
 /**
+ * Webhook configuration
+ */
+export const webhookConfig = {
+  // URL del webhook de N8N para procesamiento de documentos
+  documentWebhookUrl: import.meta.env.VITE_DOCUMENT_WEBHOOK_URL || 'https://hosthelperai.app.n8n.cloud/webhook/file',
+  
+  // Configuración para desarrollo - deshabilitar webhook si hay problemas CORS
+  enableWebhookInDevelopment: import.meta.env.VITE_ENABLE_WEBHOOK_DEV === 'true',
+  
+  // Configuración de reintentos
+  maxRetries: 3,
+  retryDelay: 2000, // 2 seconds
+  
+  // Límites de archivo
+  maxFileSizeMB: 10,
+  
+  // Timeout para requests de webhook
+  timeout: 30000, // 30 seconds
+};
+
+/**
  * Cache configuration
  */
 export const cacheConfig = {

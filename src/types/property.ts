@@ -13,6 +13,8 @@ export interface Property {
   // Nuevos campos para imágenes adicionales
   additional_images?: PropertyImage[];
   documents?: PropertyDocument[];
+  // Enlaces compartibles de la propiedad
+  shareable_links?: ShareableLink[];
   // Campo para Google Business Profile URL (legacy - ahora usa shareable_links)
   google_business_profile_url?: string;
   // Descripción para enlaces de negocio

@@ -66,44 +66,65 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
     setErrorMessage(null);
   }, [modalOpen]);
 
-  // Cargar datos de simulación para el MVP
+  // Cargar script de ElevenLabs para el widget conversacional
+  useEffect(() => {
+    // Verificar si el script ya está cargado
+    if (document.querySelector('script[src="https://unpkg.com/@elevenlabs/convai-widget-embed"]')) {
+      return;
+    }
+
+    // Crear y cargar el script de ElevenLabs
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+    script.async = true;
+    script.type = 'text/javascript';
+    
+    script.onload = () => {
+      console.log('✅ ElevenLabs Convai Widget script cargado correctamente');
+    };
+    
+    script.onerror = () => {
+      console.error('❌ Error al cargar el script de ElevenLabs Convai Widget');
+    };
+
+    document.head.appendChild(script);
+
+    // Cleanup function para remover el script si el componente se desmonta
+    return () => {
+      const existingScript = document.querySelector('script[src="https://unpkg.com/@elevenlabs/convai-widget-embed"]');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []); // Solo ejecutar una vez al montar el componente
+
+  // Cargar propiedades usando el servicio corregido
   useEffect(() => {
     const loadProperties = async () => {
+      console.log("🔍 PropertyManagementPage: Iniciando carga de propiedades...");
       setIsLoading(true);
       try {
-        // SOLUCION CORS: Usar consulta simple como en Dashboard que funciona
-        const { data, error } = await supabase
-          .from("properties")
-          .select('*')
-          .eq('user_id', user?.id)
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-          // SOLUCION CORS: Mapeo simplificado sin JOIN - cargar media_files por separado si es necesario
-          const mappedProperties = data.map((property: any) => ({
-            ...property,
-            documents: [], // Se puede cargar por separado si es necesario
-            additional_images: [], // Se puede cargar por separado si es necesario
-          }));
-          setProperties(mappedProperties);
-        } else {
-          // MODIFICADO: No cargar datos mock - usuarios free deben tener 0 propiedades
-          // Los usuarios free deben ver una lista vacía para fomentar el upgrade
-          setProperties([]);
-        }
+        // Usar el servicio getProperties que ahora carga datos completos
+        const { getProperties } = await import('../../services/propertyService');
+        console.log("🔍 PropertyManagementPage: Llamando a getProperties()...");
+        const propertiesData = await getProperties();
+        console.log("🔍 PropertyManagementPage: Propiedades recibidas:", propertiesData);
+        console.log("🔍 PropertyManagementPage: Número de propiedades:", propertiesData?.length || 0);
+        setProperties(propertiesData);
       } catch (error) {
+        console.error("❌ PropertyManagementPage - Error cargando propiedades:", error);
         console.error(t("errors.loadProperties"), error);
-        // En caso de error, también mostrar lista vacía
+        // En caso de error, mostrar lista vacía
         setProperties([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadProperties();
-  }, [user, t]);
+    if (user?.id) {
+      loadProperties();
+    }
+  }, [user?.id, t]);
 
   // Manejar apertura del modal para añadir nueva propiedad
   const handleAddProperty = () => {
@@ -124,9 +145,20 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
   };
 
   // Manejar edición de propiedad
-  const handleEditProperty = (property: Property) => {
-    setCurrentProperty(property);
-    setModalOpen(true);
+  const handleEditProperty = async (property: Property) => {
+    try {
+      // Recargar la propiedad con todos los datos actualizados (igual que PropertyDetail)
+      const { getPropertyById } = await import('../../services/propertyService');
+      const fullProperty = await getPropertyById(property.id);
+      setCurrentProperty(fullProperty);
+      setModalOpen(true);
+    } catch (error) {
+      console.error('Error loading property for edit:', error);
+      // Fallback a la propiedad de la lista si falla la recarga
+      setCurrentProperty(property);
+      setModalOpen(true);
+      toast.error(t('errors.loadPropertyDetails'));
+    }
   };
 
   // Manejar apertura del modal de confirmación de eliminación
@@ -516,12 +548,22 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
             })()}
           </div>
         ) : (
-          <PropertyList
-            properties={properties}
-            onEdit={handleEditProperty}
-            onDelete={handleDeleteClick}
-            onAdd={handleAddProperty}
-          />
+          <>
+            <PropertyList
+              properties={properties}
+              onEdit={handleEditProperty}
+              onDelete={handleDeleteClick}
+              onAdd={handleAddProperty}
+            />
+
+            {/* Widget ElevenLabs Convai específico para la página de propiedades */}
+            <div 
+              className="mt-8"
+              dangerouslySetInnerHTML={{ 
+                __html: '<elevenlabs-convai agent-id="agent_6001k1b1hha2e16rz0akz5fpa2fn"></elevenlabs-convai>' 
+              }} 
+            />
+          </>
         )}
       </main>
 

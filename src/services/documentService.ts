@@ -142,8 +142,6 @@ export const uploadDocument = async (
         property_id: propertyId,
         user_id: userData.user?.id, // REQUIRED for RLS policy
         file_type: 'document', // enum value
-        category: mapDocumentCategory(documentData.type), // mapped category
-        subcategory: documentData.type,
         title: documentData.name,
         description: documentData.description || "",
         file_url: publicUrlData.publicUrl,
@@ -203,7 +201,7 @@ export const uploadDocument = async (
       property_id: docData.property_id,
       name: docData.title,
       description: docData.description || "",
-      type: docData.subcategory as any,
+      type: "other", // Fallback ya que subcategory no existe en la tabla
       file_url: docData.file_url,
       file_type: fileType,
       uploaded_at: docData.created_at,

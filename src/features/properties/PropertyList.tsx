@@ -64,8 +64,17 @@ const PropertyList: React.FC<PropertyListProps> = ({
   });
 
   // Manejar clic en una propiedad para ver detalles
-  const handleViewProperty = (property: Property) => {
-    setSelectedProperty(property);
+  const handleViewProperty = async (property: Property) => {
+    try {
+      // Recargar la propiedad con todos los datos actualizados
+      const { getPropertyById } = await import('../../services/propertyService');
+      const fullProperty = await getPropertyById(property.id);
+      setSelectedProperty(fullProperty);
+    } catch (error) {
+      console.error('Error loading property details:', error);
+      // Fallback a la propiedad de la lista si falla la recarga
+      setSelectedProperty(property);
+    }
   };
 
   // Cerrar el modal de detalles
@@ -408,7 +417,6 @@ const PropertyList: React.FC<PropertyListProps> = ({
         >
           <PropertyDetail
             property={selectedProperty}
-            onEdit={onEdit}
             onClose={handleCloseDetail}
           />
         </Modal>

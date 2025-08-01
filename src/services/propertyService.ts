@@ -21,31 +21,64 @@ export const getProperties = async (): Promise<Property[]> => {
 
     console.log("Usuario autenticado:", userAuth.user.email, "ID:", userAuth.user.id);
 
-    // Consulta directa usando media_files en lugar de additional_images y documents
-    const { data, error } = await supabase
+    // CAMBIO CRÍTICO: Hacer consultas separadas como en getPropertyById()
+    // 1. Obtener propiedades básicas
+    const { data: properties, error: propError } = await supabase
       .from("properties")
-      .select(`
-        *,
-        media_files(*)
-      `)
+      .select("*")
       .eq('user_id', userAuth.user.id)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error en consulta directa:", error);
-      throw error;
+    if (propError) {
+      console.error("Error obteniendo propiedades:", propError);
+      throw propError;
     }
 
-    console.log("Propiedades obtenidas:", data);
+    console.log("Propiedades básicas obtenidas:", properties);
 
-    // Mapear los datos para que coincidan con el tipo Property
-    const mappedProperties = data.map(property => {
-      const mediaFiles = property.media_files || [];
+    if (!properties || properties.length === 0) {
+      console.log("No se encontraron propiedades para el usuario");
+      return [];
+    }
+
+    // 2. Obtener todos los media_files para estas propiedades
+    const propertyIds = properties.map(p => p.id);
+    const { data: allMediaFiles, error: mediaError } = await supabase
+      .from("media_files")
+      .select("*")
+      .in("property_id", propertyIds)
+      .order("sort_order", { ascending: true });
+
+    if (mediaError) {
+      console.error("Error obteniendo media_files:", mediaError);
+      throw mediaError;
+    }
+
+    // 3. Obtener todos los shareable_links para estas propiedades
+    const { data: allShareableLinks, error: linksError } = await supabase
+      .from("shareable_links")
+      .select("*")
+      .in("property_id", propertyIds)
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
+
+    if (linksError) {
+      console.error("Error obteniendo shareable_links:", linksError);
+      throw linksError;
+    }
+
+    console.log("Media files obtenidos:", allMediaFiles?.length || 0);
+    console.log("Shareable links obtenidos:", allShareableLinks?.length || 0);
+
+    // 4. Mapear cada propiedad con sus archivos y enlaces asociados
+    const mappedProperties = properties.map(property => {
+      const mediaFiles = (allMediaFiles || []).filter(file => file.property_id === property.id);
+      const shareableLinks = (allShareableLinks || []).filter(link => link.property_id === property.id);
       
       // Separar imágenes de documentos basado en file_type
       const images = mediaFiles
-        .filter((file: any) => file.file_type === 'image')
-        .map((file: any) => ({
+        .filter(file => file.file_type === 'image')
+        .map(file => ({
           id: file.id,
           property_id: file.property_id,
           file_url: file.file_url || file.public_url,
@@ -54,11 +87,11 @@ export const getProperties = async (): Promise<Property[]> => {
         }));
 
       const documents = mediaFiles
-        .filter((file: any) => file.file_type === 'document')
-        .map((file: any) => ({
+        .filter(file => file.file_type === 'document')
+        .map(file => ({
           id: file.id,
           property_id: file.property_id,
-          type: file.category?.replace('document_', '') || 'other',
+          type: file.mime_type?.includes('pdf') ? 'guide' : 'other',
           name: file.title,
           file_url: file.file_url || file.public_url,
           description: file.description,
@@ -68,11 +101,14 @@ export const getProperties = async (): Promise<Property[]> => {
 
       return {
         ...property,
+        image: images[0]?.file_url || property.image,
         additional_images: images,
-        documents: documents
+        documents: documents,
+        shareable_links: shareableLinks
       };
     });
 
+    console.log("Propiedades finales mapeadas:", mappedProperties.length);
     return mappedProperties as Property[];
 
   } catch (error) {
@@ -82,19 +118,74 @@ export const getProperties = async (): Promise<Property[]> => {
 };
 
 /**
- * Obtiene una propiedad por su ID
+ * Obtiene una propiedad por su ID con todos sus archivos multimedia y enlaces
  */
 export const getPropertyById = async (id: string): Promise<Property> => {
   try {
-    const { data, error } = await supabase
+    // Obtener propiedad básica
+    const { data: property, error: propError } = await supabase
       .from("properties")
-      .select("*, additional_images(*), documents(*)")
+      .select("*")
       .eq("id", id)
       .single();
 
-    if (error) throw error;
+    if (propError) throw propError;
 
-    return data as Property;
+    // Obtener media_files (imágenes y documentos)
+    const { data: mediaFiles, error: mediaError } = await supabase
+      .from("media_files")
+      .select("*")
+      .eq("property_id", id)
+      .order("sort_order", { ascending: true });
+
+    if (mediaError) throw mediaError;
+
+    // Obtener enlaces compartibles
+    const { data: shareableLinks, error: linksError } = await supabase
+      .from("shareable_links")
+      .select("*")
+      .eq("property_id", id)
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
+
+    if (linksError) throw linksError;
+
+    // Mapear imágenes desde media_files
+    const images = (mediaFiles || [])
+      .filter(file => file.file_type === 'image')
+      .map(file => ({
+        id: file.id,
+        property_id: file.property_id,
+        file_url: file.file_url || file.public_url,
+        description: file.description || file.title,
+        uploaded_at: file.created_at,
+        title: file.title,
+        sort_order: file.sort_order
+      }));
+
+    // Mapear documentos desde media_files
+    const documents = (mediaFiles || [])
+      .filter(file => file.file_type === 'document')
+      .map(file => ({
+        id: file.id,
+        property_id: file.property_id,
+        type: file.mime_type?.includes('pdf') ? 'guide' : 'other', // Inferir tipo desde mime_type
+        name: file.title,
+        file_url: file.file_url || file.public_url,
+        description: file.description,
+        uploaded_at: file.created_at,
+        file_type: file.mime_type || 'other'
+      }));
+
+    return {
+      ...property,
+      // Mantener compatibilidad con campo legacy image
+      image: images[0]?.file_url || property.image,
+      additional_images: images,
+      documents: documents,
+      shareable_links: shareableLinks || []
+    } as Property;
+
   } catch (error) {
     console.error(`Error obteniendo propiedad con ID ${id}:`, error);
     throw error;

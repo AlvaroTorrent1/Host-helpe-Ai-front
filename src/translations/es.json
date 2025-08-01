@@ -247,8 +247,13 @@
     "detail": {
       "tabs": {
         "info": "Información",
+        "infoShort": "Info",
         "additionalImages": "Imágenes Adicionales",
-        "documents": "Documentos"
+        "additionalImagesShort": "Imgs",
+        "documents": "Documentos",
+        "documentsShort": "Docs",
+        "links": "Enlaces",
+        "linksShort": "Enlaces"
       },
       "description": "Descripción",
       "noDescription": "Sin descripción",
@@ -274,6 +279,8 @@
     "previous": "Anterior",
     "next": "Siguiente",
     "creating": "Creando...",
+    "saving": "Guardando...",
+    "save": "Guardar",
     "createProperty": "Crear Propiedad",
     "updateProperty": "Actualizar Propiedad",
     "cancel": "Cancelar",

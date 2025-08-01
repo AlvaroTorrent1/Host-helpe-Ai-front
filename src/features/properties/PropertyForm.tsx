@@ -64,9 +64,36 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         business_links_description: property.business_links_description || "",
       });
 
-      // Si hay URL legacy, añadirla a la lista
-      if (property.google_business_profile_url) {
-        setGoogleBusinessUrls([property.google_business_profile_url]);
+      // CORREGIDO: Cargar TODOS los enlaces de shareable_links
+      const existingUrls: string[] = [];
+      
+      // Cargar enlaces de shareable_links (fuente principal)
+      if (property.shareable_links && property.shareable_links.length > 0) {
+        property.shareable_links.forEach(link => {
+          if (link.public_url) {
+            existingUrls.push(link.public_url);
+          }
+        });
+      }
+      
+      // Si no hay enlaces en shareable_links, usar el campo legacy como fallback
+      if (existingUrls.length === 0 && property.google_business_profile_url) {
+        existingUrls.push(property.google_business_profile_url);
+      }
+      
+      // Establecer los URLs (al menos uno vacío para permitir añadir)
+      setGoogleBusinessUrls(existingUrls.length > 0 ? existingUrls : [""]);
+      
+      console.log("📍 Enlaces cargados en el formulario:", existingUrls);
+
+      // CORREGIDO: Cargar también los documentos existentes
+      if (property.documents && property.documents.length > 0) {
+        setTemporaryDocuments(property.documents);
+        console.log("📄 Documentos cargados en el formulario:", property.documents);
+      } else {
+        // Si no hay documentos, limpiar el estado
+        setTemporaryDocuments([]);
+        console.log("📄 No hay documentos para cargar");
       }
     }
   }, [property]);
@@ -520,22 +547,15 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           type="submit"
           onClick={() => {
             // Log para debug
-            console.log('✅ Botón "Create Property" pulsado - Estableciendo submit intencional');
+            console.log('✅ Botón "Guardar" pulsado - Estableciendo submit intencional');
             setIsIntentionalSubmit(true);
           }}
           disabled={isSubmitting}
           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-primary-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
-          {isSubmitting ? t("common.creating") : t("common.createProperty")}
+          {isSubmitting ? t("common.saving") : t("common.save")}
         </button>
       )}
-       <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          {t("common.cancel")}
-        </button>
     </div>
   );
 

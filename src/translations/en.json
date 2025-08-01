@@ -298,8 +298,13 @@
     "detail": {
       "tabs": {
         "info": "Information",
+        "infoShort": "Info",
         "additionalImages": "Additional Images",
-        "documents": "Documents"
+        "additionalImagesShort": "Imgs",
+        "documents": "Documents",
+        "documentsShort": "Docs",
+        "links": "Links",
+        "linksShort": "Links"
       },
       "description": "Description",
       "noDescription": "No description",
@@ -325,6 +330,8 @@
     "previous": "Previous",
     "next": "Next",
     "creating": "Creating...",
+    "saving": "Saving...",
+    "save": "Save",
     "createProperty": "Create Property",
     "updateProperty": "Update Property",
     "cancel": "Cancel",
