@@ -160,7 +160,7 @@ export const fileTypes = {
  */
 export const webhookConfig = {
   // URL del webhook de N8N para procesamiento de documentos
-  documentWebhookUrl: import.meta.env.VITE_DOCUMENT_WEBHOOK_URL || 'https://hosthelperai.app.n8n.cloud/webhook/file',
+  documentWebhookUrl: import.meta.env.VITE_DOCUMENT_WEBHOOK_URL || 'https://hosthelperai.app.n8n.cloud/webhook-test/file',
   
   // Configuración para desarrollo - deshabilitar webhook si hay problemas CORS
   enableWebhookInDevelopment: import.meta.env.VITE_ENABLE_WEBHOOK_DEV === 'true',

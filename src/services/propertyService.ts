@@ -91,12 +91,14 @@ export const getProperties = async (): Promise<Property[]> => {
         .map(file => ({
           id: file.id,
           property_id: file.property_id,
-          type: file.mime_type?.includes('pdf') ? 'guide' : 'other',
-          name: file.title,
-          file_url: file.file_url || file.public_url,
-          description: file.description,
+          type: 'faq', // Por defecto FAQ, ya que no tenemos subcategory en la tabla
+          name: file.title || 'Documento sin título',
+          file_url: file.public_url || file.file_url, // Priorizar public_url pero usar file_url como fallback
+          description: file.description || '',
           uploaded_at: file.created_at,
-          file_type: file.mime_type || 'other'
+          file_type: file.mime_type?.includes('pdf') ? 'pdf' : 
+                     file.mime_type?.includes('doc') ? 'doc' : 
+                     file.mime_type?.includes('text') ? 'txt' : 'other'
         }));
 
       return {
@@ -169,12 +171,14 @@ export const getPropertyById = async (id: string): Promise<Property> => {
       .map(file => ({
         id: file.id,
         property_id: file.property_id,
-        type: file.mime_type?.includes('pdf') ? 'guide' : 'other', // Inferir tipo desde mime_type
-        name: file.title,
-        file_url: file.file_url || file.public_url,
-        description: file.description,
+        type: 'faq', // Por defecto FAQ, ya que no tenemos subcategory en la tabla
+        name: file.title || 'Documento sin título',
+        file_url: file.public_url || file.file_url, // Priorizar public_url pero usar file_url como fallback
+        description: file.description || '',
         uploaded_at: file.created_at,
-        file_type: file.mime_type || 'other'
+        file_type: file.mime_type?.includes('pdf') ? 'pdf' : 
+                   file.mime_type?.includes('doc') ? 'doc' : 
+                   file.mime_type?.includes('text') ? 'txt' : 'other'
       }));
 
     return {

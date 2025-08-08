@@ -359,24 +359,52 @@ export const deleteMedia = async (mediaId: string): Promise<boolean> => {
     // First get the file path - UPDATED FOR media_files table
     const { data, error } = await supabase
       .from("media_files") // Changed from "media" to "media_files"
-      .select("file_url")
+      .select("file_url, property_id")
       .eq("id", mediaId)
       .single();
     
     if (error) throw error;
     
-    // Extract the file path from the URL
+    // Extract the file path from the URL - IMPROVED PATH EXTRACTION
     const url = data.file_url;
-    const path = url.split('/').slice(-2).join('/'); // Get last 2 segments
+    let path = '';
+    
+    // Handle different URL formats
+    if (url.includes('/storage/v1/object/public/')) {
+      // Extract everything after 'public/property-files/'
+      const parts = url.split('/storage/v1/object/public/property-files/');
+      if (parts.length > 1) {
+        path = parts[1];
+      }
+    } else if (url.includes('/property-files/')) {
+      // Alternative format
+      const parts = url.split('/property-files/');
+      if (parts.length > 1) {
+        path = parts[1];
+      }
+    } else {
+      // Fallback: get last 2 segments
+      path = url.split('/').slice(-2).join('/');
+    }
+    
+    console.log(`🗑️ Deleting media file: ${mediaId}`);
+    console.log(`   URL: ${url}`);
+    console.log(`   Extracted path: ${path}`);
     
     // Delete from storage
-    const { error: storageError } = await supabase.storage
-      .from(BUCKET_NAME)
-      .remove([path]);
-    
-    if (storageError) {
-      console.warn("Could not delete file from storage:", storageError);
-      // Continue anyway to delete the database entry
+    if (path) {
+      const { error: storageError } = await supabase.storage
+        .from(BUCKET_NAME)
+        .remove([path]);
+      
+      if (storageError) {
+        console.warn("⚠️ Could not delete file from storage:", storageError);
+        // Continue anyway to delete the database entry
+      } else {
+        console.log("✅ File deleted from storage");
+      }
+    } else {
+      console.warn("⚠️ Could not extract valid path from URL");
     }
     
     // Delete from database - UPDATED FOR media_files table
@@ -386,6 +414,8 @@ export const deleteMedia = async (mediaId: string): Promise<boolean> => {
       .eq("id", mediaId);
     
     if (dbError) throw dbError;
+    
+    console.log("✅ Record deleted from database");
     
     return true;
   }, false);

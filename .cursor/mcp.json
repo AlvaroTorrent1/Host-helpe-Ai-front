@@ -17,11 +17,12 @@
         "npx",
         "-y",
         "@supabase/mcp-server-supabase@latest",
-
-        "--project-ref=blxngmtmknkdmikaflen"
+        "--project-ref",
+        "blxngmtmknkdmikaflen"
       ],
       "env": {
-        "SUPABASE_ACCESS_TOKEN": "sbp_14888d63f86c3e52498f822bc1877646e31f94cb"
+        "SUPABASE_ACCESS_TOKEN": "sbp_14888d63f86c3e52498f822bc1877646e31f94cb",
+        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseG5nbXRta25rZG1pa2FmbGVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0MDAzNjMsImV4cCI6MjA1Nzk3NjM2M30.iIyu_9vwjMO_SOCovMZEAf-c9cNanD0u_cu"
       }
     },
     "server-sequential-thinking": {
@@ -36,6 +37,21 @@
         "--key",
         "757d2046-c2a9-481c-944b-7b42f69adc6e"
       ]
+    },
+    "n8n-mcp": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "n8n-mcp"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "https://hosthelperai.app.n8n.cloud",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YmE4OWQwOC0zNTZiLTQ0MDctYThhOC1lYWM0MjgzN2FjOTgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzUzMjY0MjAzLCJleHAiOjE3NTU4MTM2MDB9.mEA37KPnHXC5E7OBqInxA7oaLIJMuIZlCZu2m3U8SH8"
+      }
     }
   }
-} 
+}

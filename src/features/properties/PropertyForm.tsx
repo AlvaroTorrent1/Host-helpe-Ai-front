@@ -7,6 +7,7 @@ import {
 import PropertyImagesForm from "./PropertyImagesForm";
 import PropertyDocumentsForm from "./PropertyDocumentsForm";
 import { useTranslation } from "react-i18next";
+import { areUrlsEquivalent } from "../../utils/urlNormalization";
 
 interface PropertyFormProps {
   property?: Property;
@@ -37,6 +38,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   
   // Estado para múltiples links de Google Business
   const [googleBusinessUrls, setGoogleBusinessUrls] = useState<string[]>([""]);
+  const [originalGoogleBusinessUrls, setOriginalGoogleBusinessUrls] = useState<string[]>([]); // Snapshot inicial
 
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -49,6 +51,26 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   useEffect(() => {
     console.log(`📍 PropertyForm - Paso actual: ${currentStep}, Submit intencional: ${isIntentionalSubmit}`);
   }, [currentStep, isIntentionalSubmit]);
+
+  // Función para detectar cambios en los enlaces
+  const hasLinksChanged = (): boolean => {
+    const currentUrls = googleBusinessUrls.filter(url => url && url.trim() !== '');
+    const originalUrls = originalGoogleBusinessUrls;
+    
+    // Si las longitudes son diferentes, hay cambios
+    if (currentUrls.length !== originalUrls.length) {
+      return true;
+    }
+    
+    // Comparar cada URL normalizada
+    for (let i = 0; i < currentUrls.length; i++) {
+      if (!areUrlsEquivalent(currentUrls[i], originalUrls[i] || '')) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
 
   // Cargar datos de la propiedad si estamos en modo edición
   useEffect(() => {
@@ -83,6 +105,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       
       // Establecer los URLs (al menos uno vacío para permitir añadir)
       setGoogleBusinessUrls(existingUrls.length > 0 ? existingUrls : [""]);
+      // NUEVO: Guardar snapshot de los URLs originales para comparación
+      setOriginalGoogleBusinessUrls([...existingUrls]); // Deep clone
       
       console.log("📍 Enlaces cargados en el formulario:", existingUrls);
 
@@ -210,6 +234,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         console.log(`Documentos temporales (para webhook): ${temporaryDocuments.length}`);
         console.log(`URLs Google Business: ${googleBusinessUrls.filter(url => url).length}`);
         
+        // Verificar si hay cambios en los enlaces
+        const linksChanged = hasLinksChanged();
+        console.log(`🔗 Enlaces modificados: ${linksChanged ? 'SÍ' : 'NO'}`);
+        
         // Pasar datos del formulario junto con información adicional
         const submitData = {
           ...formData,
@@ -218,6 +246,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           // Pasar documentos y URLs como datos adicionales (no parte de Property)
           _temporaryDocuments: temporaryDocuments,
           _googleBusinessUrls: googleBusinessUrls.filter(url => url),
+          _linksChanged: linksChanged, // Flag para indicar si hay cambios en enlaces
         };
         
         onSubmit(submitData as any);

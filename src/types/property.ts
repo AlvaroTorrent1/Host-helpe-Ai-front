@@ -31,7 +31,7 @@ export interface PropertyImage {
 }
 
 export interface PropertyDocument {
-  id: string;
+  id: string | number;
   property_id: string;
   name: string;
   description: string;

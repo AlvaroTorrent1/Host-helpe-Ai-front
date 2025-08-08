@@ -5,6 +5,7 @@ import propertyService from "../../services/propertyService";
 // Removed obsolete webhook services - now using direct n8n webhook approach
 import { updateTempDocumentsPropertyId } from "../../services/documentService";
 import mediaService from "../../services/mediaService";
+import * as mediaServiceActions from "../../services/mediaService";
 import { dualImageProcessingService } from "../../services/dualImageProcessingService";
 import PropertyForm from "./PropertyForm";
 import { toast } from "react-hot-toast";
@@ -120,6 +121,40 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
         if (error) throw error;
         savedProperty = data as unknown as Property;
         
+        // NUEVO: Gestionar eliminación de imágenes
+        if (property && property.additional_images) {
+          setProgressPhase('Verificando imágenes eliminadas...');
+          setProgressPercent(40);
+          
+          // Obtener IDs de imágenes actuales en el formulario
+          const currentImageIds = (propertyData.additional_images || [])
+            .filter(img => img.id && img.property_id !== "temp")
+            .map(img => img.id);
+          
+          // Obtener IDs de imágenes originales de la propiedad
+          const originalImageIds = property.additional_images.map(img => img.id);
+          
+          // Identificar imágenes que fueron eliminadas
+          const deletedImageIds = originalImageIds.filter(id => !currentImageIds.includes(id));
+          
+          if (deletedImageIds.length > 0) {
+            console.log(`🗑️ Eliminando ${deletedImageIds.length} imágenes: ${deletedImageIds.join(', ')}`);
+            
+            // Eliminar cada imagen de la base de datos y storage
+            for (const imageId of deletedImageIds) {
+              try {
+                await mediaServiceActions.deleteMedia(imageId);
+                console.log(`✅ Imagen eliminada: ${imageId}`);
+              } catch (deleteError) {
+                console.error(`❌ Error eliminando imagen ${imageId}:`, deleteError);
+                // Continuar con las otras eliminaciones
+              }
+            }
+            
+            toast.success(`${deletedImageIds.length} imagen(es) eliminada(s) correctamente`);
+          }
+        }
+
         // Procesar nuevas imágenes si existen
         if (propertyData.additional_images && propertyData.additional_images.length > 0) {
           setProgressPhase(t('propertyManagement.processingNewImages'));
@@ -134,27 +169,34 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
             if (newImageFiles.length > 0) {
               console.log(`📸 ${t('propertyManagement.addingNewImages', { count: newImageFiles.length, propertyId: savedProperty.id })}`);
               
-              // NOTA: Temporalmente deshabilitado para evitar conflicto con imageWebhookService
-              // TODO: Actualizar mediaService para que funcione sin category/subcategory
-              /*
-              // Subir nuevas imágenes usando mediaService
-              const uploadedImages = await mediaService.uploadMediaFiles(
+              // ACTIVADO: Usar procesamiento dual con webhook
+              await dualImageProcessingService.processImagesForProperty(
                 savedProperty.id,
+                savedProperty.name,
                 newImageFiles,
-                (progress) => {
-                  // Ajustar el progreso entre 65-75%
-                  const adjustedProgress = 65 + (progress * 0.1);
-                  setProgressPercent(Math.round(adjustedProgress));
+                user?.id || '',
+                {
+                  onProgress: (message: string, percent?: number) => {
+                    setProgressPhase(message);
+                    if (percent) {
+                      // Ajustar el progreso entre 65-85%
+                      const adjustedProgress = 65 + (percent * 0.2);
+                      setProgressPercent(Math.round(adjustedProgress));
+                    }
+                  },
+                  onStatusChange: (status: string) => {
+                    console.log(`📊 Estado del procesamiento: ${status}`);
+                  },
+                  onSuccess: (results: any[]) => {
+                    console.log(`✅ ${t('propertyManagement.newImagesAdded', { count: results.length })}`);
+                    toast.success(`${newImageFiles.length} imágenes procesadas con IA exitosamente`);
+                  },
+                  onError: (error: string) => {
+                    console.error(`❌ Error en procesamiento: ${error}`);
+                    toast.error(`Error procesando imágenes: ${error}`);
+                  }
                 }
               );
-              
-              console.log(`✅ ${t('propertyManagement.newImagesAdded', { count: uploadedImages.length })}`);
-              toast.success(t('propertyManagement.newImagesAdded', { count: uploadedImages.length }));
-              */
-              
-              // Por ahora, solo mostrar mensaje de éxito
-              console.log(`✅ ${t('propertyManagement.newImagesReady', { count: newImageFiles.length })}`);
-              toast.success(t('propertyManagement.newImagesAddedSuccess', { count: newImageFiles.length }));
             }
           } catch (imageError) {
             console.error(t('propertyManagement.errorProcessingNewImages'), imageError);

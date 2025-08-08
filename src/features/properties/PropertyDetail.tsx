@@ -340,18 +340,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
                           {doc.description}
                         </p>
                       </div>
-                      {/* En una implementación real, aquí iría un enlace para descargar el documento */}
-                      <div className="ml-4 flex-shrink-0">
-                        <a
-                          href={doc.file_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary-600 hover:text-primary-800 text-sm font-medium"
-                          title="Ver documento"
-                        >
-                          Ver
-                        </a>
-                      </div>
+                      {null}
                     </div>
                   ))}
                 </div>

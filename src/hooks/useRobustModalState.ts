@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { robustModalService, RobustUpdateResult, SagaOperationResult } from '../services/robustModalService';
 import { useAuth } from '../contexts/AuthContext';
+import * as mediaService from '../services/mediaService';
 
 // Tipos para el estado del modal
 export interface MediaFile {
@@ -265,6 +266,23 @@ export function useRobustModalState(propertyId?: string) {
               operation.data,
               user.id
             );
+            break;
+          case 'media_delete':
+            // NUEVO: Manejar eliminación real usando mediaService
+            console.log(`🗑️ Executing real delete for media file: ${operation.target_id}`);
+            const deleteSuccess = await mediaService.deleteMedia(operation.target_id);
+            result = {
+              success: deleteSuccess,
+              error: deleteSuccess ? undefined : 'Failed to delete media file',
+              updated_data: deleteSuccess ? { deleted: true } : undefined
+            };
+            if (deleteSuccess) {
+              // Remover del estado después de eliminar exitosamente
+              setState(prev => ({
+                ...prev,
+                mediaFiles: prev.mediaFiles.filter(file => file.id !== operation.target_id)
+              }));
+            }
             break;
           case 'link_update':
             result = await robustModalService.updateShareableLinkRobust(

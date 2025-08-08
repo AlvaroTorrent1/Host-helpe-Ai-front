@@ -309,7 +309,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
 
   // Determinar si un documento es temporal (guardado en el cliente)
   const isTemporaryDocument = (document: PropertyDocument): boolean => {
-    return document.property_id === "temp" || document.id.startsWith("temp_");
+    return document.property_id === "temp" || String(document.id).startsWith("temp_");
   };
 
   return (

@@ -18,6 +18,7 @@ import { useCanCreateProperty } from "@shared/contexts/UserStatusContext";
 import UpgradePrompt from "@shared/components/UpgradePrompt";
 import { webhookDocumentService } from "../../services/webhookDocumentService";
 import { shareableLinkService } from "../../services/shareableLinkService";
+import { shareableLinkSyncService } from "../../services/shareableLinkSyncService";
 import { dualImageProcessingService } from "../../services/dualImageProcessingService";
 
 // Función utilitaria para validar y limpiar URL de Google Business
@@ -199,7 +200,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
 
     try {
       // Extraer datos adicionales que no son parte de Property
-      const { additional_images, _temporaryDocuments, _googleBusinessUrls, ...otherData } = propertyData as any;
+      const { additional_images, _temporaryDocuments, _googleBusinessUrls, _linksChanged, ...otherData } = propertyData as any;
       
       // Obtener usuario actual para RLS
       const { data: { user } } = await supabase.auth.getUser();
@@ -245,6 +246,40 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           throw updateError;
         }
 
+        // NUEVO: Gestionar eliminación de imágenes en modo edición
+        if (currentProperty && currentProperty.additional_images) {
+          setProgressPhase('Verificando imágenes eliminadas...');
+          setProgressPercent(40);
+          
+          // Obtener IDs de imágenes actuales en el formulario
+          const currentImageIds = (additional_images || [])
+            .filter((img: PropertyImage) => img.id && img.property_id !== "temp")
+            .map((img: PropertyImage) => img.id);
+          
+          // Obtener IDs de imágenes originales de la propiedad
+          const originalImageIds = currentProperty.additional_images.map((img: PropertyImage) => img.id);
+          
+          // Identificar imágenes que fueron eliminadas
+          const deletedImageIds = originalImageIds.filter(id => !currentImageIds.includes(id));
+          
+          if (deletedImageIds.length > 0) {
+            console.log(`🗑️ PropertyManagementPage: Eliminando ${deletedImageIds.length} imágenes: ${deletedImageIds.join(', ')}`);
+            
+            // Eliminar cada imagen de la base de datos y storage
+            for (const imageId of deletedImageIds) {
+              try {
+                await mediaService.deleteMedia(imageId);
+                console.log(`✅ Imagen eliminada desde PropertyManagementPage: ${imageId}`);
+              } catch (deleteError) {
+                console.error(`❌ Error eliminando imagen ${imageId}:`, deleteError);
+                // Continuar con las otras eliminaciones
+              }
+            }
+            
+            toast.success(`${deletedImageIds.length} imagen(es) eliminada(s) correctamente`);
+          }
+        }
+
         // Actualizar imágenes si hay nuevas
         if (additional_images && additional_images.length > 0) {
           setProgressPhase('Procesando nuevas imágenes...');
@@ -256,11 +291,35 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           
           if (newImages.length > 0) {
             const imageFiles = newImages.map((img: PropertyImage) => img.file as File);
-            await mediaService.uploadMediaFiles(
+            
+            console.log(`📸 PropertyManagementPage: Procesando ${imageFiles.length} imágenes con webhook`);
+            
+            // CORREGIDO: Usar procesamiento dual con webhook en lugar de mediaService directo
+            await dualImageProcessingService.processImagesForProperty(
               currentProperty.id,
+              currentProperty.name,
               imageFiles,
-              (progress) => {
-                setProgressPercent(50 + (progress * 0.3));
+              user?.id || '',
+              {
+                onProgress: (message: string, percent?: number) => {
+                  setProgressPhase(message);
+                  if (percent) {
+                    // Ajustar el progreso entre 50-80%
+                    const adjustedProgress = 50 + (percent * 0.3);
+                    setProgressPercent(Math.round(adjustedProgress));
+                  }
+                },
+                onStatusChange: (status: string) => {
+                  console.log(`📊 PropertyManagementPage - Estado: ${status}`);
+                },
+                onSuccess: (results: any[]) => {
+                  console.log(`✅ PropertyManagementPage: ${results.length} imágenes procesadas con IA`);
+                  toast.success(`${imageFiles.length} imágenes procesadas con IA exitosamente`);
+                },
+                onError: (error: string) => {
+                  console.error(`❌ PropertyManagementPage - Error: ${error}`);
+                  toast.error(`Error procesando imágenes: ${error}`);
+                }
               }
             );
           }
@@ -287,15 +346,24 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
           }
         }
 
-        // Procesar Google Business URLs
-        if (_googleBusinessUrls && _googleBusinessUrls.length > 0) {
-          setProgressPhase('Guardando enlaces de Google Business...');
+        // Procesar Google Business URLs solo si hay cambios
+        if (_linksChanged && _googleBusinessUrls !== undefined) {
+          setProgressPhase('Sincronizando enlaces de Google Business...');
           setProgressPercent(90);
           
-          await shareableLinkService.createGoogleBusinessLinks(
+          console.log('🔄 Sincronizando enlaces con cambios detectados...');
+          
+          const linkInputs = _googleBusinessUrls.map((url: string, index: number) => ({
+            url,
+            title: `Google Business Profile ${index > 0 ? index + 1 : ''}`.trim()
+          }));
+          
+          await shareableLinkSyncService.syncGoogleBusinessLinks(
             currentProperty.id,
-            _googleBusinessUrls
+            linkInputs
           );
+        } else {
+          console.log('⏭️ Sin cambios en enlaces, omitiendo sincronización');
         }
 
         setProgressPhase('¡Actualización completada!');
@@ -467,15 +535,20 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
       }
     }
     
-    // Procesar Google Business URLs
+    // Procesar Google Business URLs (nueva propiedad siempre usar sync)
     if (googleBusinessUrls && googleBusinessUrls.length > 0) {
       setProgressPhase('Guardando enlaces de Google Business...');
       setProgressPercent(90);
       
       try {
-        const createdLinks = await shareableLinkService.createGoogleBusinessLinks(
+        const linkInputs = googleBusinessUrls.map((url: string, index: number) => ({
+          url,
+          title: `Google Business Profile ${index > 0 ? index + 1 : ''}`.trim()
+        }));
+        
+        const createdLinks = await shareableLinkSyncService.syncGoogleBusinessLinks(
           savedProperty.id,
-          googleBusinessUrls
+          linkInputs
         );
         
         console.log(`✅ ${createdLinks.length} enlaces de Google Business guardados`);
@@ -556,11 +629,11 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
               onAdd={handleAddProperty}
             />
 
-            {/* Widget ElevenLabs Convai específico para la página de propiedades */}
+            {/* Nuevo widget ElevenLabs Convai para la página de propiedades */}
             <div 
               className="mt-8"
               dangerouslySetInnerHTML={{ 
-                __html: '<elevenlabs-convai agent-id="agent_6001k1b1hha2e16rz0akz5fpa2fn"></elevenlabs-convai>' 
+                __html: '<elevenlabs-convai agent-id="agent_1401k1zrthamf22a8e1w0k24dbcz"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>' 
               }} 
             />
           </>

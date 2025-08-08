@@ -288,7 +288,9 @@ class DualImageProcessingService {
 
     callbacks?.onProgress?.('Enviando al webhook externo de n8n...', 60);
 
-    console.log(`📤 Sending ${imageFiles.length} images to external n8n webhook:`, this.webhookUrl);
+    console.log(`📤 Sending ${imageFiles.length} images to n8n webhook-test:`, this.webhookUrl);
+    console.log(`   Target URL: https://hosthelperai.app.n8n.cloud/webhook-test/images`);
+    console.log(`   Via proxy: ${this.webhookUrl}`);
 
     // Send FormData to external webhook with retry logic
     return await this.sendWithRetry(formData, callbacks, imageFiles);

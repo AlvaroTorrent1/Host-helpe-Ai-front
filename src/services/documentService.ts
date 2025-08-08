@@ -201,7 +201,7 @@ export const uploadDocument = async (
       property_id: docData.property_id,
       name: docData.title,
       description: docData.description || "",
-      type: "other", // Fallback ya que subcategory no existe en la tabla
+      type: documentData.type,
       file_url: docData.file_url,
       file_type: fileType,
       uploaded_at: docData.created_at,
