@@ -1,7 +1,7 @@
 // src/config/stripe-validator.ts
 // Validador de configuración de Stripe para prevenir errores de sincronización
 
-import stripeConfig from '@/config/stripe-config';
+import stripeConfig from '../../config/stripe-config';
 
 /**
  * Valida que las claves de Stripe estén correctamente configuradas

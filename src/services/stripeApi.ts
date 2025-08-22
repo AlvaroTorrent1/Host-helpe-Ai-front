@@ -3,8 +3,8 @@
 // CONFIGURADO PARA PRODUCCIÓN - Pagos reales con claves LIVE
 
 import supabase from './supabase';
-import { stripeValidator } from '@/config/stripe-validator';
-import stripeConfig from '@/config/stripe-config';
+import { stripeValidator } from '../config/stripe-validator';
+import stripeConfig from '../../config/stripe-config';
 
 /**
  * Interfaz para los datos necesarios para crear un payment intent
