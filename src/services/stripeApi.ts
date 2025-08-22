@@ -1,7 +1,10 @@
-// src/services/stripeApi.ts - API de Stripe para MODO TEST
-// Este archivo maneja la integración con Stripe en modo test usando Supabase Edge Functions
+// src/services/stripeApi.ts - API de Stripe
+// Este archivo maneja la integración con Stripe usando Supabase Edge Functions
+// CONFIGURADO PARA PRODUCCIÓN - Pagos reales con claves LIVE
 
 import supabase from './supabase';
+import { stripeValidator } from '@/config/stripe-validator';
+import stripeConfig from '@/config/stripe-config';
 
 /**
  * Interfaz para los datos necesarios para crear un payment intent
@@ -24,7 +27,21 @@ interface CreatePaymentIntentResponse {
  * Solo para producción - sin código de desarrollo o simulaciones
  */
 export const createPaymentIntent = async (params: CreatePaymentIntentParams): Promise<CreatePaymentIntentResponse> => {
-  console.log('🔄 Creando payment intent para MODO TEST:', {
+  // Validar configuración antes de proceder
+  const validationStatus = stripeValidator.getValidationStatus();
+  
+  if (!validationStatus.isValid) {
+    console.error('❌ Configuración de Stripe inválida:', validationStatus.errors);
+    throw new Error('Configuración de pago incorrecta. Por favor, contacte al administrador.');
+  }
+
+  // Advertir si hay inconsistencias
+  if (validationStatus.warnings.length > 0) {
+    console.warn('⚠️ Advertencias de configuración:', validationStatus.warnings);
+  }
+
+  // Sistema en MODO PRODUCCIÓN - Pagos reales
+  console.log('💳 Creando payment intent para MODO PRODUCCIÓN (LIVE):', {
     amount: params.amount,
     currency: params.currency,
     user_id: params.user_id,
@@ -48,13 +65,37 @@ export const createPaymentIntent = async (params: CreatePaymentIntentParams): Pr
     
     // Llamar a la función de Supabase para crear el payment intent
     console.log('📡 Invocando función create-payment-intent de Supabase...');
+    console.log('💳 Modo PRODUCCIÓN activo - Procesando pago real con claves LIVE');
+    
+    // Añadir metadata sobre el modo para debugging
+    const enrichedParams = {
+      ...params,
+      metadata: {
+        frontend_mode: 'production',
+        key_type: 'live',
+        timestamp: new Date().toISOString(),
+        environment: 'production'
+      }
+    };
     
     const { data, error } = await supabase.functions.invoke('create-payment-intent', {
-      body: params
+      body: enrichedParams
     });
     
     if (error) {
       console.error('❌ Error de Supabase functions:', error);
+      
+      // Proporcionar mensajes más específicos según el error
+      if (error.message?.includes('non-2xx status code')) {
+        // Verificar si es un problema de configuración
+        const recommendations = stripeValidator.getRecommendations();
+        if (recommendations.length > 0) {
+          console.error('📋 Recomendaciones para solucionar el error:');
+          recommendations.forEach(rec => console.error(`  - ${rec}`));
+        }
+        throw new Error('Error de configuración del servidor. Verifique las claves de Stripe en el backend.');
+      }
+      
       throw new Error(`Error al crear payment intent: ${error.message}`);
     }
     

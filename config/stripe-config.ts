@@ -32,7 +32,7 @@ const DEMO_PRODUCTION_CONFIG: StripeConfig = {
 
 // Configuración para MODO PRODUCCIÓN REAL (pagos reales)
 const PRODUCTION_CONFIG: StripeConfig = {
-  publicKey: 'pk_live_REQUIRED_FROM_ENV', // 🚨 CLAVE DEBE VENIR DE VARIABLE DE ENTORNO
+  publicKey: 'pk_live_CONFIGURED_FROM_ENV_OR_MANUAL', // 🚨 CONFIGURAR CON CLAVE REAL
   mode: 'production',
   isProduction: true,
   isDemo: false
@@ -45,6 +45,7 @@ const PRODUCTION_CONFIG: StripeConfig = {
 // 🔧 CONFIGURACIÓN ACTIVA: MODO PRODUCCIÓN REAL
 // ✅ Modo configurado para pagos reales con claves live
 // - 'production' = Modo PRODUCCIÓN REAL (pagos reales con claves pk_live_...)
+// 💳 SISTEMA LISTO PARA PAGOS REALES
 const CURRENT_MODE: StripeConfig['mode'] = 'production';
 
 // Obtener configuración activa
@@ -52,15 +53,19 @@ export const getStripeConfig = (): StripeConfig => {
   // Primero verificar variable de entorno
   const envKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
   
-  if (envKey) {
-    // Si hay variable de entorno, usarla
-    const isProduction = envKey.startsWith('pk_live_');
+  // FORZAR MODO PRODUCCIÓN - Sistema configurado para pagos reales
+  if (envKey && envKey.startsWith('pk_live_')) {
+    // Usar clave LIVE de producción desde variable de entorno
     return {
       publicKey: envKey,
-      mode: isProduction ? 'production' : 'test',
-      isProduction,
+      mode: 'production',
+      isProduction: true,
       isDemo: false
     };
+  } else if (!envKey) {
+    // Si no hay variable de entorno, usar configuración manual
+    // IMPORTANTE: Configurar manualmente la clave pk_live_ en PRODUCTION_CONFIG
+    return PRODUCTION_CONFIG;
   }
   
   // Si no hay variable de entorno, usar configuración manual

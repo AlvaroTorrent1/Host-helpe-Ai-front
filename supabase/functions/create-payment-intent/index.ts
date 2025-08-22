@@ -5,8 +5,13 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import Stripe from 'https://esm.sh/stripe@12.0.0'
 
-// Configuración de Stripe
+// Configuración de Stripe con validación mejorada
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
+
+// Detectar tipo de clave (test vs live)
+const isTestKey = stripeSecretKey?.startsWith('sk_test_')
+const isLiveKey = stripeSecretKey?.startsWith('sk_live_')
+
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
   apiVersion: '2022-11-15',
 }) : null
@@ -16,11 +21,12 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 const supabase = (supabaseUrl && supabaseServiceKey) ? createClient(supabaseUrl, supabaseServiceKey) : null
 
-console.log("🚀 Create Payment Intent function iniciada (versión producción)")
+console.log("🚀 Create Payment Intent function iniciada")
 console.log("Environment variables check:")
 console.log("- SUPABASE_URL:", supabaseUrl ? "✅ Configurada" : "❌ No configurada")
 console.log("- SUPABASE_SERVICE_ROLE_KEY:", supabaseServiceKey ? "✅ Configurada" : "❌ No configurada")
 console.log("- STRIPE_SECRET_KEY:", stripeSecretKey ? `✅ Configurada (${stripeSecretKey.substring(0, 8)}...)` : "❌ No configurada")
+console.log("- Stripe Key Type:", isTestKey ? "🧪 TEST MODE" : isLiveKey ? "💳 LIVE MODE" : "⚠️ UNKNOWN")
 
 // Cors headers - Configuración para producción
 const corsHeaders = {
@@ -115,7 +121,33 @@ serve(async (req) => {
       );
     }
     
-    const { amount, currency = 'eur', user_id, plan_id, email } = requestBody;
+    const { amount, currency = 'eur', user_id, plan_id, email, metadata } = requestBody;
+    
+    // Validar consistencia de claves (frontend vs backend)
+    if (metadata?.key_type) {
+      const frontendKeyType = metadata.key_type;
+      const backendKeyType = isTestKey ? 'test' : isLiveKey ? 'live' : 'unknown';
+      
+      if (frontendKeyType !== backendKeyType) {
+        console.error(`⚠️ Inconsistencia de claves detectada:`);
+        console.error(`  Frontend: ${frontendKeyType}`);
+        console.error(`  Backend: ${backendKeyType}`);
+        console.error(`  Esto puede causar errores en el procesamiento del pago`);
+        
+        return new Response(
+          JSON.stringify({ 
+            error: 'Configuration mismatch',
+            details: `Frontend using ${frontendKeyType} keys but backend using ${backendKeyType} keys. Please ensure both use the same key type.`,
+            frontend_mode: frontendKeyType,
+            backend_mode: backendKeyType
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+    }
     
     console.log('💳 Creando payment intent con params:', { 
       amount, 
@@ -199,6 +231,7 @@ serve(async (req) => {
 
       console.log('🎉 Payment intent creado exitosamente:', paymentIntent.id);
       console.log('🔐 Client secret generado correctamente');
+      console.log(`💳 Modo: ${isTestKey ? 'TEST' : isLiveKey ? 'LIVE' : 'UNKNOWN'}`);
 
       // Devolver el client_secret al cliente (formato correcto para el frontend)
     return new Response(
@@ -220,12 +253,25 @@ serve(async (req) => {
         param: stripeError.param
       });
       
+      // Añadir información de debugging para errores de configuración
+      let errorDetails = 'Payment processing failed';
+      
+      if (stripeError.code === 'api_key_expired' || stripeError.code === 'invalid_api_key') {
+        errorDetails = 'Invalid or expired Stripe API key. Please contact support.';
+        console.error('🔑 Problema con la clave de Stripe - verificar STRIPE_SECRET_KEY');
+      } else if (stripeError.message?.includes('No such')) {
+        errorDetails = 'Invalid Stripe configuration. Please verify account setup.';
+      } else {
+        errorDetails = 'Payment processing failed - please check your payment method';
+      }
+      
       return new Response(
         JSON.stringify({ 
           error: `Stripe error: ${stripeError.message}`,
           type: stripeError.type,
           code: stripeError.code,
-          details: 'Payment processing failed - please check your payment method'
+          details: errorDetails,
+          key_mode: isTestKey ? 'test' : isLiveKey ? 'live' : 'unknown'
         }),
         {
           status: 500,
