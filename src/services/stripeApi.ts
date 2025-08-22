@@ -4,6 +4,7 @@
 
 import supabase from './supabase';
 import stripeConfig from '../../config/stripe-config';
+import { debugStripePayment } from '../utils/debugStripe';
 
 /**
  * Interfaz para los datos necesarios para crear un payment intent
@@ -78,19 +79,39 @@ export const createPaymentIntent = async (params: CreatePaymentIntentParams): Pr
       }
     };
     
+    // DEBUG DETALLADO - Analizar el payload antes de enviar
+    debugStripePayment(enrichedParams);
+    
+    // Log completo antes de la llamada
+    console.log('🔄 Enviando request a Supabase Edge Function:');
+    console.log('  URL: create-payment-intent');
+    console.log('  Payload:', JSON.stringify(enrichedParams, null, 2));
+    
     const { data, error } = await supabase.functions.invoke('create-payment-intent', {
       body: enrichedParams
     });
     
+    // Log de la respuesta completa
+    console.log('📨 Respuesta de Supabase:', { data, error });
+    
     if (error) {
       console.error('❌ Error de Supabase functions:', error);
+      console.error('🔍 Detalles del error:', {
+        message: error.message,
+        status: error.status,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        fullError: JSON.stringify(error, null, 2)
+      });
       
       // Proporcionar mensajes más específicos según el error
       if (error.message?.includes('non-2xx status code')) {
-        console.error('📋 Posibles causas:');
-        console.error('  - STRIPE_SECRET_KEY no configurada en Supabase Edge Functions');
-        console.error('  - Clave secreta incorrecta (debe ser sk_live_ para producción)');
-        console.error('  - Problema de red o timeout');
+        console.error('📋 Posibles causas del error 500:');
+        console.error('  1. STRIPE_SECRET_KEY no configurada en Supabase Edge Functions');
+        console.error('  2. Clave secreta incorrecta (debe ser sk_live_ para producción)');
+        console.error('  3. Error en la Edge Function al procesar el monto de', params.amount, 'centavos');
+        console.error('  4. Problema con el plan_id:', params.plan_id);
         throw new Error('Error de configuración del servidor. Verifique las claves de Stripe en el backend.');
       }
       

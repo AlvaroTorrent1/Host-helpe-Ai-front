@@ -149,8 +149,10 @@ serve(async (req) => {
       }
     }
     
+    // Normalizar y validar amount: entero en centavos
+    const normalizedAmount = Math.round(Number(amount));
     console.log('💳 Creando payment intent con params:', { 
-      amount, 
+      amount: normalizedAmount, 
       currency, 
       user_id: user_id ? 'provided' : 'missing', 
       plan_id, 
@@ -158,12 +160,12 @@ serve(async (req) => {
     });
 
     // Validar parámetros requeridos
-    if (!amount || amount < 1) {
+    if (!normalizedAmount || normalizedAmount < 1 || !Number.isInteger(normalizedAmount)) {
       console.error('❌ Error: El monto debe ser al menos 1');
       return new Response(
         JSON.stringify({ 
-          error: 'Amount is required and must be at least 1',
-          received: { amount }
+          error: 'Amount is required, must be integer cents and >= 1',
+          received: { amount, normalizedAmount }
         }),
         {
           status: 400,
@@ -217,7 +219,7 @@ serve(async (req) => {
 
     // Crear un payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
+        amount: normalizedAmount,
         currency: currency.toLowerCase(),
       metadata: {
         user_id: user_id || '',

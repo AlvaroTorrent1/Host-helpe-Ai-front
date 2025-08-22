@@ -218,8 +218,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           await new Promise(resolve => setTimeout(resolve, 50));
           
           // Log detallado antes de llamar a createPaymentIntent
+          // Normalizamos el monto a centavos ENTEROS para evitar problemas de coma flotante
+          const amountInCents = Math.round(selectedPlan.price * 100);
           const paymentParams = {
-            amount: selectedPlan.price * 100, // Convertir a centavos
+            amount: amountInCents, // Centavos enteros
             currency: 'eur',
             user_id: user.id,
             plan_id: selectedPlan.id,
@@ -227,7 +229,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           };
           
           console.log('💳 Llamando a createPaymentIntent con parámetros:', paymentParams);
-          console.log(`📊 Verificación: Plan ${selectedPlan.id} - €${selectedPlan.price} = ${selectedPlan.price * 100} centavos`);
+          console.log(`📊 Verificación: Plan ${selectedPlan.id} - €${selectedPlan.price} = ${amountInCents} centavos (redondeado)`);
           
           const { clientSecret } = await createPaymentIntent(paymentParams);
           
