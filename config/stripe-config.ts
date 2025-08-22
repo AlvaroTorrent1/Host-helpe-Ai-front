@@ -32,7 +32,7 @@ const DEMO_PRODUCTION_CONFIG: StripeConfig = {
 
 // Configuración para MODO PRODUCCIÓN REAL (pagos reales)
 const PRODUCTION_CONFIG: StripeConfig = {
-  publicKey: 'pk_live_CONFIGURED_FROM_ENV_OR_MANUAL', // 🚨 CONFIGURAR CON CLAVE REAL
+  publicKey: 'pk_live_REQUIRED_FROM_ENV_VARIABLE', // 🚨 SE DEBE LEER DESDE .env.production
   mode: 'production',
   isProduction: true,
   isDemo: false
@@ -50,22 +50,35 @@ const CURRENT_MODE: StripeConfig['mode'] = 'production';
 
 // Obtener configuración activa
 export const getStripeConfig = (): StripeConfig => {
-  // Primero verificar variable de entorno
+  // SIEMPRE verificar variable de entorno primero
   const envKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
   
-  // FORZAR MODO PRODUCCIÓN - Sistema configurado para pagos reales
+  // MODO PRODUCCIÓN: Usar variable de entorno
   if (envKey && envKey.startsWith('pk_live_')) {
-    // Usar clave LIVE de producción desde variable de entorno
+    console.log('✅ Usando clave LIVE desde variable de entorno');
     return {
       publicKey: envKey,
       mode: 'production',
       isProduction: true,
       isDemo: false
     };
-  } else if (!envKey) {
-    // Si no hay variable de entorno, usar configuración manual
-    // IMPORTANTE: Configurar manualmente la clave pk_live_ en PRODUCTION_CONFIG
-    return PRODUCTION_CONFIG;
+  }
+  
+  // Si hay variable de entorno pero es test
+  if (envKey && envKey.startsWith('pk_test_')) {
+    console.log('⚠️ Variable de entorno contiene clave TEST, cambiando a modo test');
+    return {
+      publicKey: envKey,
+      mode: 'test',
+      isProduction: false,
+      isDemo: false
+    };
+  }
+  
+  // Si no hay variable de entorno, mostrar error claro
+  if (!envKey) {
+    console.error('❌ VITE_STRIPE_PUBLIC_KEY no está configurada en .env.production');
+    console.error('📋 Añadir: VITE_STRIPE_PUBLIC_KEY=pk_live_TU_CLAVE_AQUI');
   }
   
   // Si no hay variable de entorno, usar configuración manual

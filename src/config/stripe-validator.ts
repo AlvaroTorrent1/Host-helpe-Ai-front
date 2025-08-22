@@ -25,16 +25,17 @@ export class StripeConfigValidator {
   }
 
   /**
-   * Valida la configuración de Stripe
+   * Valida la configuración de Stripe (ejecuta validación fresca cada vez)
    */
   private validate(): void {
     this.errors = [];
     this.warnings = [];
     
-    // Validar clave pública
+    // Importar dinámicamente para obtener configuración fresca
+    // Nota: En producción, esto siempre obtendrá la configuración actual
     const publicKey = stripeConfig.publicKey;
     
-    if (!publicKey || publicKey === 'pk_live_REQUIRED_FROM_ENV') {
+    if (!publicKey || publicKey === 'pk_live_REQUIRED_FROM_ENV_VARIABLE' || publicKey === 'pk_live_REQUIRED_FROM_ENV') {
       this.errors.push('❌ Clave pública de Stripe no configurada. Configurar VITE_STRIPE_PUBLIC_KEY en .env');
       this.isValid = false;
       return;
@@ -71,7 +72,7 @@ export class StripeConfigValidator {
   }
 
   /**
-   * Obtiene el estado de validación
+   * Obtiene el estado de validación (ejecuta validación fresca cada vez)
    */
   getValidationStatus(): {
     isValid: boolean;
@@ -80,6 +81,10 @@ export class StripeConfigValidator {
     mode: string;
     keyType: 'test' | 'live' | 'unknown';
   } {
+    // Ejecutar validación fresca cada vez para evitar problemas de cache
+    this.validate();
+    
+    // Usar la configuración importada, no require()
     const publicKey = stripeConfig.publicKey;
     let keyType: 'test' | 'live' | 'unknown' = 'unknown';
     

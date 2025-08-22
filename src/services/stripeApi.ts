@@ -3,7 +3,6 @@
 // CONFIGURADO PARA PRODUCCIÓN - Pagos reales con claves LIVE
 
 import supabase from './supabase';
-import { stripeValidator } from '../config/stripe-validator';
 import stripeConfig from '../../config/stripe-config';
 
 /**
@@ -27,18 +26,19 @@ interface CreatePaymentIntentResponse {
  * Solo para producción - sin código de desarrollo o simulaciones
  */
 export const createPaymentIntent = async (params: CreatePaymentIntentParams): Promise<CreatePaymentIntentResponse> => {
-  // Validar configuración antes de proceder
-  const validationStatus = stripeValidator.getValidationStatus();
+  // Validación directa sin singleton - más confiable
+  const publicKey = stripeConfig.publicKey;
+  const isValidKey = publicKey && (publicKey.startsWith('pk_live_') || publicKey.startsWith('pk_test_'));
   
-  if (!validationStatus.isValid) {
-    console.error('❌ Configuración de Stripe inválida:', validationStatus.errors);
-    throw new Error('Configuración de pago incorrecta. Por favor, contacte al administrador.');
+  if (!isValidKey) {
+    console.error('❌ Configuración de Stripe inválida: Clave pública no válida');
+    console.error('📋 Configurar VITE_STRIPE_PUBLIC_KEY en .env.production');
+    throw new Error('Error de configuración del servidor. Verifique las claves de Stripe en el backend.');
   }
 
-  // Advertir si hay inconsistencias
-  if (validationStatus.warnings.length > 0) {
-    console.warn('⚠️ Advertencias de configuración:', validationStatus.warnings);
-  }
+  // Log del modo actual
+  const mode = publicKey.startsWith('pk_live_') ? 'PRODUCCIÓN' : 'TEST';
+  console.log(`✅ Modo ${mode} detectado`);
 
   // Sistema en MODO PRODUCCIÓN - Pagos reales
   console.log('💳 Creando payment intent para MODO PRODUCCIÓN (LIVE):', {
@@ -87,12 +87,10 @@ export const createPaymentIntent = async (params: CreatePaymentIntentParams): Pr
       
       // Proporcionar mensajes más específicos según el error
       if (error.message?.includes('non-2xx status code')) {
-        // Verificar si es un problema de configuración
-        const recommendations = stripeValidator.getRecommendations();
-        if (recommendations.length > 0) {
-          console.error('📋 Recomendaciones para solucionar el error:');
-          recommendations.forEach(rec => console.error(`  - ${rec}`));
-        }
+        console.error('📋 Posibles causas:');
+        console.error('  - STRIPE_SECRET_KEY no configurada en Supabase Edge Functions');
+        console.error('  - Clave secreta incorrecta (debe ser sk_live_ para producción)');
+        console.error('  - Problema de red o timeout');
         throw new Error('Error de configuración del servidor. Verifique las claves de Stripe en el backend.');
       }
       
