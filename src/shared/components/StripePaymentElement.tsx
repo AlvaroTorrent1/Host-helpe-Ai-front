@@ -1,5 +1,5 @@
 // src/shared/components/StripePaymentElement.tsx - Componente de Pago Stripe
-// Soporte para modo TEST y PRODUCCIÓN
+// Configurado para PRODUCCIÓN - Pagos reales
 
 import React, { useEffect, useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -9,15 +9,18 @@ interface StripePaymentElementProps {
   clientSecret: string;
   onSuccess: () => void;
   onError: (error: string) => void;
-  isTestMode?: boolean; // Nueva prop para detectar modo test
+  isTestMode?: boolean; // Prop mantenida para compatibilidad (siempre false en producción)
 }
 
 const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   clientSecret,
   onSuccess,
   onError,
-  isTestMode = false, // Por defecto asume producción
+  isTestMode = false, // Forzado a false - Sistema configurado para producción
 }) => {
+  // Forzar modo producción - No permitir modo test
+  const isProduction = true;
+  const forceProductionMode = true;
   const stripe = useStripe();
   const elements = useElements();
   
@@ -25,13 +28,13 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
   const [message, setMessage] = useState<string>('');
   const [isPaymentElementReady, setIsPaymentElementReady] = useState(false);
   
-  console.log(`✅ StripePaymentElement iniciado en modo ${isTestMode ? 'TEST' : 'PRODUCCIÓN'}:`, {
+  console.log('🚀 StripePaymentElement iniciado en MODO PRODUCCIÓN:', {
     clientSecret: clientSecret?.substring(0, 20) + '...',
     stripeLoaded: !!stripe,
     elementsLoaded: !!elements,
     environment: import.meta.env.MODE || 'development',
-    testMode: isTestMode,
-    willShowTestInfo: isTestMode,
+    productionMode: isProduction,
+    forceProduction: forceProductionMode,
     stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY?.substring(0, 15) + '...'
   });
 
@@ -154,15 +157,8 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
           direction="vertical"
         />
         <p className="text-sm text-gray-500 mt-2">
-          Inicializando Stripe en modo {isTestMode ? 'TEST' : 'PRODUCCIÓN'}
+          Inicializando Stripe en modo PRODUCCIÓN
         </p>
-        {isTestMode && (
-          <div className="mt-4 text-xs text-gray-400">
-            <p>Client Secret: {clientSecret ? '✅ Válido' : '❌ No disponible'}</p>
-            <p>Stripe: {stripe ? '✅ Cargado' : '❌ No cargado'}</p>
-            <p>Elements: {elements ? '✅ Cargado' : '❌ No cargado'}</p>
-          </div>
-        )}
       </div>
     );
   }
@@ -223,46 +219,11 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
       </button>
     </form>
 
-      {/* Información de seguridad - Condicionada por modo */}
+      {/* Información de seguridad - Modo PRODUCCIÓN */}
       <div className="text-xs text-gray-500 text-center">
-        {isTestMode ? (
-          // Información de modo TEST o DEMO
-          <>
-            <p>🔒 Modo de prueba - usar tarjetas de test</p>
-            <p>Tarjeta: 4242 4242 4242 4242</p>
-            <p className="mt-1 text-green-600">✅ El pago se procesa completamente en este modal</p>
-          </>
-        ) : (
-          // Información de modo PRODUCCIÓN (real o demo)
-          <>
-            <p>🔒 Pago seguro procesado por Stripe</p>
-            <p className="mt-1 text-green-600">✅ Transacción protegida con SSL</p>
-          </>
-        )}
-        
-        {/* Botón de diagnóstico solo en modo TEST */}
-        {isTestMode && !isPaymentElementReady && (
-          <button 
-            onClick={() => {
-              console.log('🔍 Diagnóstico de configuración:');
-              console.log('- Stripe cargado:', !!stripe);
-              console.log('- Elements cargado:', !!elements);
-              console.log('- Client Secret:', clientSecret?.substring(0, 20) + '...');
-              console.log('- PaymentElement ready:', isPaymentElementReady);
-              
-              // Intentar obtener el payment element
-              try {
-                const paymentEl = elements?.getElement('payment');
-                console.log('- PaymentElement encontrado:', !!paymentEl);
-              } catch (e) {
-                console.log('- Error obteniendo PaymentElement:', e);
-              }
-            }}
-            className="mt-2 px-3 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
-          >
-            🔍 Diagnóstico
-          </button>
-        )}
+        <p>🔒 Pago seguro procesado por Stripe</p>
+        <p className="mt-1 text-green-600">✅ Transacción protegida con SSL</p>
+        <p className="mt-1 text-blue-600">💳 Sistema configurado para pagos reales</p>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const stripeMode = stripeConfig.mode.toUpperCase();
 console.log(`RegisterModal: Usando configuración Stripe en modo ${stripeMode}:`, {
   publicKey: STRIPE_PUBLIC_KEY?.substring(0, 15) + '...',
   isProductionMode,
-  isTestMode: !isProductionMode,
+  productionForced: true, // Sistema configurado para producción
   source: 'stripe-config.ts'
 });
 
@@ -859,7 +859,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                         clientSecret={clientSecret}
                         onSuccess={handlePaymentSuccessAndNavigate}
                         onError={handlePaymentError}
-                        isTestMode={!stripeConfig.isProduction}
+                        isTestMode={false} // Forzado a false - Modo producción
                       />
                     </Elements>
                   ) : clientSecret && !stripe ? (

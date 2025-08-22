@@ -22,8 +22,8 @@ function readConfigFile() {
   const configPath = path.join(__dirname, '../config/stripe-config.ts');
   try {
     const content = fs.readFileSync(configPath, 'utf8');
-    const match = content.match(/const USE_PRODUCTION_MODE = (true|false);/);
-    return match ? (match[1] === 'true') : null;
+    const match = content.match(/const CURRENT_MODE: StripeConfig\['mode'\] = '(\w+)';/);
+    return match ? match[1] : null;
   } catch (error) {
     return null;
   }
@@ -59,12 +59,14 @@ function main() {
   console.log('');
   
   // Verificar configuración en archivo
-  const useProductionMode = readConfigFile();
+  const currentMode = readConfigFile();
   log(colors.blue, '📁 Configuración en archivo (config/stripe-config.ts):');
-  if (useProductionMode === true) {
-    log(colors.green, '   ✅ USE_PRODUCTION_MODE = true (PRODUCCIÓN)');
-  } else if (useProductionMode === false) {
-    log(colors.yellow, '   🧪 USE_PRODUCTION_MODE = false (TEST)');
+  if (currentMode === 'production') {
+    log(colors.green, '   ✅ CURRENT_MODE = "production" (PRODUCCIÓN)');
+  } else if (currentMode === 'test') {
+    log(colors.yellow, '   🧪 CURRENT_MODE = "test" (TEST)');
+  } else if (currentMode === 'demo_production') {
+    log(colors.cyan, '   🎭 CURRENT_MODE = "demo_production" (DEMO)');
   } else {
     log(colors.red, '   ❌ No se pudo leer la configuración');
   }
@@ -96,7 +98,13 @@ function main() {
     effectiveMode = envKey.startsWith('pk_live_') ? 'PRODUCCIÓN' : 'TEST';
     reason = 'Variable de entorno';
   } else {
-    effectiveMode = useProductionMode ? 'PRODUCCIÓN' : 'TEST';
+    if (currentMode === 'production') {
+      effectiveMode = 'PRODUCCIÓN';
+    } else if (currentMode === 'demo_production') {
+      effectiveMode = 'DEMO PRODUCCIÓN';
+    } else {
+      effectiveMode = 'TEST';
+    }
     reason = 'Configuración manual';
   }
   
@@ -113,7 +121,7 @@ function main() {
   // Recomendaciones
   log(colors.bold, '💡 RECOMENDACIONES:');
   
-  if (envKey && !envKey.startsWith('pk_live_') && useProductionMode) {
+  if (envKey && !envKey.startsWith('pk_live_') && currentMode === 'production') {
     log(colors.yellow, '   ⚠️  Tienes configuración PRODUCCIÓN pero variable TEST');
     log(colors.blue, '   → Opción 1: Elimina VITE_STRIPE_PUBLIC_KEY de archivos .env');
     log(colors.blue, '   → Opción 2: Cambia VITE_STRIPE_PUBLIC_KEY a pk_live_...');

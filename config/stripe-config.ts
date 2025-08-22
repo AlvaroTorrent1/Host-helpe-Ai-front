@@ -1,5 +1,5 @@
 // config/stripe-config.ts - Configuración centralizada de Stripe
-// Permite cambiar fácilmente entre modo TEST, DEMO PRODUCCIÓN y PRODUCCIÓN REAL
+// CONFIGURADO PARA PRODUCCIÓN REAL - Pagos reales con claves live
 
 /// <reference types="vite/client" />
 
@@ -22,17 +22,17 @@ const TEST_CONFIG: StripeConfig = {
   isDemo: false
 };
 
-// Configuración para MODO DEMO PRODUCCIÓN (testing UI producción)
+// Configuración DEMO (mantenida para compatibilidad - NO USAR EN PRODUCCIÓN)
 const DEMO_PRODUCTION_CONFIG: StripeConfig = {
   publicKey: 'pk_test_51QNuzlKpVJd2j1yPbsg080QS7mmqz68IIrjommi2AkMxLkIhi5PsaONdqSQsivUNkHTgcJAEfkjiMRP4BM5aXlKu00MLBpcYdQ',
   mode: 'demo_production',
   isProduction: true, // UI de producción
-  isDemo: true        // Pero con claves test
+  isDemo: true        // Pero con claves test - SOLO PARA DESARROLLO
 };
 
 // Configuración para MODO PRODUCCIÓN REAL (pagos reales)
 const PRODUCTION_CONFIG: StripeConfig = {
-  publicKey: 'pk_live_CAMBIAR_POR_CLAVE_REAL', // 🚨 CAMBIAR POR CLAVE REAL
+  publicKey: 'pk_live_REQUIRED_FROM_ENV', // 🚨 CLAVE DEBE VENIR DE VARIABLE DE ENTORNO
   mode: 'production',
   isProduction: true,
   isDemo: false
@@ -42,11 +42,10 @@ const PRODUCTION_CONFIG: StripeConfig = {
 // CONFIGURACIÓN ACTIVA
 // ============================================
 
-// 🔧 CAMBIAR ESTA VARIABLE PARA ALTERNAR ENTRE MODOS:
-// - 'test' = Modo TEST (con textos de test)
-// - 'demo_production' = UI de producción con claves test (RECOMENDADO PARA TESTING)
-// - 'production' = Modo PRODUCCIÓN REAL (necesita claves pk_live_...)
-const CURRENT_MODE: StripeConfig['mode'] = 'demo_production';
+// 🔧 CONFIGURACIÓN ACTIVA: MODO PRODUCCIÓN REAL
+// ✅ Modo configurado para pagos reales con claves live
+// - 'production' = Modo PRODUCCIÓN REAL (pagos reales con claves pk_live_...)
+const CURRENT_MODE: StripeConfig['mode'] = 'production';
 
 // Obtener configuración activa
 export const getStripeConfig = (): StripeConfig => {
@@ -88,14 +87,15 @@ console.log(`🔧 Stripe Config: Modo ${stripeConfig.mode.toUpperCase()}`, {
   source: import.meta.env.VITE_STRIPE_PUBLIC_KEY ? 'variable de entorno' : 'configuración manual'
 });
 
-// Warnings específicos según el modo
+// Confirmación de modo de producción
 if (stripeConfig.isDemo) {
-  console.warn('🎭 MODO DEMO: UI de producción con claves test - Perfect para testing!');
-} else if (stripeConfig.isProduction && stripeConfig.publicKey.includes('CAMBIAR')) {
-  console.error('🚨 ERROR: Usando placeholder en modo producción real!');
-  console.error('🚨 Debes configurar una clave pk_live_... real para producción');
+  console.warn('🎭 MODO DEMO: Solo para desarrollo - NO usar en producción!');
+} else if (stripeConfig.isProduction && stripeConfig.publicKey.includes('REQUIRED_FROM_ENV')) {
+  console.error('🚨 ERROR: Clave de producción requerida desde variable de entorno!');
+  console.error('🚨 Crear archivo .env con: VITE_STRIPE_PUBLIC_KEY=pk_live_...');
 } else if (stripeConfig.isProduction) {
-  console.log('🚀 MODO PRODUCCIÓN REAL: Usando claves live');
+  console.log('🚀 MODO PRODUCCIÓN REAL: Sistema configurado para pagos reales');
+  console.log('💳 Stripe live keys activas - Transacciones reales habilitadas');
 } else {
   console.log('🧪 MODO TEST: Desarrollo y testing');
 }
