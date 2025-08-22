@@ -212,18 +212,52 @@ const StripePaymentElement: React.FC<StripePaymentElementProps> = ({
               Procesando pago...
             </span>
           ) : !isPaymentElementReady ? (
-            '⏳ Preparando formulario...'
+            'Preparando formulario...'
         ) : (
-            '💳 Completar pago'
+            'Completar pago'
         )}
       </button>
     </form>
 
-      {/* Información de seguridad - Modo PRODUCCIÓN */}
-      <div className="text-xs text-gray-500 text-center">
-        <p>🔒 Pago seguro procesado por Stripe</p>
-        <p className="mt-1 text-green-600">✅ Transacción protegida con SSL</p>
-        <p className="mt-1 text-blue-600">💳 Sistema configurado para pagos reales</p>
+      {/* Información de seguridad profesional */}
+      <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-center space-x-6 text-xs">
+          {/* Seguridad Stripe */}
+          <div className="flex items-center space-x-2 text-gray-600">
+            <div className="flex-shrink-0">
+              <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="font-medium">Procesado por Stripe</span>
+          </div>
+          
+          {/* SSL */}
+          <div className="flex items-center space-x-2 text-gray-600">
+            <div className="flex-shrink-0">
+              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="font-medium">Protegido SSL</span>
+          </div>
+          
+          {/* Modo Producción */}
+          <div className="flex items-center space-x-2 text-gray-600">
+            <div className="flex-shrink-0">
+              <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <span className="font-medium">Pago seguro</span>
+          </div>
+        </div>
+        
+        {/* Texto adicional más sutil */}
+        <p className="text-center text-gray-500 mt-3 text-xs">
+          Tus datos están protegidos con encriptación de nivel bancario
+        </p>
       </div>
     </div>
   );
