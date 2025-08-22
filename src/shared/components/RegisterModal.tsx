@@ -192,16 +192,18 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         setError("");
         setShowAccountConfirmation(false); // Ocultar confirmación
         
-        console.log("Iniciando proceso de pago para usuario confirmado:", {
+        console.log("🎯 Iniciando proceso de pago para usuario confirmado:", {
           userId: user.id,
           planId: selectedPlan.id,
           email: user.email,
-          price: selectedPlan.price
+          price: selectedPlan.price,
+          priceInCents: selectedPlan.price * 100
         });
         
         // Comprobar que el precio sea válido
         if (!selectedPlan.price || selectedPlan.price <= 0) {
-          throw new Error("El precio del plan no es válido");
+          console.error("❌ Precio inválido detectado:", selectedPlan.price);
+          throw new Error(`El precio del plan no es válido: ${selectedPlan.price}`);
         }
         
         console.log("Llamando a createPaymentIntent...");
@@ -215,13 +217,19 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           // Esperar un tick para que React procese la limpieza del estado
           await new Promise(resolve => setTimeout(resolve, 50));
           
-          const { clientSecret } = await createPaymentIntent({
+          // Log detallado antes de llamar a createPaymentIntent
+          const paymentParams = {
             amount: selectedPlan.price * 100, // Convertir a centavos
             currency: 'eur',
             user_id: user.id,
             plan_id: selectedPlan.id,
             email: user.email || ''
-          });
+          };
+          
+          console.log('💳 Llamando a createPaymentIntent con parámetros:', paymentParams);
+          console.log(`📊 Verificación: Plan ${selectedPlan.id} - €${selectedPlan.price} = ${selectedPlan.price * 100} centavos`);
+          
+          const { clientSecret } = await createPaymentIntent(paymentParams);
           
           if (!clientSecret) {
             throw new Error("No se recibió client_secret del servidor");

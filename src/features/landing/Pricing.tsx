@@ -172,15 +172,16 @@ const Pricing = () => {
       return;
     }
     
+    // Usar directamente el precio pasado como parámetro
+    // Este precio ya viene correcto desde el onClick del plan (19.99 para básico anual, 49.99 para pro anual, etc.)
     let actualPrice = 0;
-    if (planPrice !== null) {
-        const planDetails = plans.find(p => p.id === planId);
-        if (planDetails && planDetails.annualPrice !== null && planDetails.monthlyPrice !== null) { // Ensure prices are not null
-            actualPrice = isAnnual ? planDetails.annualPrice : planDetails.monthlyPrice;
-        } else if (planPrice) { // Fallback if details or specific prices are missing
-            actualPrice = isAnnual ? planPrice : planPrice * 1.25;
-        }
-    } // If planPrice is null (e.g. enterprise), actualPrice remains 0
+    if (planPrice !== null && planPrice > 0) {
+        actualPrice = planPrice;
+        console.log(`💰 Precio seleccionado para ${planName}: €${actualPrice} (${planId})`);
+    } else {
+        console.error(`❌ Precio inválido para ${planName}: ${planPrice}`);
+        return;
+    }
 
     // 🚀 NUEVO: Usar PaymentFlow context para iniciar el flujo
     const planData = {
@@ -190,6 +191,7 @@ const Pricing = () => {
     };
         
     console.log('🎯 Pricing: Iniciando flujo de pago con plan:', planData);
+    console.log(`📊 Detalles: Plan=${planId}, Precio=€${actualPrice}, Modo=${isAnnual ? 'Anual' : 'Mensual'}`);
     startFlow(planData);
   };
 
