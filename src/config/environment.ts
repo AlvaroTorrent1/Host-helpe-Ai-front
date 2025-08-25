@@ -38,10 +38,10 @@ const normalizeUrl = (url: string): string => {
  * Supabase configuration
  */
 export const supabaseConfig = {
-  url: import.meta.env.VITE_SUPABASE_URL || 'https://blxngmtmknkdmikaflen.supabase.co',
+  url: import.meta.env.VITE_SUPABASE_URL || 'https://hosthelper.supabase.co',
   anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
   serviceRole: import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || '',
-  storageUrl: import.meta.env.VITE_SUPABASE_STORAGE_URL || 'https://blxngmtmknkdmikaflen.supabase.co/storage/v1/object/public/',
+  storageUrl: import.meta.env.VITE_SUPABASE_STORAGE_URL || 'https://hosthelper.supabase.co/storage/v1/object/public/',
   siteUrl: normalizeUrl(import.meta.env.VITE_SITE_URL) || (environment.development ? getCurrentOrigin() : ''),
   
   // Dynamic redirect URL that works in both development and production

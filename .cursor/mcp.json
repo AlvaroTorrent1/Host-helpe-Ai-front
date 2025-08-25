@@ -35,7 +35,9 @@
         "run",
         "@smithery-ai/server-sequential-thinking",
         "--key",
-        "757d2046-c2a9-481c-944b-7b42f69adc6e"
+        "757d2046-c2a9-481c-944b-7b42f69adc6e",
+        "--profile",
+        "thankful-oil-C30-Ft"
       ]
     },
     "n8n-mcp": {
