@@ -424,7 +424,7 @@ const LandingPage = () => {
                   }`}>
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
-                      src="/imagenes/helpy_phone.png"
+                      src="/imagenes/Helpy using a phone in an office.png"
                       alt="Agentes IA 24/7"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
@@ -477,7 +477,7 @@ const LandingPage = () => {
                 }`}
               >
                 <div className="mb-4">
-                  <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-400 ${
+                  <div className={`w-52 h-52 mx-auto overflow-hidden relative bg-white transition-all duration-700 delay-400 ${
                     visibleFeatures[1] 
                       ? 'opacity-100 scale-100' 
                       : 'opacity-0 scale-90'
