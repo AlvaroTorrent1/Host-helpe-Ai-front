@@ -68,8 +68,8 @@
     "testimonial1": {
       "description": "Alojamiento rural con encanto en Sierra de Gata, Extremadura.",
       "text": "Host Helper ha transformado nuestra gestión de reservas. Los huéspedes están encantados con la atención 24/7 y ahorramos tiempo respondiendo preguntas repetitivas.",
-      "author": "María González",
-      "position": "Propietaria"
+      "author": "Aitor Sánchez",
+      "position": "Propietario"
     },
     "testimonial2": {
       "description": "Casa de vacaciones en el auténtico pueblo español de Ojén, Andalucía, con vistas a la montaña y cerca de la playa.",
@@ -78,10 +78,10 @@
       "position": "Propietaria"
     },
     "testimonial3": {
-      "description": "Alojamiento boutique en el centro histórico de Lucena.",
+      "description": "Hotel boutique en el corazón de Sevilla, con encanto tradicional y servicios modernos.",
       "text": "La función de ventas de servicios adicionales nos ha permitido incrementar nuestros ingresos en un 30%. Los huéspedes realmente aprecian la facilidad para solicitar servicios extra.",
-      "author": "Lola Martínez",
-      "position": "Gerente"
+      "author": "Marta García",
+      "position": "Propietaria"
     },
     "visitWebsite": "Visitar Sitio Web",
     "more": "Mostrar Más",

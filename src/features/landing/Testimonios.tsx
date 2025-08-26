@@ -153,13 +153,13 @@ const Testimonios = () => {
     },
     {
       id: 3,
-      name: "Alojamientos Doña Lola",
-      image: "/imagenes/pic9.png",
+      name: "Hotel Platería",
+      image: "/imagenes/Hotel plateria.png",
       description: t("testimonials.testimonial3.description"),
       testimonial: t("testimonials.testimonial3.text"),
       author: t("testimonials.testimonial3.author"),
       position: t("testimonials.testimonial3.position"),
-      website: "https://lolaalojamientos.com/",
+      website: "https://booking.com/hotel/es/plateria.en.html?aid=311984;label=plateria-u6VTVmJODM99KTPrtpSm3wS442477547736:pl:ta:p1:p2:ac:ap:neg:fi:tikwd-12683080509:lp9197933:li:dec:dm:ppccp=UmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_3qo3uPTHyoo;ws=&gad_source=1&gad_campaignid=345388365&gbraid=0AAAAAD_Ls1Jx88C1asg6z3lYFUWDHMa5E&gclid=CjwKCAjwtrXFBhBiEiwAEKen13goyq_hFjOzuqItGj0oBixZdgDBXTIJcIlKmsUjyplVjPMFrK86CRoCgcUQAvD_BwE",
     },
   ];
 
