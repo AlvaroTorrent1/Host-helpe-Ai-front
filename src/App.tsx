@@ -119,9 +119,7 @@ function App() {
                               return import('./features/reservations/ReservationsPage.tsx');
                             }
                             
-                            if (componentName === 'SESRegistrationPage') {
-                              return import('./features/ses/SESRegistrationPage.tsx');
-                            }
+
                             
                             const alternativeFolderName = componentName.toLowerCase().replace('page', '');
                             return import(`./features/${alternativeFolderName}/${componentName}.tsx`);

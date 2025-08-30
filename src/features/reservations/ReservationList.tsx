@@ -6,7 +6,7 @@ import {
 } from "../../types/reservation";
 import { Property } from "../../types/property";
 import { useTranslation } from "react-i18next";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "@shared/components/DeleteConfirmationModal";
 import { reservationService } from "@/services/reservationService";
@@ -16,6 +16,7 @@ interface ReservationListProps {
   properties: Property[];
   onAddReservation: () => void;
   onReservationDeleted?: (reservationId: string) => void;
+  onEditReservation?: (reservation: Reservation) => void;
   tabsComponent?: React.ReactNode;
   activeTab?: 'current' | 'past';
 }
@@ -25,6 +26,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
   properties,
   onAddReservation,
   onReservationDeleted,
+  onEditReservation,
   tabsComponent,
   activeTab = 'current',
 }) => {
@@ -481,7 +483,17 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           className="px-4 py-4 text-sm text-center"
                           style={{ minWidth: '100px', width: '15%' }}
                         >
-                          <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center space-x-2">
+                            {/* Botón de editar */}
+                            <button
+                              onClick={() => onEditReservation?.(reservation)}
+                              className="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded hover:bg-blue-50"
+                              title={t("reservations.edit.tooltip")}
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                            </button>
+                            
+                            {/* Botón de eliminar */}
                             <button
                               onClick={() => handleDeleteClick(reservation)}
                               className="text-red-600 hover:text-red-800 transition-colors p-2 rounded hover:bg-red-50"

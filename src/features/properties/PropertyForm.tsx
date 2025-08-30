@@ -770,7 +770,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </div>
                   <button
                     type="button"
-                    className="text-xs text-red-600 hover:text-red-800 px-2 py-1 rounded border border-red-200 hover:bg-red-50"
+                    className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
                     onClick={() => setShowAirbnbInstructions(!showAirbnbInstructions)}
                   >
                     {showAirbnbInstructions ? 'Ocultar' : 'Ayuda'}

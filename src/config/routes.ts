@@ -106,11 +106,7 @@ export const ROUTES: Record<string, AppRoute> = {
     componentName: "ProfilePage",
     authRequired: true,
   },
-  SES: {
-    path: "/ses",
-    componentName: "SESRegistrationPage",
-    authRequired: true,
-  },
+
   NOT_FOUND: {
     path: "*",
     componentName: "NotFoundPage",

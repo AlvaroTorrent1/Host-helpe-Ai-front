@@ -260,6 +260,12 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     setViewMode(ViewMode.FORM);
   };
 
+  // Mostrar formulario para editar reserva existente
+  const handleEditReservation = (reservation: Reservation) => {
+    setCurrentReservation(reservation);
+    setViewMode(ViewMode.FORM);
+  };
+
   // Mostrar detalles de reserva
   const handleViewReservation = (reservationId: string) => {
     const reservation = reservations.find((r) => r.id === reservationId);
@@ -270,12 +276,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     }
   };
 
-  // Mostrar formulario para editar reserva
-  const handleEditReservation = () => {
-    if (currentReservation) {
-      setViewMode(ViewMode.FORM);
-    }
-  };
+
 
   // Volver a la lista
   const handleBackToList = () => {
@@ -529,6 +530,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                     properties={properties}
                     onAddReservation={handleAddReservation}
                     onReservationDeleted={handleReservationDeleted}
+                    onEditReservation={handleEditReservation}
                     activeTab={activeTab}
                     tabsComponent={
                       <ReservationTabs
@@ -572,7 +574,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                 <ReservationDetail
                   reservation={currentReservation}
                   property={currentProperty}
-                  onEdit={handleEditReservation}
+                  onEdit={() => handleEditReservation(currentReservation)}
                   onSendToSES={() => handleSendToSES(currentReservation?.id || '')}
                   isSendingToSES={isSendingToSES}
                 />

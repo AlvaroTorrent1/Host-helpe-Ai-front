@@ -12,7 +12,7 @@ const DashboardNavigation: React.FC = () => {
     { path: "/dashboard", label: t("dashboard.menu.dashboard") },
     { path: "/reservations", label: t("dashboard.menu.reservations") },
     { path: "/properties", label: t("dashboard.menu.properties") },
-    { path: "/ses", label: t("dashboard.menu.registrations") },
+
   ];
 
   const isActive = (path: string) => {

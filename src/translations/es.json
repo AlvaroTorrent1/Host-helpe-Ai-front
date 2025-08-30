@@ -314,39 +314,7 @@
     "mobileMenu": "Menú móvil",
     "notAvailable": "No disponible"
   },
-  "ses": {
-    "history": {
-      "title": "Historial de Envíos SES",
-      "filters": {
-        "all": "Todos",
-        "pending": "Pendientes",
-        "submitted": "Enviados",
-        "error": "Con Error"
-      },
-      "table": {
-        "guest": "Huésped",
-        "property": "Propiedad",
-        "document": "Documento",
-        "date": "Fecha",
-        "status": "Estado",
-        "actions": "Acciones"
-      },
-      "documentTypes": {
-        "dni": "DNI",
-        "passport": "Pasaporte",
-        "other": "Otro"
-      },
-      "status": {
-        "pending": "Pendiente",
-        "submitted": "Enviado",
-        "error": "Error"
-      },
-      "actions": {
-        "retry": "Reintentar"
-      },
-      "noSubmissions": "No se encontraron envíos"
-    }
-  },
+
   "upgrade": {
     "features": {
       "property": {
@@ -495,7 +463,7 @@
       "dashboard": "Dashboard",
       "reservations": "Reservas", 
       "properties": "Propiedades",
-      "registrations": "Registro SES",
+
       "logout": "Cerrar sesión"
     },
     "stats": {
@@ -625,12 +593,6 @@
         "nationality": "Nacionalidad",
         "selectNationality": "Selecciona nacionalidad"
       }
-    },
-    "ses": {
-      "title": "Registro SES",
-      "workInProgress": "Esta sección está en desarrollo",
-      "importantNotice": "La integración SES estará disponible pronto. Podrás enviar automáticamente los datos de huéspedes para cumplir con las regulaciones turísticas españolas.",
-      "backToDashboard": "Volver al Dashboard"
     }
   },
   "footer": {
@@ -682,6 +644,9 @@
       "checkIn": "ENTRADA",
       "checkOut": "SALIDA",
       "actions": "ACCIONES"
+    },
+    "edit": {
+      "tooltip": "Editar reserva"
     },
           "delete": {
         "title": "Eliminar Reserva",

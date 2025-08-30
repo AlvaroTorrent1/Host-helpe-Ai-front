@@ -276,11 +276,60 @@ class ReservationService {
    */
   async updateReservation(id: string, data: Partial<CreateReservationData>): Promise<FrontendReservation> {
     try {
-      const numericId = parseInt(id);
-      if (isNaN(numericId)) {
+      // Soportar reservas sincronizadas con IDs como "synced-123"
+      const isSyncedId = typeof id === 'string' && id.startsWith('synced-');
+      const syncedId = isSyncedId ? id.replace('synced-', '') : undefined;
+      const numericId = !isSyncedId ? parseInt(id) : NaN;
+
+      if (!isSyncedId && isNaN(numericId)) {
         throw new Error('ID de reserva inválido');
       }
 
+      if (isSyncedId) {
+        // Actualizar SOLO columnas que existen en synced_bookings
+        // guest_name, guest_phone (y opcionalmente guest_email si alguna vez lo permitimos)
+        const syncedUpdate: Record<string, any> = {};
+
+        // Combinar nombre + apellido en un único campo guest_name si ambos vienen
+        const hasFirst = typeof data.guest_name !== 'undefined' && data.guest_name !== null;
+        const hasLast = typeof (data as any).guest_surname !== 'undefined' && (data as any).guest_surname !== null;
+        if (hasFirst || hasLast) {
+          const combinedName = `${data.guest_name ?? ''} ${(data as any).guest_surname ?? ''}`.trim();
+          if (combinedName) syncedUpdate.guest_name = combinedName;
+        }
+
+        if (typeof data.phone_number !== 'undefined') syncedUpdate.guest_phone = data.phone_number;
+
+        // Si no hay nada que actualizar, devolver el registro tal cual
+        if (Object.keys(syncedUpdate).length === 0) {
+          const { data: current, error: currentError } = await supabase
+            .from('synced_bookings')
+            .select('*')
+            .eq('id', syncedId as string)
+            .single();
+          if (currentError) {
+            console.error('Error fetching synced booking:', currentError);
+            throw new Error(`Error al obtener la reserva sincronizada: ${currentError.message}`);
+          }
+          return this.mapSyncedToFrontend(current);
+        }
+
+        const { data: synced, error: syncedError } = await supabase
+          .from('synced_bookings')
+          .update(syncedUpdate)
+          .eq('id', syncedId as string)
+          .select('*')
+          .single();
+
+        if (syncedError) {
+          console.error('Error updating synced booking:', syncedError);
+          throw new Error(`Error al actualizar la reserva sincronizada: ${syncedError.message}`);
+        }
+
+        return this.mapSyncedToFrontend(synced);
+      }
+
+      // Actualización de reservas manuales
       const { data: reservation, error } = await supabase
         .from('reservations')
         .update(data)

@@ -365,39 +365,7 @@
     "mobileMenu": "Mobile menu",
     "notAvailable": "Not available"
   },
-  "ses": {
-    "history": {
-      "title": "SES Submission History",
-      "filters": {
-        "all": "All",
-        "pending": "Pending",
-        "submitted": "Submitted",
-        "error": "Error"
-      },
-      "table": {
-        "guest": "Guest",
-        "property": "Property",
-        "document": "Document",
-        "date": "Date",
-        "status": "Status",
-        "actions": "Actions"
-      },
-      "documentTypes": {
-        "dni": "ID Card",
-        "passport": "Passport",
-        "other": "Other"
-      },
-      "status": {
-        "pending": "Pending",
-        "submitted": "Submitted",
-        "error": "Error"
-      },
-      "actions": {
-        "retry": "Retry"
-      },
-      "noSubmissions": "No submissions found"
-    }
-  },
+
   "upgrade": {
     "features": {
       "property": {
@@ -462,7 +430,7 @@
       "dashboard": "Dashboard",
       "reservations": "Reservations", 
       "properties": "Properties",
-      "registrations": "SES Registration",
+
       "logout": "Log out"
     },
     "stats": {
@@ -592,12 +560,6 @@
         "nationality": "Nationality",
         "selectNationality": "Select nationality"
       }
-    },
-    "ses": {
-      "title": "SES Registration",
-      "workInProgress": "This section is under development",
-      "importantNotice": "SES integration will be available soon. You will be able to automatically submit guest data to comply with Spanish tourism regulations.",
-      "backToDashboard": "Back to Dashboard"
     }
   },
   "auth": {
@@ -730,6 +692,9 @@
       "checkIn": "CHECK-IN",
       "checkOut": "CHECK-OUT",
       "actions": "ACTIONS"
+    },
+    "edit": {
+      "tooltip": "Edit reservation"
     },
     "delete": {
       "title": "Delete Reservation",
