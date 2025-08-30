@@ -36,6 +36,9 @@ export interface Reservation {
   notes?: string;
   createdAt: string; // formato ISO
   updatedAt?: string; // formato ISO
+  // Campos para reservas sincronizadas desde iCal
+  isSynced?: boolean; // Indica si la reserva viene de sincronización iCal
+  syncSource?: string; // Fuente de sincronización (ej. "Booking.com - Casa María Flora")
 }
 
 // Filtros para la búsqueda de reservas

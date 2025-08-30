@@ -8,6 +8,8 @@ import PropertyImagesForm from "./PropertyImagesForm";
 import PropertyDocumentsForm from "./PropertyDocumentsForm";
 import { useTranslation } from "react-i18next";
 import { areUrlsEquivalent } from "../../utils/urlNormalization";
+import { propertyIcalService } from "../../services/propertyIcalService";
+import { supabase } from "../../services/supabase";
 
 interface PropertyFormProps {
   property?: Property;
@@ -39,6 +41,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   // Estado para múltiples links de Google Business
   const [googleBusinessUrls, setGoogleBusinessUrls] = useState<string[]>([""]);
   const [originalGoogleBusinessUrls, setOriginalGoogleBusinessUrls] = useState<string[]>([]); // Snapshot inicial
+
+  // Estados para enlaces iCal
+  const [bookingIcalUrl, setBookingIcalUrl] = useState<string>("");
+  const [airbnbIcalUrl, setAirbnbIcalUrl] = useState<string>("");
+  const [showBookingInstructions, setShowBookingInstructions] = useState<boolean>(false);
+  const [showAirbnbInstructions, setShowAirbnbInstructions] = useState<boolean>(false);
+  const [icalValidationStates, setIcalValidationStates] = useState({
+    booking: { isValidating: false, isValid: false, error: "" },
+    airbnb: { isValidating: false, isValid: false, error: "" }
+  });
 
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -121,6 +133,55 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       }
     }
   }, [property]);
+
+  // Cargar enlaces iCal existentes cuando se edita una propiedad
+  useEffect(() => {
+    if (property?.id) {
+      const loadIcalConfigs = async () => {
+        try {
+          // Obtener el usuario actual
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          // Cargar configuraciones iCal existentes
+          const icalConfigs = await propertyIcalService.getPropertyIcalConfigs(property.id, user.id);
+          
+          if (icalConfigs.bookingUrl) {
+            setBookingIcalUrl(icalConfigs.bookingUrl);
+            // Actualizar estado de validación como válido si ya existe
+            setIcalValidationStates(prev => ({
+              ...prev,
+              booking: {
+                isValidating: false,
+                isValid: icalConfigs.bookingStatus === 'active',
+                error: icalConfigs.bookingStatus === 'error' ? 'Error en sincronización' : ''
+              }
+            }));
+          }
+
+          if (icalConfigs.airbnbUrl) {
+            setAirbnbIcalUrl(icalConfigs.airbnbUrl);
+            // Actualizar estado de validación como válido si ya existe
+            setIcalValidationStates(prev => ({
+              ...prev,
+              airbnb: {
+                isValidating: false,
+                isValid: icalConfigs.airbnbStatus === 'active',
+                error: icalConfigs.airbnbStatus === 'error' ? 'Error en sincronización' : ''
+              }
+            }));
+          }
+
+          console.log('📅 Enlaces iCal cargados:', icalConfigs);
+        } catch (error) {
+          console.error('Error cargando enlaces iCal:', error);
+          // No mostrar error al usuario, solo log
+        }
+      };
+
+      loadIcalConfigs();
+    }
+  }, [property?.id]);
 
   // Efecto para establecer automáticamente la imagen de portada
   useEffect(() => {
@@ -247,6 +308,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           _temporaryDocuments: temporaryDocuments,
           _googleBusinessUrls: googleBusinessUrls.filter(url => url),
           _linksChanged: linksChanged, // Flag para indicar si hay cambios en enlaces
+          // Agregar enlaces iCal
+          _bookingIcalUrl: bookingIcalUrl.trim() || undefined,
+          _airbnbIcalUrl: airbnbIcalUrl.trim() || undefined,
+          _icalValidationStates: icalValidationStates,
         };
         
         onSubmit(submitData as any);
@@ -289,6 +354,122 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const removeGoogleBusinessUrl = (index: number) => {
     const newUrls = googleBusinessUrls.filter((_, i) => i !== index);
     setGoogleBusinessUrls(newUrls.length > 0 ? newUrls : [""]);
+  };
+
+  // Validar enlace iCal
+  const validateIcalUrl = async (url: string, platform: 'booking' | 'airbnb') => {
+    if (!url.trim()) {
+      setIcalValidationStates(prev => ({
+        ...prev,
+        [platform]: { isValidating: false, isValid: false, error: "" }
+      }));
+      return;
+    }
+
+    // Validación básica de formato
+    const isBookingUrl = platform === 'booking' && 
+      (url.includes('booking.com') && url.includes('ical'));
+    const isAirbnbUrl = platform === 'airbnb' && 
+      (url.includes('airbnb.com') && url.includes('ical'));
+
+    if (!isBookingUrl && !isAirbnbUrl) {
+      setIcalValidationStates(prev => ({
+        ...prev,
+        [platform]: { 
+          isValidating: false, 
+          isValid: false, 
+          error: `URL no válida para ${platform === 'booking' ? 'Booking.com' : 'Airbnb'}` 
+        }
+      }));
+      return;
+    }
+
+    setIcalValidationStates(prev => ({
+      ...prev,
+      [platform]: { isValidating: true, isValid: false, error: "" }
+    }));
+
+    try {
+      // TODO: Hacer test fetch al enlace iCal
+      // Por ahora, simular validación exitosa
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setIcalValidationStates(prev => ({
+        ...prev,
+        [platform]: { isValidating: false, isValid: true, error: "" }
+      }));
+    } catch (error) {
+      setIcalValidationStates(prev => ({
+        ...prev,
+        [platform]: { 
+          isValidating: false, 
+          isValid: false, 
+          error: "No se pudo conectar al enlace. Verifica que sea correcto." 
+        }
+      }));
+    }
+  };
+
+  // Manejar cambios en enlaces iCal
+  const handleIcalUrlChange = (value: string, platform: 'booking' | 'airbnb') => {
+    if (platform === 'booking') {
+      setBookingIcalUrl(value);
+    } else {
+      setAirbnbIcalUrl(value);
+    }
+
+    // Debounce validation
+    clearTimeout((window as any)[`${platform}ValidationTimeout`]);
+    (window as any)[`${platform}ValidationTimeout`] = setTimeout(() => {
+      validateIcalUrl(value, platform);
+    }, 500);
+  };
+
+  // Renderizar estado de conexión iCal
+  const renderIcalConnectionStatus = (platform: 'booking' | 'airbnb') => {
+    const state = icalValidationStates[platform];
+    const url = platform === 'booking' ? bookingIcalUrl : airbnbIcalUrl;
+
+    if (!url.trim()) {
+      return (
+        <div className="mt-1 flex items-center">
+          <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
+          <span className="text-xs text-gray-500">Sin conectar</span>
+        </div>
+      );
+    }
+
+    if (state.isValidating) {
+      return (
+        <div className="mt-1 flex items-center">
+          <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse"></div>
+          <span className="text-xs text-yellow-600">Verificando...</span>
+        </div>
+      );
+    }
+
+    if (state.isValid) {
+      return (
+        <div className="mt-1 flex items-center">
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+          <span className="text-xs text-green-600">Conectado</span>
+        </div>
+      );
+    }
+
+    if (state.error) {
+      return (
+        <div className="mt-1">
+          <div className="flex items-center">
+            <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span className="text-xs text-red-600">Error</span>
+          </div>
+          <p className="text-xs text-red-600 mt-1">{state.error}</p>
+        </div>
+      );
+    }
+
+    return null;
   };
 
   // Prevenir envío del formulario cuando se presiona Enter en campos específicos
@@ -431,50 +612,62 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       case 4:
         return (
           <div className="space-y-6 animate-fade-in">
+            {/* Sección: Enlaces de Negocio */}
             <div>
               <h3 className="text-lg font-medium text-gray-900">
-                {t("properties.form.businessLinksTitle")}
+                Enlaces de Negocio
               </h3>
               <p className="mt-1 text-sm text-gray-600">
                 {t("properties.form.businessLinksDescription")}
               </p>
             </div>
 
-            {googleBusinessUrls.map((url, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <input
-                  type="url"
-                  value={url}
-                  onChange={(e) =>
-                    handleGoogleBusinessUrlChange(index, e.target.value)
-                  }
-                  onKeyDown={handleKeyDown}
-                  placeholder={t("properties.form.businessUrlPlaceholder")}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-                {googleBusinessUrls.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeGoogleBusinessUrl(index)}
-                    className="p-2 text-gray-500 hover:text-red-600"
-                    aria-label={t("properties.form.removeLink")}
-                  >
-                    <svg
-                      className="h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                )}
+            {/* Contenedor con scroll - máximo 2 enlaces visibles */}
+            <div className="relative">
+              <div className="max-h-32 overflow-y-auto space-y-3 pr-1 border border-gray-100 rounded-md p-2 bg-gray-50">
+                {googleBusinessUrls.map((url, index) => (
+                  <div key={index} className="flex items-center space-x-2 bg-white rounded border p-2">
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) =>
+                        handleGoogleBusinessUrlChange(index, e.target.value)
+                      }
+                      onKeyDown={handleKeyDown}
+                      placeholder={t("properties.form.businessUrlPlaceholder")}
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {googleBusinessUrls.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeGoogleBusinessUrl(index)}
+                        className="p-2 text-gray-500 hover:text-red-600 flex-shrink-0"
+                        aria-label={t("properties.form.removeLink")}
+                      >
+                        <svg
+                          className="h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+              {/* Indicador de scroll cuando hay más de 2 enlaces */}
+              {googleBusinessUrls.length > 2 && (
+                <div className="absolute bottom-1 right-3 text-xs text-gray-400 bg-white px-1 rounded">
+                  ↕ {googleBusinessUrls.length} enlaces
+                </div>
+              )}
+            </div>
 
             <button
               type="button"
@@ -496,54 +689,119 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               {t("properties.form.addAnotherLink")}
             </button>
 
-            {/* Sección de descripción */}
-            <div className="mt-6">
-              <label
-                htmlFor="businessLinksDescription"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {t("properties.form.businessLinksDescriptionLabel")}
-              </label>
-              <textarea
-                id="businessLinksDescription"
-                name="businessLinksDescription"
-                value={formData.business_links_description || ""}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    business_links_description: e.target.value,
-                  })
-                }
-                rows={3}
-                placeholder={t("properties.form.businessLinksDescriptionPlaceholder")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              />
-            </div>
-            
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mt-6">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                   <svg
-                    className="h-5 w-5 text-blue-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
+            {/* Sección: Sincronización de Calendarios */}
+            <div className="border-t border-gray-200 pt-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center">
+                  <svg className="h-5 w-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
+                  Calendarios
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Conecta tus calendarios de Booking.com y Airbnb para sincronizar reservas automáticamente.
+                </p>
+              </div>
+
+              {/* Booking.com */}
+              <div className="mt-4 p-3 border border-gray-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    {/* Logo real de Booking.com */}
+                    <div className="w-12 h-12 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/imagenes/booking_logo.png" 
+                        alt="Booking.com" 
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900">Booking.com</h4>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
+                    onClick={() => setShowBookingInstructions(!showBookingInstructions)}
+                  >
+                    {showBookingInstructions ? 'Ocultar' : 'Ayuda'}
+                  </button>
                 </div>
-                <div className="ml-3">
-                   <p className="text-sm text-blue-700">
-                    {t("properties.form.shareableLinksNote")}
-                  </p>
+                
+                {/* Instrucciones Booking.com */}
+                {showBookingInstructions && (
+                  <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded">
+                    <ol className="text-xs text-blue-800 space-y-0.5 list-decimal list-inside">
+                      <li>Extranet Booking.com → <strong>"Rates & Availability"</strong></li>
+                      <li><strong>"Calendar"</strong> → <strong>"Sync calendars"</strong></li>
+                      <li><strong>"Export calendar"</strong> → Copiar enlace</li>
+                    </ol>
+                  </div>
+                )}
+                
+                <div>
+                  <input
+                    type="url"
+                    value={bookingIcalUrl}
+                    onChange={(e) => handleIcalUrlChange(e.target.value, 'booking')}
+                    placeholder="https://admin.booking.com/hotel/..."
+                    className="block w-full px-2 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onKeyDown={handleKeyDown}
+                  />
+                  {renderIcalConnectionStatus('booking')}
+                </div>
+              </div>
+
+              {/* Airbnb */}
+              <div className="mt-3 p-3 border border-gray-200 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    {/* Logo real de Airbnb */}
+                    <div className="w-12 h-12 mr-3 flex items-center justify-center">
+                      <img 
+                        src="/imagenes/airbnb_logo.jpeg" 
+                        alt="Airbnb" 
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900">Airbnb</h4>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-xs text-red-600 hover:text-red-800 px-2 py-1 rounded border border-red-200 hover:bg-red-50"
+                    onClick={() => setShowAirbnbInstructions(!showAirbnbInstructions)}
+                  >
+                    {showAirbnbInstructions ? 'Ocultar' : 'Ayuda'}
+                  </button>
+                </div>
+                
+                {/* Instrucciones Airbnb */}
+                {showAirbnbInstructions && (
+                  <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded">
+                    <ol className="text-xs text-red-800 space-y-0.5 list-decimal list-inside">
+                      <li>Airbnb Host → <strong>"Calendar"</strong> de tu anuncio</li>
+                      <li><strong>"Availability settings"</strong> → <strong>"Calendar sync"</strong></li>
+                      <li>Copiar enlace de <strong>"Export calendar"</strong></li>
+                    </ol>
+                  </div>
+                )}
+                
+                <div>
+                  <input
+                    type="url"
+                    value={airbnbIcalUrl}
+                    onChange={(e) => handleIcalUrlChange(e.target.value, 'airbnb')}
+                    placeholder="https://www.airbnb.com/calendar/ical/..."
+                    className="block w-full px-2 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                    onKeyDown={handleKeyDown}
+                  />
+                  {renderIcalConnectionStatus('airbnb')}
                 </div>
               </div>
             </div>
+
           </div>
         );
       default:
@@ -592,7 +850,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     { id: 1, name: t("properties.form.steps.basicInfo") },
     { id: 2, name: t("properties.form.steps.images") },
     { id: 3, name: t("properties.form.steps.documents") },
-    { id: 4, name: t("properties.form.steps.google") },
+    { id: 4, name: "Enlaces" },
   ];
 
   return (

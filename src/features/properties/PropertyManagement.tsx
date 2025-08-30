@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { MessagingUrlsPanel } from "./components/MessagingUrlsPanel";
 import { LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
+import { propertyIcalService } from "../../services/propertyIcalService";
 
 // PropertyFormData interface - basada en la estructura que acepta el formulario
 interface PropertyFormData extends Omit<Property, "id"> {
@@ -24,6 +25,13 @@ interface PropertyFormData extends Omit<Property, "id"> {
   num_bedrooms?: number;
   num_bathrooms?: number;
   max_guests?: number;
+  // Campos adicionales del formulario (no van directamente a Property)
+  _temporaryDocuments?: PropertyDocument[];
+  _googleBusinessUrls?: string[];
+  _linksChanged?: boolean;
+  _bookingIcalUrl?: string;
+  _airbnbIcalUrl?: string;
+  _icalValidationStates?: any;
 }
 
 interface PropertyManagementProps {
@@ -238,6 +246,40 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
             savedProperty = updatedProperty as unknown as Property;
           }
         }
+
+        // Procesar enlaces iCal si se proporcionaron
+        if (propertyData._bookingIcalUrl || propertyData._airbnbIcalUrl) {
+          setProgressPhase('Configurando sincronización de calendarios...');
+          setProgressPercent(85);
+          
+          try {
+            // Crear o actualizar user_property
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('Usuario no autenticado');
+
+            const userProperty = await propertyIcalService.createOrUpdateUserProperty({
+              id: savedProperty.id,
+              name: savedProperty.name,
+              user_id: user.id
+            });
+
+            // Guardar configuraciones iCal
+            await propertyIcalService.saveIcalConfigs({
+              propertyId: savedProperty.id,
+              userId: user.id,
+              userPropertyId: userProperty.id!,
+              bookingIcalUrl: propertyData._bookingIcalUrl,
+              airbnbIcalUrl: propertyData._airbnbIcalUrl
+            });
+
+            console.log('✅ Enlaces iCal configurados exitosamente');
+            toast.success('Calendarios sincronizados configurados');
+          } catch (icalError) {
+            console.error('❌ Error configurando enlaces iCal:', icalError);
+            toast.error('Error configurando sincronización de calendarios');
+            // No detener el flujo por error en iCal
+          }
+        }
       }
       // Modo creación: nuevo flujo con procesamiento de imágenes
       else {
@@ -352,6 +394,38 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
       }
 
       setProgressPhase(t('propertyManagement.completingCreation'));
+      setProgressPercent(90);
+
+      // Procesar enlaces iCal si se proporcionaron
+      if (propertyData._bookingIcalUrl || propertyData._airbnbIcalUrl) {
+        setProgressPhase('Configurando sincronización de calendarios...');
+        
+        try {
+          // Crear user_property
+          const userProperty = await propertyIcalService.createOrUpdateUserProperty({
+            id: draftProperty.id,
+            name: draftProperty.name,
+            user_id: user.id
+          });
+
+          // Guardar configuraciones iCal
+          await propertyIcalService.saveIcalConfigs({
+            propertyId: draftProperty.id,
+            userId: user.id,
+            userPropertyId: userProperty.id!,
+            bookingIcalUrl: propertyData._bookingIcalUrl,
+            airbnbIcalUrl: propertyData._airbnbIcalUrl
+          });
+
+          console.log('✅ Enlaces iCal configurados exitosamente en nueva propiedad');
+          toast.success('Calendarios sincronizados configurados');
+        } catch (icalError) {
+          console.error('❌ Error configurando enlaces iCal:', icalError);
+          toast.error('Error configurando sincronización de calendarios');
+          // No detener el flujo por error en iCal
+        }
+      }
+
       setProgressPercent(95);
 
       // Mostrar mensaje de éxito
@@ -476,6 +550,40 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
 
         if (updateError) throw updateError;
         savedProperty = updatedProperty as unknown as Property;
+      }
+    }
+
+    // Procesar enlaces iCal si se proporcionaron
+    if (propertyData._bookingIcalUrl || propertyData._airbnbIcalUrl) {
+      setProgressPhase('Configurando sincronización de calendarios...');
+      setProgressPercent(85);
+      
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Usuario no autenticado');
+
+        // Crear user_property
+        const userProperty = await propertyIcalService.createOrUpdateUserProperty({
+          id: savedProperty.id,
+          name: savedProperty.name,
+          user_id: user.id
+        });
+
+        // Guardar configuraciones iCal
+        await propertyIcalService.saveIcalConfigs({
+          propertyId: savedProperty.id,
+          userId: user.id,
+          userPropertyId: userProperty.id!,
+          bookingIcalUrl: propertyData._bookingIcalUrl,
+          airbnbIcalUrl: propertyData._airbnbIcalUrl
+        });
+
+        console.log('✅ Enlaces iCal configurados exitosamente');
+        toast.success('Calendarios sincronizados configurados');
+      } catch (icalError) {
+        console.error('❌ Error configurando enlaces iCal:', icalError);
+        toast.error('Error configurando sincronización de calendarios');
+        // No detener el flujo por error en iCal
       }
     }
     

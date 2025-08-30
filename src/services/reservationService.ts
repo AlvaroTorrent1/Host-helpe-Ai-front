@@ -41,6 +41,47 @@ export interface CreateReservationData {
 
 class ReservationService {
   /**
+   * Mapear de la estructura de reservas sincronizadas a la estructura del frontend
+   */
+  private mapSyncedToFrontend(syncedBooking: any): FrontendReservation {
+    // Crear un huésped con datos limitados disponibles
+    const mainGuest: Guest = {
+      id: `synced-guest-${syncedBooking.id}`,
+      firstName: syncedBooking.guest_name || 'Datos no disponibles',
+      lastName: '',
+      email: syncedBooking.guest_email || '',
+      phone: syncedBooking.guest_phone || undefined,
+      birthDate: '',
+      nationality: ''
+    };
+
+    // Determinar el estado basado en booking_status
+    const statusMap: { [key: string]: ReservationStatus } = {
+      'blocked': 'confirmed',
+      'reserved': 'confirmed', 
+      'unknown': 'pending'
+    };
+
+    return {
+      id: `synced-${syncedBooking.id}`,
+      propertyId: syncedBooking.property_id,
+      guests: [mainGuest],
+      mainGuestId: mainGuest.id,
+      checkInDate: syncedBooking.check_in_date,
+      checkOutDate: syncedBooking.check_out_date,
+      status: statusMap[syncedBooking.booking_status] || 'pending',
+      totalGuests: 1,
+      bookingSource: syncedBooking.booking_source || 'booking.com',
+      notes: `Sincronizado desde ${syncedBooking.ical_configs?.ical_name || 'iCal'} - ${syncedBooking.booking_status}`,
+      createdAt: syncedBooking.created_at,
+      updatedAt: syncedBooking.updated_at,
+      // Marcar como sincronizada para distinguirla en el frontend
+      isSynced: true,
+      syncSource: syncedBooking.ical_configs?.ical_name || 'iCal'
+    };
+  }
+
+  /**
    * Mapear de la estructura de DB a la estructura del frontend
    */
   private mapDbToFrontend(dbReservation: DbReservation): FrontendReservation {
@@ -105,21 +146,48 @@ class ReservationService {
   }
 
   /**
-   * Obtener todas las reservas del usuario
+   * Obtener todas las reservas del usuario (manuales + sincronizadas)
    */
   async getReservations(): Promise<FrontendReservation[]> {
     try {
-      const { data: reservations, error } = await supabase
+      // 1. Obtener reservas manuales (tabla reservations)
+      const { data: manualReservations, error: manualError } = await supabase
         .from('reservations')
         .select('*')
         .order('checkin_date', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching reservations:', error);
-        throw new Error(`Error al obtener las reservas: ${error.message}`);
+      if (manualError) {
+        console.error('Error fetching manual reservations:', manualError);
+        throw new Error(`Error al obtener las reservas manuales: ${manualError.message}`);
       }
 
-      return (reservations || []).map(r => this.mapDbToFrontend(r));
+      // 2. Obtener reservas sincronizadas (tabla synced_bookings)
+      const { data: syncedBookings, error: syncedError } = await supabase
+        .from('synced_bookings')
+        .select(`
+          *,
+          user_properties(property_name),
+          ical_configs(ical_name)
+        `)
+        .order('check_in_date', { ascending: false });
+
+      if (syncedError) {
+        console.error('Error fetching synced bookings:', syncedError);
+        // No lanzar error, solo continuar sin reservas sincronizadas
+        console.warn('Continuando sin reservas sincronizadas');
+      }
+
+      // 3. Convertir reservas manuales al formato frontend
+      const manualMapped = (manualReservations || []).map(r => this.mapDbToFrontend(r));
+
+      // 4. Convertir reservas sincronizadas al formato frontend
+      const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
+
+      // 5. Combinar y ordenar por fecha
+      const allReservations = [...manualMapped, ...syncedMapped];
+      allReservations.sort((a, b) => new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime());
+
+      return allReservations;
     } catch (error) {
       console.error('Error in getReservations:', error);
       throw error;
@@ -127,22 +195,48 @@ class ReservationService {
   }
 
   /**
-   * Obtener reservas de una propiedad específica
+   * Obtener reservas de una propiedad específica (manuales + sincronizadas)
    */
   async getPropertyReservations(propertyId: string): Promise<FrontendReservation[]> {
     try {
-      const { data: reservations, error } = await supabase
+      // 1. Obtener reservas manuales de la propiedad
+      const { data: manualReservations, error: manualError } = await supabase
         .from('reservations')
         .select('*')
         .eq('property_id', propertyId)
         .order('checkin_date', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching property reservations:', error);
-        throw new Error(`Error al obtener las reservas de la propiedad: ${error.message}`);
+      if (manualError) {
+        console.error('Error fetching property manual reservations:', manualError);
+        throw new Error(`Error al obtener las reservas manuales de la propiedad: ${manualError.message}`);
       }
 
-      return (reservations || []).map(r => this.mapDbToFrontend(r));
+      // 2. Obtener reservas sincronizadas de la propiedad
+      const { data: syncedBookings, error: syncedError } = await supabase
+        .from('synced_bookings')
+        .select(`
+          *,
+          user_properties(property_name),
+          ical_configs(ical_name)
+        `)
+        .eq('property_id', propertyId)
+        .order('check_in_date', { ascending: false });
+
+      if (syncedError) {
+        console.error('Error fetching property synced bookings:', syncedError);
+        // No lanzar error, solo continuar sin reservas sincronizadas
+        console.warn('Continuando sin reservas sincronizadas para la propiedad');
+      }
+
+      // 3. Convertir al formato frontend
+      const manualMapped = (manualReservations || []).map(r => this.mapDbToFrontend(r));
+      const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
+
+      // 4. Combinar y ordenar por fecha
+      const allReservations = [...manualMapped, ...syncedMapped];
+      allReservations.sort((a, b) => new Date(b.checkInDate).getTime() - new Date(a.checkInDate).getTime());
+
+      return allReservations;
     } catch (error) {
       console.error('Error in getPropertyReservations:', error);
       throw error;
