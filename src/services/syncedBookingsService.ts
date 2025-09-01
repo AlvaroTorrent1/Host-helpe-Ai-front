@@ -259,3 +259,4 @@ class SyncedBookingsService {
 export const syncedBookingsService = new SyncedBookingsService();
 export default syncedBookingsService;
 
+

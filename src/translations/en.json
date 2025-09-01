@@ -189,6 +189,11 @@
       "removeLink": "Remove link",
       "addAnotherLink": "Add another link",
               "shareableLinksNote": "These links will be strategically shared by our AI Agent to help promote your business when guests have positive experiences.",
+      "calendarsTitle": "Calendars",
+      "calendarsDescription": "Connect your Booking.com and Airbnb calendars to synchronize reservations automatically.",
+      "help": "Help",
+      "hide": "Hide",
+      "notConnected": "Not connected",
       "additionalImages": {
         "title": "Additional Images",
         "description": "Add images with descriptions to show tourists visual information about the property. Images should be accompanied by clear context so our AI agent knows when to show them to tourists (e.g., \"View from the terrace\" or \"Oven instructions\")."
@@ -436,8 +441,8 @@
     "stats": {
       "properties": "Properties",
       "activePropertiesFooter": "Active properties",
-      "pendingReservations": "Pending Reservations",
-      "pendingReservationsFooter": "{{percent}}% of reservations are pending",
+      "pendingReservations": "Current Reservations",
+      "pendingReservationsFooter": "{{percent}}% of reservations are active",
       "noReservations": "No reservations",
       "incidents": "Incidents",
       "resolutionRate": "Resolution rate: {{rate}}%"

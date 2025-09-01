@@ -23,8 +23,21 @@ const LandingPage = () => {
     }
   };
 
+  // Configuración de video promocional según idioma
+  const promoVideoConfig: Record<'es' | 'en', { videoId: string; thumbnail: string }> = {
+    es: {
+      videoId: "wB1csIUiHxM",
+      thumbnail: "https://img.youtube.com/vi/wB1csIUiHxM/maxresdefault.jpg"
+    },
+    en: {
+      videoId: "m7SL2_w5yP0", 
+      thumbnail: "https://img.youtube.com/vi/m7SL2_w5yP0/maxresdefault.jpg"
+    }
+  };
+
   // Obtener configuración del video actual basada en el idioma
   const currentVideo = videoConfig[language] || videoConfig.es;
+  const currentPromoVideo = promoVideoConfig[language] || promoVideoConfig.es;
 
   // Estado para controlar las animaciones de scroll
   // Expandido para incluir las 3 tarjetas de características
@@ -615,7 +628,7 @@ const LandingPage = () => {
                   // Imagen miniatura con botón de play personalizado
                   <div className="relative w-full h-full">
                     <img
-                      src="https://img.youtube.com/vi/m7SL2_w5yP0/maxresdefault.jpg"
+                      src={currentPromoVideo.thumbnail}
                       alt="Host Helper AI - Video promocional"
                       className="w-full h-full object-cover rounded-2xl shadow-2xl transition-all duration-700 ease-in-out group-hover:scale-[1.02]"
                       style={{
@@ -638,7 +651,7 @@ const LandingPage = () => {
                 ) : (
                   // Video de YouTube cuando está activado
                   <iframe
-                    src="https://www.youtube.com/embed/m7SL2_w5yP0?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
+                    src={`https://www.youtube.com/embed/${currentPromoVideo.videoId}?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0`}
                     className="w-full h-full rounded-2xl shadow-2xl"
                     style={{
                       aspectRatio: "16/9",

@@ -9,6 +9,9 @@ import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
 // import n8nTestService from "@services/n8nTestService"; // Temporalmente comentado
 import documentService from "@services/documentService";
+import reservationService from "@services/reservationService";
+import { filterReservationsByTab } from "../reservations/utils/reservationFilters";
+import { Reservation } from "@/types/reservation";
 import { PropertyDocument } from "@/types/property";
 import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen, LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
@@ -23,15 +26,7 @@ type Property = {
   description?: string;
 };
 
-type Reservation = {
-  id: string;
-  guest_name: string;
-  check_in: string;
-  check_out: string;
-  status: "confirmed" | "pending" | "cancelled";
-  property_id: string;
-  property_name: string;
-};
+// Using imported Reservation type from @/types/reservation
 
 
 
@@ -102,6 +97,13 @@ const useScrollGradient = () => {
     getUserBubbleStyle, 
     getAgentBubbleStyle 
   };
+};
+
+// Helper function to count current reservations (using same logic as reservations page)
+const getCurrentReservationsCount = (reservations: any[]): number => {
+  if (!reservations || reservations.length === 0) return 0;
+  
+  return filterReservationsByTab(reservations, 'current').length;
 };
 
 const DashboardPage: React.FC = () => {
@@ -316,9 +318,16 @@ const DashboardPage: React.FC = () => {
           setIncidents(mappedIncidents);
         }
         
-        // TODO: Implementar carga de reservas
-        // Por ahora dejamos array vacío para reservas
-        setReservations([]);
+        // Cargar reservas (manuales + sincronizadas)
+        try {
+          console.log("🔄 Cargando reservas...");
+          const reservationsData = await reservationService.getReservations();
+          console.log("✅ Reservas cargadas:", reservationsData.length);
+          setReservations(reservationsData);
+        } catch (reservationsError) {
+          console.error("❌ Error al cargar reservas:", reservationsError);
+          setReservations([]); // Fallback a array vacío en caso de error
+        }
         
       } catch (error) {
         console.error("Error al cargar datos:", error);
@@ -1038,7 +1047,7 @@ const DashboardPage: React.FC = () => {
         <div className="mb-4 sm:mb-6">
           <DashboardStats 
             activeProperties={properties.length}
-            pendingReservations={reservations.filter(r => r.status === "pending").length}
+            pendingReservations={getCurrentReservationsCount(reservations)}
             totalReservations={reservations.length}
             pendingIncidents={incidents.filter(i => i.status === "pending").length}
             resolutionRate={resolutionRate}

@@ -434,7 +434,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       return (
         <div className="mt-1 flex items-center">
           <div className="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
-          <span className="text-xs text-gray-500">Sin conectar</span>
+          <span className="text-xs text-gray-500">{t("properties.form.notConnected")}</span>
         </div>
       );
     }
@@ -615,7 +615,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             {/* Sección: Enlaces de Negocio */}
             <div>
               <h3 className="text-lg font-medium text-gray-900">
-                Enlaces de Negocio
+                {t("properties.form.businessLinksTitle")}
               </h3>
               <p className="mt-1 text-sm text-gray-600">
                 {t("properties.form.businessLinksDescription")}
@@ -696,10 +696,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   <svg className="h-5 w-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  Calendarios
+                  {t("properties.form.calendarsTitle")}
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Conecta tus calendarios de Booking.com y Airbnb para sincronizar reservas automáticamente.
+                  {t("properties.form.calendarsDescription")}
                 </p>
               </div>
 
@@ -724,7 +724,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                     className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
                     onClick={() => setShowBookingInstructions(!showBookingInstructions)}
                   >
-                    {showBookingInstructions ? 'Ocultar' : 'Ayuda'}
+                    {showBookingInstructions ? t("properties.form.hide") : t("properties.form.help")}
                   </button>
                 </div>
                 
@@ -773,7 +773,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                     className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 rounded border border-blue-200 hover:bg-blue-50"
                     onClick={() => setShowAirbnbInstructions(!showAirbnbInstructions)}
                   >
-                    {showAirbnbInstructions ? 'Ocultar' : 'Ayuda'}
+                    {showAirbnbInstructions ? t("properties.form.hide") : t("properties.form.help")}
                   </button>
                 </div>
                 

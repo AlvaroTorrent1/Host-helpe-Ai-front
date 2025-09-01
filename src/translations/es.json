@@ -137,6 +137,11 @@
               "businessUrlPlaceholder": "https://instagram.com/tupropiedad, https://maps.google.com/maps?cid=...",
       "removeLink": "Eliminar enlace",
       "addAnotherLink": "Añadir otro enlace",
+      "calendarsTitle": "Calendarios",
+      "calendarsDescription": "Conecta tus calendarios de Booking.com y Airbnb para sincronizar reservas automáticamente.",
+      "help": "Ayuda",
+      "hide": "Ocultar",
+      "notConnected": "Sin conectar",
               "shareableLinksNote": "Estos enlaces serán compartidos estratégicamente por nuestro Agente de IA para ayudar a promocionar tu negocio cuando los huéspedes tengan experiencias positivas.",
       "additionalImages": {
         "title": "Imágenes Adicionales",
@@ -469,8 +474,8 @@
     "stats": {
       "properties": "Propiedades",
       "activePropertiesFooter": "Propiedades activas",
-      "pendingReservations": "Reservas Pendientes",
-      "pendingReservationsFooter": "{{percent}}% de reservas están pendientes",
+      "pendingReservations": "Reservas Actuales",
+      "pendingReservationsFooter": "{{percent}}% de reservas están activas",
       "noReservations": "Sin reservas",
       "incidents": "Incidencias",
       "resolutionRate": "Tasa de resolución: {{rate}}%"

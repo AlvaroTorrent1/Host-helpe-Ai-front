@@ -36,3 +36,4 @@ const SyncedBookingIndicator: React.FC<SyncedBookingIndicatorProps> = ({
 
 export default SyncedBookingIndicator;
 
+
