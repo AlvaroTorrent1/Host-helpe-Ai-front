@@ -8,7 +8,7 @@ import DashboardNavigation from "./DashboardNavigation";
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
 import AgentUsageChart from "./components/AgentUsageChart";
-import AgentUsageBarChart from "./components/AgentUsageBarChart";
+import AgentUsageAreaChart from "./components/AgentUsageBarChart";
 // import n8nTestService from "@services/n8nTestService"; // Temporalmente comentado
 import documentService from "@services/documentService";
 import reservationService from "@services/reservationService";
@@ -1079,7 +1079,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Gráfico de uso del agente */}
         <div className="mb-6">
-          <AgentUsageBarChart />
+          <AgentUsageAreaChart />
         </div>
 
         {/* Propiedades */}

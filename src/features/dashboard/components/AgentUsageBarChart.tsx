@@ -2,14 +2,14 @@
 // Gráfico de barras que muestra el uso diario del agente en los últimos 30 días
 
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { agentService, DailyUsage } from '../../../services/agentService';
 
 interface AgentUsageBarChartProps {
   className?: string;
 }
 
-const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' }) => {
+const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = '' }) => {
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,11 +21,13 @@ const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' 
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        console.log('🔄 Cargando datos de uso diario para gráfico de barras...');
+        console.log('🔄 Cargando datos de uso diario para gráfico de área...');
         
         // Obtener datos reales de la base de datos
         const dailyData = await agentService.getDailyUsageLast30Days();
         console.log('✅ Datos de uso diario cargados:', dailyData);
+        console.log('📊 Número total de días con datos:', dailyData.length);
+        console.log('📅 Datos con actividad:', dailyData.filter(d => d.total_minutes > 0));
         
         // Crear un mapa con los datos existentes
         const dataMap = new Map<string, DailyUsage>();
@@ -141,10 +143,10 @@ const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' 
         </h3>
       </div>
 
-      {/* Gráfico de barras sin eje Y */}
+      {/* Gráfico de área con gradiente */}
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <AreaChart
             data={data}
             margin={{
               top: 10,
@@ -153,6 +155,15 @@ const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' 
               bottom: 25,
             }}
           >
+            {/* Definición del gradiente */}
+            <defs>
+              <linearGradient id="usageGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#ECA408" stopOpacity={0.8}/>
+                <stop offset="50%" stopColor="#F59E0B" stopOpacity={0.4}/>
+                <stop offset="95%" stopColor="#E5E7EB" stopOpacity={0.1}/>
+              </linearGradient>
+            </defs>
+            
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis 
               dataKey="day"
@@ -168,13 +179,31 @@ const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' 
               width={0}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar 
+            <Area 
+              type="monotone"
               dataKey="total_minutes" 
-              fill="#ECA408"
-              radius={[4, 4, 0, 0]}
-              animationDuration={800}
+              stroke="#ECA408"
+              strokeWidth={1.5}
+              fill="url(#usageGradient)"
+              fillOpacity={1}
+              dot={{ 
+                fill: '#ECA408', 
+                stroke: '#fff', 
+                strokeWidth: 1.5, 
+                r: 3,
+                strokeDasharray: '0'
+              }}
+              activeDot={{ 
+                r: 5, 
+                fill: '#ECA408', 
+                stroke: '#fff', 
+                strokeWidth: 2 
+              }}
+              animationDuration={1200}
+              animationEasing="ease-out"
+              connectNulls={false}
             />
-          </BarChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
 
@@ -190,4 +219,4 @@ const AgentUsageBarChart: React.FC<AgentUsageBarChartProps> = ({ className = '' 
   );
 };
 
-export default AgentUsageBarChart;
+export default AgentUsageAreaChart;
