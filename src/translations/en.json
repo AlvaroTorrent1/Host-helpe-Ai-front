@@ -445,7 +445,9 @@
       "pendingReservationsFooter": "{{percent}}% of reservations are active",
       "noReservations": "No reservations",
       "incidents": "Incidents",
-      "resolutionRate": "Resolution rate: {{rate}}%"
+      "resolutionRate": "Resolution rate: {{rate}}%",
+      "savedTime": "Saved time (min)",
+      "savedTimeFooter": "Estimated minutes of automated assistance"
     },
     "properties": {
       "title": "Your Properties",

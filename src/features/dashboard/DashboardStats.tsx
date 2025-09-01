@@ -24,6 +24,7 @@ interface DashboardStatsProps {
   totalReservations: number;
   pendingIncidents: number;
   resolutionRate: number;
+  savedTimeMinutes?: number; // nuevo KPI: tiempo ahorrado/uso (min)
   activeUsers?: number;
   className?: string;
 }
@@ -37,11 +38,11 @@ const StatCard: React.FC<StatCardProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`bg-white rounded-lg shadow p-4 ${className}`}>
+    <div className={`bg-white rounded-lg shadow p-3 md:p-4 ${className}`}>
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="text-2xl font-semibold mt-1 text-gray-800">{value}</p>
+          <p className="text-xs md:text-sm font-medium text-gray-500">{title}</p>
+          <p className="text-xl md:text-2xl font-semibold mt-1 text-gray-800">{value}</p>
           {trend && (
             <div className="flex items-center mt-1">
               <span
@@ -94,6 +95,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   totalReservations,
   pendingIncidents,
   resolutionRate,
+  savedTimeMinutes = 0,
   activeUsers = 0,
   className = '',
 }) => {
@@ -105,7 +107,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
     : 0;
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 ${className}`}>
+    <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6 ${className}`}>
       <StatCard 
         title={t('dashboard.stats.properties')}
         value={activeProperties}
@@ -149,6 +151,18 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
           isPositive: resolutionRate > 70 // Bueno si la tasa de resolución es alta
         }}
         footer={t('dashboard.stats.resolutionRate', { rate: resolutionRate })}
+      />
+
+      {/* Tarjeta adicional: Tiempo ahorrado/uso (minutos). Lógica se implementará después */}
+      <StatCard
+        title={t('dashboard.stats.savedTime', { defaultValue: 'Tiempo ahorrado (min)' })}
+        value={savedTimeMinutes}
+        icon={
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-12.5a.75.75 0 00-1.5 0V10c0 .199.079.39.22.53l2.75 2.75a.75.75 0 101.06-1.06l-2.53-2.53V5.5z" clipRule="evenodd" />
+          </svg>
+        }
+        footer={t('dashboard.stats.savedTimeFooter', { defaultValue: 'Minutos estimados de atención automatizada' })}
       />
     </div>
   );

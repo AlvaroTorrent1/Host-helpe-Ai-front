@@ -478,7 +478,9 @@
       "pendingReservationsFooter": "{{percent}}% de reservas están activas",
       "noReservations": "Sin reservas",
       "incidents": "Incidencias",
-      "resolutionRate": "Tasa de resolución: {{rate}}%"
+      "resolutionRate": "Tasa de resolución: {{rate}}%",
+      "savedTime": "Tiempo ahorrado (min)",
+      "savedTimeFooter": "Minutos estimados de atención automatizada"
     },
     "properties": {
       "title": "Tus Propiedades",

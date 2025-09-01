@@ -17,6 +17,9 @@ import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen, LoadingInline, LoadingSize, LoadingVariant } from "@shared/components/loading";
 import { IncidentCategory, INCIDENT_CATEGORIES } from '@/types/incident';
 import { interpolateColor } from "@/utils/animationUtils";
+import MobileFiltersButton from "@shared/components/filters/MobileFiltersButton";
+import MobileFiltersSheet from "@shared/components/filters/MobileFiltersSheet";
+import FilterChips from "@shared/components/filters/FilterChips";
 
 type Property = {
   id: string;
@@ -140,6 +143,8 @@ const DashboardPage: React.FC = () => {
   } | null>(null);
   const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
+  // Estado UI móvil (no afecta lógica): sheet de filtros
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   
   // Estado para controlar si mostrar todas las incidencias o solo las 10 recientes
 
@@ -1051,6 +1056,7 @@ const DashboardPage: React.FC = () => {
             totalReservations={reservations.length}
             pendingIncidents={incidents.filter(i => i.status === "pending").length}
             resolutionRate={resolutionRate}
+            savedTimeMinutes={0}
           />
         </div>
 
@@ -1154,8 +1160,19 @@ const DashboardPage: React.FC = () => {
             )}
           </div>
           
-          {/* Toolbar de filtros - Diseño profesional */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+          {/* Chips-resumen de filtros activos (solo móvil) */}
+          <FilterChips
+            filters={{
+              property: selectedProperty,
+              category: selectedCategory,
+              status: selectedStatus,
+              month: selectedMonth,
+            }}
+            onOpenFilters={() => setIsMobileFiltersOpen(true)}
+          />
+
+          {/* Toolbar de filtros - Desktop */}
+          <div className="hidden md:block bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
             <div className="flex flex-col lg:flex-row lg:items-end gap-4">
               {/* Selector de Propiedades */}
               <div className="flex-1 lg:flex-none lg:min-w-[200px]">
@@ -1248,6 +1265,87 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* FAB para abrir filtros en móvil */}
+          <MobileFiltersButton onOpen={() => setIsMobileFiltersOpen(true)} isActive={hasActiveFilters} />
+
+          {/* Panel de filtros en móvil (reutiliza los mismos selectores) */}
+          <MobileFiltersSheet
+            isOpen={isMobileFiltersOpen}
+            onClose={() => setIsMobileFiltersOpen(false)}
+            onApply={() => { /* no altera lógica; selectores ya actualizan estado */ }}
+            onClear={clearAllFilters}
+            title={getText("dashboard.incidents.filters.title", "Filtros")}
+          >
+            <div className="space-y-4">
+              {/* Selector de Propiedades */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.property", fallbackLabels.tableProperty)}
+                </label>
+                <select
+                  value={selectedProperty}
+                  onChange={(e) => setSelectedProperty(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="all">{getText("dashboard.incidents.filters.allProperties", fallbackLabels.allProperties)}</option>
+                  {properties.map((property) => (
+                    <option key={property.id} value={property.id}>{property.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Selector de Categorías */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.category", fallbackLabels.tableCategory)}
+                </label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="all">{getLabel("all")}</option>
+                  {getAvailableCategories().filter(c => c !== "all").map((category) => (
+                    <option key={category} value={category}>{getLabel(category)}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Selector de Estado */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.table.status", fallbackLabels.tableStatus)}
+                </label>
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="all">{getText("dashboard.incidents.filters.allStatus", language === 'es' ? 'Todos' : 'All')}</option>
+                  <option value="pending">{getStatusLabel("pending")}</option>
+                  <option value="resolved">{getStatusLabel("resolved")}</option>
+                </select>
+              </div>
+
+              {/* Selector de Mes */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getText("dashboard.incidents.filters.month", "Mes")}
+                </label>
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="all">{getText("dashboard.incidents.filters.allMonths", "Todos los meses")}</option>
+                  {getAvailableMonths().map((month) => (
+                    <option key={month.value} value={month.value}>{month.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </MobileFiltersSheet>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div className="bg-gray-50 p-3 rounded-lg">

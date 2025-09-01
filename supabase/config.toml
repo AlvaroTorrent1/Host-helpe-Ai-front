@@ -1,11 +1,12 @@
-# supabase/config.toml
-# Configuración de Supabase Edge Functions
+# Supabase Configuration File
+# https://supabase.com/docs/guides/local-development/managing-config
 
-[functions.n8n-webhook]
-# Desactivar verificación JWT para permitir webhooks públicos
-# Esta función actúa como proxy hacia n8n que tiene su propia autenticación
-verify_jwt = false
+# Edge Functions Configuration
+[functions.elevenlabs-webhook]
+verify_jwt = false  # Make webhook public for ElevenLabs
 
-[functions.proxy-n8n-webhook]
-# Esta función también maneja webhooks sin JWT
-verify_jwt = false 
+[functions.sync-elevenlabs-data]
+verify_jwt = true   # Keep sync function protected
+
+[functions.agents-analytics]
+verify_jwt = true   # Keep analytics protected
