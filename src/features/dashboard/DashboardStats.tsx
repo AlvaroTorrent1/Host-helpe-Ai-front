@@ -24,8 +24,8 @@ interface DashboardStatsProps {
   totalReservations: number;
   pendingIncidents: number;
   resolutionRate: number;
-  savedTimeMinutes?: number; // nuevo KPI: tiempo ahorrado/uso (min)
-  activeUsers?: number;
+  // Métrica de valor: minutos ahorrados
+  savedMinutes?: number;
   className?: string;
 }
 
@@ -95,8 +95,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
   totalReservations,
   pendingIncidents,
   resolutionRate,
-  savedTimeMinutes = 0,
-  activeUsers = 0,
+  savedMinutes = 0,
   className = '',
 }) => {
   const { t } = useTranslation();
@@ -153,16 +152,26 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
         footer={t('dashboard.stats.resolutionRate', { rate: resolutionRate })}
       />
 
-      {/* Tarjeta adicional: Tiempo ahorrado/uso (minutos). Lógica se implementará después */}
+      {/* Tarjeta de minutos ahorrados */}
       <StatCard
-        title={t('dashboard.stats.savedTime', { defaultValue: 'Tiempo ahorrado (min)' })}
-        value={savedTimeMinutes}
+        title={t('dashboard.stats.savedTime', { defaultValue: 'Tiempo Ahorrado' })}
+        value={savedMinutes}
         icon={
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-12.5a.75.75 0 00-1.5 0V10c0 .199.079.39.22.53l2.75 2.75a.75.75 0 101.06-1.06l-2.53-2.53V5.5z" clipRule="evenodd" />
           </svg>
         }
-        footer={t('dashboard.stats.savedTimeFooter', { defaultValue: 'Minutos estimados de atención automatizada' })}
+        trend={savedMinutes > 0 ? {
+          value: Math.min(100, Math.round((savedMinutes / 60) * 10)), // Crecimiento basado en horas
+          isPositive: true
+        } : undefined}
+        footer={savedMinutes > 0 
+          ? t('dashboard.stats.savedTimeFooter', { 
+              defaultValue: `${savedMinutes} minutos de atención automatizada este mes`, 
+              minutes: savedMinutes 
+            })
+          : t('dashboard.stats.noSavedTime', { defaultValue: 'Sin tiempo ahorrado registrado' })
+        }
       />
     </div>
   );

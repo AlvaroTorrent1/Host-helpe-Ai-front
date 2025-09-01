@@ -479,8 +479,12 @@
       "noReservations": "Sin reservas",
       "incidents": "Incidencias",
       "resolutionRate": "Tasa de resolución: {{rate}}%",
-      "savedTime": "Tiempo ahorrado (min)",
-      "savedTimeFooter": "Minutos estimados de atención automatizada"
+      "agentCalls": "Llamadas de Agentes",
+      "agentMinutesFooter": "{{minutes}} minutos de conversación",
+      "noAgentCalls": "Sin llamadas registradas",
+      "savedTime": "Tiempo Ahorrado",
+      "savedTimeFooter": "{{minutes}} minutos de atención automatizada este mes",
+      "noSavedTime": "Sin tiempo ahorrado registrado"
     },
     "properties": {
       "title": "Tus Propiedades",

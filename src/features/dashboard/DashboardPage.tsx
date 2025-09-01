@@ -7,9 +7,12 @@ import DashboardNavigation from "./DashboardNavigation";
 // import DashboardLanguageSelector from "./DashboardLanguageSelector"; // Temporalmente comentado
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
+import AgentUsageChart from "./components/AgentUsageChart";
+import AgentUsageBarChart from "./components/AgentUsageBarChart";
 // import n8nTestService from "@services/n8nTestService"; // Temporalmente comentado
 import documentService from "@services/documentService";
 import reservationService from "@services/reservationService";
+import agentService from "@services/agentService";
 import { filterReservationsByTab } from "../reservations/utils/reservationFilters";
 import { Reservation } from "@/types/reservation";
 import { PropertyDocument } from "@/types/property";
@@ -119,6 +122,9 @@ const DashboardPage: React.FC = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  
+  // Estado para minutos ahorrados de ElevenLabs
+  const [savedMinutes, setSavedMinutes] = useState(0);
 
   // Nuevo estado para propiedad seleccionada
   const [selectedProperty, setSelectedProperty] = useState<string | "all">("all");
@@ -332,6 +338,17 @@ const DashboardPage: React.FC = () => {
         } catch (reservationsError) {
           console.error("❌ Error al cargar reservas:", reservationsError);
           setReservations([]); // Fallback a array vacío en caso de error
+        }
+
+        // Cargar minutos ahorrados de ElevenLabs
+        try {
+          console.log("🔄 Cargando minutos ahorrados...");
+          const savedMinutesData = await agentService.getCurrentMonthSavedMinutes();
+          console.log("✅ Minutos ahorrados cargados:", savedMinutesData);
+          setSavedMinutes(savedMinutesData);
+        } catch (agentError) {
+          console.error("❌ Error al cargar minutos ahorrados:", agentError);
+          setSavedMinutes(0);
         }
         
       } catch (error) {
@@ -1056,8 +1073,13 @@ const DashboardPage: React.FC = () => {
             totalReservations={reservations.length}
             pendingIncidents={incidents.filter(i => i.status === "pending").length}
             resolutionRate={resolutionRate}
-            savedTimeMinutes={0}
+            savedMinutes={savedMinutes}
           />
+        </div>
+
+        {/* Gráfico de uso del agente */}
+        <div className="mb-6">
+          <AgentUsageBarChart />
         </div>
 
         {/* Propiedades */}
@@ -1066,14 +1088,56 @@ const DashboardPage: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-800">
               {t("dashboard.properties.title")}
             </h2>
+            {/* Botones de navegación para móviles */}
+            {properties.length > 1 && (
+              <div className="flex gap-2 sm:hidden">
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('properties-container');
+                    if (container) {
+                      container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label="Ver propiedades anteriores"
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('properties-container');
+                    if (container) {
+                      container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label="Ver propiedades siguientes"
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          {/* Contenedor con scroll horizontal en móviles, grid en desktop */}
+          <div 
+            id="properties-container"
+            className="flex gap-3 overflow-x-auto scrollbar-hide sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible"
+            style={{
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch'
+            }}
+          >
             {properties.length > 0 ? (
               properties.map((property) => (
                 <div
                   key={property.id}
-                  className="bg-white shadow-sm rounded-lg overflow-hidden flex flex-col sm:flex-row h-full"
+                  className="bg-white shadow-sm rounded-lg overflow-hidden flex flex-col sm:flex-row h-full w-full flex-shrink-0 sm:min-w-0 sm:w-auto"
+                  style={{ scrollSnapAlign: 'start' }}
                 >
                   <div className="w-full sm:w-1/3 h-40 sm:h-auto">
                     {property.image ? (
@@ -1131,7 +1195,7 @@ const DashboardPage: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="col-span-full bg-white shadow-sm rounded-lg p-4 text-center">
+              <div className="bg-white shadow-sm rounded-lg p-4 text-center w-full flex-shrink-0 sm:min-w-0 sm:col-span-full sm:w-auto">
                 <p className="text-gray-500 text-sm sm:text-base mb-3">
                   {getText("dashboard.properties.empty.title", "No properties available")}
                 </p>

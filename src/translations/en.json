@@ -446,8 +446,12 @@
       "noReservations": "No reservations",
       "incidents": "Incidents",
       "resolutionRate": "Resolution rate: {{rate}}%",
-      "savedTime": "Saved time (min)",
-      "savedTimeFooter": "Estimated minutes of automated assistance"
+      "agentCalls": "Agent Calls",
+      "agentMinutesFooter": "{{minutes}} minutes of conversation",
+      "noAgentCalls": "No calls recorded",
+      "savedTime": "Time Saved",
+      "savedTimeFooter": "{{minutes}} minutes of automated assistance this month",
+      "noSavedTime": "No saved time recorded"
     },
     "properties": {
       "title": "Your Properties",
