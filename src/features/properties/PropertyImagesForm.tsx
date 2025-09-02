@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { PropertyImage } from "../../types/property";
 import { useTranslation } from "react-i18next";
+import { syncPropertyCoverPhoto } from "../../services/propertyService";
 
 interface PropertyImagesFormProps {
   images?: PropertyImage[];
   onChange: (images: PropertyImage[]) => void;
+  propertyId?: string; // Para sincronizar la foto de portada
 }
 
 const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
   images = [],
   onChange,
+  propertyId,
 }) => {
   const { t } = useTranslation();
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -62,10 +65,30 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
     onChange(updatedImages);
   };
 
+  // Función para sincronizar foto de portada después de cambios
+  const syncCoverPhotoIfNeeded = async () => {
+    if (propertyId) {
+      try {
+        const result = await syncPropertyCoverPhoto(propertyId);
+        if (result.updated) {
+          console.log('✅ Foto de portada sincronizada automáticamente:', result.message);
+        }
+      } catch (error) {
+        console.error('Error sincronizando foto de portada:', error);
+      }
+    }
+  };
+
   // Eliminar una imagen
-  const handleRemoveImage = (id: string) => {
+  const handleRemoveImage = async (id: string) => {
     const updatedImages = images.filter((img) => img.id !== id);
     onChange(updatedImages);
+    
+    // Si eliminamos una imagen y hay un propertyId, sincronizar la portada
+    // La sincronización ocurrirá automáticamente via trigger, pero podemos forzarla para feedback inmediato
+    if (propertyId && updatedImages.length > 0) {
+      await syncCoverPhotoIfNeeded();
+    }
   };
 
   return (

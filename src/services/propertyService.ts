@@ -197,6 +197,94 @@ export const getPropertyById = async (id: string): Promise<Property> => {
 };
 
 /**
+ * Sincroniza la foto de portada de una propiedad con la primera imagen
+ */
+export const syncPropertyCoverPhoto = async (propertyId: string): Promise<{
+  success: boolean;
+  updated: boolean;
+  message: string;
+  oldCover?: string;
+  newCover?: string;
+}> => {
+  try {
+    const { data, error } = await supabase.rpc('sync_property_cover_photo', {
+      p_property_id: propertyId
+    });
+
+    if (error) {
+      console.error('Error syncing cover photo:', error);
+      return {
+        success: false,
+        updated: false,
+        message: `Error: ${error.message}`
+      };
+    }
+
+    return {
+      success: data.success,
+      updated: data.updated,
+      message: data.message,
+      oldCover: data.old_cover,
+      newCover: data.new_cover
+    };
+  } catch (error) {
+    console.error('Error in syncPropertyCoverPhoto:', error);
+    return {
+      success: false,
+      updated: false,
+      message: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
+};
+
+/**
+ * Sincroniza las fotos de portada de todas las propiedades del usuario
+ */
+export const syncUserCoverPhotos = async (): Promise<{
+  success: boolean;
+  totalUpdated: number;
+  propertiesProcessed: number;
+  message: string;
+}> => {
+  try {
+    // Obtener el usuario actual
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    const { data, error } = await supabase.rpc('sync_user_cover_photos', {
+      p_user_id: user.id
+    });
+
+    if (error) {
+      console.error('Error syncing user cover photos:', error);
+      return {
+        success: false,
+        totalUpdated: 0,
+        propertiesProcessed: 0,
+        message: `Error: ${error.message}`
+      };
+    }
+
+    return {
+      success: data.success,
+      totalUpdated: data.total_updated,
+      propertiesProcessed: data.properties_processed,
+      message: data.message
+    };
+  } catch (error) {
+    console.error('Error in syncUserCoverPhotos:', error);
+    return {
+      success: false,
+      totalUpdated: 0,
+      propertiesProcessed: 0,
+      message: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    };
+  }
+};
+
+/**
  * Crea una nueva propiedad
  */
 export const createProperty = async (

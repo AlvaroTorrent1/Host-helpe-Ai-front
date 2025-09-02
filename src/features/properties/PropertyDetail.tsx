@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Property } from "../../types/property";
 import PropertyDocumentManager from "./PropertyDocumentManager";
 import { useTranslation } from "react-i18next";
+import { syncPropertyCoverPhoto } from "../../services/propertyService";
 
 interface PropertyDetailProps {
   property: Property;
@@ -19,6 +20,27 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
+  const [isSyncingCover, setIsSyncingCover] = useState(false);
+
+  // Función para sincronizar foto de portada manualmente
+  const handleSyncCoverPhoto = async () => {
+    setIsSyncingCover(true);
+    try {
+      const result = await syncPropertyCoverPhoto(property.id);
+      if (result.updated) {
+        alert('✅ Foto de portada actualizada: La primera imagen es ahora la nueva portada');
+        // Aquí podrías actualizar el estado local o recargar la propiedad
+        window.location.reload(); // Solución simple para mostrar el cambio
+      } else {
+        alert('ℹ️ La foto de portada ya está sincronizada correctamente');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error al sincronizar la foto de portada');
+    } finally {
+      setIsSyncingCover(false);
+    }
+  };
 
   // Obtener icono según el tipo de archivo
   const getFileIcon = (fileType: string) => {
@@ -231,9 +253,34 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({
             {property.additional_images &&
             property.additional_images.length > 0 ? (
               <div className="space-y-6">
-                <p className="text-sm text-gray-500">
-                  {t("properties.detail.additionalImagesInfo")}
-                </p>
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-gray-500">
+                    {t("properties.detail.additionalImagesInfo")}
+                  </p>
+                  <button
+                    onClick={handleSyncCoverPhoto}
+                    disabled={isSyncingCover}
+                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Sincronizar foto de portada con la primera imagen"
+                  >
+                    {isSyncingCover ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sincronizando...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="-ml-1 mr-2 h-3 w-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Sincronizar Portada
+                      </>
+                    )}
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                   {property.additional_images.map((image) => (
                     <div

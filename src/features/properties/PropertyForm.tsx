@@ -595,6 +595,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             <PropertyImagesForm
               images={formData.additional_images || []}
               onChange={handleAdditionalImagesChange}
+              propertyId={property?.id}
             />
           </div>
         );

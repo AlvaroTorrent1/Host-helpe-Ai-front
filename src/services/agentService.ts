@@ -136,19 +136,40 @@ class AgentService {
         return 0;
       }
 
-      // Llamar a la función simple directamente
+      console.log('🔍 Getting saved minutes for user:', user.id);
+
+      // Llamar a la función actualizada que usa elevenlabs_conversations
       const { data, error } = await supabase
         .rpc('get_current_month_minutes', { p_user_id: user.id });
 
       if (error) {
-        console.error('Error fetching current month minutes:', error);
-        return 0;
+        console.error('❌ Error fetching current month minutes:', error);
+        
+        // Fallback: consulta directa si la función falla
+        console.log('🔄 Fallback: consulta directa a elevenlabs_conversations');
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('elevenlabs_conversations')
+          .select('duration_seconds')
+          .eq('user_id', user.id)
+          .eq('status', 'completed')
+          .not('duration_seconds', 'is', null)
+          .gte('started_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
+
+        if (fallbackError) {
+          console.error('❌ Fallback query also failed:', fallbackError);
+          return 0;
+        }
+
+        const totalSeconds = fallbackData?.reduce((sum, conv) => sum + (conv.duration_seconds || 0), 0) || 0;
+        const totalMinutes = Math.round(totalSeconds / 60);
+        console.log('✅ Fallback result:', totalMinutes, 'minutes');
+        return totalMinutes;
       }
 
-      console.log('Current month minutes from DB:', data);
+      console.log('✅ Current month minutes from DB:', data);
       return data || 0;
     } catch (error) {
-      console.error('Error in getCurrentMonthSavedMinutes:', error);
+      console.error('❌ Error in getCurrentMonthSavedMinutes:', error);
       return 0;
     }
   }
