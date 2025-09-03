@@ -2,7 +2,7 @@
 // Gráfico de barras que muestra el uso diario del agente en los últimos 30 días
 
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { agentService, DailyUsage } from '../../../services/agentService';
 
 interface AgentUsageBarChartProps {
@@ -16,6 +16,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [totalCalls, setTotalCalls] = useState(0);
   const [activeDays, setActiveDays] = useState(0);
+  const [selectedDayInfo, setSelectedDayInfo] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,10 +144,10 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
         </h3>
       </div>
 
-      {/* Gráfico de área con gradiente */}
+      {/* Gráfico de barras con gradiente */}
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
+          <BarChart
             data={data}
             margin={{
               top: 10,
@@ -154,13 +155,21 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
               left: 5,
               bottom: 25,
             }}
+            onClick={(data) => {
+              if (data && data.activePayload && data.activePayload[0]) {
+                const clickedData = data.activePayload[0].payload;
+                console.log('📊 Día seleccionado:', clickedData);
+                setSelectedDayInfo(clickedData);
+              }
+            }}
           >
-            {/* Definición del gradiente */}
+            {/* Definición del gradiente vertical para barras */}
             <defs>
-              <linearGradient id="usageGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ECA408" stopOpacity={0.8}/>
-                <stop offset="50%" stopColor="#F59E0B" stopOpacity={0.4}/>
-                <stop offset="95%" stopColor="#E5E7EB" stopOpacity={0.1}/>
+              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ECA408" stopOpacity={0.9}/>
+                <stop offset="30%" stopColor="#F59E0B" stopOpacity={0.7}/>
+                <stop offset="70%" stopColor="#F59E0B" stopOpacity={0.5}/>
+                <stop offset="100%" stopColor="#E5E7EB" stopOpacity={0.2}/>
               </linearGradient>
             </defs>
             
@@ -179,33 +188,78 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
               width={0}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Area 
-              type="monotone"
+            <Bar 
               dataKey="total_minutes" 
+              fill="url(#barGradient)"
               stroke="#ECA408"
-              strokeWidth={1.5}
-              fill="url(#usageGradient)"
-              fillOpacity={1}
-              dot={{ 
-                fill: '#ECA408', 
-                stroke: '#fff', 
-                strokeWidth: 1.5, 
-                r: 3,
-                strokeDasharray: '0'
-              }}
-              activeDot={{ 
-                r: 5, 
-                fill: '#ECA408', 
-                stroke: '#fff', 
-                strokeWidth: 2 
-              }}
+              strokeWidth={1}
+              radius={[2, 2, 0, 0]}
               animationDuration={1200}
               animationEasing="ease-out"
-              connectNulls={false}
-            />
-          </AreaChart>
+              style={{ cursor: 'pointer' }}
+            >
+              {/* Cada barra individual puede tener interactividad */}
+              {data.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill="url(#barGradient)"
+                  stroke="#ECA408"
+                  strokeWidth={1}
+                />
+              ))}
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Información del día seleccionado */}
+      {selectedDayInfo && (
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex justify-between items-start">
+            <div>
+              <h4 className="font-medium text-blue-900 mb-2">
+                📅 Información del día {selectedDayInfo.day}
+              </h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="text-blue-600 font-medium">Llamadas:</span>
+                  <span className="ml-2 text-blue-800">{selectedDayInfo.total_calls}</span>
+                </div>
+                <div>
+                  <span className="text-blue-600 font-medium">Minutos:</span>
+                  <span className="ml-2 text-blue-800">{selectedDayInfo.total_minutes}</span>
+                </div>
+                <div>
+                  <span className="text-blue-600 font-medium">Promedio:</span>
+                  <span className="ml-2 text-blue-800">
+                    {selectedDayInfo.total_calls > 0 
+                      ? `${Math.round(selectedDayInfo.total_minutes / selectedDayInfo.total_calls)} min/llamada`
+                      : 'Sin llamadas'
+                    }
+                  </span>
+                </div>
+                <div>
+                  <span className="text-blue-600 font-medium">Fecha:</span>
+                  <span className="ml-2 text-blue-800">
+                    {new Date(selectedDayInfo.date).toLocaleDateString('es-ES', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => setSelectedDayInfo(null)}
+              className="text-blue-500 hover:text-blue-700 font-medium text-sm"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Nota informativa */}
       {activeDays === 0 && (

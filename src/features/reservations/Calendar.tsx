@@ -18,7 +18,7 @@ interface CalendarDay {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateClick }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const language = i18n.language;
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -45,6 +45,43 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
       const checkOut = new Date(reservation.checkOutDate);
       return date >= checkIn && date <= checkOut;
     });
+  };
+
+  // Determinar el estado de una reserva para una fecha específica
+  const getReservationStatus = (reservation: Reservation, date: Date): 'pending' | 'active' | 'completed' => {
+    const today = new Date();
+    const checkIn = new Date(reservation.checkInDate);
+    const checkOut = new Date(reservation.checkOutDate);
+    const targetDate = new Date(date);
+    
+    // Normalizar fechas (solo día, mes, año)
+    today.setHours(0, 0, 0, 0);
+    checkIn.setHours(0, 0, 0, 0);
+    checkOut.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0);
+
+    if (today < checkIn) {
+      return 'pending'; // La reserva aún no ha comenzado
+    } else if (today >= checkIn && today <= checkOut) {
+      return 'active'; // La reserva está activa (en estancia)
+    } else {
+      return 'completed'; // La reserva ya terminó
+    }
+  };
+
+  // Obtener el color según el estado de la reserva
+  const getReservationColor = (reservation: Reservation, date: Date): string => {
+    const status = getReservationStatus(reservation, date);
+    switch (status) {
+      case 'pending':
+        return 'bg-blue-500'; // Azul para reservas pendientes
+      case 'active':
+        return 'bg-amber-500'; // Amarillo/naranja para reservas activas
+      case 'completed':
+        return 'bg-slate-400'; // Plateado para reservas completadas
+      default:
+        return 'bg-blue-500';
+    }
   };
 
   // Generar los días del calendario (incluyendo días del mes anterior y siguiente)
@@ -133,14 +170,14 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
           <button
             onClick={goToPreviousMonth}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title={language === 'es' ? 'Mes anterior' : 'Previous month'}
+            title={t('reservations.calendar.navigation.previousMonth')}
           >
             <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
           </button>
           <button
             onClick={goToNextMonth}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title={language === 'es' ? 'Mes siguiente' : 'Next month'}
+            title={t('reservations.calendar.navigation.nextMonth')}
           >
             <ChevronRightIcon className="h-5 w-5 text-gray-600" />
           </button>
@@ -185,13 +222,18 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
             {/* Indicadores de reservas */}
             {day.reservations.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-1">
-                {day.reservations.slice(0, 2).map((reservation, idx) => (
-                  <div
-                    key={reservation.id}
-                    className="w-2 h-2 rounded-full bg-green-500"
-                    title={language === 'es' ? 'Reserva' : 'Reservation'}
-                  />
-                ))}
+                {day.reservations.slice(0, 2).map((reservation, idx) => {
+                  const status = getReservationStatus(reservation, day.date);
+                  const colorClass = getReservationColor(reservation, day.date);
+                  const statusText = t(`reservations.calendar.status.${status}`);
+                  return (
+                    <div
+                      key={reservation.id}
+                      className={`w-2 h-2 rounded-full ${colorClass}`}
+                      title={`${t('reservations.calendar.reservation')} ${statusText}`}
+                    />
+                  );
+                })}
                 {day.reservations.length > 2 && (
                   <div className="text-xs text-gray-500 font-medium">
                     +{day.reservations.length - 2}
@@ -205,9 +247,19 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
 
       {/* Leyenda */}
       <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <span>{language === 'es' ? 'Reserva' : 'Reservation'}</span>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            <span>{t('reservations.calendar.status.pending')}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+            <span>{t('reservations.calendar.status.active')}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 rounded-full bg-slate-400"></div>
+            <span>{t('reservations.calendar.status.completed')}</span>
+          </div>
         </div>
       </div>
     </div>

@@ -478,6 +478,7 @@
       "pendingReservationsFooter": "{{percent}}% de reservas están activas",
       "noReservations": "Sin reservas",
       "incidents": "Incidencias",
+      "resolved": "Resueltas",
       "resolutionRate": "Tasa de resolución: {{rate}}%",
       "agentCalls": "Llamadas de Agentes",
       "agentMinutesFooter": "{{minutes}} minutos de conversación",
@@ -505,6 +506,8 @@
     },
     "incidents": {
       "title": "Incidencias Recientes",
+      "pending": "Pendientes",
+      "resolutionRate": "Tasa de Resolución",
       "noIncidents": "No se encontraron incidencias",
       "filters": {
         "property": "Propiedad",
@@ -630,6 +633,18 @@
       "emptyState": "No se encontraron reservas",
       "emptyStateDescription": "Comienza creando tu primera reserva o ajusta los filtros de búsqueda",
       "emptyPastDescription": "No tienes reservas pasadas. Cuando tengas huéspedes que hayan completado su estancia, aparecerán aquí.",
+      "dayDetails": {
+        "title": "Detalles del día",
+        "noReservations": "No hay reservas para este día",
+        "noReservationsDescription": "Este día no tiene ninguna actividad de reservas programada.",
+        "oneActiveReservation": "1 reserva activa",
+        "multipleActiveReservations": "{{count}} reservas activas",
+        "checkInToday": "Check-in hoy",
+        "checkOutToday": "Check-out hoy",
+        "inStay": "En estancia",
+        "unavailable": "No disponible",
+        "guestDataUnavailable": "Datos no disponibles"
+      },
     "tabs": {
       "current": "Actuales",
       "past": "Pasadas"
@@ -640,6 +655,7 @@
     },
     "scrollIndicator": "Desliza para ver más",
     "filters": {
+      "title": "Filtros de Reservas",
       "search": "Buscar",
       "searchPlaceholder": "Buscar por huésped, propiedad o teléfono...",
       "property": "Propiedad",
@@ -676,11 +692,24 @@
         "deleting": "Error eliminando reserva",
       "sendingToSES": "Error enviando al SES"
     },
-          "successMessages": {
-        "created": "Reserva creada exitosamente",
-        "updated": "Reserva actualizada exitosamente",
-        "deleted": "Reserva eliminada exitosamente",
+              "successMessages": {
+      "created": "Reserva creada exitosamente",
+      "updated": "Reserva actualizada exitosamente",
+      "deleted": "Reserva eliminada exitosamente",
       "sentToSES": "Enviado al SES exitosamente"
+    },
+    "calendar": {
+      "status": {
+        "pending": "Pendiente",
+        "active": "Activa",
+        "completed": "Completada"
+      },
+      "navigation": {
+        "previousMonth": "Mes anterior",
+        "nextMonth": "Mes siguiente"
+      },
+      "reservation": "Reserva",
+      "guests": "huéspedes"
     }
   },
   "calendly": {

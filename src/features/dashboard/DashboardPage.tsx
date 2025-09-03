@@ -13,6 +13,7 @@ import AgentUsageAreaChart from "./components/AgentUsageBarChart";
 import documentService from "@services/documentService";
 import reservationService from "@services/reservationService";
 import agentService from "@services/agentService";
+import MinimalIncidentMetrics from "./components/MinimalIncidentMetrics";
 import { filterReservationsByTab } from "../reservations/utils/reservationFilters";
 import { Reservation } from "@/types/reservation";
 import { PropertyDocument } from "@/types/property";
@@ -466,15 +467,15 @@ const DashboardPage: React.FC = () => {
 
   // Fallback status labels
   const fallbackStatusLabels = {
-    resolved: "Resolved",
-    pending: "Pending"
+    resolved: "Resuelto",
+    pending: "Pendiente"
   };
 
   // Fallback for section titles and labels
   const fallbackLabels = {
-    incidentsTitle: "Recent Incidents",
-    pendingLabel: "Pending",
-    resolutionRateLabel: "Resolution Rate",
+    incidentsTitle: "Incidencias Recientes",
+    pendingLabel: "Pendientes",
+    resolutionRateLabel: "Tasa de Resolución",
     tableTitle: "Title",
     tableProperty: "Property",
     tableCategory: "Category", 
@@ -612,6 +613,14 @@ const DashboardPage: React.FC = () => {
   const closePropertyModal = () => {
     setIsPropertyModalOpen(false);
     setSelectedPropertyDetails(null);
+  };
+
+  // Función para manejar la navegación a gestionar propiedad
+  const handleManageProperty = (propertyId: string) => {
+    // Cerrar el modal actual
+    closePropertyModal();
+    // Navegar a la página de propiedades con el parámetro para editar
+    navigate(`/properties?edit=${propertyId}`);
   };
 
   // Hook para manejar el bloqueo del scroll cuando hay modales abiertos
@@ -1023,12 +1032,12 @@ const DashboardPage: React.FC = () => {
            
            {/* Footer */}
            <div className="flex justify-between items-center p-4 border-t border-gray-200 bg-white rounded-b-lg">
-             <Link
-               to={`/properties/${property.id}`}
+             <button
+               onClick={() => handleManageProperty(property.id)}
                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
              >
                {t('dashboard.propertyDetails.manageProperty')}
-             </Link>
+             </button>
              <button
                onClick={closePropertyModal}
                className="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-medium"
@@ -1411,25 +1420,12 @@ const DashboardPage: React.FC = () => {
             </div>
           </MobileFiltersSheet>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">
-                  {getText("dashboard.incidents.pending", fallbackLabels.pendingLabel)}
-                </span>
-                <span className="text-lg font-semibold">
-                  {pendingIncidentsCount}
-                </span>
-              </div>
-            </div>
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">
-                  {getText("dashboard.incidents.resolutionRate", fallbackLabels.resolutionRateLabel)}
-                </span>
-                <span className="text-lg font-semibold">{resolutionRate}%</span>
-              </div>
-            </div>
+          {/* Métricas minimalistas - todo en una línea */}
+          <div className="mb-4">
+            <MinimalIncidentMetrics 
+              pendingIncidents={pendingIncidentsCount}
+              resolutionRate={resolutionRate}
+            />
           </div>
 
           {/* Indicador de scroll para móvil */}

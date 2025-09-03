@@ -445,6 +445,7 @@
       "pendingReservationsFooter": "{{percent}}% of reservations are active",
       "noReservations": "No reservations",
       "incidents": "Incidents",
+      "resolved": "Resolved",
       "resolutionRate": "Resolution rate: {{rate}}%",
       "agentCalls": "Agent Calls",
       "agentMinutesFooter": "{{minutes}} minutes of conversation",
@@ -472,6 +473,8 @@
     },
     "incidents": {
       "title": "Recent Incidents",
+      "pending": "Pending",
+      "resolutionRate": "Resolution Rate",
       "noIncidents": "No incidents found",
       "filters": {
         "property": "Property",
@@ -570,6 +573,18 @@
         "phone": "Phone",
         "nationality": "Nationality",
         "selectNationality": "Select nationality"
+      },
+      "dayDetails": {
+        "title": "Day Details",
+        "noReservations": "No reservations for this day",
+        "noReservationsDescription": "This day has no scheduled reservation activity.",
+        "oneActiveReservation": "1 active reservation",
+        "multipleActiveReservations": "{{count}} active reservations",
+        "checkInToday": "Check-in today",
+        "checkOutToday": "Check-out today",
+        "inStay": "In stay",
+        "unavailable": "Unavailable",
+        "guestDataUnavailable": "Guest data unavailable"
       }
     }
   },
@@ -678,6 +693,18 @@
     "emptyState": "No reservations found",
     "emptyStateDescription": "Start by creating your first reservation or adjust your search filters",
     "emptyPastDescription": "You have no past reservations. When you have guests who have completed their stay, they will appear here.",
+    "dayDetails": {
+      "title": "Day Details",
+      "noReservations": "No reservations for this day",
+      "noReservationsDescription": "This day has no scheduled reservation activity.",
+      "oneActiveReservation": "1 active reservation",
+      "multipleActiveReservations": "{{count}} active reservations",
+      "checkInToday": "Check-in today",
+      "checkOutToday": "Check-out today",
+      "inStay": "In stay",
+      "unavailable": "Unavailable",
+      "guestDataUnavailable": "Guest data unavailable"
+    },
     "tabs": {
       "current": "Current",
       "past": "Past"
@@ -688,6 +715,7 @@
     },
     "scrollIndicator": "Scroll to see more",
     "filters": {
+      "title": "Reservation Filters",
       "search": "Search",
       "searchPlaceholder": "Search by guest, property or phone...",
       "property": "Property",
@@ -729,6 +757,19 @@
       "updated": "Reservation updated successfully",
       "deleted": "Reservation deleted successfully",
       "sentToSES": "Successfully sent to SES"
+    },
+    "calendar": {
+      "status": {
+        "pending": "Pending",
+        "active": "Active", 
+        "completed": "Completed"
+      },
+      "navigation": {
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+      },
+      "reservation": "Reservation",
+      "guests": "guests"
     }
   },
   "calendly": {

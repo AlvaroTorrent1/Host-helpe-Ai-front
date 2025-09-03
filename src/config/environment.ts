@@ -138,9 +138,9 @@ export const authConfig = {
  * Localization configuration
  */
 export const i18nConfig = {
-  defaultLocale: 'en',
+  defaultLocale: 'es',
   supportedLocales: ['en', 'es'],
-  fallbackLocale: 'en',
+  fallbackLocale: 'es',
   defaultCurrency: 'EUR',
   defaultDateFormat: 'dd/MM/yyyy',
   defaultTimeFormat: 'HH:mm',

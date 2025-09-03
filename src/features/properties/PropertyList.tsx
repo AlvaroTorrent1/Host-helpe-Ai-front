@@ -153,11 +153,11 @@ const PropertyList: React.FC<PropertyListProps> = ({
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="text-left">
+          <h2 className="text-xl font-semibold text-gray-900 text-left">
             {t("properties.title")}
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 text-left">
             {t("properties.subtitle")}
           </p>
         </div>

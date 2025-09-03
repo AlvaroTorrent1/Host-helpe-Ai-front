@@ -10,6 +10,9 @@ import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "@shared/components/DeleteConfirmationModal";
 import { reservationService } from "@/services/reservationService";
+import MobileFiltersButton from "@shared/components/filters/MobileFiltersButton";
+import MobileFiltersSheet from "@shared/components/filters/MobileFiltersSheet";
+import FilterChips from "@shared/components/filters/FilterChips";
 
 interface ReservationListProps {
   reservations: Reservation[];
@@ -48,6 +51,9 @@ const ReservationList: React.FC<ReservationListProps> = ({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Estados para filtros móviles
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   // Aplicar filtros cuando cambien o cuando cambien las reservas
   useEffect(() => {
@@ -107,6 +113,9 @@ const ReservationList: React.FC<ReservationListProps> = ({
       searchTerm: "",
     });
   };
+
+  // Verificar si hay filtros activos (excluyendo searchTerm)
+  const hasActiveFilters = !!(filters.propertyId || filters.startDate || filters.endDate);
 
   // Formatear fecha
   const formatDate = (dateString: string): string => {
@@ -204,12 +213,13 @@ const ReservationList: React.FC<ReservationListProps> = ({
 
       {/* Filtros */}
       <div className="px-4 py-4 sm:px-6 border-b border-gray-200 bg-gray-50">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Campo de búsqueda - siempre visible y filtros desktop ocultos en móvil */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* Filtro de búsqueda */}
-          <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+          <div className="flex-1 max-w-md">
             <label
               htmlFor="search"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
               {t("reservations.filters.search")}
             </label>
@@ -222,87 +232,125 @@ const ReservationList: React.FC<ReservationListProps> = ({
               onChange={(e) =>
                 handleFilterChange({ searchTerm: e.target.value })
               }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
           </div>
 
-          {/* Filtro de propiedad */}
-          <div>
-            <label
-              htmlFor="property"
-              className="block text-sm font-medium text-gray-700"
-            >
-              {t("reservations.filters.property")}
-            </label>
-            <select
-              id="property"
-              name="property"
-              value={filters.propertyId || ""}
-              onChange={(e) =>
-                handleFilterChange({ propertyId: e.target.value || undefined })
-              }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-            >
-              <option value="">{t("reservations.filters.allProperties")}</option>
-              {properties.map((property) => (
-                <option key={property.id} value={property.id}>
-                  {property.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Filtros desktop - ocultos en móvil */}
+          <div className="hidden md:flex md:items-end md:space-x-4">
+            {/* Filtro de propiedad */}
+            <div className="min-w-[200px]">
+              <label
+                htmlFor="property-desktop"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {t("reservations.filters.property")}
+              </label>
+              <select
+                id="property-desktop"
+                name="property"
+                value={filters.propertyId || ""}
+                onChange={(e) =>
+                  handleFilterChange({ propertyId: e.target.value || undefined })
+                }
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              >
+                <option value="">{t("reservations.filters.allProperties")}</option>
+                {properties.map((property) => (
+                  <option key={property.id} value={property.id}>
+                    {property.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* Filtro de fecha desde */}
-          <div>
-            <label
-              htmlFor="startDate"
-              className="block text-sm font-medium text-gray-700"
-            >
-              {t("reservations.filters.checkInDate")}
-            </label>
-            <input
-              type="date"
-              name="startDate"
-              id="startDate"
-              value={filters.startDate || ""}
-              onChange={(e) =>
-                handleFilterChange({ startDate: e.target.value || undefined })
-              }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-            />
-          </div>
+            {/* Filtro de fecha desde */}
+            <div className="min-w-[140px]">
+              <label
+                htmlFor="startDate-desktop"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {t("reservations.filters.checkInDate")}
+              </label>
+              <input
+                type="date"
+                name="startDate"
+                id="startDate-desktop"
+                value={filters.startDate || ""}
+                onChange={(e) =>
+                  handleFilterChange({ startDate: e.target.value || undefined })
+                }
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              />
+            </div>
 
-          {/* Filtro de fecha hasta */}
-          <div>
-            <label
-              htmlFor="endDate"
-              className="block text-sm font-medium text-gray-700"
+            {/* Filtro de fecha hasta */}
+            <div className="min-w-[140px]">
+              <label
+                htmlFor="endDate-desktop"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {t("reservations.filters.checkOutDate")}
+              </label>
+              <input
+                type="date"
+                name="endDate"
+                id="endDate-desktop"
+                value={filters.endDate || ""}
+                onChange={(e) =>
+                  handleFilterChange({ endDate: e.target.value || undefined })
+                }
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              />
+            </div>
+
+            {/* Botón para limpiar filtros */}
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
-              {t("reservations.filters.checkOutDate")}
-            </label>
-            <input
-              type="date"
-              name="endDate"
-              id="endDate"
-              value={filters.endDate || ""}
-              onChange={(e) =>
-                handleFilterChange({ endDate: e.target.value || undefined })
-              }
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-            />
+              {t("reservations.filters.clear")}
+            </button>
           </div>
         </div>
 
-        {/* Botón para limpiar filtros */}
-        <div className="mt-4 text-right">
-          <button
-            type="button"
-            onClick={handleClearFilters}
-            className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            {t("reservations.filters.clear")}
-          </button>
-        </div>
+        {/* FilterChips para mostrar filtros activos en móvil */}
+        {hasActiveFilters && (
+          <div className="mt-3 md:hidden">
+            <FilterChips
+              filters={[
+                ...(filters.propertyId 
+                  ? [{ 
+                      key: 'property', 
+                      label: properties.find(p => p.id === filters.propertyId)?.name || 'Propiedad',
+                      onRemove: () => handleFilterChange({ propertyId: undefined })
+                    }] 
+                  : []
+                ),
+                ...(filters.startDate 
+                  ? [{ 
+                      key: 'startDate', 
+                      label: `Check-in: ${filters.startDate}`,
+                      onRemove: () => handleFilterChange({ startDate: undefined })
+                    }] 
+                  : []
+                ),
+                ...(filters.endDate 
+                  ? [{ 
+                      key: 'endDate', 
+                      label: `Check-out: ${filters.endDate}`,
+                      onRemove: () => handleFilterChange({ endDate: undefined })
+                    }] 
+                  : []
+                )
+              ]}
+              onOpenFilters={() => setIsMobileFiltersOpen(true)}
+            />
+          </div>
+        )}
+
+
       </div>
 
       {/* Lista de reservas */}
@@ -521,6 +569,74 @@ const ReservationList: React.FC<ReservationListProps> = ({
           )}
         </div>
       )}
+
+      {/* Botón de filtros móvil */}
+      <MobileFiltersButton 
+        onOpen={() => setIsMobileFiltersOpen(true)} 
+        isActive={hasActiveFilters} 
+      />
+
+      {/* Panel de filtros móvil */}
+      <MobileFiltersSheet
+        isOpen={isMobileFiltersOpen}
+        onClose={() => setIsMobileFiltersOpen(false)}
+        onApply={() => { /* Los filtros se aplican automáticamente */ }}
+        onClear={handleClearFilters}
+        title={t("reservations.filters.title", { defaultValue: "Filtros de Reservas" })}
+      >
+        <div className="space-y-4">
+          {/* Filtro de propiedad */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t("reservations.filters.property")}
+            </label>
+            <select
+              value={filters.propertyId || ""}
+              onChange={(e) =>
+                handleFilterChange({ propertyId: e.target.value || undefined })
+              }
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="">{t("reservations.filters.allProperties")}</option>
+              {properties.map((property) => (
+                <option key={property.id} value={property.id}>
+                  {property.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filtro de fecha check-in */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t("reservations.filters.checkInDate")}
+            </label>
+            <input
+              type="date"
+              value={filters.startDate || ""}
+              onChange={(e) =>
+                handleFilterChange({ startDate: e.target.value || undefined })
+              }
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
+          </div>
+
+          {/* Filtro de fecha check-out */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t("reservations.filters.checkOutDate")}
+            </label>
+            <input
+              type="date"
+              value={filters.endDate || ""}
+              onChange={(e) =>
+                handleFilterChange({ endDate: e.target.value || undefined })
+              }
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            />
+          </div>
+        </div>
+      </MobileFiltersSheet>
 
       {/* Modal de confirmación de eliminación */}
       <DeleteConfirmationModal

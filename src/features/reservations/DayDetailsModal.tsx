@@ -3,7 +3,7 @@ import Modal from '@shared/components/Modal';
 import { Reservation } from '@/types/reservation';
 import { Property } from '@/types/property';
 import { useTranslation } from 'react-i18next';
-import { CalendarDaysIcon, PhoneIcon, UserIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { PhoneIcon, UserIcon, HomeIcon } from '@heroicons/react/24/outline';
 
 interface DayDetailsModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ interface DayDetailsModalProps {
 
 interface ReservationWithProperty extends Reservation {
   property: Property | undefined;
-  reservationStatus: 'check-in' | 'check-out' | 'stay' | 'unavailable';
+  reservationStatus: 'check-in' | 'check-out' | 'stay' | 'pending' | 'completed';
 }
 
 const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
@@ -27,12 +27,13 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
   onClose,
   onViewReservation,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Formatear fecha para mostrar
   const formatSelectedDate = (date: Date | null): string => {
     if (!date) return '';
-    return date.toLocaleDateString('es-ES', {
+    const locale = i18n.language === 'es' ? 'es-ES' : 'en-US';
+    return date.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -40,26 +41,38 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
     });
   };
 
-  // Determinar el estado de la reserva para el día seleccionado
-  const getReservationStatus = (reservation: Reservation, selectedDate: Date): 'check-in' | 'check-out' | 'stay' | 'unavailable' => {
+  // Determinar el estado de la reserva considerando "hoy" y el día seleccionado
+  const getReservationStatus = (
+    reservation: Reservation,
+    selectedDate: Date
+  ): 'check-in' | 'check-out' | 'stay' | 'pending' | 'completed' => {
+    const today = new Date();
     const checkIn = new Date(reservation.checkInDate);
     const checkOut = new Date(reservation.checkOutDate);
     const selected = new Date(selectedDate);
-    
-    // Normalizar fechas para comparación (solo día, mes, año)
+
+    // Normalizar fechas (solo día, mes, año)
+    today.setHours(0, 0, 0, 0);
     checkIn.setHours(0, 0, 0, 0);
     checkOut.setHours(0, 0, 0, 0);
     selected.setHours(0, 0, 0, 0);
 
+    // Estado global respecto a hoy
+    if (today < checkIn) {
+      return 'pending';
+    }
+    if (today > checkOut) {
+      return 'completed';
+    }
+
+    // Activa hoy: ajustar por día seleccionado
     if (selected.getTime() === checkIn.getTime()) {
       return 'check-in';
-    } else if (selected.getTime() === checkOut.getTime()) {
-      return 'check-out';
-    } else if (selected > checkIn && selected < checkOut) {
-      return 'stay';
-    } else {
-      return 'unavailable';
     }
+    if (selected.getTime() === checkOut.getTime()) {
+      return 'check-out';
+    }
+    return 'stay';
   };
 
   // Filtrar y enriquecer reservas para el día seleccionado
@@ -78,42 +91,57 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
         reservationStatus: getReservationStatus(reservation, selectedDate)
       }))
       .sort((a, b) => {
-        // Ordenar: check-ins primero, luego check-outs, luego estancias
-        const statusOrder = { 'check-in': 1, 'check-out': 2, 'stay': 3, 'unavailable': 4 };
-        return statusOrder[a.reservationStatus] - statusOrder[b.reservationStatus];
+        // Ordenar: check-ins, check-outs, estancias, pendientes, completadas
+        const statusOrder: Record<string, number> = {
+          'check-in': 1,
+          'check-out': 2,
+          'stay': 3,
+          'pending': 4,
+          'completed': 5,
+        };
+        return (statusOrder[a.reservationStatus] || 99) - (statusOrder[b.reservationStatus] || 99);
       });
   };
 
   // Obtener el color del badge según el estado
-  const getStatusBadge = (status: 'check-in' | 'check-out' | 'stay' | 'unavailable') => {
+  const getStatusBadge = (status: 'check-in' | 'check-out' | 'stay' | 'pending' | 'completed') => {
     switch (status) {
       case 'check-in':
         return {
           bgColor: 'bg-green-100',
           textColor: 'text-green-800',
-          icon: '🟢',
-          text: 'Check-in hoy'
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-green-500 ring-1 ring-green-600',
+          text: t('reservations.dayDetails.checkInToday')
         };
       case 'check-out':
         return {
           bgColor: 'bg-blue-100',
           textColor: 'text-blue-800',
-          icon: '🔵',
-          text: 'Check-out hoy'
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-blue-500 ring-1 ring-blue-600',
+          text: t('reservations.dayDetails.checkOutToday')
+        };
+      case 'pending':
+        return {
+          bgColor: 'bg-blue-100',
+          textColor: 'text-blue-800',
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-blue-500 ring-1 ring-blue-600',
+          text: t('reservations.calendar.status.pending')
         };
       case 'stay':
         return {
-          bgColor: 'bg-yellow-100',
-          textColor: 'text-yellow-800',
-          icon: '🟡',
-          text: 'En estancia'
+          // Fondo claro + punto intenso (dos tonos como checkout)
+          bgColor: 'bg-amber-100',
+          textColor: 'text-amber-800',
+          // Usamos el mismo naranja del calendario general
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-amber-500 ring-1 ring-amber-600',
+          text: t('reservations.dayDetails.inStay')
         };
-      default:
+      case 'completed':
         return {
-          bgColor: 'bg-gray-100',
-          textColor: 'text-gray-800',
-          icon: '⚫',
-          text: 'No disponible'
+          bgColor: 'bg-slate-100',
+          textColor: 'text-slate-700',
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-slate-400 ring-1 ring-slate-500',
+          text: t('reservations.calendar.status.completed')
         };
     }
   };
@@ -126,8 +154,8 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
   const selectedDateReservations = getReservationsForSelectedDate();
 
   const modalTitle = selectedDate ? 
-    `📅 ${formatSelectedDate(selectedDate)}` : 
-    'Detalles del día';
+    formatSelectedDate(selectedDate) : 
+    t('reservations.dayDetails.title');
 
   return (
     <Modal
@@ -140,12 +168,14 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
         {selectedDateReservations.length === 0 ? (
           /* Estado vacío */
           <div className="text-center py-8">
-            <CalendarDaysIcon className="mx-auto h-12 w-12 text-gray-400" />
+            <div className="mx-auto h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
+              <span className="text-2xl text-gray-400">📋</span>
+            </div>
             <h3 className="mt-2 text-sm font-medium text-gray-900">
-              No hay reservas para este día
+              {t('reservations.dayDetails.noReservations')}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              Este día no tiene ninguna actividad de reservas programada.
+              {t('reservations.dayDetails.noReservationsDescription')}
             </p>
           </div>
         ) : (
@@ -153,8 +183,8 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
           <div className="space-y-3">
             <div className="text-sm text-gray-600 mb-4">
               {selectedDateReservations.length === 1 ? 
-                '1 reserva activa' : 
-                `${selectedDateReservations.length} reservas activas`
+                t('reservations.dayDetails.oneActiveReservation') : 
+                t('reservations.dayDetails.multipleActiveReservations', { count: selectedDateReservations.length })
               }
             </div>
 
@@ -163,11 +193,11 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
               const statusBadge = getStatusBadge(reservation.reservationStatus);
 
               return (
-                                  <div
-                    key={reservation.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer sm:p-6"
-                    onClick={() => onViewReservation?.(reservation.id)}
-                  >
+                <div
+                  key={reservation.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer sm:p-6"
+                  onClick={() => onViewReservation?.(reservation.id)}
+                >
                   {/* Header con propiedad y estado */}
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
@@ -177,9 +207,9 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
                       </h4>
                     </div>
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusBadge.bgColor} ${statusBadge.textColor}`}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium no-underline ${statusBadge.bgColor} ${statusBadge.textColor}`}
                     >
-                      <span className="mr-1">{statusBadge.icon}</span>
+                      <span className={`mr-1 ${statusBadge.dotClass}`}></span>
                       {statusBadge.text}
                     </span>
                   </div>
@@ -210,9 +240,9 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
 
                       {/* Fechas de la reserva */}
                       <div className="text-xs text-gray-500 mt-2">
-                        {new Date(reservation.checkInDate).toLocaleDateString('es-ES')} - {new Date(reservation.checkOutDate).toLocaleDateString('es-ES')}
+                        {new Date(reservation.checkInDate).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : 'en-US')} - {new Date(reservation.checkOutDate).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : 'en-US')}
                         {reservation.totalGuests > 1 && (
-                          <span className="ml-2">• {reservation.totalGuests} huéspedes</span>
+                          <span className="ml-2">• {reservation.totalGuests} {t('reservations.calendar.guests')}</span>
                         )}
                       </div>
                     </div>
@@ -225,25 +255,7 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
           </div>
         )}
 
-        {/* Footer con resumen */}
-        {selectedDateReservations.length > 0 && (
-          <div className="border-t border-gray-200 pt-4 mt-6">
-            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
-              <div className="flex items-center space-x-1">
-                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                <span>Check-ins: {selectedDateReservations.filter(r => r.reservationStatus === 'check-in').length}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-                <span>Check-outs: {selectedDateReservations.filter(r => r.reservationStatus === 'check-out').length}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                <span>En estancia: {selectedDateReservations.filter(r => r.reservationStatus === 'stay').length}</span>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </Modal>
   );

@@ -54,6 +54,15 @@
         "N8N_API_URL": "https://hosthelperai.app.n8n.cloud",
         "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YmE4OWQwOC0zNTZiLTQ0MDctYThhOC1lYWM0MjgzN2FjOTgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzUzMjY0MjAzLCJleHAiOjE3NTU4MTM2MDB9.mEA37KPnHXC5E7OBqInxA7oaLIJMuIZlCZu2m3U8SH8"
       }
+    },
+    "ElevenLabs": {
+      "command": "C:\\Python312\\python.exe",
+      "args": [
+        "C:\\Users\\Usuario\\AppData\\Roaming\\Python\\Python312\\site-packages\\elevenlabs_mcp\\server.py"
+      ],
+      "env": {
+        "ELEVENLABS_API_KEY": "sk_0d11208c9aeb5959417f6f60f03fee33c3ac2e52c983392d"
+      }
     }
   }
 }

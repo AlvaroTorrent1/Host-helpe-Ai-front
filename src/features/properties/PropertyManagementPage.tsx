@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Property, PropertyDocument, PropertyImage } from "../../types/property";
 import PropertyList from "./PropertyList";
 import PropertyForm from "./PropertyForm";
@@ -45,6 +45,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
   const { user } = useAuth();
   const { t } = useTranslation();
   const { canCreate, remainingProperties, loading: statusLoading } = useCanCreateProperty();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -126,6 +127,28 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
       loadProperties();
     }
   }, [user?.id, t]);
+
+  // Efecto para manejar el parámetro 'edit' de la URL
+  useEffect(() => {
+    const editPropertyId = searchParams.get('edit');
+    
+    if (editPropertyId && properties.length > 0 && !isLoading) {
+      // Buscar la propiedad a editar
+      const propertyToEdit = properties.find(p => p.id === editPropertyId);
+      
+      if (propertyToEdit) {
+        // Abrir el modal de edición con la propiedad encontrada
+        handleEditProperty(propertyToEdit);
+        
+        // Limpiar el parámetro de la URL para evitar que se abra nuevamente
+        setSearchParams(prevParams => {
+          const newParams = new URLSearchParams(prevParams);
+          newParams.delete('edit');
+          return newParams;
+        });
+      }
+    }
+  }, [searchParams, properties, isLoading, setSearchParams]);
 
   // Manejar apertura del modal para añadir nueva propiedad
   const handleAddProperty = () => {
@@ -588,30 +611,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
 
       {/* Contenido principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Migas de pan */}
-        <nav className="mb-6">
-          <ol className="flex space-x-2 text-sm text-gray-500">
-            <li>
-              <Link to="/dashboard" className="hover:text-primary-600">
-                {t("dashboard.menu.dashboard")}
-              </Link>
-            </li>
-            <li className="flex items-center">
-              <svg
-                className="h-5 w-5 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </li>
-            <li className="text-gray-800 font-medium">{t("dashboard.menu.properties")}</li>
-          </ol>
-        </nav>
+
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
