@@ -507,7 +507,7 @@ const ChatbotPage = () => {
                 <div className="w-3/4 max-w-md mx-auto aspect-square bg-white rounded-xl shadow-lg overflow-hidden">
                   {/* Helper robot con teléfono representando los agentes de IA */}
                   <img
-                    src="/imagenes/link_registro.jpg"
+                    src="/imagenes/Helpy using a phone in an office.png"
                     alt={t("chatbotPage.hero.title")}
                     className="w-full h-full object-cover"
                     onError={(e) => {

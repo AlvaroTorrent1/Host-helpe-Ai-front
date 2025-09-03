@@ -776,7 +776,9 @@
     "linkText": "Schedule a demo",
     "pageTitle": "Schedule Demo",
     "backToHome": "Back to Home", 
-    "pageSubtitle": "Schedule a personalized demo to see how Host Helper AI can transform your accommodation management."
+    "pageSubtitle": "Schedule a personalized demo to see how Host Helper AI can transform your accommodation management.",
+    "demoDescription": "Learn how Host Helper AI can help you automate the management of your tourist accommodations.",
+    "availableInYourTimezone": "Available in your timezone"
   },
   "notFound": {
     "title": "Page not found",

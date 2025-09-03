@@ -419,39 +419,57 @@ const LandingPage = () => {
               </p>
             </div>
 
-            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
+
+
+            {/* TEMPORAL: Grid cambiado de 3 a 2 columnas - Check-in temporalmente oculto */}
+            {/* Desktop: Morphing cards with liquid animation, Mobile: Original carousel */}
+            <div 
+              id="features-container"
+              className="flex md:flex md:justify-center md:items-center md:gap-16 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel"
+            >
               {/* Primera tarjeta de características - Agentes IA 24/7 */}
               <div 
                 ref={feature1Ref}
-                className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out ${
-                  visibleFeatures[0] 
+                className={`
+                  w-[calc(100vw-2rem)] md:w-96 md:h-[500px] 
+                  mobile-carousel-item flex-shrink-0 
+                  p-8 rounded-3xl
+                  shadow-xl hover:shadow-2xl 
+                  md:morphing-card md:relative md:overflow-hidden
+                  transition-all duration-1000 ease-out 
+                  md:hover:scale-105 md:hover:rotate-1
+                  ${visibleFeatures[0] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
-                }`}
+                  }
+                `}
+                style={{
+                  background: 'linear-gradient(to bottom, #ECA404 0%, #f5b942 12%, #ffffff 25%, #ffffff 100%)'
+                }}
               >
                 <div className="mb-4">
-                  <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-200 ${
+                  <div className={`w-64 h-64 mx-auto overflow-hidden relative transition-all duration-700 delay-200 ${
                     visibleFeatures[0] 
                       ? 'opacity-100 scale-100' 
                       : 'opacity-0 scale-90'
                   }`}>
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
-                      src="/imagenes/Helpy using a phone in an office.png"
+                      src="/imagenes/phoneCall.png"
                       alt="Agentes IA 24/7"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
                   </div>
                 </div>
                 <div className="group">
-                  <h3 className={`text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-all duration-700 delay-400 ${
+                  <h3 className={`text-xl font-bold mb-2 text-black group-hover:text-gray-800 transition-all duration-700 delay-400 ${
                     visibleFeatures[0] 
                       ? 'opacity-100 translate-x-0' 
                       : 'opacity-0 -translate-x-4'
                   }`}>
                     <Link
                       to="/chatbot"
-                      className="text-gray-900 hover:text-primary-600 transition-colors inline-flex items-center"
+                      className="text-black hover:text-gray-800 transition-colors inline-flex items-center"
                     >
                       {t("landing.features.chatbot")}
                       <svg
@@ -476,11 +494,15 @@ const LandingPage = () => {
                     ? 'opacity-100 translate-x-0' 
                     : 'opacity-0 -translate-x-4'
                 }`}>
-                  {t("landing.features.chatbotDesc")}
+                  Agentes de IA especializados que atienden consultas de huéspedes las 24 horas, ofreciendo respuestas inmediatas y precisas para una experiencia excepcional.
                 </p>
               </div>
 
-              {/* Segunda tarjeta de características - Check-in automatizado */}
+              {/* TEMPORAL: Segunda tarjeta de características - Check-in automatizado OCULTO */}
+              {/* 
+              Nota: Esta tarjeta está temporalmente comentada pero se mantiene el código
+              para poder reactivarla fácilmente cuando el servicio esté disponible
+              
               <div 
                 ref={feature2Ref}
                 className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-200 ${
@@ -490,7 +512,7 @@ const LandingPage = () => {
                 }`}
               >
                 <div className="mb-4">
-                  <div className={`w-52 h-52 mx-auto overflow-hidden relative bg-white transition-all duration-700 delay-400 ${
+                  <div className={`w-64 h-64 mx-auto overflow-hidden relative bg-white transition-all duration-700 delay-400 ${
                     visibleFeatures[1] 
                       ? 'opacity-100 scale-100' 
                       : 'opacity-0 scale-90'
@@ -539,18 +561,30 @@ const LandingPage = () => {
                   {t("landing.features.checkInDesc")}
                 </p>
               </div>
+              */}
 
-              {/* Tercera tarjeta de características - Upselling inteligente */}
+              {/* Segunda tarjeta visible - Upselling inteligente (antes tercera) */}
               <div 
                 ref={feature3Ref}
-                className={`w-[calc(100vw-2rem)] md:w-auto mobile-carousel-item flex-shrink-0 bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-1000 ease-out delay-400 ${
-                  visibleFeatures[2] 
+                className={`
+                  w-[calc(100vw-2rem)] md:w-96 md:h-[500px] 
+                  mobile-carousel-item flex-shrink-0 
+                  p-8 rounded-3xl
+                  shadow-xl hover:shadow-2xl 
+                  md:morphing-card md:relative md:overflow-hidden
+                  transition-all duration-1000 ease-out delay-400 
+                  md:hover:scale-105 md:hover:-rotate-1
+                  ${visibleFeatures[2] 
                     ? 'opacity-100 translate-y-0 scale-100' 
                     : 'opacity-0 translate-y-8 scale-95'
-                }`}
+                  }
+                `}
+                style={{
+                  background: 'linear-gradient(to bottom, #ECA404 0%, #f5b942 12%, #ffffff 25%, #ffffff 100%)'
+                }}
               >
                 <div className="mb-4">
-                  <div className={`w-52 h-52 mx-auto overflow-hidden relative transition-all duration-700 delay-600 ${
+                  <div className={`w-64 h-64 mx-auto overflow-hidden relative transition-all duration-700 delay-600 ${
                     visibleFeatures[2] 
                       ? 'opacity-100 scale-100' 
                       : 'opacity-0 scale-90'
@@ -564,14 +598,14 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="group">
-                  <h3 className={`text-xl font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-all duration-700 delay-800 ${
+                  <h3 className={`text-xl font-bold mb-2 text-black group-hover:text-gray-800 transition-all duration-700 delay-800 ${
                     visibleFeatures[2] 
                       ? 'opacity-100 translate-x-0' 
                       : 'opacity-0 -translate-x-4'
                   }`}>
                     <Link
                       to="/upselling"
-                      className="text-gray-900 hover:text-primary-600 transition-colors inline-flex items-center"
+                      className="text-black hover:text-gray-800 transition-colors inline-flex items-center"
                     >
                       {t("landing.features.upselling")}
                       <svg
@@ -596,8 +630,42 @@ const LandingPage = () => {
                     ? 'opacity-100 translate-x-0' 
                     : 'opacity-0 -translate-x-4'
                 }`}>
-                  {t("landing.features.upsellingDesc")}
+                  Sistema avanzado que identifica oportunidades perfectas para ofrecer servicios adicionales, maximizando ingresos de forma natural y estratégica.
                 </p>
+              </div>
+            </div>
+
+            {/* Navigation arrows for mobile - positioned below cards, same style as dashboard */}
+            <div className="flex justify-center mt-6 md:hidden">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('features-container');
+                    if (container) {
+                      container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label="Ver características anteriores"
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('features-container');
+                    if (container) {
+                      container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label="Ver características siguientes"
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -785,7 +853,7 @@ const LandingPage = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-bl from-primary-600/30 to-transparent z-10"></div>
                   <img
-                    src="/imagenes/Helpy_checklist.jpeg"
+                    src="/imagenes/Helpy - South Spain street 2.png"
                     alt="Configuración de Agentes de IA"
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                   />

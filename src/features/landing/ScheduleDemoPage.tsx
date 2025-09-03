@@ -4,12 +4,24 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const ScheduleDemoPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
-  // Usar iframe simple por defecto
+  // URLs de Calendly configuradas por idioma
+  const getCalendlyUrl = () => {
+    const baseUrl = "https://calendly.com/hosthelperai-services/30min";
+    const currentLanguage = i18n.language;
+    
+    // Configurar parámetros según idioma
+    if (currentLanguage === 'es') {
+      // Para español, mantenemos la URL base (configurar desde Calendly panel)
+      return baseUrl;
+    } else {
+      // Para inglés y otros idiomas
+      return baseUrl;
+    }
+  };
   
-  // URLs de Calendly
-  const primaryUrl = "https://calendly.com/hosthelperai-services/30min";
+  const primaryUrl = getCalendlyUrl();
   const fallbackUrl = "https://calendly.com/acmecorp/30min";
   
   console.log('📅 Calendly - Método iframe simple:', primaryUrl);
@@ -96,7 +108,7 @@ const ScheduleDemoPage: React.FC = () => {
                 </div>
                 
                 <p className="text-gray-700 mb-4">
-                  Conoce cómo Host Helper AI puede ayudarte a automatizar la gestión de tus alojamientos turísticos.
+                  {t('calendly.demoDescription')}
                 </p>
                 
                 <div className="flex items-center text-sm text-gray-600">
@@ -117,7 +129,7 @@ const ScheduleDemoPage: React.FC = () => {
                     />
                   </svg>
                   <span className="text-sm text-gray-600">
-                    Disponible en tu zona horaria
+                    {t('calendly.availableInYourTimezone')}
                   </span>
                 </div>
               </div>

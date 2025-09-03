@@ -714,9 +714,11 @@
   },
   "calendly": {
     "linkText": "Programar Demo",
-    "pageTitle": "Programar Demo",
+    "pageTitle": "Programar Demo", 
     "backToHome": "Volver al Inicio",
-    "pageSubtitle": "Programa una demo personalizada para ver cómo Host Helper AI puede transformar la gestión de tu alojamiento."
+    "pageSubtitle": "Programa una demo personalizada para ver cómo Host Helper AI puede transformar la gestión de tu alojamiento.",
+    "demoDescription": "Conoce cómo Host Helper AI puede ayudarte a automatizar la gestión de tus alojamientos turísticos.",
+    "availableInYourTimezone": "Disponible en tu zona horaria"
   },
   "notFound": {
     "title": "Página no encontrada",
