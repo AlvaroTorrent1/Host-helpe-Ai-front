@@ -31,7 +31,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
   };
 
   return (
-    <header className="bg-white shadow-sm w-full">
+    <header className="bg-white shadow-sm w-full border-b border-gray-200">
       <div className="container-limited py-4 flex justify-between items-center">
         {/* Logo */}
         {onLogoClick ? (
@@ -53,7 +53,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
         )}
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-4">
+        <nav className="hidden lg:flex items-center space-x-4">
           <ul className="flex space-x-4 mr-4">
             {navLinks.map((link, index) => (
               <li key={index}>
@@ -62,8 +62,8 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
                     to={link.href}
                     className={
                       link.isButton
-                        ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md"
-                        : "text-gray-600 hover:text-primary-500"
+                        ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md shadow-sm hover:shadow-md transition-all duration-300"
+                        : "text-gray-600 hover:text-primary-500 transition-colors duration-300"
                     }
                   >
                     {link.text}
@@ -71,7 +71,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
                 ) : (
                   <a
                     href={link.href}
-                    className="text-gray-600 hover:text-primary-500"
+                    className="text-gray-600 hover:text-primary-500 transition-colors duration-300"
                   >
                     {link.text}
                   </a>

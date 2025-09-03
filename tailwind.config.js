@@ -33,18 +33,28 @@ export default {
           800: '#154360',
           900: '#0A2235',
         },
+        // Paleta plateada minimalista - Tonos sutiles para estructura visual
         gray: {
-          50: '#F8F9FA', // Gris claro (fondos alternativos)
-          100: '#F1F3F5',
-          200: '#E9ECEF', // Gris medio (bordes)
-          300: '#DEE2E6',
-          400: '#CED4DA',
-          500: '#ADB5BD',
-          600: '#6C757D',
-          700: '#495057',
-          800: '#343A40',
-          900: '#212529',
-          950: '#121416',
+          50: '#F8F9FA',   // Plateado muy claro - fondos alternativos principales
+          100: '#F1F3F5',  // Plateado claro - elementos secundarios
+          200: '#E9ECEF',  // Plateado medio - bordes principales y separadores
+          300: '#DEE2E6',  // Plateado - bordes sutiles y divisores
+          400: '#CED4DA',  // Plateado visible - elementos interactivos deshabilitados
+          500: '#ADB5BD',  // Plateado neutro - texto placeholder
+          600: '#6C757D',  // Texto secundario sobre fondos claros
+          700: '#495057',  // Texto en elementos plateados
+          800: '#343A40',  // Texto principal alternativo
+          900: '#212529',  // Texto oscuro para máximo contraste
+          950: '#121416',  // Negro casi puro (uso mínimo)
+        },
+        // Paleta de plateados específica para diseño minimalista
+        silver: {
+          50: '#F8F9FA',   // Plateado extra claro
+          100: '#F1F3F5',  // Plateado muy claro
+          200: '#E9ECEF',  // Plateado claro
+          300: '#DEE2E6',  // Plateado medio
+          400: '#CED4DA',  // Plateado
+          500: '#ADB5BD',  // Plateado oscuro
         },
         text: {
           DEFAULT: '#333333', // Texto principal

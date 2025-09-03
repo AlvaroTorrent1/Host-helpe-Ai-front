@@ -6,17 +6,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Variables CSS para el tema */
+/* Variables CSS para el tema - Paleta Minimalista Naranja, Blanco y Plateado */
 :root {
-  --primary-color: #eca408;
-  --text-color: #333333;
-  --background-color: #ffffff;
-  --secondary-background: #f8f9fa;
-  --border-color: #e9ecef;
-  --accent-color: #3498db;
+  /* Colores principales de la paleta minimalista */
+  --primary-color: #eca408;           /* Naranja ECA - color de acento principal */
+  --background-color: #ffffff;        /* Blanco base - fondo principal */
+  --secondary-background: #f8f9fa;    /* Plateado muy claro - fondos alternativos */
+  --tertiary-background: #f1f3f5;     /* Plateado claro - elementos secundarios */
+  
+  /* Colores de estructura y separación */
+  --border-color: #e9ecef;           /* Plateado medio - bordes principales */
+  --border-light: #dee2e6;           /* Plateado - bordes sutiles */
+  --border-subtle: #ced4da;          /* Plateado más visible - separadores */
+  
+  /* Colores de texto sobre la paleta minimalista */
+  --text-color: #333333;             /* Texto principal sobre fondos claros */
+  --text-secondary: #6c757d;         /* Texto secundario sobre plateado */
+  --text-light: #adb5bd;             /* Texto claro para elementos menos importantes */
+  --text-dark: #212529;              /* Texto oscuro para máximo contraste */
+  
+  /* Color de acento complementario (uso mínimo) */
+  --accent-color: #3498db;            /* Azul - solo para casos especiales */
+  
+  /* Propiedades de diseño minimalista */
   --transition-standard: all 0.3s ease;
   --border-radius-standard: 8px;
   --box-shadow-standard: 0 5px 15px rgba(0, 0, 0, 0.05);
+  --box-shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.03);    /* Sombras más sutiles */
 
   /* Configuración básica */
   font-family: "Montserrat", "Open Sans", system-ui, sans-serif;

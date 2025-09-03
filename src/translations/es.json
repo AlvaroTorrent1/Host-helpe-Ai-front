@@ -953,15 +953,15 @@
     "howItWorks": {
       "title": "Comenzar es muy simple",
       "step1": {
-        "title": "1. Regístrate y añade tu propiedad",
+        "title": "Regístrate y añade tu propiedad",
         "description": "Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y reglas del alojamiento."
       },
       "step2": {
-        "title": "2. Configura tus agentes de IA",
+        "title": "Configura tus agentes de IA",
         "description": "Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer."
       },
       "step3": {
-        "title": "3. Comparte el número de teléfono con tus huéspedes",
+        "title": "Comparte el número de teléfono con tus huéspedes",
         "description": "Proporciona el número de teléfono de nuestros agentes de IA a tus huéspedes. Nuestro agente se encarga de todo con acceso completo a la información de la propiedad y detalles de la reserva."
       }
     },

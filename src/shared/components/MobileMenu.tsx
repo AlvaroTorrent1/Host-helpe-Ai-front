@@ -92,7 +92,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
   };
 
   return (
-    <div className="relative md:hidden">
+    <div className="relative lg:hidden">
       <button
         ref={menuButtonRef}
         className="p-2 text-gray-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded"

@@ -69,18 +69,18 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
     }
   };
 
-  // Obtener el color según el estado de la reserva
+  // Obtener el color según el estado de la reserva - Paleta minimalista
   const getReservationColor = (reservation: Reservation, date: Date): string => {
     const status = getReservationStatus(reservation, date);
     switch (status) {
       case 'pending':
-        return 'bg-blue-500'; // Azul para reservas pendientes
+        return 'bg-gray-300'; // Pendiente: gris plata claro (legible)
       case 'active':
-        return 'bg-amber-500'; // Amarillo/naranja para reservas activas
+        return 'bg-primary-500'; // En estancia: naranja ECA (paleta primaria)
       case 'completed':
-        return 'bg-slate-400'; // Plateado para reservas completadas
+        return 'bg-gray-600'; // Pasadas: gris oscuro (legible y distinguible)
       default:
-        return 'bg-blue-500';
+        return 'bg-gray-300';
     }
   };
 
@@ -245,19 +245,19 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
         ))}
       </div>
 
-      {/* Leyenda */}
+      {/* Leyenda - Paleta minimalista actualizada */}
       <div className="mt-4 flex items-center justify-center text-sm text-gray-600">
         <div className="flex flex-wrap items-center justify-center gap-4">
           <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
             <span>{t('reservations.calendar.status.pending')}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+            <div className="w-3 h-3 rounded-full bg-primary-500"></div>
             <span>{t('reservations.calendar.status.active')}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <div className="w-3 h-3 rounded-full bg-slate-400"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-600"></div>
             <span>{t('reservations.calendar.status.completed')}</span>
           </div>
         </div>

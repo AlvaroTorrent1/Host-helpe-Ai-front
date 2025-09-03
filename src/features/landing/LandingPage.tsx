@@ -408,13 +408,13 @@ const LandingPage = () => {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-12 md:py-20 bg-white w-full">
+        <section id="features" className="py-12 md:py-20 bg-white w-full border-b border-gray-100">
           <div className="container-limited">
             <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
                 {t("landing.features.title")}
               </h2>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 {t("landing.features.subtitle")}
               </p>
             </div>
@@ -444,7 +444,7 @@ const LandingPage = () => {
                   }
                 `}
                 style={{
-                  background: 'linear-gradient(to bottom, #ECA404 0%, #f5b942 12%, #ffffff 25%, #ffffff 100%)'
+                  background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 75%, #f0f0f0 88%, #e5e5e5 100%)'
                 }}
               >
                 <div className="mb-4">
@@ -580,7 +580,7 @@ const LandingPage = () => {
                   }
                 `}
                 style={{
-                  background: 'linear-gradient(to bottom, #ECA404 0%, #f5b942 12%, #ffffff 25%, #ffffff 100%)'
+                  background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 75%, #f0f0f0 88%, #e5e5e5 100%)'
                 }}
               >
                 <div className="mb-4">
@@ -672,11 +672,11 @@ const LandingPage = () => {
         </section>
 
         {/* Video Promocional */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-gray-50 silver:bg-gray-50">
           <div className="container-limited">
             <div className="text-center mb-12">
-              <h2 
-                className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+              <h2
+                className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
                 dangerouslySetInnerHTML={{
                   __html: t("landing.promoVideo.title").replace('Host Helper Ai', (match) => 
                     match.replace('Ai', `<span style="color: #ECA404;">Ai</span>`)
@@ -735,11 +735,11 @@ const LandingPage = () => {
         </section>
 
         {/* How it works */}
-        <section className="py-24 bg-white" id="how-it-works">
+        <section className="py-24 bg-gray-50" id="how-it-works">
           <div className="container-limited">
             <div className="text-center mb-16">
-              <h2 
-                className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+              <h2
+                className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
                 dangerouslySetInnerHTML={{
                   __html: t("landing.howItWorks.title").replace('Host Helper Ai', (match) => 
                     match.replace('Ai', `<span style="color: #ECA404;">Ai</span>`)
@@ -758,15 +758,15 @@ const LandingPage = () => {
               }`}
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-                <div className="flex items-center mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                <div className="flex items-start mb-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
                     visibleSteps[0] 
                       ? 'scale-100 rotate-0' 
                       : 'scale-0 -rotate-45'
                   }`}>
                     1
                   </div>
-                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                  <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
                     visibleSteps[0] 
                       ? 'opacity-100 translate-x-0' 
                       : 'opacity-0 -translate-x-4'
@@ -815,15 +815,15 @@ const LandingPage = () => {
               }`}
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pl-8">
-                <div className="flex items-center mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                <div className="flex items-start mb-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
                     visibleSteps[1] 
                       ? 'scale-100 rotate-0' 
                       : 'scale-0 -rotate-45'
                   }`}>
                     2
                   </div>
-                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                  <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
                     visibleSteps[1] 
                       ? 'opacity-100 translate-x-0' 
                       : 'opacity-0 translate-x-4'
@@ -872,15 +872,15 @@ const LandingPage = () => {
               }`}
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
-                <div className="flex items-center mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 transition-all duration-700 delay-200 ${
+                <div className="flex items-start mb-4">
+                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
                     visibleSteps[2] 
                       ? 'scale-100 rotate-0' 
                       : 'scale-0 -rotate-45'
                   }`}>
                     3
                   </div>
-                  <h3 className={`text-2xl font-bold text-gray-900 transition-all duration-700 delay-300 ${
+                  <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
                     visibleSteps[2] 
                       ? 'opacity-100 translate-x-0' 
                       : 'opacity-0 -translate-x-4'

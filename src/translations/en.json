@@ -818,15 +818,15 @@
     "howItWorks": {
       "title": "Getting started is very simple",
       "step1": {
-        "title": "1. Register and add your property",
+        "title": "Register and add your property",
         "description": "Create your account in minutes and add the details of your property. Upload photos, description and accommodation rules."
       },
       "step2": {
-        "title": "2. Configure your AI agents",
+        "title": "Configure your AI agents",
         "description": "Customize chatbot responses, accommodation information and additional services you want to offer."
       },
       "step3": {
-        "title": "3. Share the phone number with your guests",
+        "title": "Share the phone number with your guests",
         "description": "Provide our AI agents' phone number to your guests. Our agent takes care of everything with complete access to property information and reservation details."
       }
     },

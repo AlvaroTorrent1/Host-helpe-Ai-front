@@ -37,6 +37,16 @@ const Component = () => {
 
 ---
 
+## 🎨 **Diseño y UI**
+
+### [`design/color-palette.md`](./design/color-palette.md)
+- **⭐ PALETA DE COLORES OFICIAL**
+- Estilo minimalista: Naranja ECA + Blanco + Plateado claro
+- Variables CSS y configuración Tailwind
+- Principios de diseño visual y proporciones
+
+---
+
 ## 🏗️ **Arquitectura**
 
 ### [`architecture/overview.md`](./architecture/overview.md)
