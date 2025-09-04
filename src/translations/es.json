@@ -932,9 +932,24 @@
   "landing": {
     "hero": {
       "title": "Agentes de IA para Alojamientos Turísticos",
+      "titlePart1": "Agentes de IA para",
+      "titlePart2": "Alojamientos",
+      "titlePart3": "Turísticos",
       "subtitle": "Automatiza con inteligencia artificial",
+      "subtitlePrefix": "Automatiza",
+      "rotatingWords": ["reservas", "consultas", "check-ins", "incidencias", "comunicación", "upselling"],
       "cta": "Comenzar",
-      "scheduleDemo": "Programar Demo"
+      "scheduleDemo": "Programar Demo",
+      "stats": {
+        "queries": "Consultas Resueltas",
+        "minutes": "Minutos Automatizados", 
+        "incidents": "Incidencias Resueltas",
+        "services": "Servicios Vendidos"
+      },
+      "trustIndicators": {
+        "setup": "Configuración en 5 minutos",
+        "noTech": "Sin conocimientos técnicos"
+      }
     },
     "features": {
       "title": "Características Principales",

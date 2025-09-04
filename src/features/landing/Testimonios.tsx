@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import LandingHeader from "@shared/components/LandingHeader";
 import Footer from "@shared/components/Footer";
+import AnimatedBackground from "@shared/components/AnimatedBackground";
 import { useTranslation } from "react-i18next";
 
 const Testimonios = () => {
@@ -173,8 +174,12 @@ const Testimonios = () => {
       <LandingHeader />
 
       <main>
-        {/* Page Header */}
-        <section className="bg-gradient-to-r from-[#ECA408] to-[#F5B730] py-16 w-full">
+        {/* Page Header with Animated Background */}
+        <AnimatedBackground 
+          className="py-16 w-full"
+          particleCount={60}
+          variant="hero"
+        >
           <div className="container-limited">
             <div 
               ref={pageHeaderRef}
@@ -184,12 +189,12 @@ const Testimonios = () => {
                   : 'opacity-0 translate-y-8 scale-95'
               }`}
             >
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {t("testimonials.pageTitle")}
               </h1>
             </div>
           </div>
-        </section>
+        </AnimatedBackground>
 
         {/* Media Appearances Carousel */}
         <section className="py-16 bg-gray-50">

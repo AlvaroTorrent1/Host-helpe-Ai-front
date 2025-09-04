@@ -101,7 +101,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
         <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
           <p className="font-semibold text-gray-800 mb-1">{data.fullDate}</p>
           <p className="text-sm">
-            <span className="text-blue-600 font-medium">{data.total_minutes} minutos</span>
+            <span className="text-gray-800 font-medium">{data.total_minutes} minutos</span>
           </p>
           <p className="text-sm text-gray-600">
             {data.total_calls} {data.total_calls === 1 ? 'llamada' : 'llamadas'}
@@ -117,7 +117,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
       <div className={`bg-white rounded-lg shadow-sm border p-6 ${className}`}>
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
             <span className="text-gray-600">Cargando gráfico...</span>
           </div>
         </div>
@@ -214,24 +214,24 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
 
       {/* Información del día seleccionado */}
       {selectedDayInfo && (
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <div className="flex justify-between items-start">
             <div>
-              <h4 className="font-medium text-blue-900 mb-2">
+              <h4 className="font-medium text-gray-900 mb-2">
                 📅 Información del día {selectedDayInfo.day}
               </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-blue-600 font-medium">Llamadas:</span>
-                  <span className="ml-2 text-blue-800">{selectedDayInfo.total_calls}</span>
+                  <span className="text-gray-700 font-medium">Llamadas:</span>
+                  <span className="ml-2 text-gray-800">{selectedDayInfo.total_calls}</span>
                 </div>
                 <div>
-                  <span className="text-blue-600 font-medium">Minutos:</span>
-                  <span className="ml-2 text-blue-800">{selectedDayInfo.total_minutes}</span>
+                  <span className="text-gray-700 font-medium">Minutos:</span>
+                  <span className="ml-2 text-gray-800">{selectedDayInfo.total_minutes}</span>
                 </div>
                 <div>
-                  <span className="text-blue-600 font-medium">Promedio:</span>
-                  <span className="ml-2 text-blue-800">
+                  <span className="text-gray-700 font-medium">Promedio:</span>
+                  <span className="ml-2 text-gray-800">
                     {selectedDayInfo.total_calls > 0 
                       ? `${Math.round(selectedDayInfo.total_minutes / selectedDayInfo.total_calls)} min/llamada`
                       : 'Sin llamadas'
@@ -239,8 +239,8 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
                   </span>
                 </div>
                 <div>
-                  <span className="text-blue-600 font-medium">Fecha:</span>
-                  <span className="ml-2 text-blue-800">
+                  <span className="text-gray-700 font-medium">Fecha:</span>
+                  <span className="ml-2 text-gray-800">
                     {new Date(selectedDayInfo.date).toLocaleDateString('es-ES', { 
                       weekday: 'long', 
                       year: 'numeric', 
@@ -253,7 +253,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
             </div>
             <button 
               onClick={() => setSelectedDayInfo(null)}
-              className="text-blue-500 hover:text-blue-700 font-medium text-sm"
+              className="text-gray-600 hover:text-gray-800 font-medium text-sm"
             >
               ✕
             </button>

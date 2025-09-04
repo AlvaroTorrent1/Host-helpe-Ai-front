@@ -6,6 +6,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom utilities for hero section */
+.grid-cols-20 {
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+
+/* Performance optimizations for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth transitions for text rotations */
+.text-rotation {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Improved backdrop blur for webkit browsers */
+.backdrop-blur-enhanced {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
 /* Variables CSS para el tema - Paleta Minimalista Naranja, Blanco y Plateado */
 :root {
   /* Colores principales de la paleta minimalista */

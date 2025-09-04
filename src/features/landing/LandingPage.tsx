@@ -1,27 +1,88 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import LandingHeader from "@shared/components/LandingHeader";
 import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
 import { useTranslation } from "react-i18next";
+import { initializeHeroAnimations } from "../../utils/heroAnimations";
 
 
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'elevenlabs-convai': any;
+    }
+  }
+}
 
 const LandingPage = () => {
   const { t, i18n } = useTranslation();
   const language = i18n.language as 'es' | 'en';
 
+  // Initialize hero animations
+  useEffect(() => {
+    let cleanup: (() => void) | null = null;
+    
+    // Add a small delay to ensure DOM elements are rendered
+    const timer = setTimeout(() => {
+      try {
+        // Get translated rotating words
+        const rotatingWords = t("landing.hero.rotatingWords", { returnObjects: true }) as string[];
+        cleanup = initializeHeroAnimations(rotatingWords);
+      } catch (error) {
+        console.warn('Failed to initialize hero animations:', error);
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (cleanup) {
+        cleanup();
+      }
+    };
+  }, [t]);
+
+  // Handle hash navigation on page load
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        // Small delay to ensure all elements are rendered
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 300);
+      }
+    };
+
+    // Handle hash on initial load
+    handleHashNavigation();
+
+    // Handle hash changes (if user navigates with browser back/forward)
+    window.addEventListener('hashchange', handleHashNavigation);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashNavigation);
+    };
+  }, []);
+
   // Configuración de videos según idioma
-  const videoConfig: Record<'es' | 'en', { videoId: string; thumbnail: string }> = {
-    es: {
-      videoId: "MX8ypfuCieU",
-      thumbnail: "https://img.youtube.com/vi/MX8ypfuCieU/maxresdefault.jpg"
-    },
-    en: {
-      videoId: "plXI2I-vaxo", 
-      thumbnail: "https://img.youtube.com/vi/plXI2I-vaxo/maxresdefault.jpg"
-    }
-  };
+  // const videoConfig: Record<'es' | 'en', { videoId: string; thumbnail: string }> = {
+  //   es: {
+  //     videoId: "MX8ypfuCieU",
+  //     thumbnail: "https://img.youtube.com/vi/MX8ypfuCieU/maxresdefault.jpg"
+  //   },
+  //   en: {
+  //     videoId: "plXI2I-vaxo", 
+  //     thumbnail: "https://img.youtube.com/vi/plXI2I-vaxo/maxresdefault.jpg"
+  //   }
+  // };
 
   // Configuración de video promocional según idioma
   const promoVideoConfig: Record<'es' | 'en', { videoId: string; thumbnail: string }> = {
@@ -36,7 +97,7 @@ const LandingPage = () => {
   };
 
   // Obtener configuración del video actual basada en el idioma
-  const currentVideo = videoConfig[language] || videoConfig.es;
+  // const currentVideo = videoConfig[language] || videoConfig.es;
   const currentPromoVideo = promoVideoConfig[language] || promoVideoConfig.es;
 
   // Estado para controlar las animaciones de scroll
@@ -44,8 +105,51 @@ const LandingPage = () => {
   const [visibleSteps, setVisibleSteps] = useState<boolean[]>([false, false, false]);
   const [visibleFeatures, setVisibleFeatures] = useState<boolean[]>([false, false, false]);
   
+  // KPI stats state – values rotate every 12 seconds within requested ranges
+  // We keep these simple integers to match the lightweight UI and avoid heavy animations
+  // KPI ranges (strict)
+  const KPI_RANGES = {
+    queries: { min: 140, max: 450 },
+    minutes: { min: 140, max: 450 },
+    resolved: { min: 78, max: 93 },
+    services: { min: 15, max: 42 },
+  } as const;
+
+  // Initialize within range
+  const [statQueries, setStatQueries] = useState<number>(
+    Math.floor((KPI_RANGES.queries.min + KPI_RANGES.queries.max) / 2)
+  );
+  const [statMinutes, setStatMinutes] = useState<number>(
+    Math.floor((KPI_RANGES.minutes.min + KPI_RANGES.minutes.max) / 2)
+  );
+  const [statResolved, setStatResolved] = useState<number>(
+    Math.floor((KPI_RANGES.resolved.min + KPI_RANGES.resolved.max) / 2)
+  );
+  const [statServices, setStatServices] = useState<number>(
+    Math.floor((KPI_RANGES.services.min + KPI_RANGES.services.max) / 2)
+  );
+
+  // Simple flags to trigger a short pulse animation when values change
+  const [animateStats, setAnimateStats] = useState({
+    queries: false,
+    minutes: false,
+    resolved: false,
+    services: false,
+  });
+
+  // Refs to hold latest values for smooth animations without stale closures
+  const queriesRef = useRef(statQueries);
+  const minutesRef = useRef(statMinutes);
+  const resolvedRef = useRef(statResolved);
+  const servicesRef = useRef(statServices);
+
+  useEffect(() => { queriesRef.current = statQueries; }, [statQueries]);
+  useEffect(() => { minutesRef.current = statMinutes; }, [statMinutes]);
+  useEffect(() => { resolvedRef.current = statResolved; }, [statResolved]);
+  useEffect(() => { servicesRef.current = statServices; }, [statServices]);
+  
   // Estado para controlar si el video está reproduciéndose
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  // const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   
   // Estado para controlar el video promocional entre secciones
   const [isPromoVideoPlaying, setIsPromoVideoPlaying] = useState(false);
@@ -54,6 +158,169 @@ const LandingPage = () => {
   const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
+
+  // Tipo y estado para conversaciones dinámicas del teléfono
+  type ChatMessage = {
+    role: 'ai' | 'user' | 'system';
+    text?: string; // Texto simple
+    link?: { text: string; href: string } | null; // Link opcional
+    card?: { title: string; description: string; imageSrc?: string } | null; // Tarjeta rica
+    typing?: boolean; // Indicador de escritura del asistente
+  };
+
+  // Conversaciones de ejemplo (ES/EN/RU/ZH) que muestran capacidades
+  const phoneConversations: ChatMessage[][] = [
+    [
+      { role: 'ai', text: '¿Necesitas alguna recomendación local?' },
+      { role: 'user', text: 'Sí, restaurantes cerca' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Aquí tienes tres opciones muy valoradas a 5 minutos:' },
+      { role: 'ai', link: { text: 'Restaurantes cerca', href: 'https://maps.google.com/?q=restaurants+near+me' } },
+    ],
+    [
+      { role: 'user', text: '¿Puedo hacer check-in temprano?' },
+      { role: 'ai', text: 'Un momento por favor, consulto con el equipo de limpieza…' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: '¡Listo! El equipo confirma que estará preparado. Puedes entrar a las 13:00.' },
+    ],
+    [
+      { role: 'user', text: 'What is the lockbox code?' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'The lockbox code is 7429. The box is next to the main door.' },
+    ],
+    [
+      { role: 'user', text: 'Can you share local services like pharmacy and supermarkets?' },
+      { role: 'ai', text: 'Sure! Here is a curated list near the apartment:' },
+      { role: 'ai', link: { text: 'Local services map', href: 'https://maps.google.com/?q=pharmacy,supermarket' } },
+    ],
+    [
+      { role: 'user', text: 'Necesito la información de acceso a la propiedad' },
+      { role: 'ai', typing: true },
+      { role: 'ai', card: { title: 'Acceso a la propiedad', description: 'Dirección: Calle Mayor 12, Málaga. Suba al 3ºB. El portal se abre con el código 8412. La llave está en el cajetín de la izquierda.', imageSrc: '/imagenes/CasaMarbella.png' } },
+    ],
+    [
+      { role: 'user', text: 'El aire acondicionado no funciona' },
+      { role: 'ai', text: 'Gracias por avisar. Contacto ahora con el técnico.' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Pablo (técnico) puede pasar hoy a las 17:30. ¿Te viene bien?' },
+    ],
+    [
+      { role: 'user', text: 'Где ближайший супермаркет?' },
+      { role: 'ai', text: 'Вот карта с ближайшими супермаркетами:' },
+      { role: 'ai', link: { text: 'Супермаркеты рядом', href: 'https://maps.google.com/?q=supermarket' } },
+    ],
+    [
+      { role: 'user', text: '可以给我Wi‑Fi密码吗？' },
+      { role: 'ai', text: '当然可以。Wi‑Fi: CasaSol，密码: 2024-Helpy.' },
+    ],
+    [
+      { role: 'user', text: 'I need to extend my stay for 2 more nights' },
+      { role: 'ai', text: 'Let me check availability for you...' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Great news! I can extend your stay. The rate will be €85/night. Shall I confirm?' },
+    ],
+    [
+      { role: 'user', text: 'Se ha roto la cerradura de la puerta' },
+      { role: 'ai', text: 'Entiendo la urgencia. Contacto inmediatamente con el cerrajero de confianza.' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Miguel (cerrajero) puede estar allí en 30 minutos. Te envío su contacto por si necesitas hablar directamente.' },
+    ],
+    [
+      { role: 'user', text: 'Where can I find the best tapas in the area?' },
+      { role: 'ai', text: 'I have some excellent recommendations! Here are the top 3 tapas bars locals love:' },
+      { role: 'ai', link: { text: 'Best tapas guide', href: 'https://maps.google.com/?q=best+tapas+bars' } },
+      { role: 'ai', text: 'All within 10 minutes walking distance!' },
+    ],
+    [
+      { role: 'user', text: '¿Hay algún evento especial esta semana en la ciudad?' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Sí! Esta semana hay un festival de música en la plaza principal (jueves-sábado) y mercadillo artesanal el domingo.' },
+      { role: 'ai', link: { text: 'Eventos de la semana', href: 'https://example.com/events' } },
+    ],
+    [
+      { role: 'user', text: 'How do I get to the beach from here?' },
+      { role: 'ai', text: 'The nearest beach is just 15 minutes away! You have several options:' },
+      { role: 'ai', text: '🚶‍♂️ Walk: 15 min via Paseo Marítimo\n🚌 Bus line 3: 8 min, stops right outside\n🚗 Taxi: 5 min ride' },
+      { role: 'ai', link: { text: 'Beach directions', href: 'https://maps.google.com/?q=beach+directions' } },
+    ],
+    [
+      { role: 'user', text: 'La nevera hace mucho ruido por la noche' },
+      { role: 'ai', text: 'Disculpa las molestias. Voy a contactar con el técnico de electrodomésticos.' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Carlos puede revisar la nevera mañana entre 10:00-12:00. Mientras tanto, puedes ajustar el termostato al nivel 3.' },
+    ],
+    [
+      { role: 'user', text: 'Can you recommend a good pharmacy nearby?' },
+      { role: 'ai', text: 'Of course! There are 2 excellent pharmacies very close:' },
+      { role: 'ai', text: '💊 Farmacia Central - 3 min walk, open 24h\n💊 Farmacia San Miguel - 5 min walk, closes at 22:00' },
+      { role: 'ai', link: { text: 'Pharmacy locations', href: 'https://maps.google.com/?q=pharmacy+near+me' } },
+    ],
+    [
+      { role: 'user', text: '¿Dónde puedo aparcar el coche?' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Tienes varias opciones de aparcamiento cerca:' },
+      { role: 'ai', text: '🅿️ Plaza Mayor (2 min) - €1.50/hora\n🅿️ Parking Centro (5 min) - €12/día\n🅿️ Calle lateral - gratuito pero limitado' },
+    ],
+    [
+      { role: 'user', text: 'Is there a laundromat around here?' },
+      { role: 'ai', text: 'Yes! There\'s a modern laundromat just 2 blocks away.' },
+      { role: 'ai', text: 'LavaExpress is open 7:00-23:00 daily. Wash €4, dry €2. They also offer wash & fold service.' },
+      { role: 'ai', link: { text: 'Laundromat info', href: 'https://maps.google.com/?q=laundromat' } },
+    ],
+    [
+      { role: 'user', text: 'Se me ha olvidado el cargador del móvil' },
+      { role: 'ai', text: 'No te preocupes, tengo varias soluciones:' },
+      { role: 'ai', text: '🔌 Hay un cargador universal en el cajón de la mesita\n🏪 Tienda de electrónicos a 200m\n📱 Puedo pedirle a María (limpieza) que te traiga uno' },
+    ],
+  ];
+
+  // Estado y control de animación de las conversaciones
+  const [currentConversationIndex, setCurrentConversationIndex] = useState<number>(0);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll al último mensaje
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }, [chatMessages]);
+
+  // Reproduce las conversaciones en bucle con pequeños delays
+  useEffect(() => {
+    let isCancelled = false;
+
+    const playConversation = async (convIdx: number) => {
+      const convo = phoneConversations[convIdx];
+      setChatMessages([]);
+
+      for (let i = 0; i < convo.length; i++) {
+        if (isCancelled) return;
+        const m = convo[i];
+        if (m.typing) {
+          // Mostrar indicador de escritura durante ~900ms
+          setChatMessages(prev => [...prev, { role: 'ai', typing: true }]);
+          await new Promise(r => setTimeout(r, 900));
+          // Eliminar typing antes de añadir el mensaje siguiente
+          setChatMessages(prev => prev.filter(x => !x.typing));
+          continue;
+        }
+        setChatMessages(prev => [...prev, m]);
+        await new Promise(r => setTimeout(r, 2500)); // Tiempo más relajado para lectura sin prisas
+      }
+
+      // Pausa al final y pasar a la siguiente conversación
+      await new Promise(r => setTimeout(r, 3500)); // Pausa más larga entre conversaciones
+      if (!isCancelled) {
+        const next = (convIdx + 1) % phoneConversations.length;
+        setCurrentConversationIndex(next);
+      }
+    };
+
+    playConversation(currentConversationIndex);
+    return () => { isCancelled = true; };
+  }, [currentConversationIndex]);
 
   // Referencias para las tarjetas de características
   const feature1Ref = useRef<HTMLDivElement>(null);
@@ -119,22 +386,162 @@ const LandingPage = () => {
     };
   }, []);
 
-  // Ejemplo de uso directo de logEvent con importación dinámica
-  const handleHeroInteraction = () => {
-    // Activar el video al hacer clic
-    setIsVideoPlaying(true);
-    
-    // Analytics
-    import('@services/analytics').then(async ({ logEvent }) => {
-      try {
-        await logEvent('Landing', 'Hero Video Play', 'User clicked to play demo video');
-      } catch (error) {
-        console.error('Error al registrar evento:', error);
-      }
-    }).catch(error => {
-      console.error('Error al importar servicio de analytics:', error);
-    });
+  // Utility to get an integer within a closed range [min, max]
+  const getRandomInt = (min: number, max: number) => {
+    const m = Math.ceil(min);
+    const M = Math.floor(max);
+    return Math.floor(Math.random() * (M - m + 1)) + m;
   };
+
+  // Animate a numeric state from current value to target value over durationMs, clamped to range
+  const animateTo = (
+    setter: (n: number) => void,
+    from: number,
+    to: number,
+    durationMs = 1200,
+    clampMin?: number,
+    clampMax?: number
+  ) => {
+    // Ensure from and to values are within bounds before starting animation
+    if (clampMin !== undefined && clampMax !== undefined) {
+      from = Math.max(clampMin, Math.min(clampMax, from));
+      to = Math.max(clampMin, Math.min(clampMax, to));
+    }
+
+    if (from === to) {
+      const v = clampMin !== undefined && clampMax !== undefined
+        ? Math.max(clampMin, Math.min(clampMax, to))
+        : to;
+      setter(v);
+      return;
+    }
+    
+    const startTs = performance.now();
+    const step = (now: number) => {
+      const elapsed = now - startTs;
+      const progress = Math.min(elapsed / durationMs, 1);
+      let value = Math.round(from + (to - from) * progress);
+      
+      // Double-check clamping to ensure we never go outside bounds
+      if (clampMin !== undefined && clampMax !== undefined) {
+        value = Math.max(clampMin, Math.min(clampMax, value));
+      }
+      
+      setter(value);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  // Rotate KPI numbers every 12 seconds with a brief pulse animation
+  useEffect(() => {
+    const updateStats = () => {
+      setAnimateStats({ queries: true, minutes: true, resolved: true, services: true });
+      const nextQueries = getRandomInt(KPI_RANGES.queries.min, KPI_RANGES.queries.max);
+      const nextMinutes = getRandomInt(KPI_RANGES.minutes.min, KPI_RANGES.minutes.max);
+      const nextResolved = getRandomInt(KPI_RANGES.resolved.min, KPI_RANGES.resolved.max);
+      const nextServices = getRandomInt(KPI_RANGES.services.min, KPI_RANGES.services.max);
+
+      animateTo(
+        setStatQueries,
+        queriesRef.current,
+        nextQueries,
+        1200,
+        KPI_RANGES.queries.min,
+        KPI_RANGES.queries.max
+      );
+      animateTo(
+        setStatMinutes,
+        minutesRef.current,
+        nextMinutes,
+        1200,
+        KPI_RANGES.minutes.min,
+        KPI_RANGES.minutes.max
+      );
+      animateTo(
+        setStatResolved,
+        resolvedRef.current,
+        nextResolved,
+        1200,
+        KPI_RANGES.resolved.min,
+        KPI_RANGES.resolved.max
+      );
+      animateTo(
+        setStatServices,
+        servicesRef.current,
+        nextServices,
+        1200,
+        KPI_RANGES.services.min,
+        KPI_RANGES.services.max
+      );
+
+      // Remove animation flags after the count-up ends
+      setTimeout(
+        () => setAnimateStats({ queries: false, minutes: false, resolved: false, services: false }),
+        1300
+      );
+    };
+
+    // Protection mechanism: ensure values are always within bounds
+    const validateAndCorrectValues = () => {
+      // Check and correct queries value
+      if (queriesRef.current < KPI_RANGES.queries.min || queriesRef.current > KPI_RANGES.queries.max) {
+        const correctedValue = Math.max(KPI_RANGES.queries.min, Math.min(KPI_RANGES.queries.max, queriesRef.current));
+        setStatQueries(correctedValue);
+        console.warn(`Corrected queries value from ${queriesRef.current} to ${correctedValue}`);
+      }
+
+      // Check and correct minutes value
+      if (minutesRef.current < KPI_RANGES.minutes.min || minutesRef.current > KPI_RANGES.minutes.max) {
+        const correctedValue = Math.max(KPI_RANGES.minutes.min, Math.min(KPI_RANGES.minutes.max, minutesRef.current));
+        setStatMinutes(correctedValue);
+        console.warn(`Corrected minutes value from ${minutesRef.current} to ${correctedValue}`);
+      }
+
+      // Check and correct resolved value
+      if (resolvedRef.current < KPI_RANGES.resolved.min || resolvedRef.current > KPI_RANGES.resolved.max) {
+        const correctedValue = Math.max(KPI_RANGES.resolved.min, Math.min(KPI_RANGES.resolved.max, resolvedRef.current));
+        setStatResolved(correctedValue);
+        console.warn(`Corrected resolved value from ${resolvedRef.current} to ${correctedValue}`);
+      }
+
+      // Check and correct services value
+      if (servicesRef.current < KPI_RANGES.services.min || servicesRef.current > KPI_RANGES.services.max) {
+        const correctedValue = Math.max(KPI_RANGES.services.min, Math.min(KPI_RANGES.services.max, servicesRef.current));
+        setStatServices(correctedValue);
+        console.warn(`Corrected services value from ${servicesRef.current} to ${correctedValue}`);
+      }
+    };
+
+    // Initial update on mount, then every 12s
+    updateStats();
+    const interval = setInterval(updateStats, 12000);
+    
+    // Validation check every 2 seconds to catch any out-of-bounds values
+    const validationInterval = setInterval(validateAndCorrectValues, 2000);
+    
+    return () => {
+      clearInterval(interval);
+      clearInterval(validationInterval);
+    };
+  }, []);
+
+  // Ejemplo de uso directo de logEvent con importación dinámica
+  // const handleHeroInteraction = () => {
+  //   // Activar el video al hacer clic
+  //   setIsVideoPlaying(true);
+  //   
+  //   // Analytics
+  //   import('@services/analytics').then(async ({ logEvent }) => {
+  //     try {
+  //       await logEvent('Landing', 'Hero Video Play', 'User clicked to play demo video');
+  //     } catch (error) {
+  //       console.error('Error al registrar evento:', error);
+  //     }
+  //   }).catch(error => {
+  //     console.error('Error al importar servicio de analytics:', error);
+  //   });
+  // };
 
   // Función para manejar clic en video promocional
   const handlePromoVideoClick = () => {
@@ -161,250 +568,329 @@ const LandingPage = () => {
       <LandingHeader />
 
       <main>
-        {/* Hero Section */}
-        <section className="relative py-6 md:py-8 bg-gradient-to-r from-[#ECA408] to-[#F5B730] overflow-hidden w-full">
-          {/* Circuitos animados en el fondo */}
-          <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        {/* Revolutionary AI Hero Section */}
+        <section className="relative min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden">
+          {/* Animated Particle Background */}
+          <div className="absolute inset-0">
+            <canvas 
+              id="particle-canvas" 
+              className="absolute inset-0 w-full h-full"
+              style={{ background: 'transparent' }}
+            ></canvas>
+          </div>
+
+          {/* Golden Morphing Shapes */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <style>
               {`
-                @keyframes circuitPulse {
-                  0%, 70%, 100% { 
-                    opacity: 0;
-                    stroke-dasharray: 0, 1000;
+                @keyframes morph {
+                  0%, 100% { 
+                    transform: scale(1) rotate(0deg);
+                    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
                   }
-                  10%, 60% { 
-                    opacity: 0.4;
-                    stroke-dasharray: 1000, 0;
+                  25% { 
+                    transform: scale(1.1) rotate(90deg);
+                    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
                   }
-                }
-                @keyframes nodePulse {
-                  0%, 70%, 100% { 
-                    opacity: 0;
-                    transform: scale(0);
+                  50% { 
+                    transform: scale(0.9) rotate(180deg);
+                    border-radius: 50% 40% 60% 30% / 70% 50% 40% 60%;
                   }
-                  15%, 55% { 
-                    opacity: 0.6;
-                    transform: scale(1);
+                  75% { 
+                    transform: scale(1.2) rotate(270deg);
+                    border-radius: 40% 70% 30% 60% / 40% 70% 60% 50%;
                   }
                 }
-                .circuit-line-1 { animation: circuitPulse 12s infinite; }
-                .circuit-line-2 { animation: circuitPulse 12s infinite 1s; }
-                .circuit-line-3 { animation: circuitPulse 12s infinite 2s; }
-                .circuit-line-4 { animation: circuitPulse 12s infinite 0.5s; }
-                .circuit-line-5 { animation: circuitPulse 12s infinite 1.5s; }
-                .circuit-node-1 { animation: nodePulse 12s infinite 0.3s; }
-                .circuit-node-2 { animation: nodePulse 12s infinite 1.3s; }
-                .circuit-node-3 { animation: nodePulse 12s infinite 2.3s; }
-                .circuit-node-4 { animation: nodePulse 12s infinite 0.8s; }
+                
+                @keyframes float {
+                  0%, 100% { transform: translateY(0px) rotate(0deg); }
+                  50% { transform: translateY(-20px) rotate(180deg); }
+                }
+                
+                @keyframes pulse-golden {
+                  0%, 100% { opacity: 0.2; transform: scale(1); }
+                  50% { opacity: 0.5; transform: scale(1.1); }
+                }
+                
+                @keyframes text-slide {
+                  0% { opacity: 1; transform: translateY(0); }
+                  25% { opacity: 0; transform: translateY(-10px); }
+                  75% { opacity: 0; transform: translateY(10px); }
+                  100% { opacity: 1; transform: translateY(0); }
+                }
               `}
             </style>
-            <svg
-              className="w-full h-full"
-              viewBox="0 0 1200 400"
-              preserveAspectRatio="xMidYMid slice"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Línea principal horizontal superior */}
-              <path
-                className="circuit-line-1"
-                d="M 100 80 L 300 80 L 320 100 L 500 100 L 520 80 L 800 80 L 820 100 L 1100 100"
-                fill="none"
-                stroke="#F4D03F"
-                strokeWidth="2"
-                opacity="0"
-              />
+            
+            {/* Main golden shape */}
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 opacity-40">
+              <div className="relative w-full h-full">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-r from-primary-500 to-primary-600 blur-3xl"
+                  style={{ 
+                    animation: 'morph 12s ease-in-out infinite',
+                    borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%'
+                  }}
+                ></div>
+              </div>
+            </div>
+            
+            {/* Secondary golden elements */}
+            <div className="absolute bottom-1/4 left-1/6 w-64 h-64 opacity-35">
+              <div 
+                className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-500 blur-2xl"
+                style={{ 
+                  animation: 'float 8s ease-in-out infinite',
+                  borderRadius: '50%'
+                }}
+              ></div>
+            </div>
+
+            {/* Floating particles */}
+            <div className="absolute top-10 left-10 w-4 h-4 bg-primary-500 rounded-full animate-bounce opacity-60" style={{ animationDelay: '0s' }}></div>
+            <div className="absolute top-32 right-20 w-3 h-3 bg-primary-400 rounded-full animate-bounce opacity-40" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute bottom-20 left-1/4 w-2 h-2 bg-primary-500 rounded-full animate-bounce opacity-50" style={{ animationDelay: '2s' }}></div>
+          </div>
+
+          {/* AI Network Grid Overlay */}
+          <div className="absolute inset-0 opacity-15">
+            <div className="grid grid-cols-20 gap-2 h-full">
+              {Array.from({ length: 400 }, (_, i) => (
+                <div 
+                  key={i}
+                  className="border border-primary-500 aspect-square"
+                  style={{
+                    animation: `pulse-golden ${2 + (i % 3)}s ease-in-out infinite`,
+                    animationDelay: `${(i % 20) * 0.05}s`
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+
+          <div className="container-limited relative z-20 min-h-screen flex md:items-center pt-32 md:pt-16 lg:pt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
               
-              {/* Bifurcación vertical izquierda */}
-              <path
-                className="circuit-line-2"
-                d="M 300 80 L 300 150 L 280 170 L 280 220 L 300 240 L 400 240"
-                fill="none"
-                stroke="#F7DC6F"
-                strokeWidth="1.5"
-                opacity="0"
-              />
-              
-              {/* Línea diagonal central */}
-              <path
-                className="circuit-line-3"
-                d="M 500 100 L 520 120 L 580 120 L 600 140 L 600 200 L 620 220 L 700 220"
-                fill="none"
-                stroke="#FCF3CF"
-                strokeWidth="2"
-                opacity="0"
-              />
-              
-              {/* Circuito inferior derecho */}
-              <path
-                className="circuit-line-4"
-                d="M 800 80 L 800 160 L 780 180 L 780 280 L 800 300 L 900 300 L 920 280 L 1000 280"
-                fill="none"
-                stroke="#F4D03F"
-                strokeWidth="1.5"
-                opacity="0"
-              />
-              
-              {/* Línea horizontal inferior */}
-              <path
-                className="circuit-line-5"
-                d="M 200 320 L 400 320 L 420 300 L 600 300 L 620 320 L 900 320"
-                fill="none"
-                stroke="#F7DC6F"
-                strokeWidth="2"
-                opacity="0"
-              />
-              
-              {/* Nodos de conexión */}
-              <circle
-                className="circuit-node-1"
-                cx="300"
-                cy="80"
-                r="4"
-                fill="#F4D03F"
-                opacity="0"
-              />
-              <circle
-                className="circuit-node-2"
-                cx="520"
-                cy="100"
-                r="3"
-                fill="#FCF3CF"
-                opacity="0"
-              />
-              <circle
-                className="circuit-node-3"
-                cx="800"
-                cy="80"
-                r="4"
-                fill="#F7DC6F"
-                opacity="0"
-              />
-              <circle
-                className="circuit-node-4"
-                cx="600"
-                cy="200"
-                r="3"
-                fill="#F4D03F"
-                opacity="0"
-              />
-              
-              {/* Pequeños rectángulos que simulan componentes */}
-              <rect
-                className="circuit-node-1"
-                x="296"
-                y="236"
-                width="8"
-                height="8"
-                fill="#F4D03F"
-                opacity="0"
-              />
-              <rect
-                className="circuit-node-3"
-                x="916"
-                y="276"
-                width="8"
-                height="8"
-                fill="#FCF3CF"
-                opacity="0"
-              />
-            </svg>
+              {/* Left Content */}
+              <div className="text-center lg:text-left space-y-8">
+                {/* Dynamic Title */}
+                <div className="space-y-6 px-4 sm:px-0">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight text-center lg:text-left mt-[1em] md:mt-0">
+                    <span className="block">{t("landing.hero.titlePart1")}</span>
+                    <span className="block">
+                      <span className="text-primary-500">
+                        {t("landing.hero.titlePart2")}{" "}
+                        <span className="relative inline-block">
+                          {t("landing.hero.titlePart3")}
+                          <div className="absolute -bottom-2 left-0 right-0 mx-auto w-full h-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full animate-pulse"></div>
+                        </span>
+                      </span>
+                    </span>
+                </h1>
+                  
+                  {/* Dynamic Rotating Text - single centered line: "Automatiza X".
+                     The word "Automatiza" remains static; rotating word has fixed width
+                     to prevent horizontal shifting. */}
+                  <div className="text-xl sm:text-2xl text-gray-700 font-light text-center lg:text-left">
+                    <div className="lg:whitespace-nowrap">
+                      <span className="block lg:inline">{t("landing.hero.subtitlePrefix")}</span>
+                      <span className="hidden lg:inline">{' '}</span>
+                      <span 
+                        id="rotating-text"
+                        className="block lg:inline text-primary-500 font-semibold transition-all duration-500 mt-1 lg:mt-0"
+                      >
+                        {t("landing.hero.rotatingWords.0")}
+                      </span>
+                    </div>
+                  </div>
           </div>
           
-          <div className="container-limited relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
-                  {t("landing.hero.title")}
-                </h1>
-                <p className="text-lg sm:text-xl text-white opacity-90 mb-8">
-                  {t("landing.hero.subtitle")}
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                {/* Stats Row */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 px-4 sm:px-0">
+                  <div className="text-center">
+                    <div className={`text-xl sm:text-2xl font-bold text-primary-500 transition-transform duration-500 ${animateStats.queries ? 'animate-pulse scale-105' : ''}`} id="stat-queries">{statQueries}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{t("landing.hero.stats.queries")}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-xl sm:text-2xl font-bold text-primary-500 transition-transform duration-500 ${animateStats.minutes ? 'animate-pulse scale-105' : ''}`} id="stat-minutes">{statMinutes}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{t("landing.hero.stats.minutes")}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-xl sm:text-2xl font-bold text-primary-500 transition-transform duration-500 ${animateStats.resolved ? 'animate-pulse scale-105' : ''}`}>{statResolved}%</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{t("landing.hero.stats.incidents")}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-xl sm:text-2xl font-bold text-primary-500 transition-transform duration-500 ${animateStats.services ? 'animate-pulse scale-105' : ''}`} id="stat-services">{statServices}</div>
+                    <div className="text-xs sm:text-sm text-gray-600">{t("landing.hero.stats.services")}</div>
+                  </div>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 sm:px-0">
                   <CalendlyLink />
                   <Link
                     to="/pricing"
-                    className="inline-flex items-center justify-center px-6 sm:px-8 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-100 transition-colors shadow-md hover:shadow-lg text-center w-full sm:w-auto"
+                    className="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
                   >
-                    {t("landing.hero.cta")}
+                    <span className="relative z-10 font-normal">{t("landing.hero.cta")}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   </Link>
                 </div>
+
+                {/* Trust Indicators */}
+                <div className="flex items-center gap-4 text-gray-600 text-sm justify-center lg:justify-start flex-wrap px-4 sm:px-0">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                    <span>{t("landing.hero.trustIndicators.setup")}</span>
               </div>
-              <div className="md:w-1/2">
-                <div
-                  className="group relative mx-auto overflow-hidden shadow-xl cursor-pointer rounded-xl max-w-xs"
-                  style={{ aspectRatio: "9/16" }}
-                  onClick={handleHeroInteraction}
-                >
-                  <style>
-                    {`
-                    @keyframes floating {
-                      0% { transform: translateY(0) scale(1); }
-                      25% { transform: translateY(-10px) scale(1.02); }
-                      50% { transform: translateY(-5px) scale(1); }
-                      75% { transform: translateY(-15px) scale(1.02); }
-                      100% { transform: translateY(0) scale(1); }
-                    }
-                    `}
-                  </style>
-                  
-                  {!isVideoPlaying ? (
-                    // Imagen miniatura con botón de play personalizado
-                    <div className="relative w-full h-full">
-                      <img
-                        src={currentVideo.thumbnail}
-                        alt="Host Helper AI Demo - Click para reproducir"
-                        className="w-full h-full object-cover transition-all duration-700 ease-in-out will-change-transform group-hover:scale-105"
-                        style={{
-                          animation: "floating 4s ease-in-out infinite",
-                          aspectRatio: "9/16",
-                        }}
-                      />
-                      {/* Overlay con botón de play personalizado */}
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-all duration-300">
-                        <div className="bg-white/90 rounded-full p-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <svg 
-                            className="w-6 h-6 text-primary-600 ml-0.5" 
-                            fill="currentColor" 
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                  <div className="w-px h-4 bg-gray-300 hidden sm:block"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                    <span>{t("landing.hero.trustIndicators.noTech")}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - iPhone Demo - Simplified */}
+              <div className="relative">
+                {/* iPhone Container - Simplified Structure */}
+                <div className="relative max-w-xs mx-auto lg:mx-0 lg:ml-auto transform scale-75 lg:scale-90">
+                  {/* iPhone Frame */}
+                  <div className="relative bg-gradient-to-b from-gray-800 to-black rounded-[3rem] p-1 shadow-2xl">
+                    {/* iPhone Screen */}
+                    <div className="bg-white rounded-[2.5rem] overflow-hidden relative w-full h-[600px]">
+                        
+                      {/* Dynamic Island */}
+                      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-32 h-7 bg-black rounded-full z-50 flex items-center justify-center">
+                        <div className="absolute left-3 w-1.5 h-1.5 bg-gray-700 rounded-full"></div>
+                        <div className="w-12 h-1 bg-gray-800 rounded-full"></div>
+                        <div className="absolute right-3 w-1 h-1 bg-gray-700 rounded-full"></div>
+                      </div>
+
+                      {/* Status Bar - transparent over header, white icons/text */}
+                      <div className="absolute top-10 left-2 right-2 h-8 flex items-center justify-between px-3 text-white z-40 bg-transparent">
+                        <div className="flex items-center gap-1 text-sm font-semibold">
+                          <span>9:41</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-0.5 items-end">
+                            <div className="w-0.5 h-1 bg-white rounded-sm"></div>
+                            <div className="w-0.5 h-1.5 bg-white rounded-sm"></div>
+                            <div className="w-0.5 h-2 bg-white rounded-sm"></div>
+                            <div className="w-0.5 h-2.5 bg-white rounded-sm"></div>
+                          </div>
+                          <div className="w-3 h-3 relative">
+                            <div className="absolute inset-0 border-2 border-white rounded-full" style={{ clipPath: 'polygon(0 100%, 100% 100%, 50% 0)' }}></div>
+                          </div>
+                          <div className="w-6 h-3 border border-white rounded-sm relative">
+                            <div className="absolute inset-0.5 bg-white rounded-sm"></div>
+                            <div className="absolute -right-0.5 top-1 w-0.5 h-1 bg-white rounded-sm"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Chat Header - Host Helper AI Brand Colors */}
+                      <div className="absolute top-16 left-0 right-0 bg-primary-500 px-4 py-3 flex items-center gap-2 z-30">
+                        <button className="text-white text-lg">‹</button>
+                        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-primary-500">AI</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-white font-semibold text-sm whitespace-nowrap overflow-hidden text-ellipsis">Host Helper AI</div>
+                          <div className="text-primary-100 text-xs flex items-center gap-1">
+                            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                            en línea
+                          </div>
+                        </div>
+                        <button className="text-white p-1">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                          </svg>
+                        </button>
+                        <button className="text-white p-1">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                          </svg>
+                        </button>
+                        <button className="text-white p-1">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Chat Messages Area (dynamic) */}
+                      <div className="absolute top-28 bottom-16 left-0 right-0 overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100">
+                        <div ref={chatContainerRef} className="h-full overflow-y-auto px-4 py-3 space-y-3" id="chat-demo">
+                          {chatMessages.map((m, idx) => (
+                            <div key={idx} className={`flex gap-2 items-end mb-1 ${m.role === 'user' ? 'justify-end' : ''}`}>
+                              {m.role !== 'user' && (
+                                <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs font-bold text-white">AI</span>
+                                </div>
+                              )}
+                              <div className="max-w-[70%]">
+                                {m.typing ? (
+                                  <div className="bg-white rounded-2xl rounded-bl-md px-3 py-2 shadow-sm border border-gray-200">
+                                    <div className="flex items-center gap-1">
+                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></span>
+                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></span>
+                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></span>
+                                    </div>
+                                  </div>
+                                ) : m.card ? (
+                                  <div className="bg-primary-50 rounded-2xl px-3 py-2 shadow-sm border border-primary-200">
+                                    <div className="text-sm font-medium text-primary-800 mb-1">{m.card.title}</div>
+                                    {m.card.imageSrc && (
+                                      <img src={m.card.imageSrc} alt={m.card.title} className="w-full rounded-lg mb-2" />
+                                    )}
+                                    <p className="text-sm text-gray-700">{m.card.description}</p>
+                                  </div>
+                                ) : (
+                                  <div className={`${
+                                    m.role === 'user' 
+                                      ? 'bg-primary-100 text-primary-800 rounded-2xl rounded-br-md border border-primary-200' 
+                                      : 'bg-white text-gray-800 rounded-2xl rounded-bl-md border border-gray-200'
+                                  } px-3 py-2 shadow-sm`}>
+                                    <p className="text-sm">
+                                      {m.text}
+                                      {m.link && (
+                                        <>
+                                          {' '}
+                                          <a className="text-primary-600 underline" href={m.link.href} target="_blank" rel="noreferrer">{m.link.text}</a>
+                                        </>
+                                      )}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* iPhone Home Indicator */}
+                      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gray-900 rounded-full"></div>
+
+                      {/* Chat Input Area - Host Helper Brand */}
+                      <div className="absolute bottom-4 left-2 right-2 bg-white rounded-full px-4 py-2 flex items-center gap-3 shadow-lg border border-gray-200">
+                        <div className="flex-1 text-sm text-gray-600 py-1">
+                          Escribe un mensaje...
+                        </div>
+                        <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M13 5l7 7-7 7"/>
                           </svg>
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    // Video de YouTube cuando está activado
-                    <iframe
-                      src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0`}
-                      className="w-full h-full"
-                      style={{
-                        aspectRatio: "9/16",
-                      }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      title="Host Helper AI Demo Video"
-                    />
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Background design elements - Técnica defensiva multi-capa */}
-          {/* Elemento de respaldo para eliminar gaps de sub-pixel */}
-          <div className="absolute bottom-0 left-0 right-0 h-2 bg-white"></div>
           
-          {/* Elemento principal con ángulo (preservando diseño original) */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-24 bg-white"
-            style={{ 
-              clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
-              transform: "translateY(1px)" 
-            }}
-          ></div>
-          
-          <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-white opacity-5 rounded-full transform translate-x-1/4 -translate-y-1/4"></div>
-          <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-white opacity-5 rounded-full transform -translate-x-1/4 translate-y-1/4"></div>
+          {/* Modern transition to next section */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
         </section>
 
         {/* Features Section */}
@@ -591,7 +1077,7 @@ const LandingPage = () => {
                   }`}>
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
-                      src="/imagenes/comisions.jpg"
+                      src="/imagenes/Helpy - office 1.png"
                       alt="Upselling inteligente"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
@@ -759,11 +1245,16 @@ const LandingPage = () => {
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
                 <div className="flex items-start mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
-                    visibleSteps[0] 
-                      ? 'scale-100 rotate-0' 
-                      : 'scale-0 -rotate-45'
-                  }`}>
+                  <div 
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-primary-500 text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 shadow-lg border border-gray-300 ${
+                      visibleSteps[0] 
+                        ? 'scale-100 rotate-0' 
+                        : 'scale-0 -rotate-45'
+                    }`}
+                    style={{
+                      background: 'radial-gradient(circle at center, white 30%, #d1d5db 70%, #9ca3af 100%)'
+                    }}
+                  >
                     1
                   </div>
                   <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
@@ -816,11 +1307,16 @@ const LandingPage = () => {
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pl-8">
                 <div className="flex items-start mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
-                    visibleSteps[1] 
-                      ? 'scale-100 rotate-0' 
-                      : 'scale-0 -rotate-45'
-                  }`}>
+                  <div 
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-primary-500 text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 shadow-lg border border-gray-300 ${
+                      visibleSteps[1] 
+                        ? 'scale-100 rotate-0' 
+                        : 'scale-0 -rotate-45'
+                    }`}
+                    style={{
+                      background: 'radial-gradient(circle at center, white 30%, #d1d5db 70%, #9ca3af 100%)'
+                    }}
+                  >
                     2
                   </div>
                   <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
@@ -873,11 +1369,16 @@ const LandingPage = () => {
             >
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-8">
                 <div className="flex items-start mb-4">
-                  <div className={`w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center text-white text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 ${
-                    visibleSteps[2] 
-                      ? 'scale-100 rotate-0' 
-                      : 'scale-0 -rotate-45'
-                  }`}>
+                  <div 
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-primary-500 text-xl font-semibold mr-4 flex-shrink-0 transition-all duration-700 delay-200 shadow-lg border border-gray-300 ${
+                      visibleSteps[2] 
+                        ? 'scale-100 rotate-0' 
+                        : 'scale-0 -rotate-45'
+                    }`}
+                    style={{
+                      background: 'radial-gradient(circle at center, white 30%, #d1d5db 70%, #9ca3af 100%)'
+                    }}
+                  >
                     3
                   </div>
                   <h3 className={`text-2xl font-bold text-gray-900 text-left flex-1 leading-tight transition-all duration-700 delay-300 ${
@@ -921,14 +1422,9 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* ElevenLabs Convai Widget */}
-        <section className="py-8 bg-white">
-          <div className="container-limited">
-            <div dangerouslySetInnerHTML={{ 
-              __html: '<elevenlabs-convai agent-id="agent_3101k2ff56kpfrjaz2zbz13xs57m"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>' 
-            }} />
-          </div>
-        </section>
+        {/* ElevenLabs Convai Widget - removed per design to avoid green bottom bar */}
+        <elevenlabs-convai agent-id="agent_3101k2ff56kpfrjaz2zbz13xs57m"></elevenlabs-convai>
+        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
       </main>
 
       {/* Footer compartido */}

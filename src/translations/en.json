@@ -797,9 +797,24 @@
   "landing": {
     "hero": {
       "title": "AI Agents for Tourist Accommodations",
+      "titlePart1": "AI Agents for",
+      "titlePart2": "Tourist",
+      "titlePart3": "Accommodations",
       "subtitle": "Automate with artificial intelligence",
+      "subtitlePrefix": "Automate",
+      "rotatingWords": ["bookings", "inquiries", "check-ins", "incidents", "communication", "upselling"],
       "cta": "Get Started",
-      "scheduleDemo": "Schedule a demo"
+      "scheduleDemo": "Schedule a demo",
+      "stats": {
+        "queries": "Queries Resolved",
+        "minutes": "Minutes Automated",
+        "incidents": "Incidents Resolved", 
+        "services": "Services Sold"
+      },
+      "trustIndicators": {
+        "setup": "5-minute setup",
+        "noTech": "No technical knowledge required"
+      }
     },
     "features": {
       "title": "Main Features",

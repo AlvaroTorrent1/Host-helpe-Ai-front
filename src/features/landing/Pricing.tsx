@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import LandingHeader from "@shared/components/LandingHeader";
 import Footer from "@shared/components/Footer";
+import AnimatedBackground from "@shared/components/AnimatedBackground";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@shared/contexts/AuthContext";
 import { useSubscription } from "@shared/hooks/useSubscription";
@@ -317,25 +318,29 @@ const Pricing = () => {
       <LandingHeader />
 
       <main>
-        {/* Page Header */}
-        <section className="bg-gradient-to-r from-[#ECA408] to-[#F5B730] py-16 w-full">
+        {/* Page Header with Animated Background */}
+        <AnimatedBackground 
+          className="py-16 w-full"
+          particleCount={60}
+          variant="hero"
+        >
           <div className="container-limited">
             <div className="text-center">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {t("pricing.title")}
               </h1>
-              <p className="text-xl text-white opacity-90 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-700 max-w-2xl mx-auto">
                 {t("pricing.subtitle")}
               </p>
               <Link 
                 to="/schedule-demo" 
-                className="mt-6 inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-colors"
+                className="mt-6 inline-block px-8 py-4 bg-primary-500 text-white font-semibold rounded-md hover:bg-primary-600 transition-colors shadow-lg hover:shadow-xl"
               >
                 {t("pricing.scheduleDemo") || "Agendar demo"}
               </Link>
             </div>
           </div>
-        </section>
+        </AnimatedBackground>
 
         {/* Pricing Section */}
         <section className="py-16 bg-white">
@@ -514,17 +519,18 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section 
-          ref={ctaSectionRef}
-          className={`py-16 bg-gradient-to-r from-[#ECA408] to-[#F5B730] transition-all duration-1000 ease-out ${
+        {/* CTA Section with Animated Background */}
+        <AnimatedBackground 
+          className={`py-16 transition-all duration-1000 ease-out ${
             visibleSections.ctaSection
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-8'
           }`}
+          particleCount={50}
+          variant="hero"
         >
-          <div className="container-limited text-center">
-            <h2 className={`text-2xl md:text-3xl font-bold text-white mb-4 transition-all duration-700 ${
+          <div ref={ctaSectionRef} className="container-limited text-center">
+            <h2 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-all duration-700 ${
               visibleSections.ctaSection
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-4'
@@ -533,7 +539,7 @@ const Pricing = () => {
             >
               {t("pricing.ctaSection.title")}
             </h2>
-            <p className={`text-white text-lg mb-8 max-w-2xl mx-auto transition-all duration-700 ${
+            <p className={`text-gray-700 text-lg mb-8 max-w-2xl mx-auto transition-all duration-700 ${
               visibleSections.ctaSection
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-4'
@@ -544,7 +550,7 @@ const Pricing = () => {
             </p>
             <Link 
               to="/schedule-demo" 
-              className={`inline-block px-8 py-4 bg-white text-primary-600 font-semibold rounded-md hover:bg-gray-100 transition-all duration-700 ${
+              className={`inline-block px-8 py-4 bg-primary-500 text-white font-semibold rounded-md hover:bg-primary-600 shadow-lg hover:shadow-xl transition-all duration-700 ${
                 visibleSections.ctaSection
                   ? 'opacity-100 translate-y-0 scale-100'
                   : 'opacity-0 translate-y-4 scale-95'
@@ -554,7 +560,7 @@ const Pricing = () => {
               {t("pricing.scheduleDemo") || "Agendar demo"}
             </Link>
           </div>
-        </section>
+        </AnimatedBackground>
       </main>
 
       {/* Footer compartido */}

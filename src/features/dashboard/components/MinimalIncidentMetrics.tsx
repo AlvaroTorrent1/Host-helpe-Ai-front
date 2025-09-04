@@ -15,19 +15,8 @@ const MinimalIncidentMetrics: React.FC<MinimalIncidentMetricsProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Color dinámico para pendientes
-  const getPendingColor = () => {
-    if (pendingIncidents === 0) return 'text-green-600 bg-green-50';
-    if (pendingIncidents <= 2) return 'text-yellow-600 bg-yellow-50';  
-    return 'text-red-600 bg-red-50';
-  };
-
-  // Color dinámico para tasa de resolución
-  const getResolutionColor = () => {
-    if (resolutionRate >= 80) return 'text-green-600 bg-green-50';
-    if (resolutionRate >= 60) return 'text-yellow-600 bg-yellow-50';
-    return 'text-red-600 bg-red-50';
-  };
+  // Estilo unificado con subrayado naranja leve y texto gris
+  const underlineOrange = 'border-b-2 border-primary-300 pb-0.5 text-gray-800';
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-2 shadow-sm">
@@ -39,7 +28,7 @@ const MinimalIncidentMetrics: React.FC<MinimalIncidentMetricsProps> = ({
           <span className="text-gray-500 text-xs">
             {t('dashboard.incidents.pending', { defaultValue: 'Pendientes' })}:
           </span>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPendingColor()}`}>
+          <span className={`inline-flex items-center px-1 text-xs font-medium ${underlineOrange}`}>
             {pendingIncidents}
           </span>
         </div>
@@ -52,7 +41,7 @@ const MinimalIncidentMetrics: React.FC<MinimalIncidentMetricsProps> = ({
           <span className="text-gray-500 text-xs">
             {t('dashboard.incidents.resolutionRate', { defaultValue: 'Resolución' })}:
           </span>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getResolutionColor()}`}>
+          <span className={`inline-flex items-center px-1 text-xs font-medium ${underlineOrange}`}>
             {resolutionRate}%
           </span>
         </div>
