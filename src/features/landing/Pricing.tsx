@@ -1,3 +1,4 @@
+// File: src/features/landing/Pricing.tsx
 // Pricing.tsx
 // Este componente gestiona la sección de precios y planes de suscripción.
 // Incluye integración con Stripe para los enlaces de pago y con Calendly para demostraciones.
@@ -323,6 +324,7 @@ const Pricing = () => {
           className="py-16 w-full"
           particleCount={60}
           variant="hero"
+          withBottomWhiteFade
         >
           <div className="container-limited">
             <div className="text-center">
@@ -332,11 +334,13 @@ const Pricing = () => {
               <p className="text-xl text-gray-700 max-w-2xl mx-auto">
                 {t("pricing.subtitle")}
               </p>
+              {/* Hero-style primary action, mirrors hero buttons (keep link unchanged) */}
               <Link 
                 to="/schedule-demo" 
-                className="mt-6 inline-block px-8 py-4 bg-primary-500 text-white font-semibold rounded-md hover:bg-primary-600 transition-colors shadow-lg hover:shadow-xl"
+                className="group relative mt-6 inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
               >
-                {t("pricing.scheduleDemo") || "Agendar demo"}
+                <span className="relative z-10 font-normal">{t("pricing.scheduleDemo") || "Agendar demo"}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               </Link>
             </div>
           </div>
@@ -444,15 +448,13 @@ const Pricing = () => {
 
                     {/* CTA Button - Fixed at bottom */}
                     <div className="mt-auto">
+                      {/* Hero-style CTA per plan (keep onClick behavior) */}
                       <button
                         onClick={() => plan.onClickAction()}
-                        className={`block w-full text-center py-3 px-4 rounded-md font-medium transition-colors ${
-                          plan.isPopular 
-                            ? "bg-primary-500 hover:bg-primary-600 text-white"
-                            : "bg-gray-100 hover:bg-gray-200 text-gray-800"
-                        }`}
+                        className="group relative w-full inline-flex items-center justify-center py-3 px-4 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
                       >
-                        {plan.cta}
+                        <span className="relative z-10 font-medium">{plan.cta}</span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                       </button>
                     </div>
                   </div>
@@ -519,48 +521,7 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* CTA Section with Animated Background */}
-        <AnimatedBackground 
-          className={`py-16 transition-all duration-1000 ease-out ${
-            visibleSections.ctaSection
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-8'
-          }`}
-          particleCount={50}
-          variant="hero"
-        >
-          <div ref={ctaSectionRef} className="container-limited text-center">
-            <h2 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-all duration-700 ${
-              visibleSections.ctaSection
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4'
-            }`}
-            style={{ transitionDelay: '200ms' }}
-            >
-              {t("pricing.ctaSection.title")}
-            </h2>
-            <p className={`text-gray-700 text-lg mb-8 max-w-2xl mx-auto transition-all duration-700 ${
-              visibleSections.ctaSection
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4'
-            }`}
-            style={{ transitionDelay: '400ms' }}
-            >
-              {t("pricing.ctaSection.subtitle")}
-            </p>
-            <Link 
-              to="/schedule-demo" 
-              className={`inline-block px-8 py-4 bg-primary-500 text-white font-semibold rounded-md hover:bg-primary-600 shadow-lg hover:shadow-xl transition-all duration-700 ${
-                visibleSections.ctaSection
-                  ? 'opacity-100 translate-y-0 scale-100'
-                  : 'opacity-0 translate-y-4 scale-95'
-              }`}
-              style={{ transitionDelay: '600ms' }}
-            >
-              {t("pricing.scheduleDemo") || "Agendar demo"}
-            </Link>
-          </div>
-        </AnimatedBackground>
+        {/* CTA inferior eliminada a petición: se ha retirado el bloque completo */}
       </main>
 
       {/* Footer compartido */}

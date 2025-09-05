@@ -1,3 +1,4 @@
+// File: src/features/landing/Testimonios.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import LandingHeader from "@shared/components/LandingHeader";
@@ -179,6 +180,7 @@ const Testimonios = () => {
           className="py-16 w-full"
           particleCount={60}
           variant="hero"
+          withBottomWhiteFade
         >
           <div className="container-limited">
             <div 
@@ -197,7 +199,8 @@ const Testimonios = () => {
         </AnimatedBackground>
 
         {/* Media Appearances Carousel */}
-        <section className="py-16 bg-gray-50">
+        {/* Fondo blanco solicitado para Apariciones en Medios */}
+        <section className="py-16 bg-white">
           <div className="container-limited">
             <div 
               ref={mediaHeaderRef}
@@ -283,16 +286,18 @@ const Testimonios = () => {
                                   Por {article.author}
                                 </span>
                                 
+                                {/* Hero-style external link button (keep href unchanged) */}
                                 <a
                                   href={article.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-md hover:bg-primary-600 transition-colors"
+                                  className="group relative inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
                                 >
-                                  Leer artículo
-                                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <span className="relative z-10 font-medium">Leer artículo</span>
+                                  <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                   </svg>
+                                  <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                                 </a>
                               </div>
                             </div>
@@ -323,16 +328,18 @@ const Testimonios = () => {
                                 Por {article.author}
                               </span>
                               
+                              {/* Hero-style external link button (keep href unchanged) */}
                               <a
                                 href={article.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-md hover:bg-primary-600 transition-colors"
+                                className="group relative inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
                               >
-                                Leer artículo
-                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span className="relative z-10 font-medium">Leer artículo</span>
+                                <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
+                                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                               </a>
                             </div>
                           </div>
@@ -387,7 +394,8 @@ const Testimonios = () => {
         </section>
 
         {/* Featured Testimonials */}
-        <section className="py-16 bg-white">
+        {/* Fondo gris claro (plata) solicitado para Testimonios Destacados */}
+        <section className="py-16 bg-gray-100">
           <div className="container-limited">
             {/* Hidden header for animation trigger */}
             <div 

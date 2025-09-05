@@ -814,13 +814,17 @@
       "trustIndicators": {
         "setup": "5-minute setup",
         "noTech": "No technical knowledge required"
+      },
+      "phoneDemo": {
+        "onlineStatus": "online",
+        "messageInput": "Type a message..."
       }
     },
     "features": {
       "title": "Main Features",
       "subtitle": "Everything you need to efficiently manage your tourist accommodations",
       "chatbot": "AI Agents 24/7",
-      "chatbotDesc": "AI agents for guests that resolve queries in real time",
+      "chatbotDesc": "Specialized AI agents that handle guest inquiries 24 hours a day. When they need help, they automatically escalate to humans to resolve complex tasks, collaborating in parallel during conversations.",
       "checkIn": "Automated check-in",
       "checkInDesc": "Automate traveler registration and document verification. Save time and avoid documentation issues.",
       "upselling": "Intelligent upselling",

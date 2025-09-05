@@ -1,4 +1,6 @@
+// File: src/features/landing/LandingPage.tsx
 import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import LandingHeader from "@shared/components/LandingHeader";
 import CalendlyLink from "@shared/components/CalendlyLink";
@@ -159,6 +161,8 @@ const LandingPage = () => {
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
 
+  // NOTE: Parallax/Tilt removed to stabilize hero phone sizing and layout
+
   // Tipo y estado para conversaciones dinámicas del teléfono
   type ChatMessage = {
     role: 'ai' | 'user' | 'system';
@@ -272,12 +276,21 @@ const LandingPage = () => {
       { role: 'ai', text: 'No te preocupes, tengo varias soluciones:' },
       { role: 'ai', text: '🔌 Hay un cargador universal en el cajón de la mesita\n🏪 Tienda de electrónicos a 200m\n📱 Puedo pedirle a María (limpieza) que te traiga uno' },
     ],
+    [
+      { role: 'user', text: 'I can\'t find the way to the house' },
+      { role: 'ai', text: 'I understand the area is poorly signposted. Let me help you with clear directions.' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Take the road that exits the village and take the first left turn. Here\'s the exact path you need to follow:' },
+      { role: 'ai', card: { title: 'Route to the property', description: 'Follow this country road until you reach the property. The house will be on your right after about 2km.', imageSrc: '/imagenes/country_road.jpg' } },
+    ],
   ];
 
   // Estado y control de animación de las conversaciones
   const [currentConversationIndex, setCurrentConversationIndex] = useState<number>(0);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  // Respeta preferencias de movimiento reducido del sistema
+  const prefersReducedMotion = useReducedMotion();
 
   // Auto-scroll al último mensaje
   useEffect(() => {
@@ -560,6 +573,8 @@ const LandingPage = () => {
     });
   };
 
+  // Parallax/tilt effect intentionally removed for a simpler, stable hero
+
 
 
   return (
@@ -569,7 +584,7 @@ const LandingPage = () => {
 
       <main>
         {/* Revolutionary AI Hero Section */}
-        <section className="relative min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden">
+        <section className="relative isolate min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden">
           {/* Animated Particle Background */}
           <div className="absolute inset-0">
             <canvas 
@@ -646,7 +661,6 @@ const LandingPage = () => {
             </div>
 
             {/* Floating particles */}
-            <div className="absolute top-10 left-10 w-4 h-4 bg-primary-500 rounded-full animate-bounce opacity-60" style={{ animationDelay: '0s' }}></div>
             <div className="absolute top-32 right-20 w-3 h-3 bg-primary-400 rounded-full animate-bounce opacity-40" style={{ animationDelay: '1s' }}></div>
             <div className="absolute bottom-20 left-1/4 w-2 h-2 bg-primary-500 rounded-full animate-bounce opacity-50" style={{ animationDelay: '2s' }}></div>
           </div>
@@ -667,7 +681,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="container-limited relative z-20 min-h-screen flex md:items-center pt-32 md:pt-16 lg:pt-0">
+          <div className="container-limited relative z-20 min-h-screen flex md:items-center pt-32 md:pt-16 lg:pt-0 pb-56 md:pb-72 lg:pb-80">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
               
               {/* Left Content */}
@@ -751,13 +765,17 @@ const LandingPage = () => {
               </div>
 
               {/* Right Side - iPhone Demo - Simplified */}
-              <div className="relative">
+              <div 
+                className="relative"
+              >
                 {/* iPhone Container - Simplified Structure */}
-                <div className="relative max-w-xs mx-auto lg:mx-0 lg:ml-auto transform scale-75 lg:scale-90">
+                <div 
+                  className="relative max-w-[270px] sm:max-w-[288px] lg:max-w-[300px] mx-auto lg:mx-0 lg:ml-auto scale-75 lg:scale-90"
+                >
                   {/* iPhone Frame */}
                   <div className="relative bg-gradient-to-b from-gray-800 to-black rounded-[3rem] p-1 shadow-2xl">
                     {/* iPhone Screen */}
-                    <div className="bg-white rounded-[2.5rem] overflow-hidden relative w-full h-[600px]">
+                    <div className="bg-white rounded-[2.5rem] overflow-hidden relative w-full aspect-[9/18]">
                         
                       {/* Dynamic Island */}
                       <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-32 h-7 bg-black rounded-full z-50 flex items-center justify-center">
@@ -791,14 +809,14 @@ const LandingPage = () => {
                       {/* Chat Header - Host Helper AI Brand Colors */}
                       <div className="absolute top-16 left-0 right-0 bg-primary-500 px-4 py-3 flex items-center gap-2 z-30">
                         <button className="text-white text-lg">‹</button>
-                        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                          <span className="text-xs font-bold text-primary-500">AI</span>
+                        <div className="w-12 aspect-square bg-white rounded-full flex items-center justify-center">
+                          <span className="text-base font-bold text-primary-500">AI</span>
                         </div>
                         <div className="flex-1">
                           <div className="text-white font-semibold text-sm whitespace-nowrap overflow-hidden text-ellipsis">Host Helper AI</div>
                           <div className="text-primary-100 text-xs flex items-center gap-1">
                             <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-                            en línea
+                            {t("landing.hero.phoneDemo.onlineStatus")}
                           </div>
                         </div>
                         <button className="text-white p-1">
@@ -820,52 +838,58 @@ const LandingPage = () => {
 
                       {/* Chat Messages Area (dynamic) */}
                       <div className="absolute top-28 bottom-16 left-0 right-0 overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100">
-                        <div ref={chatContainerRef} className="h-full overflow-y-auto px-4 py-3 space-y-3" id="chat-demo">
-                          {chatMessages.map((m, idx) => (
-                            <div key={idx} className={`flex gap-2 items-end mb-1 ${m.role === 'user' ? 'justify-end' : ''}`}>
-                              {m.role !== 'user' && (
-                                <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <span className="text-xs font-bold text-white">AI</span>
-                                </div>
-                              )}
-                              <div className="max-w-[70%]">
-                                {m.typing ? (
-                                  <div className="bg-white rounded-2xl rounded-bl-md px-3 py-2 shadow-sm border border-gray-200">
-                                    <div className="flex items-center gap-1">
-                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></span>
-                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></span>
-                                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></span>
+                        <AnimatePresence mode="popLayout">
+                          <motion.div
+                            key={currentConversationIndex}
+                            ref={chatContainerRef}
+                            id="chat-demo"
+                            className="h-full overflow-y-auto px-4 py-3 space-y-3"
+                            initial={prefersReducedMotion ? false : { opacity: 0, y: 12, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12, scale: 0.98 }}
+                            transition={{ duration: prefersReducedMotion ? 0.12 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+                          >
+                            {chatMessages.map((m, idx) => (
+                              <div key={idx} className={`flex mb-1 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                <div className="max-w-[70%]">
+                                  {m.typing ? (
+                                    <div className="bg-white rounded-2xl rounded-bl-md px-3 py-2 shadow-sm border border-gray-200">
+                                      <div className="flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></span>
+                                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></span>
+                                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></span>
+                                      </div>
                                     </div>
-                                  </div>
-                                ) : m.card ? (
-                                  <div className="bg-primary-50 rounded-2xl px-3 py-2 shadow-sm border border-primary-200">
-                                    <div className="text-sm font-medium text-primary-800 mb-1">{m.card.title}</div>
-                                    {m.card.imageSrc && (
-                                      <img src={m.card.imageSrc} alt={m.card.title} className="w-full rounded-lg mb-2" />
-                                    )}
-                                    <p className="text-sm text-gray-700">{m.card.description}</p>
-                                  </div>
-                                ) : (
-                                  <div className={`${
-                                    m.role === 'user' 
-                                      ? 'bg-primary-100 text-primary-800 rounded-2xl rounded-br-md border border-primary-200' 
-                                      : 'bg-white text-gray-800 rounded-2xl rounded-bl-md border border-gray-200'
-                                  } px-3 py-2 shadow-sm`}>
-                                    <p className="text-sm">
-                                      {m.text}
-                                      {m.link && (
-                                        <>
-                                          {' '}
-                                          <a className="text-primary-600 underline" href={m.link.href} target="_blank" rel="noreferrer">{m.link.text}</a>
-                                        </>
+                                  ) : m.card ? (
+                                    <div className="bg-primary-50 rounded-2xl px-3 py-2 shadow-sm border border-primary-200">
+                                      <div className="text-sm font-medium text-primary-800 mb-1">{m.card.title}</div>
+                                      {m.card.imageSrc && (
+                                        <img src={m.card.imageSrc} alt={m.card.title} className="w-full rounded-lg mb-2" />
                                       )}
-                                    </p>
-                                  </div>
-                                )}
+                                      <p className="text-sm text-gray-700">{m.card.description}</p>
+                                    </div>
+                                  ) : (
+                                    <div className={`${
+                                      m.role === 'user' 
+                                        ? 'bg-primary-100 text-primary-800 rounded-2xl rounded-br-md border border-primary-200' 
+                                        : 'bg-white text-gray-800 rounded-2xl rounded-bl-md border border-gray-200'
+                                    } px-3 py-2 shadow-sm`}>
+                                      <p className="text-sm">
+                                        {m.text}
+                                        {m.link && (
+                                          <>
+                                            {' '}
+                                            <a className="text-primary-600 underline" href={m.link.href} target="_blank" rel="noreferrer">{m.link.text}</a>
+                                          </>
+                                        )}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </motion.div>
+                        </AnimatePresence>
                       </div>
 
                       {/* iPhone Home Indicator */}
@@ -874,7 +898,7 @@ const LandingPage = () => {
                       {/* Chat Input Area - Host Helper Brand */}
                       <div className="absolute bottom-4 left-2 right-2 bg-white rounded-full px-4 py-2 flex items-center gap-3 shadow-lg border border-gray-200">
                         <div className="flex-1 text-sm text-gray-600 py-1">
-                          Escribe un mensaje...
+                          {t("landing.hero.phoneDemo.messageInput")}
                         </div>
                         <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -890,11 +914,27 @@ const LandingPage = () => {
           </div>
           
           {/* Modern transition to next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
+          {/*
+            FIX: We restore a taller, blurred white gradient at the bottom of the hero
+            to achieve a seamless fade into the features section.
+            - Layer 1: white gradient that fades to transparent (ensures color continuity)
+            - Layer 2: subtle backdrop blur to soften shapes behind the fade
+            Notes:
+            - pointer-events-none prevents blocking interactions near the fold
+            - height scales across breakpoints to keep the fade luxurious on mobile/desktop
+          */}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-48 sm:h-64 lg:h-72 z-10">
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+            <div className="absolute inset-0 backdrop-blur-enhanced"></div>
+          </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-12 md:py-20 bg-white w-full border-b border-gray-100">
+        <section id="features" className="relative py-12 md:py-20 bg-white w-full border-b border-gray-100">
+          {/* Mobile fade-from-hero fix: add top gradient only on small screens */}
+          <div className="pointer-events-none absolute -top-8 left-0 right-0 h-12 sm:hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/60 to-white"></div>
+          </div>
           <div className="container-limited">
             <div className="text-center mb-12 md:mb-16">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
@@ -980,7 +1020,7 @@ const LandingPage = () => {
                     ? 'opacity-100 translate-x-0' 
                     : 'opacity-0 -translate-x-4'
                 }`}>
-                  Agentes de IA especializados que atienden consultas de huéspedes las 24 horas, ofreciendo respuestas inmediatas y precisas para una experiencia excepcional.
+                  {t("landing.features.chatbotDesc")}
                 </p>
               </div>
 
@@ -1116,7 +1156,7 @@ const LandingPage = () => {
                     ? 'opacity-100 translate-x-0' 
                     : 'opacity-0 -translate-x-4'
                 }`}>
-                  Sistema avanzado que identifica oportunidades perfectas para ofrecer servicios adicionales, maximizando ingresos de forma natural y estratégica.
+                  {t("landing.features.upsellingDesc")}
                 </p>
               </div>
             </div>

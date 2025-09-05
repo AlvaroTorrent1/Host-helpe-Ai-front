@@ -949,13 +949,17 @@
       "trustIndicators": {
         "setup": "Configuración en 5 minutos",
         "noTech": "Sin conocimientos técnicos"
+      },
+      "phoneDemo": {
+        "onlineStatus": "en línea",
+        "messageInput": "Escribe un mensaje..."
       }
     },
     "features": {
       "title": "Características Principales",
       "subtitle": "Todo lo que necesitas para gestionar eficientemente tus alojamientos turísticos",
       "chatbot": "Agentes de IA 24/7",
-      "chatbotDesc": "Agentes de IA para huéspedes que resuelven consultas en tiempo real",
+      "chatbotDesc": "Agentes de IA especializados que atienden consultas de huéspedes las 24 horas. Cuando necesitan ayuda, escalan automáticamente a humanos para resolver tareas complejas, colaborando en paralelo durante las conversaciones.",
       "checkIn": "Check-in automatizado",
       "checkInDesc": "Automatiza el registro de viajeros y verificación de documentos. Ahorra tiempo y evita problemas de documentación.",
       "upselling": "Upselling inteligente",

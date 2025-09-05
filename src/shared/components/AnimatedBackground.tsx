@@ -11,6 +11,10 @@ interface AnimatedBackgroundProps {
   gradientFrom?: string;
   gradientTo?: string;
   variant?: 'hero' | 'orange'; // Nuevo prop para elegir el estilo
+  // Cuando es true, añade un degradado inferior que transiciona a blanco,
+  // igual que en el hero de la landing, para facilitar la unión visual
+  // con la siguiente sección.
+  withBottomWhiteFade?: boolean;
 }
 
 class ParticleSystem {
@@ -137,7 +141,8 @@ const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   particleCount = 50,
   gradientFrom = '#ECA408',
   gradientTo = '#F5B730',
-  variant = 'orange'
+  variant = 'orange',
+  withBottomWhiteFade = false
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particleSystemRef = useRef<ParticleSystem | null>(null);
@@ -286,6 +291,11 @@ const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       <div className="relative z-10">
         {children}
       </div>
+      {withBottomWhiteFade && (
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 sm:h-20 lg:h-24 z-0">
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+        </div>
+      )}
     </section>
   );
 };
