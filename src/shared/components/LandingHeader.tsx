@@ -68,10 +68,19 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
     <>
       <header
         className={
-          `relative md:sticky top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ` +
-          (isScrolled
-            ? "bg-white/70 backdrop-blur-md border-gray-200 shadow-sm"
-            : "bg-white/60 backdrop-blur border-gray-200 shadow-sm")
+          // Nota importante:
+          // - En tamaños con hamburguesa (lg:hidden en `MobileMenu`), el header NO debe ser sticky ni translúcido.
+          // - Conservamos fondo sólido en mobile/tablet para evitar superposición con el contenido.
+          // - A partir de `lg:` (donde aparece la navegación de escritorio) sí aplicamos sticky + glass.
+          (
+            `relative top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ` +
+            // Mobile/Tablet: fondo sólido, sin blur
+            `bg-white border-gray-200 shadow-sm ` +
+            // Desktop (lg+): sticky + fondo translúcido cuando hay scroll
+            (isScrolled
+              ? ` lg:sticky lg:bg-white/70 lg:backdrop-blur-md`
+              : ` lg:sticky lg:bg-white/60 lg:backdrop-blur`)
+          )
         }
         style={{ minHeight: '96px' }}
       >

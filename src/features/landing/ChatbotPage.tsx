@@ -146,6 +146,20 @@ const ChatbotPage = () => {
               <p className="text-lg text-gray-600 max-w-4xl mx-auto">
                 {t("chatbotPage.hero.description")}
               </p>
+              {/* Imagen temprana solo en móviles: aparece tras el primer párrafo para mejorar engagement */}
+              <div className="mt-6 md:hidden flex justify-center">
+                <div className="w-3/4 max-w-xs aspect-square bg-white rounded-xl shadow-lg overflow-hidden">
+                  <img
+                    src="/imagenes/Helpy using a phone in an office.png"
+                    alt={t("chatbotPage.hero.title")}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://via.placeholder.com/400x400?text=AI+Agents";
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -498,7 +512,7 @@ const ChatbotPage = () => {
               {/* Columna derecha - Imagen del agente */}
               <div 
                 ref={featuresRef}
-                className={`relative flex items-center justify-center transition-all duration-1000 ease-out ${
+                className={`relative hidden md:flex items-center justify-center transition-all duration-1000 ease-out ${
                   visibleSections.features
                     ? 'opacity-100 translate-x-0 scale-100'
                     : 'opacity-0 translate-x-8 scale-95'

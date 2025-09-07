@@ -135,6 +135,20 @@ const UpsellingPage = () => {
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 {t("upsellingPage.hero.description")}
               </p>
+              {/* Imagen temprana solo en móviles: aparece tras el primer párrafo para mejorar engagement */}
+              <div className="mt-6 md:hidden flex justify-center">
+                <div className="w-3/4 max-w-xs aspect-[3/4] bg-white rounded-xl shadow-lg overflow-hidden">
+                  <img
+                    src="/imagenes/comisions.jpg"
+                    alt="Características del sistema de upselling"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://via.placeholder.com/335x450?text=Upselling+y+Comisiones";
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -492,7 +506,7 @@ const UpsellingPage = () => {
               {/* Columna derecha - Imagen o animación */}
               <div 
                 ref={featuresRef}
-                className={`relative flex items-center justify-center transition-all duration-1000 ease-out ${
+                className={`relative hidden md:flex items-center justify-center transition-all duration-1000 ease-out ${
                   visibleSections.features
                     ? 'opacity-100 translate-x-0 scale-100'
                     : 'opacity-0 translate-x-8 scale-95'
