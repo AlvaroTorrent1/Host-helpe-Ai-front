@@ -172,44 +172,38 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                   <p className="text-sm font-medium text-primary-800 mb-2">
                     {t('upgrade.plans.professional.recommend') || 'Te recomendamos el plan'} <span className="font-semibold">Professional</span>
                   </p>
-                  <ul className="text-sm text-primary-700 space-y-1">
+                  <ul className="text-sm text-primary-700 space-y-1 text-left">
                     {recommendedPlan === 'basic' && (
                       <>
-                        <li className="flex items-center">
+                        <li className="flex items-center text-left">
                           <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           {t('upgrade.plans.professional.features.properties') || 'Hasta 5 propiedades'}
                         </li>
-                        <li className="flex items-center">
+                        <li className="flex items-center text-left">
                           <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           {t('upgrade.plans.professional.features.basic') || 'Todo lo de Básico'}
                         </li>
-                        <li className="flex items-center">
+                        <li className="flex items-center text-left">
                           <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           {t('upgrade.plans.professional.features.priority') || 'Atención prioritaria'}
                         </li>
-                        <li className="flex items-center">
+                        <li className="flex items-center text-left">
                           <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           {t('upgrade.plans.professional.features.analytics') || 'Analíticas e informes avanzados'}
                         </li>
-                        <li className="flex items-center">
+                        <li className="flex items-center text-left">
                           <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
-                          {t('upgrade.plans.professional.features.legal') || 'Consultoría legal turística'}
-                        </li>
-                        <li className="flex items-center">
-                          <svg className="w-4 h-4 text-primary-600 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          {t('upgrade.plans.professional.features.automation') || 'Llamadas automáticas programables'}
+                          {t('pricing.features.maintenanceCleaningCoordination') || 'Coordinación con equipos de limpieza y mantenimiento'}
                         </li>
                       </>
                     )}

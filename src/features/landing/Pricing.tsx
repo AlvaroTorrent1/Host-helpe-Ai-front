@@ -238,9 +238,7 @@ const Pricing = () => {
         `${t("pricing.features.upTo")} 5 ${t("common.properties")}`,
         `${t("pricing.features.allFrom")} ${t("pricing.basic")}`,
         t("pricing.features.priorityAttention"),
-        t("pricing.features.advancedAnalyticsReports"),
-        t("pricing.features.legalTourismConsulting"),
-        t("pricing.features.programmableAutomaticCalls"),
+        t("pricing.features.maintenanceCleaningCoordination"),
       ],
       isPopular: true,
       cta: t("pricing.cta"),
@@ -255,7 +253,6 @@ const Pricing = () => {
       features: [
         t("pricing.features.unlimitedProperties"),
         `${t("pricing.features.allFrom")} ${t("pricing.pro")}`,
-        t("pricing.features.dedicatedPersonalizedAPI"),
         t("pricing.features.prioritySupport247"),
         t("pricing.features.completeCustomization"),
         t("pricing.features.advancedMultichannelIntegration"),
@@ -371,7 +368,7 @@ const Pricing = () => {
             </div>
 
             {/* Pricing Cards */}
-            <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 items-stretch overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
+            <div id="pricing-container" className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 items-stretch overflow-x-auto md:overflow-x-visible scrollbar-hide px-4 md:px-0 mobile-carousel">
               {plans.map((plan, index) => (
                 <div 
                   key={index}
@@ -426,9 +423,9 @@ const Pricing = () => {
 
                     {/* Features section - Flexible height */}
                     <div className="flex-grow mb-6">
-                      <ul className="space-y-3">
+                      <ul className="space-y-3 text-left">
                         {plan.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-3">
+                          <li key={idx} className="flex items-start gap-3 text-left">
                             <svg
                               className="w-5 h-5 text-primary-500 mt-0.5 flex-shrink-0"
                               fill="currentColor"
@@ -440,7 +437,7 @@ const Pricing = () => {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            <span className="text-gray-600 text-base leading-relaxed">{feature}</span>
+                            <span className="text-gray-600 text-base leading-relaxed text-left">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -460,6 +457,40 @@ const Pricing = () => {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Flechas navegación móvil */}
+            <div className="flex justify-center mt-6 md:hidden">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('pricing-container');
+                    if (container) {
+                      container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label={t('common.previous')}
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('pricing-container');
+                    if (container) {
+                      container.scrollBy({ left: (container as HTMLElement).clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  aria-label={t('common.next')}
+                >
+                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </section>

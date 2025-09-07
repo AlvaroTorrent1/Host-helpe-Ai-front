@@ -30,8 +30,7 @@
       "allFrom": "Everything from",
       "priorityAttention": "Priority attention",
       "advancedAnalyticsReports": "Advanced analytics and reports",
-      "legalTourismConsulting": "Legal tourism consulting",
-      "programmableAutomaticCalls": "Programmable automatic calls",
+      "maintenanceCleaningCoordination": "Coordination with cleaning and maintenance teams",
       "unlimitedProperties": "Unlimited properties",
       "dedicatedPersonalizedAPI": "Dedicated and personalized API",
       "prioritySupport247": "Priority support 24/7",
@@ -41,7 +40,7 @@
     "faq": {
       "title": "Frequently Asked Questions",
       "q5": "Is it easy to implement Host Helper AI?",
-      "a5": "Yes, implementation is very simple. Our team will guide you through the entire process and you will have your AI agents up and running in less than 24 hours.",
+      "a5": "Yes, implementation is very simple. Our team will guide you through the entire process and you will have your AI agents up and running in less than 48 hours.",
       "q6": "Is there a trial period?",
       "a6": "We offer a free personalized demonstration where you can see how the AI agents work with your own data and specific use cases.",
       "q2": "Can I change plans later?",
