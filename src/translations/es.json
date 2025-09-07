@@ -79,7 +79,7 @@
     },
     "testimonial3": {
       "description": "Hotel boutique en el corazón de Sevilla, con encanto tradicional y servicios modernos.",
-      "text": "La función de ventas de servicios adicionales nos ha permitido incrementar nuestros ingresos en un 30%. Los huéspedes realmente aprecian la facilidad para solicitar servicios extra.",
+      "text": "Lo mejor es el escalado automático a limpieza y mantenimiento. Si un huésped reporta algo, el agente contacta al equipo correcto, coordina la visita y nos avisa. Todo ocurre en la misma conversación y se resuelve rápido.",
       "author": "Marta García",
       "position": "Propietaria"
     },
@@ -947,7 +947,7 @@
         "services": "Servicios Vendidos"
       },
       "trustIndicators": {
-        "setup": "Configuración en 5 minutos",
+        "setup": "Configuración en 15 minutos",
         "noTech": "Sin conocimientos técnicos"
       },
       "phoneDemo": {
@@ -973,15 +973,15 @@
       "title": "Comenzar es muy simple",
       "step1": {
         "title": "Regístrate y añade tu propiedad",
-        "description": "Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y reglas del alojamiento."
+        "description": "Crea tu cuenta en minutos y añade los detalles de tu propiedad. Sube fotos, descripción y reglas del alojamiento. incluye enlaces a Google Business y tus redes sociales, sincroniza tus calendarios de Booking y Airbnb."
       },
       "step2": {
         "title": "Configura tus agentes de IA",
-        "description": "Personaliza las respuestas del chatbot, información del alojamiento y servicios adicionales que quieres ofrecer."
+        "description": "Añade los teléfonos de tu equipo de mantenimiento y limpieza para que nuestro agente se coordine automáticamente con ellos. Define los servicios adicionales que deseas ofrecer."
       },
       "step3": {
         "title": "Comparte el número de teléfono con tus huéspedes",
-        "description": "Proporciona el número de teléfono de nuestros agentes de IA a tus huéspedes. Nuestro agente se encarga de todo con acceso completo a la información de la propiedad y detalles de la reserva."
+        "description": "Proporciona el número de teléfono de nuestros agentes de IA a tus huéspedes. Nuestro agente se encarga de todo gracias a la información de la propiedad y detalles de la reserva. Al finalizar la estancia hace todo lo posible por conseguir una reseña excelente."
       }
     },
     "cta": {

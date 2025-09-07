@@ -167,13 +167,47 @@ const LandingPage = () => {
   type ChatMessage = {
     role: 'ai' | 'user' | 'system';
     text?: string; // Texto simple
-    link?: { text: string; href: string } | null; // Link opcional
+    // Link opcional. "icon: 'google'" muestra un pequeño logotipo de Google junto al texto
+    link?: { text: string; href: string; icon?: 'google' } | null;
     card?: { title: string; description: string; imageSrc?: string } | null; // Tarjeta rica
     typing?: boolean; // Indicador de escritura del asistente
   };
 
   // Conversaciones de ejemplo (ES/EN/RU/ZH) que muestran capacidades
   const phoneConversations: ChatMessage[][] = [
+    // 1) Lockbox code
+    [
+      { role: 'user', text: 'What is the lockbox code?' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'The lockbox code is 7429. The box is next to the main door.' },
+    ],
+    // 2) Early check-in
+    [
+      { role: 'user', text: '¿Puedo hacer check-in temprano?' },
+      { role: 'ai', text: 'Un momento por favor, consulto con el equipo de limpieza…' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: '¡Listo! El equipo confirma que estará preparado. Puedes entrar a las 13:00.' },
+    ],
+    // 3) Post-stay review with Google logo link
+    [
+      { role: 'ai', text: '¡Gracias por tu estancia! Ha sido un placer atenderte. 😊' },
+      { role: 'ai', text: 'Si te hemos ayudado, tu reseña en Google nos apoya muchísimo y ayuda a otros viajeros.' },
+      { role: 'ai', link: { text: 'Dejar reseña en Google', href: 'https://g.page/r/hosthelperai/review', icon: 'google' } },
+    ],
+    // 4) Property access card (with image)
+    [
+      { role: 'user', text: 'Necesito la información de acceso a la propiedad' },
+      { role: 'ai', typing: true },
+      { role: 'ai', card: { title: 'Acceso a la propiedad', description: 'Dirección: Calle Mayor 12, Málaga. Suba al 3ºB. El portal se abre con el código 8412. La llave está en el cajetín de la izquierda.', imageSrc: '/imagenes/CasaMarbella.png' } },
+    ],
+    // 5) Extend stay
+    [
+      { role: 'user', text: 'I need to extend my stay for 2 more nights' },
+      { role: 'ai', text: 'Let me check availability for you...' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'Great news! I can extend your stay. The rate will be €85/night. Shall I confirm?' },
+    ],
+    // Rest (unchanged relative order)
     [
       { role: 'ai', text: '¿Necesitas alguna recomendación local?' },
       { role: 'user', text: 'Sí, restaurantes cerca' },
@@ -182,25 +216,9 @@ const LandingPage = () => {
       { role: 'ai', link: { text: 'Restaurantes cerca', href: 'https://maps.google.com/?q=restaurants+near+me' } },
     ],
     [
-      { role: 'user', text: '¿Puedo hacer check-in temprano?' },
-      { role: 'ai', text: 'Un momento por favor, consulto con el equipo de limpieza…' },
-      { role: 'ai', typing: true },
-      { role: 'ai', text: '¡Listo! El equipo confirma que estará preparado. Puedes entrar a las 13:00.' },
-    ],
-    [
-      { role: 'user', text: 'What is the lockbox code?' },
-      { role: 'ai', typing: true },
-      { role: 'ai', text: 'The lockbox code is 7429. The box is next to the main door.' },
-    ],
-    [
       { role: 'user', text: 'Can you share local services like pharmacy and supermarkets?' },
       { role: 'ai', text: 'Sure! Here is a curated list near the apartment:' },
       { role: 'ai', link: { text: 'Local services map', href: 'https://maps.google.com/?q=pharmacy,supermarket' } },
-    ],
-    [
-      { role: 'user', text: 'Necesito la información de acceso a la propiedad' },
-      { role: 'ai', typing: true },
-      { role: 'ai', card: { title: 'Acceso a la propiedad', description: 'Dirección: Calle Mayor 12, Málaga. Suba al 3ºB. El portal se abre con el código 8412. La llave está en el cajetín de la izquierda.', imageSrc: '/imagenes/CasaMarbella.png' } },
     ],
     [
       { role: 'user', text: 'El aire acondicionado no funciona' },
@@ -216,12 +234,6 @@ const LandingPage = () => {
     [
       { role: 'user', text: '可以给我Wi‑Fi密码吗？' },
       { role: 'ai', text: '当然可以。Wi‑Fi: CasaSol，密码: 2024-Helpy.' },
-    ],
-    [
-      { role: 'user', text: 'I need to extend my stay for 2 more nights' },
-      { role: 'ai', text: 'Let me check availability for you...' },
-      { role: 'ai', typing: true },
-      { role: 'ai', text: 'Great news! I can extend your stay. The rate will be €85/night. Shall I confirm?' },
     ],
     [
       { role: 'user', text: 'Se ha roto la cerradura de la puerta' },
@@ -292,11 +304,32 @@ const LandingPage = () => {
   // Respeta preferencias de movimiento reducido del sistema
   const prefersReducedMotion = useReducedMotion();
 
-  // Auto-scroll al último mensaje
+  // Auto-scroll inteligente al último mensaje (solo si usuario está cerca del final)
+  // - Detecta si el usuario está cerca del final del chat (150px en móvil, 100px en desktop)
+  // - Solo hace scroll automático si el usuario está viendo los mensajes recientes
+  // - Usa scroll instantáneo en móviles para mejor rendimiento, smooth en desktop
+  // - Respeta las preferencias de movimiento reducido del sistema
   useEffect(() => {
     const container = chatContainerRef.current;
     if (container) {
-      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      // Verificar si el usuario está cerca del final del chat (dentro de 150px para móviles)
+      const threshold = window.innerWidth < 768 ? 150 : 100; // Mayor tolerancia en móviles
+      const isNearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold;
+
+      // Solo hacer auto-scroll si el usuario está cerca del final
+      if (isNearBottom) {
+        // Usar requestAnimationFrame para mejor rendimiento en móviles
+        requestAnimationFrame(() => {
+          if (container) {
+            // Usar scroll instantáneo en móviles para mejor rendimiento, smooth en desktop
+            const scrollBehavior = window.innerWidth < 768 ? 'instant' : 'smooth';
+            container.scrollTo({
+              top: container.scrollHeight,
+              behavior: scrollBehavior
+            });
+          }
+        });
+      }
     }
   }, [chatMessages]);
 
@@ -584,7 +617,8 @@ const LandingPage = () => {
 
       <main>
         {/* Revolutionary AI Hero Section */}
-        <section className="relative isolate min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden">
+        {/* Height reduced ~40%: mobile 50vh -> 30vh, desktop 100vh -> 60vh */}
+        <section className="relative isolate min-h-[30vh] md:min-h-[60vh] bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 overflow-hidden">
           {/* Animated Particle Background */}
           <div className="absolute inset-0">
             <canvas 
@@ -681,7 +715,8 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="container-limited relative z-20 min-h-screen flex md:items-center pt-32 md:pt-16 lg:pt-0 pb-56 md:pb-72 lg:pb-80">
+          {/* Sync inner container min-height to keep layout consistent with reduced hero */}
+          <div className="container-limited relative z-20 min-h-[30vh] md:min-h-[60vh] flex md:items-center pt-32 md:pt-16 lg:pt-0 pb-40 md:pb-72 lg:pb-80">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
               
               {/* Left Content */}
@@ -739,11 +774,11 @@ const LandingPage = () => {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 sm:px-0">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start px-4 sm:px-0">
                   <CalendlyLink />
                   <Link
                     to="/pricing"
-                    className="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+                    className="group relative inline-flex items-center justify-center px-6 py-3 lg:px-8 lg:py-4 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 text-sm lg:text-base"
                   >
                     <span className="relative z-10 font-normal">{t("landing.hero.cta")}</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
@@ -809,8 +844,8 @@ const LandingPage = () => {
                       {/* Chat Header - Host Helper AI Brand Colors */}
                       <div className="absolute top-16 left-0 right-0 bg-primary-500 px-4 py-3 flex items-center gap-2 z-30">
                         <button className="text-white text-lg">‹</button>
-                        <div className="w-12 aspect-square bg-white rounded-full flex items-center justify-center">
-                          <span className="text-base font-bold text-primary-500">AI</span>
+                        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+                          <span className="text-xs font-bold text-primary-500 leading-none select-none">AI</span>
                         </div>
                         <div className="flex-1">
                           <div className="text-white font-semibold text-sm whitespace-nowrap overflow-hidden text-ellipsis">Host Helper AI</div>
@@ -879,7 +914,7 @@ const LandingPage = () => {
                                         {m.link && (
                                           <>
                                             {' '}
-                                            <a className="text-primary-600 underline" href={m.link.href} target="_blank" rel="noreferrer">{m.link.text}</a>
+                                            <a className="inline-flex items-center gap-1 text-primary-600 underline" href={m.link.href} target="_blank" rel="noreferrer">{m.link.icon === 'google' && (<svg aria-hidden="true" width="14" height="14" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C33.642 6.053 29.084 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.651-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.817C14.413 16.232 18.822 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C33.642 6.053 29.084 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.678-1.977 12.987-5.174l-5.996-5.066C28.936 35.879 26.62 36.8 24 36.8c-5.204 0-9.616-3.362-11.277-8.045l-6.566 5.06C9.49 39.743 16.186 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-0.792 2.236-2.237 4.153-3.989 5.579l0.001-0.001 5.996 5.066C39.83 35.888 44 30.5 44 24c0-1.341-0.138-2.651-0.389-3.917z"/></svg>)}{m.link.text}</a>
                                           </>
                                         )}
                                       </p>
@@ -930,7 +965,7 @@ const LandingPage = () => {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="relative py-12 md:py-20 bg-white w-full border-b border-gray-100">
+        <section id="features" className="relative py-12 md:py-20 bg-white w-full border-b border-gray-100 scroll-mt-24 md:scroll-mt-28">
           {/* Mobile fade-from-hero fix: add top gradient only on small screens */}
           <div className="pointer-events-none absolute -top-8 left-0 right-0 h-12 sm:hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/60 to-white"></div>
@@ -981,7 +1016,7 @@ const LandingPage = () => {
                   }`}>
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
-                      src="/imagenes/phoneCall.png"
+                      src="/imagenes/Helpy - office 1.png"
                       alt="Agentes IA 24/7"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />
@@ -1117,7 +1152,7 @@ const LandingPage = () => {
                   }`}>
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
                     <img
-                      src="/imagenes/Helpy - office 1.png"
+                      src="/imagenes/phoneCall.png"
                       alt="Upselling inteligente"
                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
                     />

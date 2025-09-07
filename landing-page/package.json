@@ -1,0 +1,35 @@
+{
+  "name": "real-madrid-player-landing",
+  "version": "1.0.0",
+  "description": "Landing page moderna para perfil de jugador del Real Madrid",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . --port 3000",
+    "build": "echo 'No build step required for static HTML/CSS/JS'",
+    "preview": "npx serve . --port 8080"
+  },
+  "keywords": [
+    "landing-page",
+    "real-madrid",
+    "football",
+    "player-profile",
+    "modern-web-design"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/real-madrid-player-landing"
+  },
+  "homepage": "https://tu-dominio.com",
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ]
+}
+

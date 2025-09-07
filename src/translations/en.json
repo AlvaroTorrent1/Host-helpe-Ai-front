@@ -130,7 +130,7 @@
     },
     "testimonial3": {
       "description": "Boutique hotel in the heart of Seville, with traditional charm and modern services.",
-      "text": "The additional services sales feature has allowed us to increase our income by 30%. Guests really appreciate the ease of requesting extra services.",
+      "text": "The best part is the automatic escalation to cleaning and maintenance teams. When a guest reports an issue, the agent contacts the right team, schedules a visit and keeps us updated. It all happens in the same conversation and gets resolved fast.",
       "author": "Marta García",
       "position": "Owner"
     },
@@ -812,7 +812,7 @@
         "services": "Services Sold"
       },
       "trustIndicators": {
-        "setup": "5-minute setup",
+        "setup": "15-minute setup",
         "noTech": "No technical knowledge required"
       },
       "phoneDemo": {
@@ -838,15 +838,15 @@
       "title": "Getting started is very simple",
       "step1": {
         "title": "Register and add your property",
-        "description": "Create your account in minutes and add the details of your property. Upload photos, description and accommodation rules."
+        "description": "Create your account in minutes and add your property details. Upload photos, description and house rules. Include links to Google Business and your social networks, and sync your Booking and Airbnb calendars."
       },
       "step2": {
         "title": "Configure your AI agents",
-        "description": "Customize chatbot responses, accommodation information and additional services you want to offer."
+        "description": "Add your maintenance and cleaning team phone numbers so our agent can coordinate with them automatically. Define the additional services you want to offer."
       },
       "step3": {
         "title": "Share the phone number with your guests",
-        "description": "Provide our AI agents' phone number to your guests. Our agent takes care of everything with complete access to property information and reservation details."
+        "description": "Provide our AI agents' phone number to your guests. Our agent handles everything thanks to the property information and reservation details. After the stay, they do everything possible to secure an excellent review."
       }
     },
     "cta": {

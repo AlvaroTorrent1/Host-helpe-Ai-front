@@ -333,10 +333,13 @@ body {
   }
 }
 
-/* Responsive images */
+/* Responsive images
+   Note: Do NOT set height here so Tailwind h-* utilities (e.g., h-9, md:h-24)
+   control the image height across breakpoints. Setting height:auto here would
+   override those utilities because this file loads after Tailwind. */
 .responsive-img {
   max-width: 100%;
-  height: auto;
+  display: block;
 }
 
 /* Responsive spacing utilities */

@@ -122,9 +122,10 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
         };
       case 'pending':
         return {
-          bgColor: 'bg-blue-100',
-          textColor: 'text-blue-800',
-          dotClass: 'inline-block w-2 h-2 rounded-full bg-blue-500 ring-1 ring-blue-600',
+          // Alineado con la leyenda del calendario: pendiente = gris claro
+          bgColor: 'bg-gray-100',
+          textColor: 'text-gray-800',
+          dotClass: 'inline-block w-2 h-2 rounded-full bg-gray-300 ring-1 ring-gray-400',
           text: t('reservations.calendar.status.pending')
         };
       case 'stay':

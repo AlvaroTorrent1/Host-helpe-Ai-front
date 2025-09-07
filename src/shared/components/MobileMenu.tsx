@@ -139,7 +139,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
           {/* Overlay para facilitar el cierre del menú */}
           <div
             ref={overlayRef}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
+            className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ease-in-out"
             onClick={closeMenu}
             aria-hidden="true"
           />
@@ -147,7 +147,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ links }) => {
           <div
             id="mobile-menu"
             ref={menuRef}
-            className="fixed top-20 left-0 right-0 bg-white shadow-md py-4 px-6 z-50 max-h-[80vh] overflow-y-auto transition-transform duration-300 ease-in-out"
+            className="fixed inset-x-0 top-0 bg-white/95 backdrop-blur shadow-md py-4 px-6 z-50 max-h-[85vh] mt-14 sm:mt-16 md:mt-16 overflow-y-auto transition-transform duration-300 ease-in-out rounded-b-lg"
             role="navigation"
             aria-label={t("common.mobileMenu")}
           >

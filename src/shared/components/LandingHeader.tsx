@@ -1,7 +1,7 @@
 // src/shared/components/LandingHeader.tsx
 // Componente header unificado para todas las páginas landing/públicas
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import MobileMenu from "@shared/components/MobileMenu";
@@ -14,9 +14,25 @@ interface LandingHeaderProps {
 const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
   const { t } = useTranslation();
 
+  // Estado: detecta si hemos hecho scroll para aplicar fondo translúcido
+  // Nota: usamos 'backdrop-filter' para difuminar SOLO el contenido de detrás.
+  // El texto y los iconos del header permanecen nítidos (no aplicamos 'opacity' al contenedor).
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      // Umbral pequeño para activar el estado con un toque de scroll
+      setIsScrolled(window.scrollY > 8);
+    };
+
+    onScroll(); // establecer estado inicial
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // Navigation links configuration - idéntica para todas las páginas
   const navLinks = [
-    { text: t("nav.features"), href: "/#features" },
+    { text: "Características", href: "/#features" },
     { text: t("nav.pricing"), href: "/pricing" },
     { text: t("nav.testimonials"), href: "/testimonios" },
     { text: t("nav.login"), href: "/login", isButton: true },
@@ -30,34 +46,87 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
     // Comportamiento por defecto si no hay función custom
   };
 
+  // Scroll suave a secciones internas (hash) como #features
+  const handleHashNavigation = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    href: string,
+  ) => {
+    const idx = href.indexOf('#');
+    if (idx === -1) return;
+    const id = href.slice(idx + 1);
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    try { window.history.pushState(null, '', `/#${id}`); } catch {}
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <header className="bg-white shadow-sm w-full border-b border-gray-200">
-      <div className="container-limited py-4 flex justify-between items-center">
+    // Importante: mantenemos el contenido nítido. El efecto de vidrio se logra
+    // con 'bg-white/70' + 'backdrop-blur-md' cuando hay scroll.
+    // No usamos 'opacity-*' en el header para no desvanecer el texto.
+    <>
+      <header
+        className={
+          `relative md:sticky top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ` +
+          (isScrolled
+            ? "bg-white/70 backdrop-blur-md border-gray-200 shadow-sm"
+            : "bg-white/60 backdrop-blur border-gray-200 shadow-sm")
+        }
+        style={{ minHeight: '96px' }}
+      >
+      <div className="container-limited py-3 md:py-4 flex items-center justify-between">
         {/* Logo */}
-        {onLogoClick ? (
-          <div onClick={handleLogoClick} className="flex items-center cursor-pointer">
-            <img
-              src="/imagenes/Logo_hosthelper_new.png"
-              alt="Host Helper AI Logo"
-              className="h-20 sm:h-36 responsive-img"
-            />
-          </div>
-        ) : (
-          <Link to="/" className="flex items-center">
-            <img
-              src="/imagenes/Logo_hosthelper_new.png"
-              alt="Host Helper AI Logo"
-              className="h-20 sm:h-36 responsive-img"
-            />
-          </Link>
-        )}
+        {/*
+          Pixel-perfect constraint: The logo size and position in Landing must
+          match DashboardHeader exactly. We mirror the container alignment and
+          the image height classes from DashboardHeader so both headers stay
+          consistent across breakpoints.
+        */}
+        <div className="flex items-center justify-start mb-0">
+          {onLogoClick ? (
+            <div onClick={handleLogoClick} className="flex items-center cursor-pointer">
+              {/* Contenedor de recorte: mantiene la altura del header en móvil (96px) */}
+              <div className="h-24 sm:h-auto overflow-hidden sm:overflow-visible flex items-center">
+                {/* Imagen 15% más alta en móvil, recortada por arriba/abajo sin aumentar el header */}
+                <img
+                  src="/imagenes/Logo_hosthelper_new.png"
+                  alt="Host Helper AI Logo"
+                  className="h-[115%] sm:h-20 md:h-36 responsive-img"
+                />
+              </div>
+            </div>
+          ) : (
+            <Link to="/">
+              <div className="h-24 sm:h-auto overflow-hidden sm:overflow-visible flex items-center">
+                <img
+                  src="/imagenes/Logo_hosthelper_new.png"
+                  alt="Host Helper AI Logo"
+                  className="h-[115%] sm:h-20 md:h-36 responsive-img"
+                />
+              </div>
+            </Link>
+          )}
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-4">
           <ul className="flex space-x-4 mr-4">
             {navLinks.map((link, index) => (
               <li key={index}>
-                {link.href.startsWith("/") ? (
+                {link.href.includes('#') ? (
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleHashNavigation(e, link.href)}
+                    className={
+                      link.isButton
+                        ? "bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md shadow-sm hover:shadow-md transition-all duration-300"
+                        : "text-gray-600 hover:text-primary-500 transition-colors duration-300"
+                    }
+                  >
+                    {link.text}
+                  </a>
+                ) : link.href.startsWith("/") ? (
                   <Link
                     to={link.href}
                     className={
@@ -87,7 +156,8 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
         {/* Mobile Menu */}
         <MobileMenu links={navLinks} />
       </div>
-    </header>
+      </header>
+    </>
   );
 };
 

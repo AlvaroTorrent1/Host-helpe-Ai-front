@@ -1,8 +1,8 @@
 // src/features/dashboard/components/AgentUsageBarChart.tsx
-// Gráfico de barras que muestra el uso diario del agente en los últimos 30 días
+// Gráfico con línea recta naranja y gradiente bajo la línea para los últimos 30 días
 
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { agentService, DailyUsage } from '../../../services/agentService';
 
 interface AgentUsageBarChartProps {
@@ -144,10 +144,10 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
         </h3>
       </div>
 
-      {/* Gráfico de barras con gradiente */}
+      {/* Gráfico de línea recta con gradiente bajo la línea */}
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <AreaChart
             data={data}
             margin={{
               top: 10,
@@ -155,21 +155,12 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
               left: 5,
               bottom: 25,
             }}
-            onClick={(data) => {
-              if (data && data.activePayload && data.activePayload[0]) {
-                const clickedData = data.activePayload[0].payload;
-                console.log('📊 Día seleccionado:', clickedData);
-                setSelectedDayInfo(clickedData);
-              }
-            }}
           >
-            {/* Definición del gradiente vertical para barras */}
+            {/* Definición del gradiente: de naranja (cerca de la línea) a transparente (abajo) */}
             <defs>
-              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ECA408" stopOpacity={0.9}/>
-                <stop offset="30%" stopColor="#F59E0B" stopOpacity={0.7}/>
-                <stop offset="70%" stopColor="#F59E0B" stopOpacity={0.5}/>
-                <stop offset="100%" stopColor="#E5E7EB" stopOpacity={0.2}/>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#F59E0B" stopOpacity={0} />
               </linearGradient>
             </defs>
             
@@ -188,27 +179,20 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
               width={0}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey="total_minutes" 
-              fill="url(#barGradient)"
-              stroke="#ECA408"
-              strokeWidth={1}
-              radius={[2, 2, 0, 0]}
-              animationDuration={1200}
+            <Area
+              type="linear"
+              dataKey="total_minutes"
+              stroke="#F59E0B"
+              strokeWidth={2}
+              strokeDasharray="4 2" // línea de puntos recta
+              fill="url(#areaGradient)"
+              isAnimationActive={true}
+              animationDuration={900}
               animationEasing="ease-out"
-              style={{ cursor: 'pointer' }}
-            >
-              {/* Cada barra individual puede tener interactividad */}
-              {data.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill="url(#barGradient)"
-                  stroke="#ECA408"
-                  strokeWidth={1}
-                />
-              ))}
-            </Bar>
-          </BarChart>
+              dot={false}
+              activeDot={{ r: 3, fill: '#F59E0B' }}
+            />
+          </AreaChart>
         </ResponsiveContainer>
       </div>
 

@@ -72,13 +72,17 @@ class ParticleSystem {
       particle.draw(this.ctx);
       
       // Conectar partículas cercanas con líneas doradas
+      // Ajuste: aumentamos distancia y opacidad para que el efecto tipo "grid"
+      // sea claramente visible sobre fondos claros (Precios/Testimonios).
       for (let j = index + 1; j < this.particles.length; j++) {
         const other = this.particles[j];
         const distance = Math.hypot(particle.x - other.x, particle.y - other.y);
-        
-        if (distance < 80) { // Distancia más corta para secciones más pequeñas
-          this.ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * (1 - distance / 80)})`;
-          this.ctx.lineWidth = 0.6;
+
+        const maxDistance = 120; // antes 80
+        if (distance < maxDistance) {
+          const alpha = 0.35 * (1 - distance / maxDistance); // más visible
+          this.ctx.strokeStyle = `rgba(236, 164, 8, ${alpha})`; // dorado (#ECA408)
+          this.ctx.lineWidth = 0.8; // un poco más grueso
           this.ctx.beginPath();
           this.ctx.moveTo(particle.x, particle.y);
           this.ctx.lineTo(other.x, other.y);
@@ -264,7 +268,9 @@ const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
         </div>
 
         {/* Partículas flotantes */}
-        <div className={`absolute top-10 left-10 ${variant === 'hero' ? 'w-4 h-4 bg-primary-500 opacity-60' : 'w-3 h-3 bg-yellow-300 opacity-50'} rounded-full animate-bounce`} style={{ animationDelay: '0s' }}></div>
+        {/* IMPORTANTE: Se eliminó el punto grande fijo en la esquina superior izquierda para cumplir
+           con el requerimiento de Precios y Testimonios. Mantenemos dos puntos pequeños para
+           conservar dinamismo sin ruido visual. */}
         <div className={`absolute top-32 right-20 ${variant === 'hero' ? 'w-3 h-3 bg-primary-400 opacity-40' : 'w-2 h-2 bg-yellow-200 opacity-40'} rounded-full animate-bounce`} style={{ animationDelay: '1s' }}></div>
         <div className={`absolute bottom-20 left-1/4 ${variant === 'hero' ? 'w-2 h-2 bg-primary-500 opacity-50' : 'w-2 h-2 bg-yellow-400 opacity-45'} rounded-full animate-bounce`} style={{ animationDelay: '2s' }}></div>
 
