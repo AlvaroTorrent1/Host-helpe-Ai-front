@@ -176,30 +176,30 @@ const LandingPage = () => {
 
   // Conversaciones de ejemplo (ES/EN/RU/ZH) que muestran capacidades
   const phoneConversations: ChatMessage[][] = [
-    // 1) Lockbox code
-    [
-      { role: 'user', text: 'What is the lockbox code?' },
-      { role: 'ai', typing: true },
-      { role: 'ai', text: 'The lockbox code is 7429. The box is next to the main door.' },
-    ],
-    // 2) Early check-in
+    // 1) Early check-in (moved up)
     [
       { role: 'user', text: '¿Puedo hacer check-in temprano?' },
       { role: 'ai', text: 'Un momento por favor, consulto con el equipo de limpieza…' },
       { role: 'ai', typing: true },
       { role: 'ai', text: '¡Listo! El equipo confirma que estará preparado. Puedes entrar a las 13:00.' },
     ],
-    // 3) Post-stay review with Google logo link
+    // 2) Post-stay review with Google logo link (moved up)
     [
       { role: 'ai', text: '¡Gracias por tu estancia! Ha sido un placer atenderte. 😊' },
       { role: 'ai', text: 'Si te hemos ayudado, tu reseña en Google nos apoya muchísimo y ayuda a otros viajeros.' },
       { role: 'ai', link: { text: 'Dejar reseña en Google', href: 'https://g.page/r/hosthelperai/review', icon: 'google' } },
     ],
-    // 4) Property access card (with image)
+    // 3) Property access card (with image) (moved up)
     [
       { role: 'user', text: 'Necesito la información de acceso a la propiedad' },
       { role: 'ai', typing: true },
       { role: 'ai', card: { title: 'Acceso a la propiedad', description: 'Dirección: Calle Mayor 12, Málaga. Suba al 3ºB. El portal se abre con el código 8412. La llave está en el cajetín de la izquierda.', imageSrc: '/imagenes/CasaMarbella.png' } },
+    ],
+    // 4) Lockbox code (moved down)
+    [
+      { role: 'user', text: 'What is the lockbox code?' },
+      { role: 'ai', typing: true },
+      { role: 'ai', text: 'The lockbox code is 7429. The box is next to the main door.' },
     ],
     // 5) Extend stay
     [
