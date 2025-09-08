@@ -7,6 +7,7 @@ import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
 import { useTranslation } from "react-i18next";
 import { initializeHeroAnimations } from "../../utils/heroAnimations";
+import useParallaxTilt from "../../hooks/useParallaxTilt";
 
 
 
@@ -372,6 +373,17 @@ const LandingPage = () => {
   const feature1Ref = useRef<HTMLDivElement>(null);
   const feature2Ref = useRef<HTMLDivElement>(null);
   const feature3Ref = useRef<HTMLDivElement>(null);
+  // Ref para el teléfono del hero (para parallax/tilt en desktop)
+  const phoneRef = useRef<HTMLDivElement>(null);
+
+  // Activar efecto parallax/tilt solo en escritorio (respetando reduced-motion)
+  useParallaxTilt(phoneRef, {
+    maxTiltDeg: 6,
+    perspectivePx: 1000,
+    activationMarginPx: 160,
+    scale: 1,
+    desktopMinWidth: 1024,
+  });
 
   // Navigation links configuration - now handled by LandingHeader
 
@@ -805,10 +817,10 @@ const LandingPage = () => {
               >
                 {/* iPhone Container - Simplified Structure */}
                 <div 
-                  className="relative max-w-[270px] sm:max-w-[288px] lg:max-w-[300px] mx-auto lg:mx-0 lg:ml-auto scale-75 lg:scale-90"
+                  className="relative max-w-[270px] sm:max-w-[288px] lg:w-[270px] mx-auto lg:mx-0 lg:ml-auto lg:mr-16 lg:mt-6 scale-75 lg:scale-100"
                 >
                   {/* iPhone Frame */}
-                  <div className="relative bg-gradient-to-b from-gray-800 to-black rounded-[3rem] p-1 shadow-2xl">
+                  <div ref={phoneRef} className="relative bg-gradient-to-b from-gray-800 to-black rounded-[3rem] p-1 shadow-2xl">
                     {/* iPhone Screen */}
                     <div className="bg-white rounded-[2.5rem] overflow-hidden relative w-full aspect-[9/18]">
                         
