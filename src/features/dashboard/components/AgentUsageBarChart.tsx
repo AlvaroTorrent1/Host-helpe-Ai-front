@@ -4,12 +4,14 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { agentService, DailyUsage } from '../../../services/agentService';
+import { useTranslation } from 'react-i18next';
 
 interface AgentUsageBarChartProps {
   className?: string;
 }
 
 const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = '' }) => {
+  const { t, i18n } = useTranslation();
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,11 +40,12 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
         });
         
         // Generar array de los últimos 30 días
-        const last30Days = [];
+        const last30Days = [] as any[];
         const today = new Date();
         let totalMin = 0;
         let totalCall = 0;
         let activeCount = 0;
+        const locale = i18n.language && i18n.language.startsWith('en') ? 'en-US' : 'es-ES';
         
         for (let i = 29; i >= 0; i--) {
           const date = new Date(today);
@@ -61,14 +64,14 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
           last30Days.push({
             date: dateStr,
             day: date.getDate(), // Solo el día del mes para el eje X
-            dayLabel: date.toLocaleDateString('es-ES', { 
+            dayLabel: date.toLocaleDateString(locale, { 
               weekday: 'short', 
               day: 'numeric' 
             }).replace(',', ''), // Formato: "lun 15"
             total_minutes: minutes,
             total_calls: calls,
             // Formato para tooltip
-            fullDate: date.toLocaleDateString('es-ES', { 
+            fullDate: date.toLocaleDateString(locale, { 
               weekday: 'long', 
               day: 'numeric',
               month: 'long'
@@ -91,7 +94,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
     };
 
     fetchData();
-  }, []);
+  }, [i18n.language]);
 
   // Función personalizada para el tooltip
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -101,10 +104,10 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
         <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
           <p className="font-semibold text-gray-800 mb-1">{data.fullDate}</p>
           <p className="text-sm">
-            <span className="text-gray-800 font-medium">{data.total_minutes} minutos</span>
+            <span className="text-gray-800 font-medium">{t('dashboard.agentUsage.minutes', { count: data.total_minutes })}</span>
           </p>
           <p className="text-sm text-gray-600">
-            {data.total_calls} {data.total_calls === 1 ? 'llamada' : 'llamadas'}
+            {t('dashboard.agentUsage.calls', { count: data.total_calls })}
           </p>
         </div>
       );
@@ -140,7 +143,7 @@ const AgentUsageAreaChart: React.FC<AgentUsageBarChartProps> = ({ className = ''
       {/* Header simplificado */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
-          Uso del Agente - Últimos 30 Días
+          {t('dashboard.agentUsage.last30Days')}
         </h3>
       </div>
 

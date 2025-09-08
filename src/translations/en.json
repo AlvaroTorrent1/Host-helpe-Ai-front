@@ -430,6 +430,23 @@
 
   "dashboard": {
     "title": "Dashboard",
+    "agentUsage": {
+      "last30Days": "Last 30 days",
+      "loading": "Loading chart...",
+      "error": "Error loading chart data",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minutes",
+      "calls_one": "{{count}} call",
+      "calls_other": "{{count}} calls",
+      "callsLabel": "Calls",
+      "minutesLabel": "Minutes",
+      "averageLabel": "Average",
+      "avgPerCall": "{{avg}} min/call",
+      "noCalls": "No calls",
+      "dateLabel": "Date",
+      "selectedDayTitle": "Day {{day}} details",
+      "noDataNote": "ℹ️ No usage data recorded in the last 30 days"
+    },
     "menu": {
       "dashboard": "Dashboard",
       "reservations": "Reservations", 

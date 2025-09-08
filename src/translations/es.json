@@ -463,6 +463,23 @@
 
   "dashboard": {
     "title": "Dashboard",
+    "agentUsage": {
+      "last30Days": "Últimos 30 días",
+      "loading": "Cargando gráfico...",
+      "error": "Error al cargar los datos del gráfico",
+      "minutes_one": "{{count}} minuto",
+      "minutes_other": "{{count}} minutos",
+      "calls_one": "{{count}} llamada",
+      "calls_other": "{{count}} llamadas",
+      "callsLabel": "Llamadas",
+      "minutesLabel": "Minutos",
+      "averageLabel": "Promedio",
+      "avgPerCall": "{{avg}} min/llamada",
+      "noCalls": "Sin llamadas",
+      "dateLabel": "Fecha",
+      "selectedDayTitle": "Información del día {{day}}",
+      "noDataNote": "ℹ️ No hay datos de uso registrados en los últimos 30 días"
+    },
         "menu": {
       "dashboard": "Dashboard",
       "reservations": "Reservas", 

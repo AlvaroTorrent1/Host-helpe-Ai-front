@@ -601,10 +601,10 @@ const DashboardPage: React.FC = () => {
 
   // Las categorías ahora se traducen dinámicamente con getLabel()
 
-  // Fallback status labels
+  // Fallback status labels (language-aware to avoid mixing EN/ES)
   const fallbackStatusLabels = {
-    resolved: "Resuelto",
-    pending: "Pendiente"
+    resolved: language === 'es' ? 'Resuelto' : 'Resolved',
+    pending: language === 'es' ? 'Pendiente' : 'Pending'
   };
 
   // Fallback for section titles and labels
@@ -626,11 +626,12 @@ const DashboardPage: React.FC = () => {
 
   // Get status label with fallback
   const getStatusLabel = (status: "resolved" | "pending"): string => {
-    const translated = t(`dashboard.incidents.table.${status}`);
-    if (translated && translated.includes("dashboard.incidents.table")) {
+    // Use existing translation keys under statuses
+    const translated = t(`dashboard.incidents.statuses.${status}`);
+    if (!translated || translated.includes('dashboard.incidents')) {
       return fallbackStatusLabels[status];
     }
-    return translated || fallbackStatusLabels[status];
+    return translated;
   };
 
   // Get translated text with fallback
