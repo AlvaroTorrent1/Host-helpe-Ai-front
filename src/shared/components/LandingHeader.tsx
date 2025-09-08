@@ -79,12 +79,13 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
             // Desktop (lg+): sticky + fondo translúcido cuando hay scroll
             (isScrolled
               ? ` lg:sticky lg:bg-white/70 lg:backdrop-blur-md`
-              : ` lg:sticky lg:bg-white/60 lg:backdrop-blur`)
+              : ` lg:sticky lg:bg-white/60 lg:backdrop-blur`) +
+            // Alturas mínimas: mantenemos 96px en mobile/tablet y recortamos ~30% en desktop
+            ` min-h-[96px] lg:min-h-[64px]`
           )
         }
-        style={{ minHeight: '96px' }}
       >
-      <div className="container-limited py-3 md:py-4 flex items-center justify-between">
+      <div className="container-limited py-3 md:py-4 lg:py-2 flex items-center justify-between">
         {/* Logo */}
         {/*
           Pixel-perfect constraint: The logo size and position in Landing must
@@ -95,8 +96,10 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
         <div className="flex items-center justify-start mb-0">
           {onLogoClick ? (
             <div onClick={handleLogoClick} className="flex items-center cursor-pointer">
-              {/* Contenedor de recorte: mantiene la altura del header en móvil (96px) */}
-              <div className="h-24 sm:h-auto overflow-hidden sm:overflow-visible flex items-center">
+              {/* Contenedor de recorte
+                 - Mobile/tablet: igual que antes
+                 - Desktop (lg): recortamos verticalmente sin cambiar el tamaño del logo */}
+              <div className="h-24 sm:h-auto lg:h-16 overflow-hidden sm:overflow-visible lg:overflow-hidden flex items-center">
                 {/* Imagen 15% más alta en móvil, recortada por arriba/abajo sin aumentar el header */}
                 <img
                   src="/imagenes/Logo_hosthelper_new.png"
@@ -107,7 +110,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
             </div>
           ) : (
             <Link to="/">
-              <div className="h-24 sm:h-auto overflow-hidden sm:overflow-visible flex items-center">
+              <div className="h-24 sm:h-auto lg:h-16 overflow-hidden sm:overflow-visible lg:overflow-hidden flex items-center">
                 <img
                   src="/imagenes/Logo_hosthelper_new.png"
                   alt="Host Helper AI Logo"
