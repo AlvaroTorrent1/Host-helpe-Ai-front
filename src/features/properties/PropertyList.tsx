@@ -200,7 +200,12 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
             {/* Contenido del dropdown */}
             {isTemplateDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+              // Responsiveness note:
+              // In small screens the absolute, fixed-width dropdown could overflow the viewport
+              // and appear partially off-screen. We switch to a fixed, inset container on mobile/tablet
+              // to guarantee visibility, and keep the original absolute dropdown on desktop.
+              // Also limit height and enable vertical scrolling for long content.
+              <div className="absolute left-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 max-h-[70vh] overflow-y-auto">
                 <div className="p-4">
                   <h3 className="text-sm font-medium text-gray-900 mb-2">
                     {t("dashboard.properties.templates.dropdownTitle")}

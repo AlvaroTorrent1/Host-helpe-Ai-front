@@ -44,22 +44,27 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
           <LanguageSelector variant="dashboard" />
         </div>
 
-        {/* Row 2: email + action (mobile/tablet) */}
-        <div className="flex justify-end items-center space-x-2 sm:space-x-3 lg:hidden mt-1">
-          <span className="text-gray-700 text-xs sm:text-sm truncate max-w-[160px]">
+        {/* Row 2: email + action (mobile/tablet)
+            Cambio solicitado: justificar el contenido al margen izquierdo para mejorar visibilidad del correo.
+            - Contenedor: ahora usa justify-start y ocupa todo el ancho (w-full)
+            - Email: usa flex-1 y min-w-0 para aprovechar el espacio disponible; mantiene truncate por si el correo es muy largo
+            - Botón/Link: con ml-auto para quedar alineado a la derecha sin afectar el email a la izquierda
+        */}
+        <div className="flex items-center lg:hidden mt-1 w-full justify-start space-x-2 sm:space-x-3">
+          <span className="text-gray-700 text-xs sm:text-sm truncate flex-1 min-w-0 text-left">
             {user?.email}
           </span>
           {onSignOut ? (
             <button
               onClick={onSignOut}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
+              className="ml-auto bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
             >
               {t("dashboard.menu.logout")}
             </button>
           ) : (
             <Link 
               to="/dashboard" 
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
+              className="ml-auto bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
             >
               Dashboard
             </Link>
