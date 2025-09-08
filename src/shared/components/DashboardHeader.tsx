@@ -19,37 +19,88 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
 
   return (
     <header className="bg-white shadow-sm w-full">
-      <div className="container-limited py-4 flex flex-col md:flex-row md:justify-between md:items-center">
-        <div className="flex justify-center md:justify-start mb-3 md:mb-0">
-          <Link to="/">
-            <img
-              src="/imagenes/Logo_hosthelper_new.png"
-              alt="Host Helper AI Logo"
-              className="h-14 sm:h-20 md:h-36 responsive-img"
-            />
-          </Link>
-        </div>
-        <div className="flex justify-center md:justify-end items-center space-x-2 sm:space-x-4">
+      {/*
+        Mobile/iPad layout (below lg):
+        - Row 1: Logo (left) + Language selector (right)
+        - Row 2: User email + Logout button (right)
+        - Logo wrapper/scale mirrors LandingHeader to keep letters pixel-aligned.
+        Desktop (lg+): single row, unchanged.
+      */}
+      <div className="container-limited py-2 lg:py-4">
+        {/* Row 1: logo + language (mobile/tablet) */}
+        <div className="flex items-center justify-between lg:hidden">
+          <div className="flex items-center justify-start mb-0">
+            <Link to="/">
+              {/* Crop wrapper: identical to LandingHeader for pixel parity */}
+              <div className="h-24 sm:h-auto overflow-hidden sm:overflow-visible flex items-center">
+                <img
+                  src="/imagenes/Logo_hosthelper_new.png"
+                  alt="Host Helper AI Logo"
+                  className="h-[115%] sm:h-20 md:h-36 responsive-img"
+                />
+              </div>
+            </Link>
+          </div>
           <LanguageSelector variant="dashboard" />
-          <span className="text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full">
+        </div>
+
+        {/* Row 2: email + action (mobile/tablet) */}
+        <div className="flex justify-end items-center space-x-2 sm:space-x-3 lg:hidden mt-1">
+          <span className="text-gray-700 text-xs sm:text-sm truncate max-w-[160px]">
             {user?.email}
           </span>
-          {onSignOut && (
+          {onSignOut ? (
             <button
               onClick={onSignOut}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm transition duration-150"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
             >
               {t("dashboard.menu.logout")}
             </button>
-          )}
-          {!onSignOut && (
+          ) : (
             <Link 
               to="/dashboard" 
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm transition duration-150"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm transition duration-150"
             >
               Dashboard
             </Link>
           )}
+        </div>
+
+        {/* Desktop: original single-row layout */}
+        <div className="hidden lg:flex items-center justify-between">
+          <div className="flex items-center justify-start mb-0">
+            <Link to="/">
+              <div className="h-24 overflow-hidden lg:overflow-visible flex items-center">
+                <img
+                  src="/imagenes/Logo_hosthelper_new.png"
+                  alt="Host Helper AI Logo"
+                  className="h-[115%] lg:h-36 responsive-img"
+                />
+              </div>
+            </Link>
+          </div>
+          <div className="flex justify-center lg:justify-end items-center space-x-2 sm:space-x-4">
+            <LanguageSelector variant="dashboard" />
+            <span className="text-gray-700 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full">
+              {user?.email}
+            </span>
+            {onSignOut && (
+              <button
+                onClick={onSignOut}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm transition duration-150"
+              >
+                {t("dashboard.menu.logout")}
+              </button>
+            )}
+            {!onSignOut && (
+              <Link 
+                to="/dashboard" 
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm transition duration-150"
+              >
+                Dashboard
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </header>
