@@ -50,7 +50,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onSignOut }) => {
             - Email: usa flex-1 y min-w-0 para aprovechar el espacio disponible; mantiene truncate por si el correo es muy largo
             - Botón/Link: con ml-auto para quedar alineado a la derecha sin afectar el email a la izquierda
         */}
-        <div className="flex items-center lg:hidden mt-1 w-full justify-start space-x-2 sm:space-x-3">
+        {/* Nota: añadimos pl-1 para que el email alinee su inicio con el tab 'Dashboard' (que usa px-1) */}
+        <div className="flex items-center lg:hidden mt-1 w-full justify-start space-x-2 sm:space-x-3 pl-1">
           <span className="text-gray-700 text-xs sm:text-sm truncate flex-1 min-w-0 text-left">
             {user?.email}
           </span>

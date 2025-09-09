@@ -4,6 +4,7 @@ import PropertyCard from "./PropertyCard";
 import PropertyDetail from "./PropertyDetail";
 import Modal from "@shared/components/Modal";
 import { useTranslation } from "react-i18next";
+import Button from "@/components/ui/Button";
 
 interface PropertyListProps {
   properties: Property[];
@@ -266,25 +267,18 @@ const PropertyList: React.FC<PropertyListProps> = ({
           </div>
 
           {/* Botón añadir propiedad */}
-          <button
+          <Button
             onClick={onAdd}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            variant="primary"
+            size="md"
+            leadingIcon={(
+              <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            )}
           >
-            <svg
-              className="h-4 w-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
             {t("properties.buttons.add")}
-          </button>
+          </Button>
         </div>
       </div>
 

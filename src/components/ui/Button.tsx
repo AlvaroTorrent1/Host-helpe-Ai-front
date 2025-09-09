@@ -1,10 +1,15 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  // Variantes de estilo soportadas
+  variant?: 'primary' | 'secondary' | 'danger' | 'dangerOutline' | 'ghost' | 'link';
+  // Tamaños disponibles
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'icon';
   children: ReactNode;
   className?: string;
+  // Iconos opcionales para alinear espaciado sin duplicar clases en llamadas
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
 }
 
 const Button = ({
@@ -13,20 +18,27 @@ const Button = ({
   children,
   className = '',
   disabled = false,
+  leadingIcon,
+  trailingIcon,
   ...rest
 }: ButtonProps) => {
   // Configuración de colores según variante
-  const variantClasses = {
+  const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
     primary: 'bg-primary-600 hover:bg-primary-700 text-white',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
     danger: 'bg-red-500 hover:bg-red-600 text-white',
+    dangerOutline: 'text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300',
+    ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',
+    link: 'bg-transparent text-primary-600 hover:text-primary-700 p-0 h-auto',
   };
 
   // Configuración de tamaños
-  const sizeClasses = {
-    sm: 'text-xs px-2 py-1',
+  const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {
+    xs: 'text-xs px-2 py-1.5',
+    sm: 'text-xs px-3 py-1.5',
     md: 'text-sm px-4 py-2',
     lg: 'text-base px-6 py-3',
+    icon: 'p-2',
   };
 
   return (
@@ -34,7 +46,7 @@ const Button = ({
       className={`
         ${variantClasses[variant]}
         ${sizeClasses[size]}
-        rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
+        inline-flex items-center rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500
         transition duration-150 ease-in-out
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
@@ -42,7 +54,9 @@ const Button = ({
       disabled={disabled}
       {...rest}
     >
+      {leadingIcon && <span className="mr-1 inline-flex items-center">{leadingIcon}</span>}
       {children}
+      {trailingIcon && <span className="ml-1 inline-flex items-center">{trailingIcon}</span>}
     </button>
   );
 };

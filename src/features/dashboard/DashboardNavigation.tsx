@@ -22,7 +22,8 @@ const DashboardNavigation: React.FC = () => {
 
   return (
     <div className="bg-white border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Usamos container-limited para que el padding lateral coincida con el header en móviles */}
+      <div className="container-limited">
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:space-x-8 py-3">
           {navItems.map((item) => (

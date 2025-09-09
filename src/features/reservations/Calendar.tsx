@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Button from '@/components/ui/Button';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Reservation } from '@/types/reservation';
 import { Property } from '@/types/property';
@@ -167,20 +168,22 @@ const Calendar: React.FC<CalendarProps> = ({ reservations, properties, onDateCli
           {currentMonthYear}
         </h2>
         <div className="flex items-center space-x-2">
-          <button
+          <Button
             onClick={goToPreviousMonth}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title={t('reservations.calendar.navigation.previousMonth')}
+            variant="ghost"
+            size="icon"
+            title={t('reservations.calendar.navigation.previousMonth') || ''}
           >
             <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={goToNextMonth}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-            title={t('reservations.calendar.navigation.nextMonth')}
+            variant="ghost"
+            size="icon"
+            title={t('reservations.calendar.navigation.nextMonth') || ''}
           >
             <ChevronRightIcon className="h-5 w-5 text-gray-600" />
-          </button>
+          </Button>
         </div>
       </div>
 

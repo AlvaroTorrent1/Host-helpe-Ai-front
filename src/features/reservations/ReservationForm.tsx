@@ -7,6 +7,7 @@ import {
 } from "../../types/reservation";
 import { Property } from "../../types/property";
 import { useTranslation } from "react-i18next";
+import Button from "@/components/ui/Button";
 
 interface ReservationFormProps {
   reservation?: Reservation;
@@ -681,26 +682,19 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               {t("dashboard.reservations.additionalGuests")}
             </h3>
-            <button
+            <Button
               type="button"
               onClick={addGuest}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              variant="primary"
+              size="sm"
+              leadingIcon={(
+                <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              )}
             >
-              <svg
-                className="-ml-1 mr-2 h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-{t("dashboard.reservations.addGuest")}
-            </button>
+              {t("dashboard.reservations.addGuest")}
+            </Button>
           </div>
 
           {additionalGuests.length === 0 ? (
@@ -717,25 +711,18 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                   <h4 className="text-md font-medium text-gray-900">
                     {t("dashboard.reservations.guestNumber")} {index + 1}
                   </h4>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => removeGuest(index)}
+                    variant="ghost"
+                    size="icon"
                     className="text-red-600 hover:text-red-900"
+                    aria-label={t("dashboard.reservations.removeGuest") || "Eliminar huésped"}
                   >
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -835,24 +822,27 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 
       {/* Botones de acción */}
       <div className="flex justify-end space-x-3">
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          variant="secondary"
+          size="md"
         >
-{t("dashboard.reservations.cancel")}
-        </button>
-        <button
+          {t("dashboard.reservations.cancel")}
+        </Button>
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+          variant="primary"
+          size="md"
+          className={isSubmitting ? "opacity-50" : ""}
         >
-{isSubmitting
+          {isSubmitting
             ? t("dashboard.reservations.saving")
             : reservation
               ? t("dashboard.reservations.updateReservation")
               : t("dashboard.reservations.createReservation")}
-        </button>
+        </Button>
       </div>
     </form>
   );

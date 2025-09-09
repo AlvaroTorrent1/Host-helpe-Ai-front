@@ -8,6 +8,8 @@ import {
   Guest,
   ReservationStatus 
 } from '../types/reservation';
+// i18n instance to translate fallback strings outside React components
+import i18n from '../i18n';
 
 // Interfaz que coincide con la estructura de la base de datos
 export interface DbReservation {
@@ -47,7 +49,11 @@ class ReservationService {
     // Crear un huésped con datos limitados disponibles
     const mainGuest: Guest = {
       id: `synced-guest-${syncedBooking.id}`,
-      firstName: syncedBooking.guest_name || 'Datos no disponibles',
+      // IMPORTANT: Use i18n to avoid hardcoded Spanish text when UI is in English
+      // We keep lastName empty. The UI will show this localized placeholder when
+      // providers (Airbnb/Booking) do not include guest name in the iCal payload.
+      // This ensures the calendar day modal is fully localized.
+      firstName: syncedBooking.guest_name || i18n.t('reservations.dayDetails.guestDataUnavailable'),
       lastName: '',
       email: syncedBooking.guest_email || '',
       phone: syncedBooking.guest_phone || undefined,

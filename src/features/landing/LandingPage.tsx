@@ -491,7 +491,7 @@ const LandingPage = () => {
     requestAnimationFrame(step);
   };
 
-  // Rotate KPI numbers every 12 seconds with a brief pulse animation
+  // Rotate KPI numbers every 10 seconds with a brief pulse animation
   useEffect(() => {
     const updateStats = () => {
       setAnimateStats({ queries: true, minutes: true, resolved: true, services: true });
@@ -571,9 +571,9 @@ const LandingPage = () => {
       }
     };
 
-    // Initial update on mount, then every 12s
+    // Initial update on mount, then every 10s
     updateStats();
-    const interval = setInterval(updateStats, 12000);
+    const interval = setInterval(updateStats, 10000);
     
     // Validation check every 2 seconds to catch any out-of-bounds values
     const validationInterval = setInterval(validateAndCorrectValues, 2000);

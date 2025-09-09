@@ -17,6 +17,7 @@ import { Reservation } from "@/types/reservation";
 import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen } from "@shared/components/loading";
 import Modal from "@shared/components/Modal";
+import Button from "@/components/ui/Button";
 import PropertyDetail from "@features/properties/PropertyDetail";
 import { Property as FullProperty } from "@/types/property";
 import { INCIDENT_CATEGORIES } from '@/types/incident';
@@ -1033,34 +1034,38 @@ const DashboardPage: React.FC = () => {
             {/* Botones de navegación para móviles */}
             {properties.length > 1 && (
               <div className="flex gap-2 sm:hidden">
-                <button
+                <Button
                   onClick={() => {
                     const container = document.getElementById('properties-container');
                     if (container) {
                       container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
                     }
                   }}
-                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  variant="secondary"
+                  size="icon"
+                  className="bg-white border border-gray-200 shadow-sm hover:bg-gray-50 rounded-lg"
                   aria-label="Ver propiedades anteriores"
                 >
                   <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => {
                     const container = document.getElementById('properties-container');
                     if (container) {
                       container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
                     }
                   }}
-                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                  variant="secondary"
+                  size="icon"
+                  className="bg-white border border-gray-200 shadow-sm hover:bg-gray-50 rounded-lg"
                   aria-label="Ver propiedades siguientes"
                 >
                   <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -1152,22 +1157,29 @@ const DashboardPage: React.FC = () => {
               {getText("dashboard.incidents.title", fallbackLabels.incidentsTitle)}
             </h3>
             {hasActiveFilters && (
-              <button
+              <Button
                 onClick={clearAllFilters}
-                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors"
+                variant="dangerOutline"
+                size="sm"
+                leadingIcon={(
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+                className="rounded-lg"
               >
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
                 {getText("dashboard.incidents.filters.clearFilters", fallbackLabels.clearFilters)}
-              </button>
+              </Button>
             )}
           </div>
           
-          {/* Chips-resumen de filtros activos (solo móvil) */}
+          {/* Chips-resumen de filtros activos (solo móvil)
+              Nota: mostramos el NOMBRE de la propiedad (no el ID) */}
           <FilterChips
             filters={{
-              property: selectedProperty,
+              property: selectedProperty && selectedProperty !== 'all'
+                ? (properties.find(p => p.id === selectedProperty)?.name || selectedProperty)
+                : undefined,
               category: selectedCategory,
               status: selectedStatus,
               month: selectedMonth,
@@ -1471,7 +1483,7 @@ const DashboardPage: React.FC = () => {
                           className="px-4 py-4 text-left"
                           style={{ minWidth: '100px', width: '12%' }}
                         >
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 whitespace-nowrap">
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-silver-200 text-gray-700 whitespace-nowrap">
                             {getLabel(incident.category)}
                           </span>
                         </td>
@@ -1482,8 +1494,8 @@ const DashboardPage: React.FC = () => {
                           <span
                             className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full whitespace-nowrap ${
                               incident.status === "resolved"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
+                                ? "bg-white border border-silver-200 text-gray-700"
+                                : "bg-primary-100 text-primary-700"
                             }`}
                           >
                             {getStatusLabel(incident.status)}

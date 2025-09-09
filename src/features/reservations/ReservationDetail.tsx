@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "@/components/ui/Button";
 import { Reservation, ReservationStatus, Guest } from "../../types/reservation";
 import { Property } from "../../types/property";
 import { LoadingInline, LoadingSize, LoadingVariant } from "../../shared/components/loading";
@@ -139,11 +140,12 @@ const ReservationDetail: React.FC<ReservationDetailProps> = ({
         </h2>
         <div className="flex space-x-3">
           {mainGuest && !mainGuest.sesSent && onSendToSES && (
-            <button
+            <Button
               type="button"
               onClick={onSendToSES}
               disabled={isSendingToSES}
-              className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+              variant="primary"
+              size="sm"
             >
               {isSendingToSES ? (
                 <>
@@ -172,12 +174,13 @@ const ReservationDetail: React.FC<ReservationDetailProps> = ({
                   Enviar a SES
                 </>
               )}
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             type="button"
             onClick={onEdit}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            variant="secondary"
+            size="sm"
           >
             <svg
               className="-ml-0.5 mr-2 h-4 w-4"
@@ -194,7 +197,7 @@ const ReservationDetail: React.FC<ReservationDetailProps> = ({
               />
             </svg>
             Editar reserva
-          </button>
+          </Button>
         </div>
       </div>
 

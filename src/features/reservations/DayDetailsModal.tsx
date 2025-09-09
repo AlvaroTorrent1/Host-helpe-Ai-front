@@ -204,7 +204,7 @@ const DayDetailsModal: React.FC<DayDetailsModalProps> = ({
                     <div className="flex items-center space-x-2">
                       <HomeIcon className="h-5 w-5 text-gray-500" />
                       <h4 className="font-semibold text-gray-900">
-                        {reservation.property?.name || 'Propiedad no encontrada'}
+                        {reservation.property?.name || t('reservations.errors.propertyNotAvailable')}
                       </h4>
                     </div>
                     <span

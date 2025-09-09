@@ -16,6 +16,7 @@ import { supabase } from "@/services/supabase";
 import { LoadingInlineVariants } from "@shared/components/loading";
 import { reservationService } from "@/services/reservationService";
 import ReservationTabs from "./components/ReservationTabs";
+import Button from "@/components/ui/Button";
 import {
   ReservationTabType,
   filterReservationsByTab,
@@ -383,27 +384,21 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
               </div>
               <div className="ml-auto pl-3">
                 <div className="-mx-1.5 -my-1.5">
-                  <button
+                  <Button
                     onClick={clearMessages}
-                    className={`inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    variant="ghost"
+                    size="icon"
+                    className={`${
                       errorMessage
                         ? "bg-red-50 text-red-500 hover:bg-red-100 focus:ring-red-600"
                         : "bg-green-50 text-green-500 hover:bg-green-100 focus:ring-green-600"
                     }`}
+                    aria-label={t("common.dismiss") || "Cerrar"}
                   >
-                    <span className="sr-only">{t("common.dismiss")}</span>
-                    <svg
-                      className="h-5 w-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -441,14 +436,15 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                     <p className="text-gray-500 mb-6">
                       {t("reservations.emptyStateDescription")}
                     </p>
-                    <button
+                    <Button
                       type="button"
                       onClick={handleAddReservation}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      variant="primary"
+                      size="md"
+                      leadingIcon={<PlusIcon className="-ml-1 mr-2 h-5 w-5" />}
                     >
-                      <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
                       {t("reservations.actions.create")}
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   <ReservationList
@@ -474,27 +470,19 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
             {viewMode === ViewMode.DETAIL && currentReservation && (
               <div>
                 <div className="mb-6">
-                  <button
+                  <Button
                     type="button"
                     onClick={handleBackToList}
-                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    variant="secondary"
+                    size="sm"
+                    leadingIcon={(
+                      <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    )}
                   >
-                    <svg
-                      className="-ml-0.5 mr-2 h-4 w-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 19l-7-7 7-7"
-                      />
-                    </svg>
                     {t("reservations.backToReservations")}
-                  </button>
+                  </Button>
                 </div>
 
                 <ReservationDetail
@@ -514,27 +502,19 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       {currentReservation ? t("reservations.editReservation") : t("reservations.newReservation")}
                     </h3>
-                    <button
+                    <Button
                       type="button"
                       onClick={handleBackToList}
-                      className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      variant="secondary"
+                      size="sm"
+                      leadingIcon={(
+                        <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      )}
                     >
-                      <svg
-                        className="-ml-0.5 mr-2 h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
                       {t("reservations.cancel")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="px-4 py-5 sm:p-6">
