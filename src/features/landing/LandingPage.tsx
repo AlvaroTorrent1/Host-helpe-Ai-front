@@ -1210,39 +1210,8 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Navigation arrows for mobile - positioned below cards, same style as dashboard */}
-            <div className="flex justify-center mt-6 md:hidden">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    const container = document.getElementById('features-container');
-                    if (container) {
-                      container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
-                    }
-                  }}
-                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                  aria-label="Ver características anteriores"
-                >
-                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => {
-                    const container = document.getElementById('features-container');
-                    if (container) {
-                      container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
-                    }
-                  }}
-                  className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-                  aria-label="Ver características siguientes"
-                >
-                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+            {/* Flechas móviles bajo tarjetas eliminadas a petición: mantenemos el carrusel con swipe nativo */}
+            {/* (No UI añadida aquí) */}
           </div>
         </section>
 

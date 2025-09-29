@@ -15,11 +15,11 @@ const MediaAppearances: React.FC = () => {
     {
       // Nueva pestaña solicitada: Premio Junior 23º (YouTube)
       id: 3,
-      title: "Entrevista Premio Junior 23º",
+      title: "Entrevista en TV: Host Helper AI en Premio Junior 23º",
       media: "Programa TV - Premio Junior",
       date: "2025",
       url: "https://www.youtube.com/watch?v=ZqPOuvY1WNA&t=12s",
-      excerpt: "Participación de Host Helper AI en el 23º Premio Junior para Empresas.",
+      excerpt: "Cómo nuestra IA conversacional mejora la experiencia del huésped y optimiza la operativa diaria en alojamientos. Aprendizajes y visión del producto.",
       author: "Premio Junior",
       image: "/imagenes/premio junior 23º.jpg",
       hasImage: true,
@@ -27,13 +27,13 @@ const MediaAppearances: React.FC = () => {
     {
       id: 1,
       title:
-        "Host Helper AI, el asistente virtual que libera a los anfitriones del caos administrativo, se presenta en Alhambra Venture",
+        "Host Helper AI se presenta en Alhambra Venture",
       media: "Alhambra Venture",
       date: "6 junio 2025",
       url:
         "https://alhambraventure.com/host-helper-ai-el-asistente-virtual-que-libera-a-los-anfitriones-del-caos-administrativo-se-presenta-en-alhambra-venture/",
       excerpt:
-        "Startup andaluza presenta su asistente virtual de voz integrado con WhatsApp para gestores de alojamientos turísticos. Automatiza interacciones, mejora la experiencia del huésped y libera recursos clave.",
+        "Asistente virtual de voz integrado con WhatsApp para gestores turísticos. Automatiza tareas, mejora la atención y libera recursos clave.",
       author: "Alhambra Venture",
       image: "/imagenes/Host Helper Team (1).jpeg",
       hasImage: true,
@@ -41,13 +41,13 @@ const MediaAppearances: React.FC = () => {
     {
       id: 2,
       title:
-        "La 'startup' malagueña Host Helper AI automatiza la atención al cliente de los apartamentos turísticos",
+        "Host Helper AI automatiza la atención en apartamentos turísticos",
       media: "El Español Málaga",
       date: "31 marzo 2025",
       url:
         "https://www.elespanol.com/malaga/economia/tecnologia/20250331/startup-malaguena-host-helper-ai-automatiza-atencion-cliente-apartamentos-turisticos/927157458_0.html",
       excerpt:
-        "Host Helper AI automatiza la atención al turista mediante un chatbot que optimiza el registro de huéspedes y resuelve consultas en varios idiomas.",
+        "Startup malagueña que impulsa registros y respuestas multilingües con IA para reducir tiempos y elevar la satisfacción del huésped.",
       author: "Demófilo Peláez",
       image: "/imagenes/Roll up.png",
       hasImage: true,
@@ -69,8 +69,9 @@ const MediaAppearances: React.FC = () => {
           </p>
         </div>
 
+        {/* Desktop slider (transform-based) - hidden on mobile */}
         <div
-          className="relative max-w-4xl mx-auto"
+          className="relative max-w-4xl mx-auto hidden md:block"
         >
           <div className="overflow-hidden rounded-xl">
             <div
@@ -84,16 +85,16 @@ const MediaAppearances: React.FC = () => {
                       <div className="flex flex-col md:flex-row">
                         <div className="w-full md:w-2/5 relative">
                           <div className="h-64 md:h-80 relative overflow-hidden rounded-l-lg">
-                            <img
-                              src={article.image}
-                              alt={`Equipo de ${article.media}`}
-                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                              style={{ maxWidth: "100%", height: "auto" }}
-                              loading="lazy"
-                              onError={(e) => {
-                                e.currentTarget.src = "/imagenes/Logo_hosthelper_new.png";
-                              }}
-                            />
+                          <img
+                            src={article.image}
+                            alt={`Equipo de ${article.media}`}
+                            className={`w-full h-full object-cover transition-transform duration-300 ${article.id === 3 ? 'scale-110 hover:scale-[1.2]' : 'hover:scale-105'}`}
+                            style={{ maxWidth: "100%" }}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src = "/imagenes/Logo_hosthelper_new.png";
+                            }}
+                          />
                           </div>
                         </div>
 
@@ -115,7 +116,7 @@ const MediaAppearances: React.FC = () => {
                               rel="noopener noreferrer"
                               className="group relative inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
                             >
-                              <span className="relative z-10 font-medium">Leer artículo</span>
+                              <span className="relative z-10 font-medium">Ver</span>
                               <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
@@ -141,7 +142,7 @@ const MediaAppearances: React.FC = () => {
                             rel="noopener noreferrer"
                             className="group relative inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
                           >
-                            <span className="relative z-10 font-medium">Leer artículo</span>
+                            <span className="relative z-10 font-medium">Ver</span>
                             <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
@@ -183,7 +184,12 @@ const MediaAppearances: React.FC = () => {
               <div className="flex justify-center mt-6 md:hidden">
                 <div className="flex gap-2">
                   <button
-                    onClick={prevSlide}
+                    onClick={() => {
+                      const container = document.getElementById('media-container');
+                      if (container) {
+                        container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                      }
+                    }}
                     className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
                     aria-label={t('common.previous')}
                   >
@@ -192,7 +198,12 @@ const MediaAppearances: React.FC = () => {
                     </svg>
                   </button>
                   <button
-                    onClick={nextSlide}
+                    onClick={() => {
+                      const container = document.getElementById('media-container');
+                      if (container) {
+                        container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                      }
+                    }}
                     className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
                     aria-label={t('common.next')}
                   >
@@ -203,8 +214,8 @@ const MediaAppearances: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dots */}
-              <div className="flex justify-center space-x-2 mt-6">
+              {/* Dots (solo desktop) */}
+              <div className="hidden md:flex justify-center space-x-2 mt-6">
                 {mediaAppearances.map((_, index) => (
                   <button
                     key={index}
@@ -217,6 +228,86 @@ const MediaAppearances: React.FC = () => {
               </div>
             </>
           )}
+        </div>
+
+        {/* Mobile: unified scroll-snap carousel (like FeaturedTestimonials) */}
+        <div
+          id="media-container"
+          className="md:hidden flex gap-4 overflow-x-auto scrollbar-hide px-4 mobile-carousel"
+        >
+          {mediaAppearances.map((article) => (
+            <div key={article.id} className="w-[calc(100vw-2rem)] mobile-carousel-item flex-shrink-0">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                {article.hasImage ? (
+                  <div className="flex flex-col">
+                    <div className="w-full relative">
+                      <div className="h-64 relative overflow-hidden">
+                        <img
+                          src={article.image}
+                          alt={`Equipo de ${article.media}`}
+                          className={`w-full h-full object-cover transition-transform duration-300 ${article.id === 3 ? 'scale-110 hover:scale-[1.2]' : 'hover:scale-105'}`}
+                          style={{ maxWidth: '100%' }}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = "/imagenes/Logo_hosthelper_new.png";
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full p-6">
+                      <div className="flex items-center mb-3">
+                        <span className="text-primary-600 font-semibold text-sm">{article.media}</span>
+                        <span className="mx-2 text-gray-400">•</span>
+                        <span className="text-gray-500 text-sm">{article.date}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{article.title}</h3>
+                      <p className="text-gray-600 mb-5 text-base">{article.excerpt}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Por {article.author}</span>
+                        <a
+                          href={article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative inline-flex items-center justify-center px-5 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
+                        >
+                          <span className="relative z-10 font-medium">Ver</span>
+                          <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-6">
+                    <div className="flex items-center mb-3">
+                      <span className="text-primary-600 font-semibold text-sm">{article.media}</span>
+                      <span className="mx-2 text-gray-400">•</span>
+                      <span className="text-gray-500 text-sm">{article.date}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{article.title}</h3>
+                    <p className="text-gray-600 mb-5 text-base">{article.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">Por {article.author}</span>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative inline-flex items-center justify-center px-5 py-3 bg-white text-gray-900 rounded-xl hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl"
+                      >
+                        <span className="relative z-10 font-medium">Ver</span>
+                        <svg className="w-4 h-4 ml-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-400 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

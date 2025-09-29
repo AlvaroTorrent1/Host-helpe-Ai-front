@@ -92,7 +92,7 @@ const Footer: React.FC = () => {
 
               {/* Instagram */}
               <a
-                href="https://www.instagram.com/host_helper_ai/"
+                href="https://www.instagram.com/host_helper_ai_/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group bg-white p-3 rounded-full shadow-sm hover:shadow-lg hover:translate-y-[-3px] transition-all duration-300 border border-gray-100 hover:border-primary-200"
