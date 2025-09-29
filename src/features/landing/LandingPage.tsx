@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import LandingHeader from "@shared/components/LandingHeader";
+import MediaAppearances from "./components/MediaAppearances";
+import FeaturedTestimonials from "./components/FeaturedTestimonials";
 import CalendlyLink from "@shared/components/CalendlyLink";
 import Footer from "@shared/components/Footer";
 import { useTranslation } from "react-i18next";
@@ -1244,6 +1246,9 @@ const LandingPage = () => {
           </div>
         </section>
 
+        {/* Apariciones en Medios: antes del video explicativo */}
+        <MediaAppearances />
+
         {/* Video Promocional */}
         <section className="py-16 bg-gray-50 silver:bg-gray-50">
           <div className="container-limited">
@@ -1508,6 +1513,9 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
+
+        {/* Sección de Testimonios Destacados al final */}
+        <FeaturedTestimonials />
 
         {/* ElevenLabs Convai Widget - removed per design to avoid green bottom bar */}
         <elevenlabs-convai agent-id="agent_3101k2ff56kpfrjaz2zbz13xs57m"></elevenlabs-convai>

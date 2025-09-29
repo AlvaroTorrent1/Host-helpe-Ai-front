@@ -97,6 +97,19 @@ const Testimonios = () => {
   // Media appearances data (primera noticia con imagen)
   const mediaAppearances = [
     {
+      // Nueva pestaña solicitada: Premio Junior 23º (YouTube)
+      // Mantener estructura y estilos existentes para mínima modificación
+      id: 3,
+      title: "Entrevista Premio Junior 23º",
+      media: "Programa TV - Premio Junior",
+      date: "2025",
+      url: "https://www.youtube.com/watch?v=ZqPOuvY1WNA&t=12s",
+      excerpt: "Participación de Host Helper AI en el 23º Premio Junior para Empresas.",
+      author: "Premio Junior",
+      image: "/imagenes/premio junior 23º.jpg",
+      hasImage: true
+    },
+    {
       id: 1,
       title: "Host Helper AI, el asistente virtual que libera a los anfitriones del caos administrativo, se presenta en Alhambra Venture",
       media: "Alhambra Venture",

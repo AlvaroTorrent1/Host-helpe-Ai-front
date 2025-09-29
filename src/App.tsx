@@ -19,7 +19,7 @@ const ChatbotPage = lazy(() => import("./features/landing/ChatbotPage"));
 const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
 const UpsellingPage = lazy(() => import("./features/landing/UpsellingPage"));
 const PricingPage = lazy(() => import("./features/landing/Pricing"));
-const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
+// const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
 const PrivacyPolicyPage = lazy(() => import("./features/landing/PrivacyPolicy"));
 const TerminosCondicionesPage = lazy(() => import("./features/landing/TerminosYCondiciones"));
 const DataDeletionPage = lazy(() => import("./features/landing/DataDeletion"));
@@ -83,7 +83,8 @@ function App() {
                       <Route path="/check-in" element={<CheckinPage />} />
                       <Route path="/upselling" element={<UpsellingPage />} />
                       <Route path="/pricing" element={<PricingPage />} />
-                      <Route path="/testimonios" element={<TestimoniosPage />} />
+                      {/* Redirección suave a la sección de testimonios en la landing */}
+                      <Route path="/testimonios" element={<LandingPage />} />
                       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                       <Route path="/terminos-condiciones" element={<TerminosCondicionesPage />} />
                       <Route path="/data-deletion" element={<DataDeletionPage />} />
