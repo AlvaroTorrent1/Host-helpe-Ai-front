@@ -484,6 +484,7 @@
       "dashboard": "Dashboard",
       "reservations": "Reservas", 
       "properties": "Propiedades",
+      "ses": "Registro de Viajeros",
 
       "logout": "Cerrar sesión"
     },
@@ -1340,6 +1341,128 @@
       "emptyCode": "Por favor introduce un código de confirmación",
       "notFound": "No se encontró ninguna solicitud con ese código de confirmación",
       "network": "Error de conexión. Por favor inténtalo de nuevo."
+    }
+  },
+  "sesRegistro": {
+    "title": "Registro de Viajeros",
+    "subtitle": "Check-in Online",
+    "reservation": {
+      "title": "Información de Reserva",
+      "subtitle": "Detalles de su estancia",
+      "data": "Datos",
+      "propertyName": "Nombre de la propiedad",
+      "dates": "Fechas",
+      "nights": "noches",
+      "paymentMethod": "Método de Pago",
+      "numberOfTravelers": "Número de Viajeros",
+      "edit": "Editar"
+    },
+    "travelers": {
+      "title": "Viajeros",
+      "count": "Viajeros",
+      "add": "Añadir",
+      "empty": "No hay viajeros añadidos.",
+      "required": "Debe añadir al menos un viajero para continuar.",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Está seguro de que desea eliminar este viajero?",
+      "deleteSuccess": "Viajero eliminado correctamente",
+      "addSuccess": "Viajero añadido correctamente",
+      "updateSuccess": "Viajero actualizado correctamente"
+    },
+    "timer": {
+      "label": "Tiempo restante:",
+      "expired": "Este enlace ha expirado",
+      "expiredMessage": "El enlace de check-in ha expirado. Por favor, contacte con el alojamiento para obtener un nuevo enlace."
+    },
+    "wizard": {
+      "title": "Añadir Viajero",
+      "editTitle": "Editar Viajero",
+      "step": "Paso",
+      "of": "de",
+      "next": "Siguiente",
+      "back": "Atrás",
+      "submit": "Enviar",
+      "cancel": "Cancelar",
+      "personal": {
+        "title": "Información Personal",
+        "subtitle": "Por favor, proporcione los datos personales del viajero",
+        "firstName": "Nombre",
+        "firstNamePlaceholder": "Ingrese nombre",
+        "firstSurname": "Primer Apellido",
+        "firstSurnamePlaceholder": "Ingrese primer apellido",
+        "secondSurname": "Segundo Apellido (opcional)",
+        "secondSurnamePlaceholder": "Ingrese segundo apellido",
+        "nationality": "Nacionalidad",
+        "nationalityPlaceholder": "Seleccionar una nacionalidad",
+        "gender": "Sexo",
+        "male": "Hombre",
+        "female": "Mujer",
+        "other": "Otro"
+      },
+      "residence": {
+        "title": "País de Residencia",
+        "subtitle": "Por favor, seleccione el país de residencia del viajero",
+        "country": "País",
+        "countryPlaceholder": "Seleccionar un país"
+      },
+      "address": {
+        "title": "Información de Dirección",
+        "subtitle": "Por favor, proporcione los detalles de la dirección del viajero",
+        "city": "Ciudad",
+        "cityPlaceholder": "Ingrese nombre de la ciudad",
+        "postalCode": "Código Postal",
+        "postalCodePlaceholder": "Ingrese código postal",
+        "address": "Dirección",
+        "addressPlaceholder": "Ingrese dirección",
+        "additionalAddress": "Información Adicional (opcional)",
+        "additionalAddressPlaceholder": "Apto, Piso, etc."
+      },
+      "contact": {
+        "title": "Información de Contacto",
+        "subtitle": "Por favor, proporcione al menos un método de contacto",
+        "email": "Correo Electrónico",
+        "emailPlaceholder": "Ingrese correo electrónico",
+        "phone": "Número de Teléfono",
+        "phonePlaceholder": "Ingrese número de teléfono",
+        "alternativePhone": "Teléfono Alternativo",
+        "alternativePhonePlaceholder": "Ingrese teléfono alternativo"
+      }
+    },
+    "submit": {
+      "button": "Enviar Check-in",
+      "submitting": "Enviando...",
+      "success": "Check-in completado exitosamente",
+      "successMessage": "Sus datos han sido registrados correctamente. Gracias por completar el check-in.",
+      "error": "Error al enviar el check-in",
+      "errorMessage": "Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde."
+    },
+    "validation": {
+      "required": "Este campo es requerido",
+      "invalidEmail": "Por favor, ingrese un email válido",
+      "invalidPhone": "Por favor, ingrese un número de teléfono válido",
+      "selectCountry": "Por favor, seleccione un país",
+      "selectGender": "Por favor, seleccione una opción"
+    },
+    "errors": {
+      "linkInvalid": "Enlace inválido",
+      "linkInvalidMessage": "El enlace de check-in no es válido. Por favor, verifique la URL.",
+      "linkExpired": "Enlace expirado",
+      "linkExpiredMessage": "Este enlace de check-in ha expirado. Contacte con el alojamiento.",
+      "linkUsed": "Enlace ya utilizado",
+      "linkUsedMessage": "El check-in ya ha sido completado para esta reserva.",
+      "networkError": "Error de conexión",
+      "networkErrorMessage": "No se pudo conectar con el servidor. Verifique su conexión a internet.",
+      "serverError": "Error del servidor",
+      "serverErrorMessage": "Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.",
+      "loadingError": "Error al cargar datos",
+      "loadingErrorMessage": "No se pudieron cargar los datos de la reserva."
+    },
+    "paymentMethods": {
+      "destination": "Pago en Destino",
+      "online": "Pago Online",
+      "bank_transfer": "Transferencia Bancaria",
+      "other": "Otro"
     }
   },
   "locale": "es-ES"

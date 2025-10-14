@@ -451,6 +451,7 @@
       "dashboard": "Dashboard",
       "reservations": "Reservations", 
       "properties": "Properties",
+      "ses": "Traveler Registry",
 
       "logout": "Log out"
     },
@@ -1392,6 +1393,128 @@
       "emptyCode": "Please enter a confirmation code",
       "notFound": "No request found with that confirmation code",
       "network": "Connection error. Please try again."
+    }
+  },
+  "sesRegistro": {
+    "title": "Traveler Registration",
+    "subtitle": "Online Check-in",
+    "reservation": {
+      "title": "Reservation Information",
+      "subtitle": "Your stay details",
+      "data": "Data",
+      "propertyName": "Property name",
+      "dates": "Dates",
+      "nights": "nights",
+      "paymentMethod": "Payment Method",
+      "numberOfTravelers": "Number of Travelers",
+      "edit": "Edit"
+    },
+    "travelers": {
+      "title": "Travelers",
+      "count": "Travelers",
+      "add": "Add",
+      "empty": "No travelers added.",
+      "required": "You must add at least one traveler to continue.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this traveler?",
+      "deleteSuccess": "Traveler deleted successfully",
+      "addSuccess": "Traveler added successfully",
+      "updateSuccess": "Traveler updated successfully"
+    },
+    "timer": {
+      "label": "Remaining time:",
+      "expired": "This link has expired",
+      "expiredMessage": "The check-in link has expired. Please contact the accommodation for a new link."
+    },
+    "wizard": {
+      "title": "Add Traveler",
+      "editTitle": "Edit Traveler",
+      "step": "Step",
+      "of": "of",
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "personal": {
+        "title": "Personal Information",
+        "subtitle": "Please provide the traveler's personal information",
+        "firstName": "First Name",
+        "firstNamePlaceholder": "Enter first name",
+        "firstSurname": "Last Name",
+        "firstSurnamePlaceholder": "Enter last name",
+        "secondSurname": "Second Last Name (optional)",
+        "secondSurnamePlaceholder": "Enter second last name",
+        "nationality": "Nationality",
+        "nationalityPlaceholder": "Select a nationality",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "residence": {
+        "title": "Country of Residence",
+        "subtitle": "Please select the traveler's country of residence",
+        "country": "Country",
+        "countryPlaceholder": "Select a country"
+      },
+      "address": {
+        "title": "Address Information",
+        "subtitle": "Please provide the traveler's address details",
+        "city": "City",
+        "cityPlaceholder": "Enter city name",
+        "postalCode": "Postal Code",
+        "postalCodePlaceholder": "Enter postal code",
+        "address": "Address",
+        "addressPlaceholder": "Enter address",
+        "additionalAddress": "Additional Information (optional)",
+        "additionalAddressPlaceholder": "Apt, Floor, etc."
+      },
+      "contact": {
+        "title": "Contact Information",
+        "subtitle": "Please provide at least one contact method",
+        "email": "Email Address",
+        "emailPlaceholder": "Enter email address",
+        "phone": "Phone Number",
+        "phonePlaceholder": "Enter phone number",
+        "alternativePhone": "Alternative Phone",
+        "alternativePhonePlaceholder": "Enter alternative phone"
+      }
+    },
+    "submit": {
+      "button": "Submit Check-in",
+      "submitting": "Submitting...",
+      "success": "Check-in completed successfully",
+      "successMessage": "Your information has been registered successfully. Thank you for completing the check-in.",
+      "error": "Error submitting check-in",
+      "errorMessage": "An error occurred. Please try again later."
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email",
+      "invalidPhone": "Please enter a valid phone number",
+      "selectCountry": "Please select a country",
+      "selectGender": "Please select an option"
+    },
+    "errors": {
+      "linkInvalid": "Invalid link",
+      "linkInvalidMessage": "The check-in link is not valid. Please verify the URL.",
+      "linkExpired": "Link expired",
+      "linkExpiredMessage": "This check-in link has expired. Contact the accommodation.",
+      "linkUsed": "Link already used",
+      "linkUsedMessage": "The check-in has already been completed for this reservation.",
+      "networkError": "Connection error",
+      "networkErrorMessage": "Could not connect to the server. Check your internet connection.",
+      "serverError": "Server error",
+      "serverErrorMessage": "A server error occurred. Please try again later.",
+      "loadingError": "Error loading data",
+      "loadingErrorMessage": "Could not load reservation data."
+    },
+    "paymentMethods": {
+      "destination": "Payment on Arrival",
+      "online": "Online Payment",
+      "bank_transfer": "Bank Transfer",
+      "other": "Other"
     }
   },
   "locale": "en-US"

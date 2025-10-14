@@ -11,7 +11,8 @@ const DashboardNavigation: React.FC = () => {
     { path: "/dashboard", label: t("dashboard.menu.dashboard") },
     { path: "/reservations", label: t("dashboard.menu.reservations") },
     { path: "/properties", label: t("dashboard.menu.properties") },
-
+    // Nueva pestaña: Crear Partes SES (Dashboard para agentes)
+    { path: "/ses-report", label: t("dashboard.menu.ses") },
   ];
 
   const isActive = (path: string) => {

@@ -1215,9 +1215,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Apariciones en Medios: antes del video explicativo */}
-        <MediaAppearances />
-
         {/* Video Promocional */}
         <section className="py-16 bg-gray-50 silver:bg-gray-50">
           <div className="container-limited">
@@ -1482,6 +1479,9 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
+
+        {/* Apariciones en Medios: después de 'Comenzar es muy simple' y antes de 'Testimonios destacados' */}
+        <MediaAppearances />
 
         {/* Sección de Testimonios Destacados al final */}
         <FeaturedTestimonials />

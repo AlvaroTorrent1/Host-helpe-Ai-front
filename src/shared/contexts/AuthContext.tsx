@@ -14,7 +14,6 @@ import {
   getCurrentUser,
   signInWithGoogle,
 } from "@services/supabase";
-import { useGlobalLoading } from "./GlobalLoadingContext";
 
 // Interfaces para los tipos de retorno de autenticación
 interface AuthResponse {
@@ -37,6 +36,33 @@ type AuthContextType = {
 
 // Creación del contexto
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const createSafeAnalyticsUserId = (id: string) => {
+  try {
+    return `user-${btoa(id).substring(0, 10)}`;
+  } catch (error) {
+    console.error("Error al codificar ID de usuario para analytics:", error);
+    return `user-${id.substring(0, 10)}`;
+  }
+};
+
+const setAnalyticsUserSafe = async (id: string) => {
+  try {
+    const { setUser: setAnalyticsUser } = await import("@services/analytics");
+    setAnalyticsUser(createSafeAnalyticsUserId(id));
+  } catch (error) {
+    console.error("Error al establecer usuario de analytics:", error);
+  }
+};
+
+const logAnalyticsEventSafe = async (action: string, label: string) => {
+  try {
+    const { logEvent } = await import("@services/analytics");
+    logEvent("Auth", action, label);
+  } catch (error) {
+    console.error("Error al rastrear evento de autenticación:", error);
+  }
+};
 
 // Hook personalizado para usar el contexto
 export const useAuth = () => {
@@ -82,17 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Registrar usuario en Google Analytics (de forma anónima)
         if (data.user) {
-          import('@services/analytics').then(({ setUser: setAnalyticsUser }) => {
-            try {
-              // Usamos un hash del ID de usuario para mantener privacidad
-              const hashedUserId = `user-${btoa(data.user.id).substring(0, 10)}`;
-              setAnalyticsUser(hashedUserId);
-            } catch (error) {
-              console.error('Error al establecer usuario de analytics:', error);
-            }
-          }).catch(error => {
-            console.error('Error al importar servicio de analytics:', error);
-          });
+          setAnalyticsUserSafe(data.user.id);
         }
       } catch (error) {
         console.error("Error al cargar el usuario:", error);
@@ -111,34 +127,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Actualizar usuario en Google Analytics cuando cambia el estado de autenticación
         if (currentUser) {
-          import('@services/analytics').then(({ setUser: setAnalyticsUser, logEvent }) => {
-            try {
-              const hashedUserId = `user-${btoa(currentUser.id).substring(0, 10)}`;
-              setAnalyticsUser(hashedUserId);
-              
-              // Registrar evento de inicio de sesión
-              if (event === 'SIGNED_IN') {
-                logEvent('Auth', 'Login', 'User signed in');
-              } else if (event === 'USER_UPDATED') {
-                logEvent('Auth', 'Profile Updated', 'User profile updated');
-              }
-            } catch (error) {
-              console.error('Error al rastrear evento de autenticación:', error);
-            }
-          }).catch(error => {
-            console.error('Error al importar servicio de analytics:', error);
-          });
-        } else if (event === 'SIGNED_OUT') {
-          // Registrar evento de cierre de sesión
-          import('@services/analytics').then(({ logEvent }) => {
-            try {
-              logEvent('Auth', 'Logout', 'User signed out');
-            } catch (error) {
-              console.error('Error al rastrear evento de cierre de sesión:', error);
-            }
-          }).catch(error => {
-            console.error('Error al importar servicio de analytics:', error);
-          });
+          setAnalyticsUserSafe(currentUser.id);
+
+          if (event === "SIGNED_IN") {
+            logAnalyticsEventSafe("Login", "User signed in");
+          } else if (event === "USER_UPDATED") {
+            logAnalyticsEventSafe("Profile Updated", "User profile updated");
+          }
+        } else if (event === "SIGNED_OUT") {
+          logAnalyticsEventSafe("Logout", "User signed out");
         }
       },
     );

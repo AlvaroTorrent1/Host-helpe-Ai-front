@@ -19,6 +19,7 @@ const ChatbotPage = lazy(() => import("./features/landing/ChatbotPage"));
 const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
 const UpsellingPage = lazy(() => import("./features/landing/UpsellingPage"));
 const PricingPage = lazy(() => import("./features/landing/Pricing"));
+const SesRegistroPage = lazy(() => import("./features/sesregistro/SesRegistroPage"));
 // const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
 const PrivacyPolicyPage = lazy(() => import("./features/landing/PrivacyPolicy"));
 const TerminosCondicionesPage = lazy(() => import("./features/landing/TerminosYCondiciones"));
@@ -94,6 +95,9 @@ function App() {
                       <Route path="/register" element={<RegisterPage />} />
                       <Route path="/auth/callback" element={<AuthCallbackPage />} />
                       <Route path="/payment/success" element={<PaymentSuccessPage />} />
+                      
+                      {/* Ruta pública para Check-in de turistas (SES Registro) */}
+                      <Route path="/check-in/:propertyName" element={<SesRegistroPage />} />
 
                       {/* Rutas protegidas */}
                       <Route
