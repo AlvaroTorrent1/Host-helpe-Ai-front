@@ -32,7 +32,8 @@
     "stripe:status": "node scripts/stripe-mode-switcher.cjs",
     "stripe:help": "echo 'Comandos: stripe:test, stripe:demo, stripe:production, stripe:status'",
     "test:production": "node scripts/test-production-flow.cjs",
-    "verify:config": "node scripts/verify-config.cjs"
+    "verify:config": "node scripts/verify-config.cjs",
+    "diagnose:oauth": "node scripts/diagnose-oauth-redirect.cjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.7.0",

@@ -1,150 +1,181 @@
 # Documentación Host Helper AI
 
-## 🌐 Sistema de Traducciones (ACTUALIZADO)
+> **Documentación consolidada y actualizada - Octubre 2025**
 
-**Estado:** En migración hacia react-i18next como estándar oficial
-
-### 📖 Documentos Clave
-- **[Sistema de Traducciones](development/translation-system.md)** - Estándar oficial y guía de migración
-- **[Migración Sistema Traducciones](development/migracion-sistema-traducciones.md)** - Estado actual y plan completo de migración
-- **[Guía de Migración](development/react-i18next-migration-guide.md)** - Pasos prácticos para migrar componentes  
-- **[Troubleshooting](development/translation-troubleshooting.md)** - Solución de problemas comunes
-
-### ⚡ Quick Start para Desarrolladores
-
-#### Para NUEVO código (react-i18next):
-```typescript
-import { useTranslation } from 'react-i18next';
-
-const Component = () => {
-  const { t } = useTranslation();
-  return <h1>{t('mySection.title')}</h1>;
-};
-```
-
-#### Para CÓDIGO EXISTENTE:
-- Si ves `useLanguage()` → migrar gradualmente a `useTranslation()`
-- Si aparece `[CLAVE_NO_ENCONTRADA]` → agregar traducción a archivos JSON
-
-### 🚨 Reglas Importantes
-- ✅ **USAR:** `useTranslation()` para todo nuevo desarrollo
-- ❌ **NO USAR:** `useLanguage()` para nuevo código
-- 📝 **TRADUCCIONES:** Agregar a archivos JSON (`src/translations/`)
+Esta documentación representa el estado actual y operativo del proyecto.
 
 ---
 
-## 📁 Estructura de Documentación
+## 📋 Índice Rápido
+
+- [🏗️ Arquitectura](#-arquitectura)
+- [🎨 Diseño](#-diseño)
+- [🛠️ Desarrollo](#-desarrollo)
+- [🤖 Integraciones](#-integraciones)
+- [📡 API](#-api)
+- [📖 Guías Operativas](#-guías-operativas)
+- [⚡ Guías Rápidas](#-guías-rápidas)
 
 ---
 
-## 🎨 **Diseño y UI**
+## 🏗️ Arquitectura
+
+### [`architecture/overview.md`](./architecture/overview.md)
+- Principios arquitectónicos del proyecto
+- Patrones de diseño implementados
+- Estructura de directorios feature-based
+- **Escalabilidad:** 8/10 - Preparada para crecimiento
+
+### [`architecture/media-architecture.md`](./architecture/media-architecture.md)
+- Sistema especializado de gestión de medios
+- Almacenamiento en Supabase Storage
+- Procesamiento automático de imágenes
+- CDN y optimización
+
+---
+
+## 🎨 Diseño
 
 ### [`design/color-palette.md`](./design/color-palette.md)
 - **⭐ PALETA DE COLORES OFICIAL**
 - Estilo minimalista: Naranja ECA + Blanco + Plateado claro
 - Variables CSS y configuración Tailwind
-- Principios de diseño visual y proporciones
+- Principios de diseño visual
+
+### [`design/hero-redesign.md`](./design/hero-redesign.md)
+- Especificaciones de diseño del hero principal
+- Layout y componentes visuales
 
 ---
 
-## 🏗️ **Arquitectura**
+## 🛠️ Desarrollo
 
-### [`architecture/overview.md`](./architecture/overview.md)
-- Principios arquitectónicos del proyecto
-- Patrones de diseño implementados
-- Estructura de directorios y organización
-- **Escalabilidad:** ⭐ 8/10 - Arquitectura feature-based preparada para crecimiento
-
-### [`architecture/media-architecture.md`](./architecture/media-architecture.md)
-- Sistema especializado de gestión de medios
-- Almacenamiento distribuido y CDN
-- Optimización y procesamiento automático
-
----
-
-## 🛠️ **Desarrollo**
+### [`development/translation-system.md`](./development/translation-system.md)
+- **⭐ SISTEMA OFICIAL DE TRADUCCIONES**
+- react-i18next como estándar
+- Estructura de archivos JSON
+- Guía de uso para desarrolladores
 
 ### [`development/testing.md`](./development/testing.md)
-- Estrategia completa de testing
-- Configuración de Vitest y Testing Library
-- Tests unitarios, integración y E2E
+- Estrategia de testing con Vitest
+- Tests unitarios e integración
+- Configuración y buenas prácticas
 
 ### [`development/environments.md`](./development/environments.md)
-- Configuración de entornos múltiples
-- Variables de entorno por ambiente
-- Scripts de desarrollo vs producción
-
-### [`development/setup.md`](./development/setup.md)
-- Instalación y configuración inicial
-- Requisitos del sistema
-- Primeros pasos para desarrolladores
+- Configuración de entornos (dev/prod)
+- Variables de entorno requeridas
+- Scripts de desarrollo y build
 
 ---
 
-## 🤖 **Integraciones**
+## 🤖 Integraciones
 
-### [`integrations/n8n-setup.md`](./integrations/n8n-setup.md)
-- **⭐ NUEVA INTEGRACIÓN - Junio 2025**
-- Configuración completa de n8n
-- Reemplaza la anterior implementación con Botpress
-- Instalación Docker, local y cloud
+### Automatización con n8n
 
-### [`integrations/n8n-workflows-guide.md`](./integrations/n8n-workflows-guide.md)
-- **⭐ WORKFLOWS IMPLEMENTADOS**
+#### [`integrations/n8n-setup.md`](./integrations/n8n-setup.md)
+- **⭐ SETUP COMPLETO DE N8N**
+- Instalación local y Docker
+- Configuración de credenciales
+- Integración con Supabase
+
+#### [`integrations/n8n-workflows-guide.md`](./integrations/n8n-workflows-guide.md)
+- **WORKFLOWS IMPLEMENTADOS**
 - Property Management automatizado
 - Asistente IA para huéspedes
-- Gestión inteligente de reservas
+- Gestión de reservas
 
-### [`integrations/supabase.md`](./integrations/supabase.md)
-- Configuración de base de datos
-- Autenticación y autorización
-- Storage y APIs
+#### Documentación Técnica N8N
+- [`n8n-webhook-implementation.md`](./integrations/n8n-webhook-implementation.md) - Webhooks
+- [`n8n-webhook-environment-config.md`](./integrations/n8n-webhook-environment-config.md) - Config entornos
+- [`n8n-vectorstore-supabase-config.md`](./integrations/n8n-vectorstore-supabase-config.md) - Vector store
+- [`n8n-vectorstore-property-mapping.md`](./integrations/n8n-vectorstore-property-mapping.md) - Mapeo de propiedades
+- [`n8n-property-processing-code.js`](./integrations/n8n-property-processing-code.js) - Código de procesamiento
 
-### [`integrations/stripe.md`](./integrations/stripe.md)
-- Configuración de pagos
-- Webhooks y eventos
-- Testing en desarrollo
+### Otras Integraciones
+
+#### [`integrations/document-vectorization-guide.md`](./integrations/document-vectorization-guide.md)
+- Vectorización de documentos para IA
+- Integración con bases de datos vectoriales
+
+#### [`integrations/elevenlabs-integration.md`](./integrations/elevenlabs-integration.md)
+- Text-to-speech con ElevenLabs
+- Configuración y uso
+
+#### [`integrations/ical-system-activated.md`](./integrations/ical-system-activated.md)
+- Sistema iCal para sincronización de calendarios
+- Configuración activa
+
+#### Meta/Facebook
+- [`facebook-data-deletion-deployment.md`](./integrations/facebook-data-deletion-deployment.md)
+- [`meta-data-deletion-complete-implementation.md`](./integrations/meta-data-deletion-complete-implementation.md)
 
 ---
 
-## 📡 **API**
+## 📡 API
 
 ### [`api/endpoints.md`](./api/endpoints.md)
 - Documentación completa de endpoints
-- Autenticación y autorización
-- Ejemplos de requests/responses
-
-### [`api/authentication.md`](./api/authentication.md)
-- Sistema de autenticación Supabase
-- Manejo de tokens y sessions
-- Seguridad y mejores prácticas
+- Autenticación con Supabase Auth
+- Request/Response examples
+- Rate limiting y seguridad
 
 ---
 
-## 📖 **Guías**
+## 📖 Guías Operativas
 
 ### [`guides/deployment.md`](./guides/deployment.md)
-- Proceso de despliegue a producción
-- CI/CD con GitHub Actions
-- Configuración de dominios
+- **Proceso de despliegue a producción**
+- Build y optimización
+- Configuración de dominio
 
 ### [`guides/production-setup.md`](./guides/production-setup.md)
-- Setup específico para entorno de producción
-- Configuración de variables de entorno
+- Setup específico de producción
+- Variables de entorno críticas
 - Optimizaciones de rendimiento
 
+### [`guides/environment-variables-setup.md`](./guides/environment-variables-setup.md)
+- Guía completa de variables de entorno
+- Configuración por servicio
+
+### [`guides/stripe-production-setup.md`](./guides/stripe-production-setup.md)
+- Configuración de Stripe para producción
+- Webhooks y testing
+
+### [`guides/calendly-localization.md`](./guides/calendly-localization.md)
+- Integración de Calendly
+- Localización y configuración
+
 ### [`guides/troubleshooting.md`](./guides/troubleshooting.md)
-- Solución de problemas comunes
-- Debugging y logging
+- **Solución de problemas comunes**
+- Debugging y logs
 - Contacto de soporte
 
 ---
 
-## 🚀 **Inicio Rápido**
+## ⚡ Guías Rápidas
+
+### UI/Components
+- [`Button-usage.md`](./quick-guides/Button-usage.md) - Uso del componente Button
+
+### Deployment & Testing
+- [`deploy-webhook.md`](./quick-guides/deploy-webhook.md) - Despliegue de webhooks
+- [`DEPLOYMENT-STATUS.md`](./quick-guides/DEPLOYMENT-STATUS.md) - Estado de deployments
+- [`TESTING-PRODUCTION-MODE.md`](./quick-guides/TESTING-PRODUCTION-MODE.md) - Testing en modo producción
+
+### Workflows
+- [`property-creation-flow.md`](./quick-guides/property-creation-flow.md) - Flujo de creación de propiedades
+
+### Stripe
+- [`QUICK-STRIPE-SETUP.md`](./quick-guides/QUICK-STRIPE-SETUP.md) - Setup rápido de Stripe
+
+---
+
+## 🚀 Inicio Rápido
 
 ### Para Desarrolladores
+
 ```bash
-# 1. Clonar el repositorio
+# 1. Clonar repositorio
 git clone https://github.com/AlvaroTorrent1/Host-helpe-Ai-front.git
 cd Host-helpe-Ai-front
 
@@ -159,114 +190,96 @@ cp .env.example .env
 npm run dev
 ```
 
-### Para Operaciones
+### Desarrollo con n8n
+
 ```bash
-# Configurar n8n (nuevo sistema IA)
+# Iniciar n8n local
 docker run -it --rm --name n8n -p 5678:5678 n8nio/n8n
 
-# Verificar producción
-npm run verify:production
-
-# Desplegar
-npm run deploy:production
+# O instalar globalmente
+npm install n8n -g
+n8n start
 ```
 
 ---
 
-## 📋 **Cambios Recientes (Junio 2025)**
+## 🛠️ Stack Tecnológico
 
-### ✅ **Implementado**
-- **Migración completa de Botpress → n8n**
-- **Documentación consolidada en carpeta única**
-- **Eliminación de documentación obsoleta**
-- **Corrección de vulnerabilidades de seguridad**
-- **Nueva estructura de workflows IA**
-
-### 🔄 **En Progreso**
-- Implementación de lazy loading
-- Sistema de feature flags
-- Optimización de bundle size
-
-### 📅 **Planificado**
-- Micro-frontends preparación
-- Monitoreo avanzado
-- Analytics mejorado
-
----
-
-## 🛠️ **Stack Tecnológico**
-
-### **Frontend**
+### Frontend
 - **React 18** + **TypeScript** + **Vite**
 - **Tailwind CSS** para estilos
 - **React Router** para navegación
-- **React Query** para estado servidor
+- **react-i18next** para traducciones
 
-### **Backend**
-- **Supabase** (PostgreSQL + APIs + Auth + Storage)
-- **n8n** para automatización y IA *(Nuevo - Junio 2025)*
+### Backend
+- **Supabase** (PostgreSQL + Auth + Storage + APIs)
+- **n8n** para automatización y workflows IA
 - **Stripe** para pagos
 
-### **DevOps**
-- **GitHub Actions** para CI/CD
-- **Docker** para contenedores
-- **Vercel/Netlify** para despliegue
+### DevOps
+- **GitHub** para control de versiones
+- **GitHub Pages** / **Vercel** para hosting
+- **Docker** para n8n
 
 ---
 
-## 🔧 **Comandos Útiles**
+## 🔧 Comandos Útiles
 
 ```bash
 # Desarrollo
 npm run dev              # Servidor desarrollo
-npm run dev:prod         # Servidor con config producción
+npm run dev:prod         # Con config producción
 npm run build            # Build para producción
 
 # Testing
-npm run test             # Tests unitarios
+npm test                 # Tests unitarios
 npm run test:watch       # Tests en modo watch
 npm run lint             # Linting código
 
 # Calidad
-npm run fix:all          # Fix automático
 npm run format           # Formatear código
-npm audit fix            # Corregir vulnerabilidades
 ```
 
 ---
 
-## 📞 **Soporte**
-
-### **Para Desarrolladores**
-- **Issues:** [GitHub Issues](https://github.com/AlvaroTorrent1/Host-helpe-Ai-front/issues)
-- **Documentación:** Esta misma documentación
-- **Testing:** Revisar `development/testing.md`
-
-### **Para n8n/IA**
-- **Setup:** `integrations/n8n-setup.md`
-- **Workflows:** `integrations/n8n-workflows-guide.md`
-- **Documentación oficial:** [n8n.io/docs](https://docs.n8n.io/)
-
-### **Para Producción**
-- **Deployment:** `guides/deployment.md`
-- **Troubleshooting:** `guides/troubleshooting.md`
-- **Monitoring:** Dashboard de n8n + Supabase
-
----
-
-## 📊 **Métricas del Proyecto**
+## 📊 Estado del Proyecto (Octubre 2025)
 
 ```bash
-# Estado actual (Junio 2025)
-✅ Vulnerabilidades: 0 (corregidas)
 ✅ Tests: Configurados y funcionando
-✅ Documentación: Consolidada y actualizada
+✅ Documentación: Consolidada y limpia
 ✅ IA/Automatización: n8n implementado
-✅ Escalabilidad: 8/10 (excelente arquitectura)
+✅ Traducciones: react-i18next activo
+✅ Arquitectura: Feature-based escalable
 ```
 
 ---
 
-**🎯 Esta documentación es la fuente única de verdad para Host Helper AI.** 
+## 📞 Soporte y Referencias
 
-Mantén siempre actualizada esta documentación cuando hagas cambios en el proyecto. 
+### Desarrollo
+- **Issues:** [GitHub Issues](https://github.com/AlvaroTorrent1/Host-helpe-Ai-front/issues)
+- **Testing:** Ver `development/testing.md`
+- **Traducciones:** Ver `development/translation-system.md`
+
+### Integraciones
+- **n8n Setup:** Ver `integrations/n8n-setup.md`
+- **n8n Workflows:** Ver `integrations/n8n-workflows-guide.md`
+- **Docs n8n:** [n8n.io/docs](https://docs.n8n.io/)
+
+### Producción
+- **Deployment:** Ver `guides/deployment.md`
+- **Troubleshooting:** Ver `guides/troubleshooting.md`
+- **Environment Setup:** Ver `guides/environment-variables-setup.md`
+
+---
+
+## 🎯 Frontend Integration
+
+Para integraciones frontend específicas, consulta:
+- [`frontend-integration-guide.md`](./frontend-integration-guide.md)
+
+---
+
+**Esta documentación es la fuente única de verdad para Host Helper AI.**
+
+Última actualización: Octubre 16, 2025

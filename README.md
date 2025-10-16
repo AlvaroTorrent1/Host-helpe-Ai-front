@@ -1,28 +1,72 @@
-# Host Helper AI
+# 🏠 Host Helper AI
 
-An application for managing property rentals, guests, and reservations with modern web technologies.
+> Modern property rental management platform with AI automation
 
-## 🚀 Features
+An intelligent application for managing property rentals, guests, and reservations with integrated AI workflows powered by n8n.
 
-- Property management (add, edit, delete properties)
-- Document management for properties (upload, organize, access)
-- Media gallery for property photos and videos
-- Guest management
-- Reservation tracking and management
-- Multilingual support (English and Spanish)
-- Responsive interface for desktop and mobile
+---
+
+## ✨ Features
+
+- 🏡 **Property Management** - Add, edit, and manage rental properties
+- 📄 **Document Management** - Upload and organize property documents
+- 🖼️ **Media Gallery** - Photos and videos for properties
+- 👥 **Guest Management** - Track guests and their information
+- 📅 **Reservation System** - Complete reservation tracking
+- 🌍 **Multilingual** - Full support for English and Spanish
+- 🤖 **AI Automation** - n8n workflows for intelligent property assistance
+- 📱 **Responsive Design** - Works seamlessly on desktop and mobile
+
+---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React with TypeScript
-- **Backend**: Supabase (PostgreSQL + APIs)
-- **🤖 IA & Automatización**: n8n *(Nuevo - Junio 2025)*
-- **Storage**: Supabase Storage
-- **Authentication**: Supabase Auth
-- **State Management**: React Query and Context API
-- **UI Components**: Custom components with modern design
-- **Styling**: CSS/SCSS modules
-- **Testing**: Vitest for unit tests
+### Frontend
+- **React 18** with **TypeScript**
+- **Vite** for fast development
+- **Tailwind CSS** for styling
+- **react-i18next** for translations
+
+### Backend & Services
+- **Supabase** (PostgreSQL + Auth + Storage + APIs)
+- **n8n** for AI automation and workflows
+- **Stripe** for payments
+- **React Query** for state management
+
+### Testing & Quality
+- **Vitest** for unit and integration tests
+- **ESLint** for code quality
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ installed
+- Supabase account
+- Git
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/AlvaroTorrent1/Host-helpe-Ai-front.git
+cd Host-helpe-Ai-front
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment variables
+cp .env.example .env
+# Edit .env with your credentials
+
+# 4. Start development server
+npm run dev
+```
+
+The application will be available at `http://localhost:4000`
+
+---
 
 ## 📂 Project Structure
 
@@ -30,152 +74,222 @@ An application for managing property rentals, guests, and reservations with mode
 host-helper-ai/
 ├── src/
 │   ├── components/        # Reusable UI components
-│   ├── config/            # Configuration files and environment variables
-│   ├── features/          # Feature-specific components and logic
+│   ├── config/            # App configuration
+│   ├── features/          # Feature modules (properties, reservations, etc.)
 │   ├── hooks/             # Custom React hooks
-│   ├── i18n/              # Internationalization system
-│   ├── layouts/           # Page layout components
-│   ├── pages/             # Page components
-│   ├── services/          # API and external service integrations
-│   ├── types/             # TypeScript type definitions
-│   ├── utils/             # Utility functions
-│   └── App.tsx            # Main application component
-├── public/                # Static assets
-└── docs/                  # Documentation files
+│   ├── i18n/              # Internationalization
+│   ├── services/          # API integrations
+│   ├── translations/      # Translation files (ES/EN)
+│   ├── types/             # TypeScript definitions
+│   └── utils/             # Utility functions
+├── documentation/         # Complete project documentation
+├── supabase/             # Database migrations and functions
+└── public/               # Static assets
 ```
 
-## 🔧 Environment Setup
+---
 
-1. Clone the repository
-2. Copy `.env.example` to `.env` and update the values
-3. Install dependencies:
+## 🔧 Available Commands
 
 ```bash
-npm install
+# Development
+npm run dev              # Start development server
+npm run dev:prod         # Start with production config
+npm run build            # Build for production
+npm run preview          # Preview production build
+
+# Testing
+npm test                 # Run all tests
+npm run test:watch       # Run tests in watch mode
+npm run test:coverage    # Generate coverage report
+
+# Code Quality
+npm run lint             # Run ESLint
+npm run format           # Format code with Prettier
 ```
 
-4. Start the development server:
-
-```bash
-npm run dev
-```
-
-## 🧪 Running Tests
-
-```bash
-npm test
-```
+---
 
 ## 🌐 Internationalization
 
-The application supports multiple languages through our custom i18n system. To add or modify translations, update the translation files in `src/i18n/`.
+The app uses **react-i18next** for translations. Currently supports:
+- 🇪🇸 Spanish
+- 🇬🇧 English
 
-## 🧰 Utilities
+Translation files are located in `src/translations/`.
 
-The project includes several utility modules that handle common tasks:
+### Adding translations:
 
-- **commonUtils**: General-purpose utilities like debouncing, throttling, error handling
-- **dateUtils**: Date formatting and manipulation
-- **validation**: Form validation and data checks
-- **formatting**: Number and text formatting
-- **textUtils**: Text processing utilities
-- **animationUtils**: Handling animations and transitions
-- **storageUtils**: Local storage and cache management
+```typescript
+// Use in components
+import { useTranslation } from 'react-i18next';
+
+function MyComponent() {
+  const { t } = useTranslation();
+  return <h1>{t('mySection.title')}</h1>;
+}
+```
+
+---
+
+## 🤖 AI Automation with n8n
+
+Host Helper AI includes intelligent workflows powered by n8n:
+
+- **Property Processing** - Automatic property data enrichment
+- **Guest Assistant** - AI-powered guest communication
+- **Reservation Management** - Automated booking workflows
+
+See [`documentation/integrations/n8n-setup.md`](./documentation/integrations/n8n-setup.md) for setup instructions.
+
+---
 
 ## 📚 Documentation
 
-**📋 Nueva documentación consolidada disponible en [`documentation/`](./documentation/README.md)**
+**Complete documentation available in [`documentation/`](./documentation/README.md)**
 
-- **🤖 Integración con n8n** (Junio 2025): [`documentation/integrations/n8n-setup.md`](./documentation/integrations/n8n-setup.md)
-- **🏗️ Arquitectura**: [`documentation/architecture/overview.md`](./documentation/architecture/overview.md)
-- **🛠️ Desarrollo**: [`documentation/development/`](./documentation/development/)
-- **📡 API**: [`documentation/api/endpoints.md`](./documentation/api/endpoints.md)
+### Quick Links:
+- 🏗️ **Architecture**: [`documentation/architecture/overview.md`](./documentation/architecture/overview.md)
+- 🛠️ **Development**: [`documentation/development/`](./documentation/development/)
+- 🤖 **n8n Integration**: [`documentation/integrations/n8n-setup.md`](./documentation/integrations/n8n-setup.md)
+- 📡 **API Reference**: [`documentation/api/endpoints.md`](./documentation/api/endpoints.md)
+- 🚀 **Deployment**: [`documentation/guides/deployment.md`](./documentation/guides/deployment.md)
+- 🔧 **Troubleshooting**: [`documentation/guides/troubleshooting.md`](./documentation/guides/troubleshooting.md)
 
-## 🏗️ Recent Improvements
+---
 
-1. **Code Organization**:
-   - Reorganized service files for better separation of concerns
-   - Extracted utilities into specialized modules
-   - Centralized configuration in environment variables
+## 🔐 Authentication Setup
 
-2. **Internationalization**:
-   - Added support for English and Spanish
-   - Created a flexible translation system
-   - Implemented locale-aware formatting
+### Supabase Configuration
 
-3. **Error Handling**:
-   - Implemented consistent error handling with tryCatch utilities
-   - Added better error reporting and fallbacks
-   - Improved error recovery
-
-4. **Type Safety**:
-   - Enhanced TypeScript types throughout the application
-   - Eliminated unsafe type assertions
-   - Fixed linting issues
-
-5. **Performance**:
-   - Added debouncing for intensive operations
-   - Implemented caching for expensive calculations
-   - Optimized media loading and processing
-
-## 📜 License
-
-MIT License - See [LICENSE](LICENSE) for details.
-
-## Supabase Authentication Configuration
-
-For the authentication system to work properly in production, you need to configure the following:
-
-1. **Supabase Dashboard**:
-   - Log in to your Supabase dashboard
-   - Go to Authentication > URL Configuration
-   - Set the Site URL to: `https://hosthelperai.com`
-   - Add the following redirect URLs:
+1. **In Supabase Dashboard** (Authentication > URL Configuration):
+   - **Site URL**: `https://hosthelperai.com`
+   - **Redirect URLs**:
      - `https://hosthelperai.com/auth/callback` (production)
      - `http://localhost:4000/auth/callback` (development)
 
 2. **Environment Variables**:
-   - In development, set `VITE_SITE_URL=http://localhost:4000` in your `.env` file
-   - In production, set `VITE_SITE_URL=https://hosthelperai.com` 
-   - The GitHub Actions workflow has been configured to use the production URL
-
-3. **Email Templates**:
-   - If you've customized the email templates in Supabase, ensure they use `{{ .RedirectTo }}` instead of `{{ .SiteURL }}` where appropriate
-
-4. **Troubleshooting Authentication Issues**:
-   - If users receive "Email link is invalid or has expired" errors:
-     - Verify that the Supabase Dashboard Site URL matches your production URL
-     - Check that all redirect URLs are properly configured
-     - Ensure the port number in development mode matches your Vite server port (4000)
-     - Try clearing browser cache and cookies if testing authentication
-     - The application now includes enhanced debugging in auth callback page to help diagnose issues
-
-This configuration ensures that authentication emails (registration confirmation, password reset, etc.) will contain the correct domain in their links rather than "localhost".
-
-## Configuración de Entornos
-
-Host Helper AI soporta múltiples entornos de configuración:
-
-- **Desarrollo**: Para trabajo local (`npm run dev`)
-- **Producción**: Para despliegue y prueba de producción (`npm run build`, `npm run dev:prod`)
-
-Para más detalles sobre cómo configurar y utilizar los entornos, consulta [doc/ENVIRONMENTS.md](doc/ENVIRONMENTS.md).
-
-### Configuración Rápida
-
-1. Para desarrollo local:
    ```bash
-   # Usa la configuración de desarrollo
-   npm run dev
+   # Development
+   VITE_SITE_URL=http://localhost:4000
+   
+   # Production
+   VITE_SITE_URL=https://hosthelperai.com
    ```
 
-2. Para simular producción localmente:
-   ```bash
-   # Usa la configuración de producción
-   npm run dev:prod
-   ```
+3. **Troubleshooting Auth Issues**:
+   - Verify Site URL matches your domain
+   - Check redirect URLs are correctly configured
+   - Clear browser cache if testing
+   - Check browser console for detailed error messages
 
-3. Para construir para producción:
-   ```bash
-   npm run build
-   ```
+---
+
+## 🌍 Environment Configuration
+
+The app supports multiple environments:
+
+| Environment | Command | Use Case |
+|-------------|---------|----------|
+| Development | `npm run dev` | Local development |
+| Production (local) | `npm run dev:prod` | Test production config locally |
+| Production (build) | `npm run build` | Build for deployment |
+
+For detailed environment setup, see [`documentation/guides/environment-variables-setup.md`](./documentation/guides/environment-variables-setup.md)
+
+---
+
+## 🧪 Testing
+
+Tests are written using **Vitest** and **Testing Library**.
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode for development
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
+
+Test files are located in `src/tests/`.
+
+See [`documentation/development/testing.md`](./documentation/development/testing.md) for testing guidelines.
+
+---
+
+## 🚀 Deployment
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+This creates an optimized production build in the `dist/` directory.
+
+### Deploy
+
+The app is configured for deployment to:
+- **GitHub Pages** (current)
+- **Vercel** (supported)
+- **Netlify** (supported)
+
+For deployment instructions, see [`documentation/guides/deployment.md`](./documentation/guides/deployment.md)
+
+---
+
+## 🧰 Utility Modules
+
+The project includes well-organized utility modules:
+
+- **dateUtils** - Date formatting and manipulation
+- **validation** - Form validation helpers
+- **formatting** - Number and text formatting
+- **storageUtils** - LocalStorage management
+- **textUtils** - Text processing utilities
+
+All utilities are located in `src/utils/`.
+
+---
+
+## 📊 Project Status (October 2025)
+
+```
+✅ Core Features: Complete and stable
+✅ AI Integration: n8n workflows active
+✅ Translations: ES/EN fully implemented
+✅ Testing: Unit and integration tests configured
+✅ Documentation: Consolidated and up-to-date
+```
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+MIT License - See [LICENSE](LICENSE) for details.
+
+---
+
+## 🔗 Links
+
+- **Live App**: [hosthelperai.com](https://hosthelperai.com)
+- **Repository**: [GitHub](https://github.com/AlvaroTorrent1/Host-helpe-Ai-front)
+- **Documentation**: [/documentation](./documentation/README.md)
+- **Issues**: [GitHub Issues](https://github.com/AlvaroTorrent1/Host-helpe-Ai-front/issues)
+
+---
+
+**Built with ❤️ using React, TypeScript, and n8n**

@@ -25,36 +25,6 @@
         "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseG5nbXRta25rZG1pa2FmbGVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0MDAzNjMsImV4cCI6MjA1Nzk3NjM2M30.iIyu_9vwjMO_SOCovMZEAf-c9cNanD0u_cu"
       }
     },
-    "server-sequential-thinking": {
-      "command": "cmd",
-      "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@smithery/cli@latest",
-        "run",
-        "@smithery-ai/server-sequential-thinking",
-        "--key",
-        "757d2046-c2a9-481c-944b-7b42f69adc6e",
-        "--profile",
-        "thankful-oil-C30-Ft"
-      ]
-    },
-    "n8n-mcp": {
-      "command": "cmd",
-      "args": [
-        "/c",
-        "npx",
-        "n8n-mcp"
-      ],
-      "env": {
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "https://hosthelperai.app.n8n.cloud",
-        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YmE4OWQwOC0zNTZiLTQ0MDctYThhOC1lYWM0MjgzN2FjOTgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzUzMjY0MjAzLCJleHAiOjE3NTU4MTM2MDB9.mEA37KPnHXC5E7OBqInxA7oaLIJMuIZlCZu2m3U8SH8"
-      }
-    },
     "ElevenLabs": {
       "command": "C:\\Python312\\python.exe",
       "args": [
@@ -62,6 +32,20 @@
       ],
       "env": {
         "ELEVENLABS_API_KEY": "sk_0d11208c9aeb5959417f6f60f03fee33c3ac2e52c983392d"
+      }
+    },
+    "n8n-workflow-builder": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@kernel.salacoste/n8n-workflow-builder"
+      ],
+      "env": {
+        "N8N_HOST": "https://hosthelperai.app.n8n.cloud",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0YmE4OWQwOC0zNTZiLTQ0MDctYThhOC1lYWM0MjgzN2FjOTgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwNDUwMjQzfQ.d3MQ2vyTXdbedqHNy9cHCsg52S4q3Eq9UrIrrNZG2d8",
+        "OUTPUT_VERBOSITY": "concise"
       }
     }
   }
