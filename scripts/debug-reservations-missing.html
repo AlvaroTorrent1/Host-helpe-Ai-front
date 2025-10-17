@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Reservas - Casa María Flora</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #f59e0b;
+            margin-top: 30px;
+        }
+        .step {
+            background: #fef3c7;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+        }
+        .result {
+            background: #f3f4f6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .success {
+            color: #059669;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        .warning {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+        button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #d97706;
+        }
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #f9fafb;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico de Reservas - Casa María Flora</h1>
+        
+        <div class="info-box">
+            <strong>📋 Objetivo:</strong> Verificar por qué las reservas sincronizadas desde Booking.com
+            no se están mostrando en la sección de Reservas de la aplicación.
+        </div>
+
+        <button onclick="runFullDiagnostic()">▶️ Ejecutar Diagnóstico Completo</button>
+        <button onclick="clearResults()">🗑️ Limpiar Resultados</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Configuración de Supabase
+        // NOTA: Esta es la URL actualizada de tu proyecto
+        const SUPABASE_URL = 'https://blxngmtmknkdmikaflen.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseG5nbXRta25rZG1pa2FmbGVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQyNDY5NzAsImV4cCI6MjAzOTgyMjk3MH0.lR-wRX8hYkNx2BFKDnmZMf78zpchMVJhhr49qcxMWBw';
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const resultsDiv = document.getElementById('results');
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'step';
+            
+            let html = `<h2>${title}</h2>`;
+            
+            if (typeof content === 'object') {
+                html += `<div class="result">${JSON.stringify(content, null, 2)}</div>`;
+            } else {
+                html += `<div class="result ${type}">${content}</div>`;
+            }
+            
+            div.innerHTML = html;
+            resultsDiv.appendChild(div);
+        }
+
+        function addTable(title, headers, rows) {
+            const div = document.createElement('div');
+            div.className = 'step';
+            
+            let html = `<h2>${title}</h2><table><thead><tr>`;
+            
+            headers.forEach(h => {
+                html += `<th>${h}</th>`;
+            });
+            
+            html += `</tr></thead><tbody>`;
+            
+            rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell !== null && cell !== undefined ? cell : '<em>null</em>'}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            div.innerHTML = html;
+            resultsDiv.appendChild(div);
+        }
+
+        async function runFullDiagnostic() {
+            clearResults();
+            addResult('🚀 Iniciando Diagnóstico', 'Análisis completo del flujo de reservas...', 'success');
+
+            try {
+                // PASO 1: Verificar propiedades
+                addResult('📌 PASO 1', 'Verificando tabla PROPERTIES...');
+                const { data: properties, error: propError } = await supabaseClient
+                    .from('properties')
+                    .select('id, name, user_id, status')
+                    .ilike('name', '%Maria%Flora%');
+
+                if (propError) {
+                    addResult('❌ Error en Properties', propError.message, 'error');
+                    return;
+                }
+
+                if (properties && properties.length > 0) {
+                    addTable(
+                        '✅ Propiedades encontradas',
+                        ['ID', 'Nombre', 'User ID', 'Estado'],
+                        properties.map(p => [p.id, p.name, p.user_id, p.status])
+                    );
+                } else {
+                    addResult('⚠️ Sin resultados', 'No se encontraron propiedades', 'warning');
+                    return;
+                }
+
+                const mainPropertyId = properties[0].id;
+
+                // PASO 2: Verificar user_properties
+                addResult('📌 PASO 2', 'Verificando tabla USER_PROPERTIES...');
+                const { data: userProps, error: upError } = await supabaseClient
+                    .from('user_properties')
+                    .select('*');
+
+                if (upError) {
+                    addResult('❌ Error en User Properties', upError.message, 'error');
+                } else if (userProps && userProps.length > 0) {
+                    addTable(
+                        '✅ User Properties encontradas',
+                        ['ID', 'Property Name', 'Main Property ID', 'User ID'],
+                        userProps.map(p => [p.id, p.property_name, p.main_property_id, p.user_id])
+                    );
+                }
+
+                // PASO 3: Verificar ical_configs
+                addResult('📌 PASO 3', 'Verificando configuración iCal...');
+                const { data: icalConfigs, error: icalError } = await supabaseClient
+                    .from('ical_configs')
+                    .select('*');
+
+                if (icalError) {
+                    addResult('❌ Error en iCal Configs', icalError.message, 'error');
+                } else if (icalConfigs && icalConfigs.length > 0) {
+                    addTable(
+                        '✅ Configuraciones iCal',
+                        ['ID', 'Nombre', 'Status', 'Última Sync', 'Activo'],
+                        icalConfigs.map(ic => [
+                            ic.id.substring(0, 8) + '...', 
+                            ic.ical_name, 
+                            ic.sync_status, 
+                            ic.last_sync_at ? new Date(ic.last_sync_at).toLocaleString() : 'Nunca',
+                            ic.is_active ? 'Sí' : 'No'
+                        ])
+                    );
+                }
+
+                // PASO 4: Verificar synced_bookings
+                addResult('📌 PASO 4', 'Verificando reservas sincronizadas...');
+                const { data: syncedBookings, error: sbError } = await supabaseClient
+                    .from('synced_bookings')
+                    .select('*')
+                    .order('check_in_date', { ascending: false });
+
+                if (sbError) {
+                    addResult('❌ Error en Synced Bookings', sbError.message, 'error');
+                } else {
+                    addResult(`✅ Reservas Sincronizadas`, `Total: ${syncedBookings?.length || 0}`, 'success');
+                    
+                    if (syncedBookings && syncedBookings.length > 0) {
+                        addTable(
+                            'Detalles de Reservas Sincronizadas',
+                            ['Property ID', 'Source', 'Guest', 'Check-in', 'Check-out', 'Status'],
+                            syncedBookings.map(sb => [
+                                sb.property_id?.substring(0, 8) + '...', 
+                                sb.booking_source,
+                                sb.guest_name || '(no disponible)',
+                                sb.check_in_date,
+                                sb.check_out_date,
+                                sb.booking_status
+                            ])
+                        );
+                    }
+                }
+
+                // PASO 5: Verificar con JOIN (como hace el frontend)
+                addResult('📌 PASO 5', 'Probando query con JOIN...');
+                const { data: joinedData, error: joinError } = await supabaseClient
+                    .from('synced_bookings')
+                    .select(`
+                        *,
+                        user_properties(property_name),
+                        ical_configs(ical_name)
+                    `)
+                    .order('check_in_date', { ascending: false });
+
+                if (joinError) {
+                    addResult('❌ Error en JOIN', joinError.message, 'error');
+                } else {
+                    addResult(`✅ Query con JOIN`, `Total: ${joinedData?.length || 0}`, 'success');
+                    
+                    if (joinedData && joinedData.length > 0) {
+                        addTable(
+                            'Reservas con JOIN',
+                            ['Booking UID', 'Property Name', 'iCal Name', 'Guest', 'Check-in', 'Status'],
+                            joinedData.map(item => [
+                                item.booking_uid?.substring(0, 16) + '...',
+                                item.user_properties?.property_name || 'NULL',
+                                item.ical_configs?.ical_name || 'NULL',
+                                item.guest_name || '(no disponible)',
+                                item.check_in_date,
+                                item.booking_status
+                            ])
+                        );
+
+                        // Diagnóstico adicional
+                        addResult('🔍 ANÁLISIS', `
+Reservas totales: ${joinedData.length}
+Property IDs únicos: ${[...new Set(joinedData.map(j => j.property_id))].length}
+Property ID principal: ${mainPropertyId}
+¿Coinciden? ${joinedData[0].property_id === mainPropertyId ? 'SÍ ✅' : 'NO ❌'}
+
+Fechas de las reservas:
+${joinedData.map(j => `  - ${j.check_in_date} → ${j.check_out_date}`).join('\n')}
+
+Estado actual: ${new Date().toISOString().split('T')[0]}
+                        `);
+
+                        // Verificar si las fechas son pasadas o actuales
+                        const today = new Date().toISOString().split('T')[0];
+                        const current = joinedData.filter(j => j.check_out_date >= today);
+                        const past = joinedData.filter(j => j.check_out_date < today);
+
+                        addResult('📅 FILTRADO POR FECHAS', `
+Reservas ACTUALES (checkout >= hoy): ${current.length}
+Reservas PASADAS (checkout < hoy): ${past.length}
+
+${current.length > 0 ? 
+    'Actuales:\n' + current.map(r => `  - ${r.check_in_date} → ${r.check_out_date}`).join('\n') 
+    : 'No hay reservas actuales'}
+
+${past.length > 0 ? 
+    '\nPasadas:\n' + past.map(r => `  - ${r.check_in_date} → ${r.check_out_date}`).join('\n') 
+    : ''}
+                        `, current.length > 0 ? 'success' : 'warning');
+                    }
+                }
+
+                // PASO 6: Verificar RLS Policies
+                addResult('📌 PASO 6', 'Verificando políticas RLS...');
+                addResult('⚠️ Importante', `
+Las políticas de Row Level Security (RLS) podrían estar bloqueando el acceso.
+
+Para verificar:
+1. ¿Estás autenticado en la aplicación?
+2. ¿Las políticas RLS permiten SELECT en synced_bookings?
+3. ¿El user_id de las reservas coincide con tu usuario actual?
+
+Ejecuta en la consola del navegador (estando logueado):
+import { supabase } from './src/services/supabase';
+const { data: { user } } = await supabase.auth.getUser();
+console.log('Usuario actual:', user?.id);
+                `, 'warning');
+
+                addResult('✅ DIAGNÓSTICO COMPLETADO', 'Revisa los resultados anteriores para identificar el problema', 'success');
+
+            } catch (error) {
+                addResult('❌ Error General', error.message, 'error');
+                console.error(error);
+            }
+        }
+
+        // Ejecutar automáticamente al cargar
+        window.addEventListener('load', () => {
+            console.log('🔍 Herramienta de diagnóstico de reservas cargada');
+            console.log('Haz clic en "Ejecutar Diagnóstico Completo" para comenzar');
+        });
+    </script>
+</body>
+</html>
+

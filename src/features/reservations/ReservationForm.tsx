@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// ✅ OPTIMIZACIÓN: Agregados useCallback para evitar re-renders innecesarios
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Reservation,
   ReservationCreateData,

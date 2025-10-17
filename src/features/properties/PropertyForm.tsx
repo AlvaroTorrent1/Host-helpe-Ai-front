@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// ✅ OPTIMIZACIÓN: Agregados useCallback y useMemo para evitar re-renders innecesarios
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Property,
   PropertyImage,
@@ -198,8 +199,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }
   }, [formData.additional_images, property, formData.image]);
 
+  // ✅ OPTIMIZACIÓN: useCallback evita re-crear función en cada render
   // Manejar cambios en inputs de texto
-  const handleChange = (
+  const handleChange = useCallback((
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
@@ -211,14 +213,15 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }));
 
     // Limpiar error de validación si se corrige
-    if (validationErrors[name]) {
-      setValidationErrors((prev) => {
+    setValidationErrors((prev) => {
+      if (prev[name]) {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
-      });
-    }
-  };
+      }
+      return prev;
+    });
+  }, []);
 
   // Manejar cambios en checkboxes (amenities)
   const _handleAmenityChange = (e: React.ChangeEvent<HTMLInputElement>) => {

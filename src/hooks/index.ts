@@ -23,4 +23,7 @@ export * from './useTranslation';
 export { default as useSupabase } from './useSupabase';
 
 // Body scroll lock hook
-export { useBodyScrollLock } from './useBodyScrollLock'; 
+export { useBodyScrollLock } from './useBodyScrollLock';
+
+// ✅ OPTIMIZACIÓN: Query cache hook para reducir llamadas a API
+export { useQueryCache, invalidateCache, clearCache, getCacheStats } from './useQueryCache'; 

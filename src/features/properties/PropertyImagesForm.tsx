@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { PropertyImage } from "../../types/property";
 import { useTranslation } from "react-i18next";
 import { syncPropertyCoverPhoto } from "../../services/propertyService";
+import { deleteMedia } from "../../services/mediaService";
+import toast from "react-hot-toast";
 
 interface PropertyImagesFormProps {
   images?: PropertyImage[];
@@ -80,7 +82,34 @@ const PropertyImagesForm: React.FC<PropertyImagesFormProps> = ({
   };
 
   // Eliminar una imagen
+  // Ahora elimina inmediatamente de Supabase, no espera a guardar la propiedad
   const handleRemoveImage = async (id: string) => {
+    // Check if this is a real image (not a temporary upload)
+    // Temporary images have IDs starting with "temp_"
+    const isTemporaryImage = id.startsWith("temp_");
+    
+    // If it's a real image, delete it from Supabase immediately
+    if (!isTemporaryImage) {
+      try {
+        console.log(`🗑️ Eliminando imagen con ID: ${id}`);
+        const success = await deleteMedia(id);
+        
+        if (success) {
+          toast.success("Imagen eliminada correctamente");
+          console.log(`✅ Imagen ${id} eliminada de Supabase`);
+        } else {
+          toast.error("Error al eliminar la imagen");
+          console.error(`❌ No se pudo eliminar imagen ${id}`);
+          return; // Don't remove from UI if deletion failed
+        }
+      } catch (error) {
+        console.error(`❌ Error eliminando imagen ${id}:`, error);
+        toast.error("Error al eliminar la imagen");
+        return; // Don't remove from UI if deletion failed
+      }
+    }
+    
+    // Remove from local state (UI)
     const updatedImages = images.filter((img) => img.id !== id);
     onChange(updatedImages);
     

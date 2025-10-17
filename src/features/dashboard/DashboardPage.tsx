@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+// ✅ OPTIMIZACIÓN: Lazy loading de componentes pesados para reducir bundle inicial
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@services/supabase";
 import { useAuth } from "@shared/contexts/AuthContext";
@@ -7,24 +8,25 @@ import DashboardNavigation from "./DashboardNavigation";
 // import DashboardLanguageSelector from "./DashboardLanguageSelector"; // Temporalmente comentado
 import DashboardHeader from "@shared/components/DashboardHeader";
 import DashboardStats from "./DashboardStats";
-import AgentUsageAreaChart from "./components/AgentUsageBarChart";
-// import n8nTestService from "@services/n8nTestService"; // Temporalmente comentado
 import reservationService from "@services/reservationService";
 import agentService from "@services/agentService";
-import MinimalIncidentMetrics from "./components/MinimalIncidentMetrics";
 import { filterReservationsByTab } from "../reservations/utils/reservationFilters";
 import { Reservation } from "@/types/reservation";
 import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen } from "@shared/components/loading";
 import Modal from "@shared/components/Modal";
 import Button from "@/components/ui/Button";
-import PropertyDetail from "@features/properties/PropertyDetail";
 import { Property as FullProperty } from "@/types/property";
 import { INCIDENT_CATEGORIES } from '@/types/incident';
 import { interpolateColor } from "@/utils/animationUtils";
 import MobileFiltersButton from "@shared/components/filters/MobileFiltersButton";
 import MobileFiltersSheet from "@shared/components/filters/MobileFiltersSheet";
 import FilterChips from "@shared/components/filters/FilterChips";
+
+// ✅ OPTIMIZACIÓN: Lazy load de componentes grandes (solo se cargan cuando se necesitan)
+const AgentUsageAreaChart = lazy(() => import("./components/AgentUsageBarChart"));
+const MinimalIncidentMetrics = lazy(() => import("./components/MinimalIncidentMetrics"));
+const PropertyDetail = lazy(() => import("@features/properties/PropertyDetail"));
 
 type Property = {
   id: string;
@@ -840,11 +842,14 @@ const DashboardPage: React.FC = () => {
   };
 
   // Componente Modal para mostrar detalles de propiedad (visor reutilizado)
+  // ✅ OPTIMIZACIÓN: Modal con lazy loading de PropertyDetail
   const PropertyDetailsModal = () => {
     if (!isPropertyModalOpen || !selectedPropertyForView) return null;
           return (
       <Modal isOpen={isPropertyModalOpen} onClose={closePropertyModal} title="" size="xl" noPadding>
-        <PropertyDetail property={selectedPropertyForView} onClose={closePropertyModal} />
+        <Suspense fallback={<div className="flex items-center justify-center h-96"><LoadingScreen /></div>}>
+          <PropertyDetail property={selectedPropertyForView} onClose={closePropertyModal} />
+        </Suspense>
       </Modal>
     );
   };
@@ -886,8 +891,11 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Gráfico de uso del agente */}
+        {/* ✅ OPTIMIZACIÓN: Suspense permite cargar componente bajo demanda */}
         <div className="mb-6">
-          <AgentUsageAreaChart />
+          <Suspense fallback={<div className="h-64 flex items-center justify-center text-gray-500">Cargando gráfico...</div>}>
+            <AgentUsageAreaChart />
+          </Suspense>
         </div>
 
         {/* Propiedades */}
@@ -1229,11 +1237,14 @@ const DashboardPage: React.FC = () => {
           </MobileFiltersSheet>
 
           {/* Métricas minimalistas - todo en una línea */}
+          {/* ✅ OPTIMIZACIÓN: Suspense para lazy loading de métricas */}
           <div className="mb-4">
-            <MinimalIncidentMetrics 
-              pendingIncidents={pendingIncidentsCount}
-              resolutionRate={resolutionRate}
-            />
+            <Suspense fallback={<div className="h-12 flex items-center justify-center text-gray-500">Cargando métricas...</div>}>
+              <MinimalIncidentMetrics 
+                pendingIncidents={pendingIncidentsCount}
+                resolutionRate={resolutionRate}
+              />
+            </Suspense>
           </div>
 
           {/* Indicador de scroll para móvil */}

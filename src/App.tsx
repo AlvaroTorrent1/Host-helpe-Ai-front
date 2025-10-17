@@ -20,6 +20,8 @@ const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
 const UpsellingPage = lazy(() => import("./features/landing/UpsellingPage"));
 const PricingPage = lazy(() => import("./features/landing/Pricing"));
 const SesRegistroPage = lazy(() => import("./features/sesregistro/SesRegistroPage"));
+// Import para SesReportPage - necesario para lazy loading correcto
+const SesReportPage = lazy(() => import("./features/sesregistro/SesReportPage"));
 // const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
 const PrivacyPolicyPage = lazy(() => import("./features/landing/PrivacyPolicy"));
 const TerminosCondicionesPage = lazy(() => import("./features/landing/TerminosYCondiciones"));
@@ -124,6 +126,11 @@ function App() {
                               return import('./features/reservations/ReservationsPage.tsx');
                             }
                             
+                            // Import específico para SesReportPage
+                            // Se importa desde sesregistro, no sesreport
+                            if (componentName === 'SesReportPage') {
+                              return import('./features/sesregistro/SesReportPage.tsx');
+                            }
 
                             
                             const alternativeFolderName = componentName.toLowerCase().replace('page', '');
