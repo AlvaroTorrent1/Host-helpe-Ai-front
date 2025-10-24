@@ -1445,8 +1445,21 @@
         "firstSurnamePlaceholder": "Enter last name",
         "secondSurname": "Second Last Name (optional)",
         "secondSurnamePlaceholder": "Enter second last name",
+        "requiredForDNI": "(Required for DNI/NIE)",
         "nationality": "Nationality",
         "nationalityPlaceholder": "Select a nationality",
+        "documentType": "Document Type",
+        "documentTypePlaceholder": "Select document type",
+        "documentTypes": {
+          "passport": "Passport",
+          "dni": "DNI (Spain)",
+          "nie": "NIE (Spain)",
+          "other": "Other document"
+        },
+        "documentNumber": "Document Number",
+        "documentNumberPlaceholder": "e.g: AAA123456",
+        "documentNumberExample": "💡 Expected format:",
+        "dateOfBirth": "Date of Birth",
         "gender": "Gender",
         "male": "Male",
         "female": "Female",
@@ -1494,7 +1507,14 @@
       "invalidEmail": "Please enter a valid email",
       "invalidPhone": "Please enter a valid phone number",
       "selectCountry": "Please select a country",
-      "selectGender": "Please select an option"
+      "selectGender": "Please select an option",
+      "secondSurnameRequired": "Second surname is required for DNI/NIE",
+      "selectDocumentType": "Select document type",
+      "documentNumberRequired": "Document number is required",
+      "invalidFormat": "Invalid format",
+      "dateOfBirthRequired": "Date of birth is required",
+      "invalidDate": "Invalid date",
+      "invalidNumber": "Invalid number"
     },
     "errors": {
       "linkInvalid": "Invalid link",
@@ -1515,6 +1535,38 @@
       "online": "Online Payment",
       "bank_transfer": "Bank Transfer",
       "other": "Other"
+    },
+    "signature": {
+      "title": "Traveler Signature",
+      "subtitle": "Please sign in the box using your finger (mobile) or mouse (computer)",
+      "signHere": "Sign here",
+      "clear": "Clear",
+      "disclaimer": "Your signature certifies that the information provided is correct",
+      "captured": "Signature captured successfully"
+    },
+    "reservationForm": {
+      "title": "Edit Reservation Data",
+      "checkInDate": "Check-in Date",
+      "checkOutDate": "Check-out Date",
+      "save": "Save",
+      "cancel": "Cancel",
+      "checkOutAfterCheckIn": "Check-out date must be after check-in date",
+      "atLeastOneTraveler": "There must be at least 1 traveler",
+      "night": "night",
+      "nights": "nights"
+    },
+    "confirmation": {
+      "title": "Check-in Completed Successfully!",
+      "subtitle": "We have received your information correctly",
+      "summary": "Your Registration Summary",
+      "property": "Property:",
+      "stay": "Stay:",
+      "registeredTravelers": "Registered travelers:",
+      "paymentMethod": "Payment method:",
+      "travelersList": "Registered Travelers:",
+      "whatNext": "What's next?",
+      "nextSteps": "Your information has been successfully sent to the accommodation. You will receive a confirmation email shortly. If you have any questions, please feel free to contact the accommodation directly.",
+      "close": "Close"
     }
   },
   "locale": "en-US"

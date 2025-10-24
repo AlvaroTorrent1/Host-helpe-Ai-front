@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "features": "Caractéristiques",
+    "pricing": "Tarifs",
+    "testimonials": "Témoignages",
+    "login": "Se connecter"
+  },
+  "sesRegistro": {
+    "title": "Enregistrement des Voyageurs",
+    "subtitle": "Enregistrement en Ligne",
+    "reservation": {
+      "title": "Informations de Réservation",
+      "subtitle": "Détails de votre séjour",
+      "data": "Données",
+      "propertyName": "Nom de la propriété",
+      "dates": "Dates",
+      "nights": "nuits",
+      "paymentMethod": "Mode de Paiement",
+      "numberOfTravelers": "Nombre de Voyageurs",
+      "edit": "Modifier"
+    },
+    "travelers": {
+      "title": "Voyageurs",
+      "count": "Voyageurs",
+      "add": "Ajouter",
+      "empty": "Aucun voyageur ajouté.",
+      "required": "Vous devez ajouter au moins un voyageur pour continuer.",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce voyageur ?",
+      "deleteSuccess": "Voyageur supprimé avec succès",
+      "addSuccess": "Voyageur ajouté avec succès",
+      "updateSuccess": "Voyageur mis à jour avec succès"
+    },
+    "timer": {
+      "label": "Temps restant :",
+      "expired": "Ce lien a expiré",
+      "expiredMessage": "Le lien d'enregistrement a expiré. Veuillez contacter l'hébergement pour obtenir un nouveau lien."
+    },
+    "wizard": {
+      "title": "Ajouter un Voyageur",
+      "editTitle": "Modifier le Voyageur",
+      "step": "Étape",
+      "of": "de",
+      "next": "Suivant",
+      "back": "Retour",
+      "submit": "Envoyer",
+      "cancel": "Annuler",
+      "personal": {
+        "title": "Informations Personnelles",
+        "subtitle": "Veuillez fournir les données personnelles du voyageur",
+        "firstName": "Prénom",
+        "firstNamePlaceholder": "Entrez le prénom",
+        "firstSurname": "Nom de famille",
+        "firstSurnamePlaceholder": "Entrez le nom de famille",
+        "secondSurname": "Deuxième nom (optionnel)",
+        "secondSurnamePlaceholder": "Entrez le deuxième nom",
+        "requiredForDNI": "(Obligatoire pour DNI/NIE)",
+        "nationality": "Nationalité",
+        "nationalityPlaceholder": "Sélectionner une nationalité",
+        "documentType": "Type de Document",
+        "documentTypePlaceholder": "Sélectionner le type de document",
+        "documentTypes": {
+          "passport": "Passeport",
+          "dni": "DNI (Espagne)",
+          "nie": "NIE (Espagne)",
+          "other": "Autre document"
+        },
+        "documentNumber": "Numéro de Document",
+        "documentNumberPlaceholder": "Ex : AAA123456",
+        "documentNumberExample": "💡 Format attendu :",
+        "dateOfBirth": "Date de Naissance",
+        "gender": "Sexe",
+        "male": "Homme",
+        "female": "Femme",
+        "other": "Autre"
+      },
+      "residence": {
+        "title": "Pays de Résidence",
+        "subtitle": "Veuillez sélectionner le pays de résidence du voyageur",
+        "country": "Pays",
+        "countryPlaceholder": "Sélectionner un pays"
+      },
+      "address": {
+        "title": "Informations d'Adresse",
+        "subtitle": "Veuillez fournir les détails de l'adresse du voyageur",
+        "city": "Ville",
+        "cityPlaceholder": "Entrez le nom de la ville",
+        "postalCode": "Code Postal",
+        "postalCodePlaceholder": "Entrez le code postal",
+        "address": "Adresse",
+        "addressPlaceholder": "Entrez l'adresse",
+        "additionalAddress": "Informations Complémentaires (optionnel)",
+        "additionalAddressPlaceholder": "Appt, Étage, etc."
+      },
+      "contact": {
+        "title": "Informations de Contact",
+        "subtitle": "Veuillez fournir au moins une méthode de contact",
+        "email": "Adresse E-mail",
+        "emailPlaceholder": "Entrez l'adresse e-mail",
+        "phone": "Numéro de Téléphone",
+        "phonePlaceholder": "Entrez le numéro de téléphone",
+        "alternativePhone": "Téléphone Alternatif",
+        "alternativePhonePlaceholder": "Entrez un téléphone alternatif"
+      }
+    },
+    "submit": {
+      "button": "Envoyer l'Enregistrement",
+      "submitting": "Envoi en cours...",
+      "success": "Enregistrement terminé avec succès",
+      "successMessage": "Vos données ont été enregistrées correctement. Merci d'avoir complété l'enregistrement.",
+      "error": "Erreur lors de l'envoi de l'enregistrement",
+      "errorMessage": "Une erreur s'est produite. Veuillez réessayer plus tard."
+    },
+    "validation": {
+      "required": "Ce champ est requis",
+      "invalidEmail": "Veuillez entrer un e-mail valide",
+      "invalidPhone": "Veuillez entrer un numéro de téléphone valide",
+      "selectCountry": "Veuillez sélectionner un pays",
+      "selectGender": "Veuillez sélectionner une option",
+      "secondSurnameRequired": "Le deuxième nom de famille est requis pour DNI/NIE",
+      "selectDocumentType": "Sélectionner le type de document",
+      "documentNumberRequired": "Le numéro de document est requis",
+      "invalidFormat": "Format invalide",
+      "dateOfBirthRequired": "La date de naissance est requise",
+      "invalidDate": "Date invalide",
+      "invalidNumber": "Numéro invalide"
+    },
+    "errors": {
+      "linkInvalid": "Lien invalide",
+      "linkInvalidMessage": "Le lien d'enregistrement n'est pas valide. Veuillez vérifier l'URL.",
+      "linkExpired": "Lien expiré",
+      "linkExpiredMessage": "Ce lien d'enregistrement a expiré. Contactez l'hébergement.",
+      "linkUsed": "Lien déjà utilisé",
+      "linkUsedMessage": "L'enregistrement a déjà été complété pour cette réservation.",
+      "networkError": "Erreur de connexion",
+      "networkErrorMessage": "Impossible de se connecter au serveur. Vérifiez votre connexion Internet.",
+      "serverError": "Erreur du serveur",
+      "serverErrorMessage": "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
+      "loadingError": "Erreur de chargement",
+      "loadingErrorMessage": "Impossible de charger les données de réservation"
+    },
+    "paymentMethods": {
+      "destination": "Paiement sur Place",
+      "online": "Paiement en Ligne",
+      "bank_transfer": "Virement Bancaire",
+      "other": "Autre"
+    },
+    "signature": {
+      "title": "Signature du Voyageur",
+      "subtitle": "Veuillez signer dans le cadre avec votre doigt (mobile) ou souris (ordinateur)",
+      "signHere": "Signez ici",
+      "clear": "Effacer",
+      "disclaimer": "Votre signature certifie que les informations fournies sont correctes",
+      "captured": "Signature capturée avec succès"
+    },
+    "reservationForm": {
+      "title": "Modifier les Données de Réservation",
+      "checkInDate": "Date d'Arrivée",
+      "checkOutDate": "Date de Départ",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "checkOutAfterCheckIn": "La date de départ doit être postérieure à la date d'arrivée",
+      "atLeastOneTraveler": "Il doit y avoir au moins 1 voyageur",
+      "night": "nuit",
+      "nights": "nuits"
+    },
+    "confirmation": {
+      "title": "Enregistrement Terminé avec Succès !",
+      "subtitle": "Nous avons reçu vos informations correctement",
+      "summary": "Résumé de votre Inscription",
+      "property": "Propriété :",
+      "stay": "Séjour :",
+      "registeredTravelers": "Voyageurs enregistrés :",
+      "paymentMethod": "Mode de paiement :",
+      "travelersList": "Voyageurs Enregistrés :",
+      "whatNext": "Et ensuite ?",
+      "nextSteps": "Vos informations ont été envoyées avec succès à l'hébergement. Vous recevrez un email de confirmation sous peu. Si vous avez des questions, n'hésitez pas à contacter directement l'hébergement.",
+      "close": "Fermer"
+    }
+  },
+  "locale": "fr-FR"
+}
+

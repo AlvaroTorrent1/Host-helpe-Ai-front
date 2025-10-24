@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "features": "Kenmerken",
+    "pricing": "Prijzen",
+    "testimonials": "Getuigenissen",
+    "login": "Inloggen"
+  },
+  "sesRegistro": {
+    "title": "Reizigers Registratie",
+    "subtitle": "Online Inchecken",
+    "reservation": {
+      "title": "Reserveringsinformatie",
+      "subtitle": "Details van uw verblijf",
+      "data": "Gegevens",
+      "propertyName": "Naam accommodatie",
+      "dates": "Data",
+      "nights": "nachten",
+      "paymentMethod": "Betaalmethode",
+      "numberOfTravelers": "Aantal Reizigers",
+      "edit": "Bewerken"
+    },
+    "travelers": {
+      "title": "Reizigers",
+      "count": "Reizigers",
+      "add": "Toevoegen",
+      "empty": "Geen reizigers toegevoegd.",
+      "required": "U moet ten minste één reiziger toevoegen om door te gaan.",
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "confirmDelete": "Weet u zeker dat u deze reiziger wilt verwijderen?",
+      "deleteSuccess": "Reiziger succesvol verwijderd",
+      "addSuccess": "Reiziger succesvol toegevoegd",
+      "updateSuccess": "Reiziger succesvol bijgewerkt"
+    },
+    "timer": {
+      "label": "Resterende tijd:",
+      "expired": "Deze link is verlopen",
+      "expiredMessage": "De inchecken-link is verlopen. Neem contact op met de accommodatie voor een nieuwe link."
+    },
+    "wizard": {
+      "title": "Reiziger Toevoegen",
+      "editTitle": "Reiziger Bewerken",
+      "step": "Stap",
+      "of": "van",
+      "next": "Volgende",
+      "back": "Terug",
+      "submit": "Verzenden",
+      "cancel": "Annuleren",
+      "personal": {
+        "title": "Persoonlijke Informatie",
+        "subtitle": "Verstrek de persoonlijke gegevens van de reiziger",
+        "firstName": "Voornaam",
+        "firstNamePlaceholder": "Voer voornaam in",
+        "firstSurname": "Achternaam",
+        "firstSurnamePlaceholder": "Voer achternaam in",
+        "secondSurname": "Tweede achternaam (optioneel)",
+        "secondSurnamePlaceholder": "Voer tweede achternaam in",
+        "requiredForDNI": "(Verplicht voor DNI/NIE)",
+        "nationality": "Nationaliteit",
+        "nationalityPlaceholder": "Selecteer een nationaliteit",
+        "documentType": "Documenttype",
+        "documentTypePlaceholder": "Selecteer documenttype",
+        "documentTypes": {
+          "passport": "Paspoort",
+          "dni": "DNI (Spanje)",
+          "nie": "NIE (Spanje)",
+          "other": "Ander document"
+        },
+        "documentNumber": "Documentnummer",
+        "documentNumberPlaceholder": "Bijv.: AAA123456",
+        "documentNumberExample": "💡 Verwacht formaat:",
+        "dateOfBirth": "Geboortedatum",
+        "gender": "Geslacht",
+        "male": "Man",
+        "female": "Vrouw",
+        "other": "Anders"
+      },
+      "residence": {
+        "title": "Land van Verblijf",
+        "subtitle": "Selecteer het land van verblijf van de reiziger",
+        "country": "Land",
+        "countryPlaceholder": "Selecteer een land"
+      },
+      "address": {
+        "title": "Adresinformatie",
+        "subtitle": "Verstrek de adresgegevens van de reiziger",
+        "city": "Stad",
+        "cityPlaceholder": "Voer stadsnaam in",
+        "postalCode": "Postcode",
+        "postalCodePlaceholder": "Voer postcode in",
+        "address": "Adres",
+        "addressPlaceholder": "Voer adres in",
+        "additionalAddress": "Aanvullende Informatie (optioneel)",
+        "additionalAddressPlaceholder": "Appartement, Verdieping, etc."
+      },
+      "contact": {
+        "title": "Contactinformatie",
+        "subtitle": "Verstrek ten minste één contactmethode",
+        "email": "E-mailadres",
+        "emailPlaceholder": "Voer e-mailadres in",
+        "phone": "Telefoonnummer",
+        "phonePlaceholder": "Voer telefoonnummer in",
+        "alternativePhone": "Alternatief Telefoonnummer",
+        "alternativePhonePlaceholder": "Voer alternatief telefoonnummer in"
+      }
+    },
+    "submit": {
+      "button": "Inchecken Verzenden",
+      "submitting": "Verzenden...",
+      "success": "Inchecken succesvol voltooid",
+      "successMessage": "Uw gegevens zijn correct geregistreerd. Bedankt voor het voltooien van het inchecken.",
+      "error": "Fout bij het verzenden van het inchecken",
+      "errorMessage": "Er is een fout opgetreden. Probeer het later opnieuw."
+    },
+    "validation": {
+      "required": "Dit veld is verplicht",
+      "invalidEmail": "Voer een geldig e-mailadres in",
+      "invalidPhone": "Voer een geldig telefoonnummer in",
+      "selectCountry": "Selecteer een land",
+      "selectGender": "Selecteer een optie",
+      "secondSurnameRequired": "De tweede achternaam is verplicht voor DNI/NIE",
+      "selectDocumentType": "Selecteer documenttype",
+      "documentNumberRequired": "Het documentnummer is verplicht",
+      "invalidFormat": "Ongeldig formaat",
+      "dateOfBirthRequired": "De geboortedatum is verplicht",
+      "invalidDate": "Ongeldige datum",
+      "invalidNumber": "Ongeldig nummer"
+    },
+    "errors": {
+      "linkInvalid": "Ongeldige link",
+      "linkInvalidMessage": "De inchecken-link is niet geldig. Controleer de URL.",
+      "linkExpired": "Link verlopen",
+      "linkExpiredMessage": "Deze inchecken-link is verlopen. Neem contact op met de accommodatie.",
+      "linkUsed": "Link al gebruikt",
+      "linkUsedMessage": "Het inchecken is al voltooid voor deze reservering.",
+      "networkError": "Verbindingsfout",
+      "networkErrorMessage": "Kan geen verbinding maken met de server. Controleer uw internetverbinding.",
+      "serverError": "Serverfout",
+      "serverErrorMessage": "Er is een fout opgetreden op de server. Probeer het later opnieuw.",
+      "loadingError": "Laadout",
+      "loadingErrorMessage": "Kan reserveringsgegevens niet laden"
+    },
+    "paymentMethods": {
+      "destination": "Betaling ter Plaatse",
+      "online": "Online Betaling",
+      "bank_transfer": "Bankoverschrijving",
+      "other": "Anders"
+    },
+    "signature": {
+      "title": "Handtekening van de Reiziger",
+      "subtitle": "Teken in het vak met uw vinger (mobiel) of muis (computer)",
+      "signHere": "Teken hier",
+      "clear": "Wissen",
+      "disclaimer": "Uw handtekening bevestigt dat de verstrekte informatie correct is",
+      "captured": "Handtekening succesvol vastgelegd"
+    },
+    "reservationForm": {
+      "title": "Reserveringsgegevens Bewerken",
+      "checkInDate": "Incheckdatum",
+      "checkOutDate": "Uitcheckdatum",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "checkOutAfterCheckIn": "De uitcheckdatum moet na de incheckdatum zijn",
+      "atLeastOneTraveler": "Er moet ten minste 1 reiziger zijn",
+      "night": "nacht",
+      "nights": "nachten"
+    },
+    "confirmation": {
+      "title": "Inchecken Succesvol Voltooid!",
+      "subtitle": "We hebben uw informatie correct ontvangen",
+      "summary": "Samenvatting van uw Registratie",
+      "property": "Accommodatie:",
+      "stay": "Verblijf:",
+      "registeredTravelers": "Geregistreerde reizigers:",
+      "paymentMethod": "Betaalmethode:",
+      "travelersList": "Geregistreerde Reizigers:",
+      "whatNext": "Wat is de volgende stap?",
+      "nextSteps": "Uw informatie is succesvol naar de accommodatie verzonden. U ontvangt binnenkort een bevestigingsmail. Als u vragen heeft, neem dan gerust rechtstreeks contact op met de accommodatie.",
+      "close": "Sluiten"
+    }
+  },
+  "locale": "nl-NL"
+}
+

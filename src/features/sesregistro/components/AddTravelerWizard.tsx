@@ -13,6 +13,13 @@ import PersonalInfoStep from './wizard/PersonalInfoStep';
 import ResidenceCountryStep from './wizard/ResidenceCountryStep';
 import AddressInfoStep from './wizard/AddressInfoStep';
 import ContactInfoStep from './wizard/ContactInfoStep';
+import { 
+  validateDocument, 
+  requiresSecondSurname,
+  validateDateOfBirth,
+  validatePhone,
+  validatePostalCode
+} from '../validators';
 
 interface AddTravelerWizardProps {
   isOpen: boolean;
@@ -65,15 +72,60 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
 
     switch (step) {
       case 'personal':
+        // Validar nombre
         if (!travelerData.firstName?.trim()) {
           newErrors.firstName = t('sesRegistro.validation.required');
         }
+        
+        // Validar primer apellido
         if (!travelerData.firstSurname?.trim()) {
           newErrors.firstSurname = t('sesRegistro.validation.required');
         }
+        
+        // Validar segundo apellido (obligatorio para DNI/NIE españoles)
+        const needsSecondSurname = requiresSecondSurname(
+          travelerData.documentType || 'other',
+          travelerData.nationality || ''
+        );
+        if (needsSecondSurname && !travelerData.secondSurname?.trim()) {
+          newErrors.secondSurname = t('sesRegistro.validation.secondSurnameRequired');
+        }
+        
+        // Validar nacionalidad
         if (!travelerData.nationality) {
           newErrors.nationality = t('sesRegistro.validation.selectCountry');
         }
+        
+        // Validar tipo de documento
+        if (!travelerData.documentType) {
+          newErrors.documentType = t('sesRegistro.validation.selectDocumentType');
+        }
+        
+        // Validar número de documento
+        if (!travelerData.documentNumber?.trim()) {
+          newErrors.documentNumber = t('sesRegistro.validation.documentNumberRequired');
+        } else if (travelerData.documentType && travelerData.nationality) {
+          const docValidation = validateDocument(
+            travelerData.documentNumber,
+            travelerData.documentType,
+            travelerData.nationality
+          );
+          if (!docValidation.valid) {
+            newErrors.documentNumber = docValidation.message || t('sesRegistro.validation.invalidFormat');
+          }
+        }
+        
+        // Validar fecha de nacimiento
+        if (!travelerData.dateOfBirth) {
+          newErrors.dateOfBirth = t('sesRegistro.validation.dateOfBirthRequired');
+        } else {
+          const dobValidation = validateDateOfBirth(travelerData.dateOfBirth);
+          if (!dobValidation.valid) {
+            newErrors.dateOfBirth = dobValidation.message || t('sesRegistro.validation.invalidDate');
+          }
+        }
+        
+        // Validar género
         if (!travelerData.gender) {
           newErrors.gender = t('sesRegistro.validation.selectGender');
         }
@@ -86,28 +138,49 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
         break;
 
       case 'address':
+        // Validar ciudad
         if (!travelerData.city?.trim()) {
           newErrors.city = t('sesRegistro.validation.required');
         }
+        
+        // Validar código postal
         if (!travelerData.postalCode?.trim()) {
           newErrors.postalCode = t('sesRegistro.validation.required');
+        } else if (travelerData.residenceCountry) {
+          const postalValidation = validatePostalCode(
+            travelerData.postalCode,
+            travelerData.residenceCountry
+          );
+          if (!postalValidation.valid) {
+            newErrors.postalCode = postalValidation.message || t('sesRegistro.validation.invalidFormat');
+          }
         }
+        
+        // Validar dirección
         if (!travelerData.address?.trim()) {
           newErrors.address = t('sesRegistro.validation.required');
         }
         break;
 
       case 'contact':
+        // Validar email
         if (!travelerData.email?.trim()) {
           newErrors.email = t('sesRegistro.validation.required');
         } else if (!EMAIL_REGEX.test(travelerData.email)) {
           newErrors.email = t('sesRegistro.validation.invalidEmail');
         }
         
+        // Validar teléfono con libphonenumber-js
         if (!travelerData.phone?.trim()) {
           newErrors.phone = t('sesRegistro.validation.required');
-        } else if (!PHONE_REGEX.test(travelerData.phone)) {
-          newErrors.phone = t('sesRegistro.validation.invalidPhone');
+        } else if (travelerData.phoneCountry) {
+          const phoneValidation = validatePhone(
+            travelerData.phone,
+            travelerData.phoneCountry
+          );
+          if (!phoneValidation.valid) {
+            newErrors.phone = phoneValidation.message || t('sesRegistro.validation.invalidNumber');
+          }
         }
         break;
     }
@@ -150,16 +223,27 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
       // Construir objeto Traveler completo
       const traveler: Traveler = {
         id: editingTraveler?.id,
+        // Información Personal
         firstName: travelerData.firstName!,
         firstSurname: travelerData.firstSurname!,
         secondSurname: travelerData.secondSurname,
         nationality: travelerData.nationality!,
         gender: travelerData.gender!,
+        // Información del Documento
+        documentType: travelerData.documentType!,
+        documentNumber: travelerData.documentNumber!,
+        documentSupportNumber: travelerData.documentSupportNumber,
+        dateOfBirth: travelerData.dateOfBirth!,
+        placeOfBirth: travelerData.placeOfBirth,
+        // País de Residencia
         residenceCountry: travelerData.residenceCountry!,
+        // Dirección
         city: travelerData.city!,
+        ineCode: travelerData.ineCode, // Código INE del municipio (opcional)
         postalCode: travelerData.postalCode!,
         address: travelerData.address!,
         additionalAddress: travelerData.additionalAddress,
+        // Contacto
         email: travelerData.email!,
         phoneCountry: travelerData.phoneCountry!,
         phone: travelerData.phone!,
@@ -279,6 +363,10 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
 };
 
 export default AddTravelerWizard;
+
+
+
+
 
 
 

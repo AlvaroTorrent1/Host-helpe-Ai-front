@@ -2,11 +2,13 @@
 /**
  * Paso 3 del wizard: Información de Dirección
  * Ciudad, código postal, dirección, información adicional
+ * Incluye selector inteligente de municipios españoles con códigos INE
  */
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PartialTraveler } from '../../types';
+import CityInput from '../CityInput';
 
 interface AddressInfoStepProps {
   travelerData: PartialTraveler;
@@ -21,6 +23,14 @@ const AddressInfoStep: React.FC<AddressInfoStepProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Manejar cambio de ciudad con código INE
+  const handleCityChange = (city: string, ineCode?: string) => {
+    onUpdate({ 
+      city, 
+      ineCode: ineCode || undefined 
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Título y subtítulo */}
@@ -33,26 +43,17 @@ const AddressInfoStep: React.FC<AddressInfoStepProps> = ({
         </p>
       </div>
 
-      {/* Ciudad */}
+      {/* Ciudad - Input con sugerencias inteligentes */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           {t('sesRegistro.wizard.address.city')} <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
+        <CityInput
           value={travelerData.city || ''}
-          onChange={(e) => onUpdate({ city: e.target.value })}
+          onChange={handleCityChange}
+          error={errors.city}
           placeholder={t('sesRegistro.wizard.address.cityPlaceholder')}
-          className={`
-            w-full px-4 py-3 border rounded-lg
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-            ${errors.city ? 'border-red-500' : 'border-gray-300'}
-          `}
         />
-        {errors.city && (
-          <p className="mt-1 text-sm text-red-600">{errors.city}</p>
-        )}
       </div>
 
       {/* Código Postal */}
@@ -72,6 +73,12 @@ const AddressInfoStep: React.FC<AddressInfoStepProps> = ({
             ${errors.postalCode ? 'border-red-500' : 'border-gray-300'}
           `}
         />
+        {/* Mostrar país usado para validación */}
+        {travelerData.residenceCountry && (
+          <p className="mt-1 text-xs text-gray-500">
+            ℹ️ Validando formato de: {travelerData.residenceCountry}
+          </p>
+        )}
         {errors.postalCode && (
           <p className="mt-1 text-sm text-red-600">{errors.postalCode}</p>
         )}
@@ -118,6 +125,10 @@ const AddressInfoStep: React.FC<AddressInfoStepProps> = ({
 };
 
 export default AddressInfoStep;
+
+
+
+
 
 
 

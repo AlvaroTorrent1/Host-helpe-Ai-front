@@ -69,12 +69,12 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
       const checkOutDate = new Date(formData.checkOut);
       
       if (checkOutDate <= checkInDate) {
-        newErrors.checkOut = 'La fecha de salida debe ser posterior a la de entrada';
+        newErrors.checkOut = t('sesRegistro.reservationForm.checkOutAfterCheckIn');
       }
     }
 
     if (formData.numberOfTravelers < 1) {
-      newErrors.numberOfTravelers = 'Debe haber al menos 1 viajero';
+      newErrors.numberOfTravelers = t('sesRegistro.reservationForm.atLeastOneTraveler');
     }
 
     setErrors(newErrors);
@@ -111,7 +111,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
             <div className="border-b border-gray-200 px-6 py-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900">
-                  Editar Datos de Reserva
+                  {t('sesRegistro.reservationForm.title')}
                 </h2>
                 <button
                   onClick={onClose}
@@ -129,7 +129,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {/* Nombre de la propiedad (solo lectura) */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Nombre de la propiedad
+                  {t('sesRegistro.reservation.propertyName')}
                 </label>
                 <div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600">
                   {propertyName}
@@ -139,7 +139,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {/* Fecha de entrada */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Fecha de Entrada <span className="text-red-500">*</span>
+                  {t('sesRegistro.reservationForm.checkInDate')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -160,7 +160,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {/* Fecha de salida */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Fecha de Salida <span className="text-red-500">*</span>
+                  {t('sesRegistro.reservationForm.checkOutDate')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -178,7 +178,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 )}
                 {numberOfNights > 0 && (
                   <p className="mt-1 text-sm text-primary font-medium">
-                    {numberOfNights} {numberOfNights === 1 ? 'noche' : 'noches'}
+                    {numberOfNights} {numberOfNights === 1 ? t('sesRegistro.reservationForm.night') : t('sesRegistro.reservationForm.nights')}
                   </p>
                 )}
               </div>
@@ -186,7 +186,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {/* Número de viajeros */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Número de Viajeros <span className="text-red-500">*</span>
+                  {t('sesRegistro.reservation.numberOfTravelers')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -208,7 +208,7 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
               {/* Método de pago */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Método de Pago <span className="text-red-500">*</span>
+                  {t('sesRegistro.reservation.paymentMethod')} <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.paymentMethod}
@@ -230,14 +230,14 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
                 onClick={onClose}
                 className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition"
               >
-                Cancelar
+                {t('sesRegistro.reservationForm.cancel')}
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
                 className="px-6 py-2.5 bg-primary hover:bg-primary-600 text-white rounded-lg font-semibold transition"
               >
-                Guardar
+                {t('sesRegistro.reservationForm.save')}
               </button>
             </div>
           </div>
@@ -248,6 +248,11 @@ const ReservationForm: React.FC<ReservationFormProps> = ({
 };
 
 export default ReservationForm;
+
+
+
+
+
 
 
 

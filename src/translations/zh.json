@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "features": "功能",
+    "pricing": "价格",
+    "testimonials": "评价",
+    "login": "登录"
+  },
+  "sesRegistro": {
+    "title": "旅客登记",
+    "subtitle": "在线入住",
+    "reservation": {
+      "title": "预订信息",
+      "subtitle": "您的住宿详情",
+      "data": "数据",
+      "propertyName": "房产名称",
+      "dates": "日期",
+      "nights": "晚",
+      "paymentMethod": "付款方式",
+      "numberOfTravelers": "旅客人数",
+      "edit": "编辑"
+    },
+    "travelers": {
+      "title": "旅客",
+      "count": "旅客",
+      "add": "添加",
+      "empty": "未添加旅客。",
+      "required": "您必须至少添加一位旅客才能继续。",
+      "edit": "编辑",
+      "delete": "删除",
+      "confirmDelete": "您确定要删除此旅客吗？",
+      "deleteSuccess": "旅客删除成功",
+      "addSuccess": "旅客添加成功",
+      "updateSuccess": "旅客更新成功"
+    },
+    "timer": {
+      "label": "剩余时间：",
+      "expired": "此链接已过期",
+      "expiredMessage": "入住链接已过期。请联系住宿获取新链接。"
+    },
+    "wizard": {
+      "title": "添加旅客",
+      "editTitle": "编辑旅客",
+      "step": "步骤",
+      "of": "/",
+      "next": "下一步",
+      "back": "返回",
+      "submit": "提交",
+      "cancel": "取消",
+      "personal": {
+        "title": "个人信息",
+        "subtitle": "请提供旅客的个人资料",
+        "firstName": "名字",
+        "firstNamePlaceholder": "输入名字",
+        "firstSurname": "姓氏",
+        "firstSurnamePlaceholder": "输入姓氏",
+        "secondSurname": "第二姓氏（可选）",
+        "secondSurnamePlaceholder": "输入第二姓氏",
+        "requiredForDNI": "（DNI/NIE必填）",
+        "nationality": "国籍",
+        "nationalityPlaceholder": "选择国籍",
+        "documentType": "证件类型",
+        "documentTypePlaceholder": "选择证件类型",
+        "documentTypes": {
+          "passport": "护照",
+          "dni": "DNI（西班牙）",
+          "nie": "NIE（西班牙）",
+          "other": "其他证件"
+        },
+        "documentNumber": "证件号码",
+        "documentNumberPlaceholder": "例如：AAA123456",
+        "documentNumberExample": "💡 预期格式：",
+        "dateOfBirth": "出生日期",
+        "gender": "性别",
+        "male": "男",
+        "female": "女",
+        "other": "其他"
+      },
+      "residence": {
+        "title": "居住国家",
+        "subtitle": "请选择旅客的居住国家",
+        "country": "国家",
+        "countryPlaceholder": "选择国家"
+      },
+      "address": {
+        "title": "地址信息",
+        "subtitle": "请提供旅客的地址详情",
+        "city": "城市",
+        "cityPlaceholder": "输入城市名称",
+        "postalCode": "邮政编码",
+        "postalCodePlaceholder": "输入邮政编码",
+        "address": "地址",
+        "addressPlaceholder": "输入地址",
+        "additionalAddress": "附加信息（可选）",
+        "additionalAddressPlaceholder": "公寓、楼层等"
+      },
+      "contact": {
+        "title": "联系信息",
+        "subtitle": "请至少提供一种联系方式",
+        "email": "电子邮箱",
+        "emailPlaceholder": "输入电子邮箱",
+        "phone": "电话号码",
+        "phonePlaceholder": "输入电话号码",
+        "alternativePhone": "备用电话",
+        "alternativePhonePlaceholder": "输入备用电话"
+      }
+    },
+    "submit": {
+      "button": "提交入住",
+      "submitting": "提交中...",
+      "success": "入住成功完成",
+      "successMessage": "您的资料已正确登记。感谢您完成入住。",
+      "error": "提交入住时出错",
+      "errorMessage": "发生错误。请稍后重试。"
+    },
+    "validation": {
+      "required": "此字段为必填项",
+      "invalidEmail": "请输入有效的电子邮箱",
+      "invalidPhone": "请输入有效的电话号码",
+      "selectCountry": "请选择国家",
+      "selectGender": "请选择选项",
+      "secondSurnameRequired": "DNI/NIE需要第二姓氏",
+      "selectDocumentType": "选择文件类型",
+      "documentNumberRequired": "文件号码为必填项",
+      "invalidFormat": "无效格式",
+      "dateOfBirthRequired": "出生日期为必填项",
+      "invalidDate": "无效日期",
+      "invalidNumber": "无效号码"
+    },
+    "errors": {
+      "linkInvalid": "无效链接",
+      "linkInvalidMessage": "入住链接无效。请检查网址。",
+      "linkExpired": "链接已过期",
+      "linkExpiredMessage": "此入住链接已过期。请联系住宿。",
+      "linkUsed": "链接已使用",
+      "linkUsedMessage": "此预订的入住已完成。",
+      "networkError": "连接错误",
+      "networkErrorMessage": "无法连接到服务器。请检查您的互联网连接。",
+      "serverError": "服务器错误",
+      "serverErrorMessage": "服务器发生错误。请稍后重试。",
+      "loadingError": "加载错误",
+      "loadingErrorMessage": "无法加载预订数据"
+    },
+    "paymentMethods": {
+      "destination": "到店付款",
+      "online": "在线付款",
+      "bank_transfer": "银行转账",
+      "other": "其他"
+    },
+    "signature": {
+      "title": "旅客签名",
+      "subtitle": "请用手指（手机）或鼠标（电脑）在框内签名",
+      "signHere": "在此签名",
+      "clear": "清除",
+      "disclaimer": "您的签名证明所提供的信息是正确的",
+      "captured": "签名成功获取"
+    },
+    "reservationForm": {
+      "title": "编辑预订数据",
+      "checkInDate": "入住日期",
+      "checkOutDate": "退房日期",
+      "save": "保存",
+      "cancel": "取消",
+      "checkOutAfterCheckIn": "退房日期必须晚于入住日期",
+      "atLeastOneTraveler": "必须至少有1位旅客",
+      "night": "晚",
+      "nights": "晚"
+    },
+    "confirmation": {
+      "title": "入住成功完成！",
+      "subtitle": "我们已正确收到您的信息",
+      "summary": "您的登记摘要",
+      "property": "房产：",
+      "stay": "住宿：",
+      "registeredTravelers": "已登记旅客：",
+      "paymentMethod": "付款方式：",
+      "travelersList": "已登记旅客：",
+      "whatNext": "下一步是什么？",
+      "nextSteps": "您的信息已成功发送到住宿。您将很快收到确认电子邮件。如有任何问题，请随时直接联系住宿。",
+      "close": "关闭"
+    }
+  },
+  "locale": "zh-CN"
+}
+

@@ -12,6 +12,8 @@ import { Reservation, Traveler, PaymentMethod } from './types';
 import TravelersList from './components/TravelersList';
 import AddTravelerWizard from './components/AddTravelerWizard';
 import ReservationForm from './components/ReservationForm';
+import SignaturePad from './components/SignaturePad';
+import LanguageSelector from './components/LanguageSelector';
 import toast from 'react-hot-toast';
 
 const SesRegistroPage: React.FC = () => {
@@ -35,6 +37,13 @@ const SesRegistroPage: React.FC = () => {
   
   // Estado del formulario de reserva
   const [isReservationFormOpen, setIsReservationFormOpen] = useState<boolean>(false);
+  
+  // Estado de check-in enviado
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  
+  // Estado de la firma digital
+  const [signature, setSignature] = useState<string | null>(null);
+  const [signatureError, setSignatureError] = useState<string>('');
   
   // Cargar datos iniciales de la reserva
   useEffect(() => {
@@ -176,14 +185,51 @@ const SesRegistroPage: React.FC = () => {
 
   // Manejar envío del check-in
   const handleSubmitCheckin = async () => {
+    // Validar que haya al menos un viajero
     if (!reservation || reservation.travelers.length === 0) {
       toast.error(t('sesRegistro.travelers.required'));
       return;
     }
 
-    // TODO: Implementar envío al API del proveedor
-    console.log('Enviar check-in', reservation);
-    toast.success(t('sesRegistro.submit.success'));
+    // Validar que exista la firma
+    if (!signature) {
+      setSignatureError('La firma es obligatoria para completar el check-in');
+      toast.error('Por favor, firme en el campo correspondiente');
+      
+      // Scroll al campo de firma
+      const signatureElement = document.getElementById('signature-section');
+      if (signatureElement) {
+        signatureElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    try {
+      // TODO: Implementar envío al API del proveedor
+      console.log('Enviar check-in', {
+        reservation,
+        signature, // La firma se envía como base64
+      });
+      
+      // Simular pequeño delay de envío
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Marcar como enviado para mostrar pantalla de confirmación
+      setIsSubmitted(true);
+      
+    } catch (error) {
+      console.error('Error al enviar check-in:', error);
+      toast.error('Error al enviar el check-in. Por favor, inténtelo de nuevo.');
+    }
+  };
+
+  // Manejar cambio de firma
+  const handleSignatureChange = (signatureData: string | null) => {
+    setSignature(signatureData);
+    // Limpiar error si hay firma
+    if (signatureData) {
+      setSignatureError('');
+    }
   };
   
   // Loading state
@@ -240,18 +286,159 @@ const SesRegistroPage: React.FC = () => {
     );
   }
   
+  // Pantalla de confirmación de check-in enviado
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        {/* Header con Logo y Selector de Idiomas */}
+        <div className="max-w-3xl mx-auto mb-8">
+          {/* Logo y selector de idiomas en la misma línea */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Logo a la izquierda */}
+            <img 
+              src="/imagenes/Logo_hosthelper.png" 
+              alt="Host Helper" 
+              className="h-20"
+            />
+            
+            {/* Selector de idiomas a la derecha */}
+            <LanguageSelector />
+          </div>
+        </div>
+
+        {/* Tarjeta de confirmación */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+            {/* Header con checkmark animado */}
+            <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-12 text-center">
+              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-bounce">
+                <svg className="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                {t('sesRegistro.confirmation.title')}
+              </h1>
+              <p className="text-green-50 text-lg">
+                {t('sesRegistro.confirmation.subtitle')}
+              </p>
+            </div>
+
+            {/* Resumen de la reserva */}
+            <div className="px-6 py-8">
+              <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  {t('sesRegistro.confirmation.summary')}
+                </h2>
+                
+                <div className="space-y-3">
+                  {/* Propiedad */}
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-600 font-medium">{t('sesRegistro.confirmation.property')}</span>
+                    <span className="text-gray-900 font-semibold text-right">{reservation.propertyName}</span>
+                  </div>
+
+                  {/* Fechas */}
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-600 font-medium">{t('sesRegistro.confirmation.stay')}</span>
+                    <span className="text-gray-900 text-right">
+                      {new Date(reservation.checkIn).toLocaleDateString()} - {new Date(reservation.checkOut).toLocaleDateString()}
+                      <span className="block text-sm text-primary">{reservation.numberOfNights} {reservation.numberOfNights === 1 ? t('sesRegistro.reservationForm.night') : t('sesRegistro.reservationForm.nights')}</span>
+                    </span>
+                  </div>
+
+                  {/* Viajeros registrados */}
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-600 font-medium">{t('sesRegistro.confirmation.registeredTravelers')}</span>
+                    <span className="text-gray-900 font-semibold">{reservation.travelers.length}</span>
+                  </div>
+
+                  {/* Método de pago */}
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-600 font-medium">{t('sesRegistro.confirmation.paymentMethod')}</span>
+                    <span className="text-gray-900">{t(`sesRegistro.paymentMethods.${reservation.paymentMethod}`)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lista de viajeros */}
+              <div className="mb-6">
+                <h3 className="text-md font-semibold text-gray-900 mb-3">{t('sesRegistro.confirmation.travelersList')}</h3>
+                <div className="space-y-2">
+                  {reservation.travelers.map((traveler, index) => (
+                    <div key={traveler.id} className="flex items-center bg-green-50 rounded-lg px-4 py-3">
+                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-gray-900 font-medium">
+                          {traveler.firstName} {traveler.firstSurname} {traveler.secondSurname || ''}
+                        </p>
+                        <p className="text-sm text-gray-600">{traveler.email}</p>
+                      </div>
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Información adicional */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex">
+                  <svg className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h4 className="text-sm font-semibold text-blue-900 mb-1">{t('sesRegistro.confirmation.whatNext')}</h4>
+                    <p className="text-sm text-blue-800">
+                      {t('sesRegistro.confirmation.nextSteps')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Botón de cerrar */}
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-4 px-6 rounded-lg transition shadow-md"
+              >
+                {t('sesRegistro.confirmation.close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      {/* Logo */}
-      <div className="max-w-3xl mx-auto mb-6 text-center">
-        <img 
-          src="/imagenes/Logo_hosthelper.png" 
-          alt="Host Helper" 
-          className="h-24 mx-auto mb-2"
-        />
-        <h1 className="text-2xl font-bold text-gray-900">
-          {t('sesRegistro.subtitle')}
-        </h1>
+      {/* Header con Logo y Selector de Idiomas */}
+      <div className="max-w-3xl mx-auto mb-6">
+        {/* Logo y selector de idiomas en la misma línea */}
+        <div className="flex items-center justify-between mb-4">
+          {/* Logo a la izquierda */}
+          <img 
+            src="/imagenes/Logo_hosthelper.png" 
+            alt="Host Helper" 
+            className="h-24"
+          />
+          
+          {/* Selector de idiomas a la derecha */}
+          <LanguageSelector />
+        </div>
+        
+        {/* Título centrado */}
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900">
+            {t('sesRegistro.subtitle')}
+          </h1>
+        </div>
       </div>
       
       {/* Contenedor principal */}
@@ -361,6 +548,15 @@ const SesRegistroPage: React.FC = () => {
           onEdit={handleEditTraveler}
           onDelete={handleDeleteTraveler}
         />
+        
+        {/* Campo de Firma Digital */}
+        <div id="signature-section" className="bg-white shadow rounded-lg p-6">
+          <SignaturePad
+            onSignatureChange={handleSignatureChange}
+            signatureData={signature}
+            error={signatureError}
+          />
+        </div>
         
         {/* Botón Enviar Check-in */}
         <button

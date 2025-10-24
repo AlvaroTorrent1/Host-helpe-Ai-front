@@ -1393,8 +1393,21 @@
         "firstSurnamePlaceholder": "Ingrese primer apellido",
         "secondSurname": "Segundo Apellido (opcional)",
         "secondSurnamePlaceholder": "Ingrese segundo apellido",
+        "requiredForDNI": "(Obligatorio para DNI/NIE)",
         "nationality": "Nacionalidad",
         "nationalityPlaceholder": "Seleccionar una nacionalidad",
+        "documentType": "Tipo de Documento",
+        "documentTypePlaceholder": "Seleccione tipo de documento",
+        "documentTypes": {
+          "passport": "Pasaporte",
+          "dni": "DNI (España)",
+          "nie": "NIE (España)",
+          "other": "Otro documento"
+        },
+        "documentNumber": "Número de Documento",
+        "documentNumberPlaceholder": "Ej: AAA123456",
+        "documentNumberExample": "💡 Formato esperado:",
+        "dateOfBirth": "Fecha de Nacimiento",
         "gender": "Sexo",
         "male": "Hombre",
         "female": "Mujer",
@@ -1442,7 +1455,14 @@
       "invalidEmail": "Por favor, ingrese un email válido",
       "invalidPhone": "Por favor, ingrese un número de teléfono válido",
       "selectCountry": "Por favor, seleccione un país",
-      "selectGender": "Por favor, seleccione una opción"
+      "selectGender": "Por favor, seleccione una opción",
+      "secondSurnameRequired": "El segundo apellido es obligatorio para DNI/NIE",
+      "selectDocumentType": "Seleccione el tipo de documento",
+      "documentNumberRequired": "El número de documento es obligatorio",
+      "invalidFormat": "Formato inválido",
+      "dateOfBirthRequired": "La fecha de nacimiento es obligatoria",
+      "invalidDate": "Fecha inválida",
+      "invalidNumber": "Número inválido"
     },
     "errors": {
       "linkInvalid": "Enlace inválido",
@@ -1463,6 +1483,38 @@
       "online": "Pago Online",
       "bank_transfer": "Transferencia Bancaria",
       "other": "Otro"
+    },
+    "signature": {
+      "title": "Firma del Viajero",
+      "subtitle": "Por favor, firme en el recuadro usando su dedo (móvil) o mouse (ordenador)",
+      "signHere": "Firme aquí",
+      "clear": "Limpiar",
+      "disclaimer": "Su firma certifica que la información proporcionada es correcta",
+      "captured": "Firma capturada correctamente"
+    },
+    "reservationForm": {
+      "title": "Editar Datos de Reserva",
+      "checkInDate": "Fecha de Entrada",
+      "checkOutDate": "Fecha de Salida",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "checkOutAfterCheckIn": "La fecha de salida debe ser posterior a la de entrada",
+      "atLeastOneTraveler": "Debe haber al menos 1 viajero",
+      "night": "noche",
+      "nights": "noches"
+    },
+    "confirmation": {
+      "title": "¡Check-in Completado Exitosamente!",
+      "subtitle": "Hemos recibido su información correctamente",
+      "summary": "Resumen de su Registro",
+      "property": "Propiedad:",
+      "stay": "Estancia:",
+      "registeredTravelers": "Viajeros registrados:",
+      "paymentMethod": "Método de pago:",
+      "travelersList": "Viajeros Registrados:",
+      "whatNext": "¿Qué sigue?",
+      "nextSteps": "Su información ha sido enviada correctamente al alojamiento. Recibirá un correo de confirmación en breve. Si tiene alguna pregunta, no dude en contactar con el alojamiento directamente.",
+      "close": "Cerrar"
     }
   },
   "locale": "es-ES"

@@ -389,3 +389,5 @@ Cuando agregues nuevos features, revisa:
 **Última actualización**: Octubre 2025  
 **Mantenedor**: Equipo de desarrollo
 
+
+

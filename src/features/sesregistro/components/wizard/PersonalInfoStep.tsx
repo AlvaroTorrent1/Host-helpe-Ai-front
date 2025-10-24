@@ -1,13 +1,14 @@
 // src/features/sesregistro/components/wizard/PersonalInfoStep.tsx
 /**
  * Paso 1 del wizard: Información Personal
- * Nombre, apellidos, nacionalidad, sexo
+ * Nombre, apellidos, nacionalidad, sexo, documento, fecha de nacimiento
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelector from '../CountrySelector';
-import { PartialTraveler, Gender } from '../../types';
+import { PartialTraveler, Gender, DocumentType } from '../../types';
+import { requiresSecondSurname, getDocumentExample, filterDocumentInput } from '../../validators';
 
 interface PersonalInfoStepProps {
   travelerData: PartialTraveler;
@@ -21,6 +22,22 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   errors = {},
 }) => {
   const { t } = useTranslation();
+
+  // Verificar si el segundo apellido es obligatorio (DNI/NIE españoles)
+  const isSecondSurnameRequired = useMemo(() => {
+    return requiresSecondSurname(
+      travelerData.documentType || 'other',
+      travelerData.nationality || ''
+    );
+  }, [travelerData.documentType, travelerData.nationality]);
+
+  // Obtener ejemplo de documento
+  const documentExample = useMemo(() => {
+    if (travelerData.documentType && travelerData.nationality) {
+      return getDocumentExample(travelerData.documentType, travelerData.nationality);
+    }
+    return '';
+  }, [travelerData.documentType, travelerData.nationality]);
 
   return (
     <div className="space-y-6">
@@ -78,18 +95,32 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         )}
       </div>
 
-      {/* Segundo Apellido (Opcional) */}
+      {/* Segundo Apellido (Condicional: obligatorio para DNI/NIE españoles) */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           {t('sesRegistro.wizard.personal.secondSurname')}
+          {isSecondSurnameRequired && <span className="text-red-500">*</span>}
+          {isSecondSurnameRequired && (
+            <span className="text-xs font-normal text-gray-500 ml-2">
+              {t('sesRegistro.wizard.personal.requiredForDNI')}
+            </span>
+          )}
         </label>
         <input
           type="text"
           value={travelerData.secondSurname || ''}
           onChange={(e) => onUpdate({ secondSurname: e.target.value })}
           placeholder={t('sesRegistro.wizard.personal.secondSurnamePlaceholder')}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className={`
+            w-full px-4 py-3 border rounded-lg
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+            ${errors.secondSurname ? 'border-red-500' : 'border-gray-300'}
+          `}
         />
+        {errors.secondSurname && (
+          <p className="mt-1 text-sm text-red-600">{errors.secondSurname}</p>
+        )}
       </div>
 
       {/* Nacionalidad */}
@@ -104,6 +135,85 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           error={errors.nationality}
           showFlag={true}
         />
+      </div>
+
+      {/* Tipo de Documento */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {t('sesRegistro.wizard.personal.documentType')} <span className="text-red-500">*</span>
+        </label>
+        <select
+          value={travelerData.documentType || ''}
+          onChange={(e) => onUpdate({ documentType: e.target.value as DocumentType })}
+          className={`
+            w-full px-4 py-3 border rounded-lg
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+            ${errors.documentType ? 'border-red-500' : 'border-gray-300'}
+          `}
+        >
+          <option value="">{t('sesRegistro.wizard.personal.documentTypePlaceholder')}</option>
+          <option value="passport">{t('sesRegistro.wizard.personal.documentTypes.passport')}</option>
+          <option value="dni">{t('sesRegistro.wizard.personal.documentTypes.dni')}</option>
+          <option value="nie">{t('sesRegistro.wizard.personal.documentTypes.nie')}</option>
+          <option value="other">{t('sesRegistro.wizard.personal.documentTypes.other')}</option>
+        </select>
+        {errors.documentType && (
+          <p className="mt-1 text-sm text-red-600">{errors.documentType}</p>
+        )}
+      </div>
+
+      {/* Número de Documento */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {t('sesRegistro.wizard.personal.documentNumber')} <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={travelerData.documentNumber || ''}
+          onChange={(e) => {
+            // Filtrar entrada: solo alfanuméricos, espacios y guiones
+            const filtered = filterDocumentInput(e.target.value);
+            onUpdate({ documentNumber: filtered });
+          }}
+          placeholder={t('sesRegistro.wizard.personal.documentNumberPlaceholder')}
+          className={`
+            w-full px-4 py-3 border rounded-lg font-mono
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+            ${errors.documentNumber ? 'border-red-500' : 'border-gray-300'}
+          `}
+        />
+        {errors.documentNumber && (
+          <p className="mt-1 text-sm text-red-600">{errors.documentNumber}</p>
+        )}
+        {documentExample && !errors.documentNumber && (
+          <p className="mt-1 text-xs text-gray-500">
+            {t('sesRegistro.wizard.personal.documentNumberExample')} {documentExample}
+          </p>
+        )}
+      </div>
+
+      {/* Fecha de Nacimiento */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {t('sesRegistro.wizard.personal.dateOfBirth')} <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="date"
+          value={travelerData.dateOfBirth || ''}
+          onChange={(e) => onUpdate({ dateOfBirth: e.target.value })}
+          max={new Date().toISOString().split('T')[0]} // No permitir fechas futuras
+          className={`
+            w-full px-4 py-3 border rounded-lg
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+            ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'}
+          `}
+        />
+        {errors.dateOfBirth && (
+          <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</p>
+        )}
       </div>
 
       {/* Sexo */}
@@ -160,6 +270,10 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 };
 
 export default PersonalInfoStep;
+
+
+
+
 
 
 

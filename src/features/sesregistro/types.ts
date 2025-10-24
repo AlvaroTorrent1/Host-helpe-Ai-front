@@ -10,6 +10,11 @@
 export type Gender = 'male' | 'female' | 'other';
 
 /**
+ * Tipo de documento de identidad
+ */
+export type DocumentType = 'passport' | 'dni' | 'nie' | 'other';
+
+/**
  * Pasos del wizard de añadir viajero
  */
 export type WizardStep = 'personal' | 'residence' | 'address' | 'contact';
@@ -25,15 +30,23 @@ export interface Traveler {
   // Información Personal
   firstName: string;
   firstSurname: string;
-  secondSurname?: string; // Opcional
+  secondSurname?: string; // Opcional (obligatorio para DNI/NIE españoles)
   nationality: string; // Código de país (ISO 3166-1 alpha-2)
   gender: Gender;
+  
+  // Información del Documento (NUEVO - Real Decreto 933/2021)
+  documentType: DocumentType; // Tipo de documento
+  documentNumber: string; // Número de documento/pasaporte
+  documentSupportNumber?: string; // Número de soporte (opcional)
+  dateOfBirth: string; // Fecha de nacimiento (formato ISO YYYY-MM-DD)
+  placeOfBirth?: string; // Lugar de nacimiento (opcional)
   
   // País de Residencia
   residenceCountry: string; // Código de país (ISO 3166-1 alpha-2)
   
   // Información de Dirección
   city: string;
+  ineCode?: string; // Código INE del municipio (solo para España, opcional)
   postalCode: string;
   address: string;
   additionalAddress?: string; // Opcional (Apto, Piso, etc.)
