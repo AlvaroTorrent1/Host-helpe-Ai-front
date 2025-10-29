@@ -679,6 +679,7 @@
       "allProperties": "Todas las propiedades",
       "checkInDate": "Fecha de entrada",
       "checkOutDate": "Fecha de salida",
+      "sesStatus": "Estado Registro SES",
       "clear": "Limpiar filtros"
     },
     "table": {
@@ -687,7 +688,16 @@
       "phone": "TELÉFONO",
       "checkIn": "ENTRADA",
       "checkOut": "SALIDA",
+      "dates": "FECHAS",
+      "sesRegistration": "REGISTRO SES",
       "actions": "ACCIONES"
+    },
+    "sesStatus": {
+      "notSent": "No enviado",
+      "sent": "Enviado",
+      "completed": "Completado",
+      "error": "Error",
+      "all": "Todos los estados"
     },
     "edit": {
       "tooltip": "Editar reserva"
@@ -1515,6 +1525,86 @@
       "whatNext": "¿Qué sigue?",
       "nextSteps": "Su información ha sido enviada correctamente al alojamiento. Recibirá un correo de confirmación en breve. Si tiene alguna pregunta, no dude en contactar con el alojamiento directamente.",
       "close": "Cerrar"
+    }
+  },
+  "travelerRegistry": {
+    "title": "Partes de Viajeros",
+    "subtitle": "Gestiona y descarga los partes de viajeros completados",
+    "important": "Importante:",
+    "importantMessage": "Los partes de viajeros son enviados automáticamente por nuestro sistema de agentes. Aquí puedes visualizar todos los partes, filtrarlos y descargarlos en PDF cuando estén completados por los turistas.",
+    "filters": {
+      "title": "Filtros",
+      "property": "Propiedad",
+      "allProperties": "Todas las Propiedades",
+      "from": "Desde",
+      "to": "Hasta",
+      "status": "Estado",
+      "all": "Todos",
+      "completed": "Completados",
+      "pending": "Pendientes"
+    },
+    "stats": {
+      "totalReports": "Total de Partes",
+      "completed": "Completados",
+      "pending": "Pendientes"
+    },
+    "table": {
+      "property": "Propiedad",
+      "tourist": "Turista",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "status": "Estado",
+      "sent": "Enviado",
+      "actions": "Acciones",
+      "view": "Ver",
+      "pdf": "PDF",
+      "pendingCompletion": "Pendiente de completar",
+      "completedBadge": "✓ Completado",
+      "pendingBadge": "⏳ Pendiente",
+      "noReports": "No se encontraron partes de viajeros con los filtros aplicados.",
+      "viewDetails": "Ver detalles",
+      "downloadPdf": "Descargar PDF"
+    },
+    "modal": {
+      "title": "Detalles del Parte de Viajero",
+      "stayInfo": "Información de la Estancia",
+      "property": "Propiedad",
+      "status": "Estado",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "numPersons": "Número de Personas",
+      "rooms": "Habitaciones",
+      "travelerInfo": "Datos del Viajero",
+      "pendingMessage": "El turista aún no ha completado el parte del viajero.",
+      "emailSentTo": "Email enviado a:",
+      "sentOn": "Enviado el:",
+      "fullName": "Nombre Completo",
+      "email": "Email",
+      "phone": "Teléfono",
+      "document": "Documento",
+      "nationality": "Nacionalidad",
+      "birthDate": "Fecha de Nacimiento",
+      "paymentInfo": "Información de Pago",
+      "paymentMethod": "Método de Pago",
+      "paymentHolder": "Titular",
+      "signature": "Firma Digital",
+      "signedOn": "Firmado el:",
+      "close": "Cerrar",
+      "downloadPdf": "Descargar PDF"
+    },
+    "loading": "Cargando partes de viajeros...",
+    "errors": {
+      "loadingReports": "Error al cargar los partes de viajeros",
+      "reportNotFound": "No se encontró el parte de viajero",
+      "loadingDetails": "Error al cargar los detalles",
+      "mustBeCompleted": "El parte debe estar completado para descargar PDF",
+      "noTravelerData": "No se encontraron datos del viajero",
+      "downloadingPdf": "Error al descargar el PDF"
+    },
+    "toast": {
+      "preparingPdf": "Preparando PDF...",
+      "generatingPdf": "Generando PDF...",
+      "pdfDownloaded": "PDF descargado exitosamente"
     }
   },
   "locale": "es-ES"

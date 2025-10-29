@@ -7,6 +7,12 @@ export type ReservationStatus =
   | "cancelled"
   | "completed";
 
+// Estado del registro de viajeros (SES) - Solo 3 estados
+export type SesRegistrationStatus = 
+  | "not_sent"      // No se ha enviado el formulario al huésped
+  | "sent"          // Enviado pero pendiente de completar
+  | "completed";    // Parte completado correctamente
+
 export interface Guest {
   id: string;
   firstName: string;
@@ -39,6 +45,11 @@ export interface Reservation {
   // Campos para reservas sincronizadas desde iCal
   isSynced?: boolean; // Indica si la reserva viene de sincronización iCal
   syncSource?: string; // Fuente de sincronización (ej. "Booking.com - Casa María Flora")
+  // Campos para registro de viajeros (SES)
+  sesRegistrationStatus?: SesRegistrationStatus; // Estado del parte de viajeros
+  sesRegistrationSentAt?: string; // Fecha cuando se envió el formulario (formato ISO)
+  sesRegistrationCompletedAt?: string; // Fecha cuando se completó el formulario (formato ISO)
+  sesRegistrationToken?: string; // Token único para el formulario de registro
 }
 
 // Filtros para la búsqueda de reservas
@@ -46,7 +57,8 @@ export interface ReservationFilters {
   propertyId?: string;
   startDate?: string; // fecha desde
   endDate?: string; // fecha hasta
-  searchTerm?: string; // búsqueda por nombre/email del huésped, etc.
+  searchTerm?: string; // búsqueda por nombre/email/teléfono del huésped
+  sesRegistrationStatus?: SesRegistrationStatus; // filtro por estado del parte de viajeros
 }
 
 // Datos necesarios para crear una nueva reserva

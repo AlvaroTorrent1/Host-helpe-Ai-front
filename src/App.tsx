@@ -20,8 +20,7 @@ const CheckinPage = lazy(() => import("./features/landing/CheckinPage"));
 const UpsellingPage = lazy(() => import("./features/landing/UpsellingPage"));
 const PricingPage = lazy(() => import("./features/landing/Pricing"));
 const SesRegistroPage = lazy(() => import("./features/sesregistro/SesRegistroPage"));
-// Import para SesReportPage - necesario para lazy loading correcto
-const SesReportPage = lazy(() => import("./features/sesregistro/SesReportPage"));
+// SesReportPage removido - funcionalidad migrada a ReservationManagementPage
 // const TestimoniosPage = lazy(() => import("./features/landing/Testimonios"));
 const PrivacyPolicyPage = lazy(() => import("./features/landing/PrivacyPolicy"));
 const TerminosCondicionesPage = lazy(() => import("./features/landing/TerminosYCondiciones"));
@@ -98,8 +97,8 @@ function App() {
                       <Route path="/auth/callback" element={<AuthCallbackPage />} />
                       <Route path="/payment/success" element={<PaymentSuccessPage />} />
                       
-                      {/* Ruta pública para Check-in de turistas (SES Registro) */}
-                      <Route path="/check-in/:propertyName" element={<SesRegistroPage />} />
+                      {/* Ruta pública para Check-in de turistas (SES Registro) - usa token único */}
+                      <Route path="/check-in/:token" element={<SesRegistroPage />} />
 
                       {/* Rutas protegidas */}
                       <Route
@@ -126,12 +125,7 @@ function App() {
                               return import('./features/reservations/ReservationsPage.tsx');
                             }
                             
-                            // Import específico para SesReportPage
-                            // Se importa desde sesregistro, no sesreport
-                            if (componentName === 'SesReportPage') {
-                              return import('./features/sesregistro/SesReportPage.tsx');
-                            }
-
+                            // SesReportPage removido - funcionalidad migrada a ReservationManagementPage
                             
                             const alternativeFolderName = componentName.toLowerCase().replace('page', '');
                             return import(`./features/${alternativeFolderName}/${componentName}.tsx`);

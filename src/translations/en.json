@@ -739,6 +739,7 @@
       "allProperties": "All properties",
       "checkInDate": "Check-in date",
       "checkOutDate": "Check-out date",
+      "sesStatus": "SES Registration Status",
       "clear": "Clear filters"
     },
     "table": {
@@ -747,7 +748,16 @@
       "phone": "PHONE",
       "checkIn": "CHECK-IN",
       "checkOut": "CHECK-OUT",
+      "dates": "DATES",
+      "sesRegistration": "SES REGISTRATION",
       "actions": "ACTIONS"
+    },
+    "sesStatus": {
+      "notSent": "Not sent",
+      "sent": "Sent",
+      "completed": "Completed",
+      "error": "Error",
+      "all": "All statuses"
     },
     "edit": {
       "tooltip": "Edit reservation"
@@ -1567,6 +1577,86 @@
       "whatNext": "What's next?",
       "nextSteps": "Your information has been successfully sent to the accommodation. You will receive a confirmation email shortly. If you have any questions, please feel free to contact the accommodation directly.",
       "close": "Close"
+    }
+  },
+  "travelerRegistry": {
+    "title": "Traveler Registry",
+    "subtitle": "Manage and download completed traveler reports",
+    "important": "Important:",
+    "importantMessage": "Traveler reports are automatically sent by our agent system. Here you can view all reports, filter them, and download them in PDF when completed by tourists.",
+    "filters": {
+      "title": "Filters",
+      "property": "Property",
+      "allProperties": "All Properties",
+      "from": "From",
+      "to": "To",
+      "status": "Status",
+      "all": "All",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "stats": {
+      "totalReports": "Total Reports",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "table": {
+      "property": "Property",
+      "tourist": "Tourist",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "status": "Status",
+      "sent": "Sent",
+      "actions": "Actions",
+      "view": "View",
+      "pdf": "PDF",
+      "pendingCompletion": "Pending completion",
+      "completedBadge": "✓ Completed",
+      "pendingBadge": "⏳ Pending",
+      "noReports": "No traveler reports found with the applied filters.",
+      "viewDetails": "View details",
+      "downloadPdf": "Download PDF"
+    },
+    "modal": {
+      "title": "Traveler Report Details",
+      "stayInfo": "Stay Information",
+      "property": "Property",
+      "status": "Status",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "numPersons": "Number of Persons",
+      "rooms": "Rooms",
+      "travelerInfo": "Traveler Information",
+      "pendingMessage": "The tourist has not yet completed the traveler report.",
+      "emailSentTo": "Email sent to:",
+      "sentOn": "Sent on:",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "document": "Document",
+      "nationality": "Nationality",
+      "birthDate": "Date of Birth",
+      "paymentInfo": "Payment Information",
+      "paymentMethod": "Payment Method",
+      "paymentHolder": "Holder",
+      "signature": "Digital Signature",
+      "signedOn": "Signed on:",
+      "close": "Close",
+      "downloadPdf": "Download PDF"
+    },
+    "loading": "Loading traveler reports...",
+    "errors": {
+      "loadingReports": "Error loading traveler reports",
+      "reportNotFound": "Traveler report not found",
+      "loadingDetails": "Error loading details",
+      "mustBeCompleted": "The report must be completed to download PDF",
+      "noTravelerData": "No traveler data found",
+      "downloadingPdf": "Error downloading PDF"
+    },
+    "toast": {
+      "preparingPdf": "Preparing PDF...",
+      "generatingPdf": "Generating PDF...",
+      "pdfDownloaded": "PDF downloaded successfully"
     }
   },
   "locale": "en-US"

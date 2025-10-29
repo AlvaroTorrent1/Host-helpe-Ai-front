@@ -23,8 +23,9 @@ const Button = ({
   ...rest
 }: ButtonProps) => {
   // Configuración de colores según variante
+  // Updated: primary now uses brand color (same as PDF button) for consistency
   const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-    primary: 'bg-primary-600 hover:bg-primary-700 text-white',
+    primary: 'bg-primary hover:bg-primary-600 text-white',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
     danger: 'bg-red-500 hover:bg-red-600 text-white',
     dangerOutline: 'text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300',

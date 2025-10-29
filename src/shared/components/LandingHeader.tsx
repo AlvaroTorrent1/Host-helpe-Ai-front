@@ -32,7 +32,7 @@ const LandingHeader: React.FC<LandingHeaderProps> = ({ onLogoClick }) => {
 
   // Navigation links configuration - idéntica para todas las páginas
   const navLinks = [
-    { text: "Características", href: "/#features" },
+    { text: t("nav.features"), href: "/#features" },
     { text: t("nav.pricing"), href: "/pricing" },
     // Redirigir "Testimonios" a la sección de landing
     { text: t("nav.testimonials"), href: "/#testimonios" },

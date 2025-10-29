@@ -1,8 +1,10 @@
 // src/shared/components/LanguageSelector.tsx
-// Selector de idioma - MIGRADO a react-i18next
+// Selector de idioma para la plataforma (header/dashboard)
+// SOLO soporta inglés y español (no los 8 idiomas del check-in)
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
+import { PLATFORM_LANGUAGES } from '@/i18n';
 
 interface LanguageSelectorProps {
   isMobile?: boolean;
@@ -19,6 +21,17 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   // Obtener idioma actual de react-i18next
   const currentLanguage = i18n.language;
 
+  // Forzar cambio a inglés si el idioma actual no es inglés ni español
+  // Esto puede pasar si el usuario viene de la página de check-in en otro idioma
+  useEffect(() => {
+    if (!PLATFORM_LANGUAGES.includes(currentLanguage)) {
+      // Cambiar a inglés por defecto
+      i18n.changeLanguage('en');
+      // Actualizar localStorage para que persista
+      localStorage.setItem('preferredLanguage', 'en');
+    }
+  }, [currentLanguage, i18n]);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -26,8 +39,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleLanguageChange = (lang: string) => {
     // Usar changeLanguage de react-i18next
     i18n.changeLanguage(lang);
+    // Guardar en localStorage para persistir la preferencia
+    localStorage.setItem('preferredLanguage', lang);
     setIsOpen(false);
   };
+
+  // Mostrar solo ES o EN, aunque currentLanguage tenga otro valor temporalmente
+  // Si no es un idioma de plataforma, mostrar EN por defecto
+  const displayLanguage = PLATFORM_LANGUAGES.includes(currentLanguage) ? currentLanguage : 'en';
 
   // Variante dashboard - botones simples
   if (variant === 'dashboard') {
@@ -36,7 +55,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <button
           onClick={() => handleLanguageChange("es")}
           className={`px-2 py-1 rounded ${
-            currentLanguage === "es"
+            displayLanguage === "es"
               ? "bg-white text-gray-800 border border-gray-300"
               : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
           }`}
@@ -48,7 +67,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <button
           onClick={() => handleLanguageChange("en")}
           className={`px-2 py-1 rounded ${
-            currentLanguage === "en"
+            displayLanguage === "en"
               ? "bg-white text-gray-800 border border-gray-300"
               : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
           }`}
@@ -69,7 +88,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <button
             onClick={() => handleLanguageChange("es")}
             className={`px-2 py-1 rounded ${
-              currentLanguage === "es"
+              displayLanguage === "es"
                 ? "bg-white text-gray-800 border border-gray-300"
                 : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
             }`}
@@ -79,7 +98,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <button
             onClick={() => handleLanguageChange("en")}
             className={`px-2 py-1 rounded ${
-              currentLanguage === "en"
+              displayLanguage === "en"
                 ? "bg-white text-gray-800 border border-gray-300"
                 : "text-gray-600 hover:bg-white hover:border hover:border-gray-300"
             }`}
@@ -98,7 +117,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         className="flex items-center space-x-1 text-gray-600 hover:text-primary-500 focus:outline-none"
         onClick={toggleDropdown}
       >
-        <span>{currentLanguage.toUpperCase()}</span>
+        <span>{displayLanguage.toUpperCase()}</span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
           fill="none"

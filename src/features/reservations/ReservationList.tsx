@@ -6,7 +6,7 @@ import {
 } from "../../types/reservation";
 import { Property } from "../../types/property";
 import { useTranslation } from "react-i18next";
-import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilIcon, EyeIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "@shared/components/DeleteConfirmationModal";
 import { reservationService } from "@/services/reservationService";
@@ -21,6 +21,8 @@ interface ReservationListProps {
   onAddReservation: () => void;
   onReservationDeleted?: (reservationId: string) => void;
   onEditReservation?: (reservation: Reservation) => void;
+  onViewSesDetails?: (reservationId: string) => void;
+  onDownloadSesPdf?: (reservationId: string) => void;
   tabsComponent?: React.ReactNode;
   activeTab?: 'current' | 'past';
 }
@@ -31,6 +33,8 @@ const ReservationList: React.FC<ReservationListProps> = ({
   onAddReservation,
   onReservationDeleted,
   onEditReservation,
+  onViewSesDetails,
+  onDownloadSesPdf,
   tabsComponent,
   activeTab = 'current',
 }) => {
@@ -74,7 +78,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
         return false;
       }
 
-      // Filtro por término de búsqueda (nombre/apellido/email del huésped principal)
+      // Filtro por término de búsqueda (nombre/apellido/email/teléfono del huésped principal)
       if (filters.searchTerm) {
         const searchLower = filters.searchTerm.toLowerCase();
         const mainGuest = reservation.guests.find(
@@ -85,10 +89,16 @@ const ReservationList: React.FC<ReservationListProps> = ({
         const fullName =
           `${mainGuest.firstName} ${mainGuest.lastName}`.toLowerCase();
         const email = mainGuest.email.toLowerCase();
+        const phone = (mainGuest.phone || '').toLowerCase();
 
-        if (!fullName.includes(searchLower) && !email.includes(searchLower)) {
+        if (!fullName.includes(searchLower) && !email.includes(searchLower) && !phone.includes(searchLower)) {
           return false;
         }
+      }
+
+      // Filtro por estado de registro SES
+      if (filters.sesRegistrationStatus && reservation.sesRegistrationStatus !== filters.sesRegistrationStatus) {
+        return false;
       }
 
       return true;
@@ -116,19 +126,51 @@ const ReservationList: React.FC<ReservationListProps> = ({
   };
 
   // Verificar si hay filtros activos (excluyendo searchTerm)
-  const hasActiveFilters = !!(filters.propertyId || filters.startDate || filters.endDate);
+  const hasActiveFilters = !!(filters.propertyId || filters.startDate || filters.endDate || filters.sesRegistrationStatus);
 
-  // Formatear fecha
+  // Formatear fecha en formato numérico compacto (dd/mm/aaaa)
+  // Usa 'en-GB' para garantizar siempre el formato dd/mm/aaaa independientemente del idioma de la interfaz
   const formatDate = (dateString: string): string => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString(i18n.language, {
-        day: "numeric",
-        month: "long",
+      return date.toLocaleDateString('en-GB', {
+        day: "2-digit",
+        month: "2-digit",
         year: "numeric",
       });
     } catch {
       return dateString;
+    }
+  };
+
+  // Función helper para obtener el badge de estado SES (3 estados: no enviado, enviado, completado)
+  // Uses same style as "Active" badge from properties section
+  const getSesStatusBadge = (status?: string) => {
+    switch (status) {
+      case 'completed':
+        return {
+          text: t("reservations.sesStatus.completed"),
+          // Same style as "Active" badge: bg-primary-100 text-primary-800
+          bgColor: 'bg-primary-100',
+          textColor: 'text-primary-800',
+          borderClass: '',
+        };
+      case 'sent':
+        return {
+          text: t("reservations.sesStatus.sent"),
+          bgColor: 'bg-yellow-50',
+          textColor: 'text-yellow-700',
+          borderClass: '',
+        };
+      case 'not_sent':
+      default:
+        return {
+          text: t("reservations.sesStatus.notSent"),
+          // Light gray for not sent (subtle, minimal)
+          bgColor: 'bg-gray-50',
+          textColor: 'text-gray-500',
+          borderClass: '',
+        };
     }
   };
 
@@ -234,7 +276,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
           {/* Filtros desktop - ocultos en móvil */}
           <div className="hidden md:flex md:items-end md:space-x-4">
             {/* Filtro de propiedad */}
-            <div className="min-w-[200px]">
+            <div className="min-w-[180px]">
               <label
                 htmlFor="property-desktop"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -299,6 +341,30 @@ const ReservationList: React.FC<ReservationListProps> = ({
               />
             </div>
 
+            {/* Filtro de estado SES */}
+            <div className="min-w-[160px]">
+              <label
+                htmlFor="sesStatus-desktop"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {t("reservations.filters.sesStatus")}
+              </label>
+              <select
+                id="sesStatus-desktop"
+                name="sesStatus"
+                value={filters.sesRegistrationStatus || ""}
+                onChange={(e) =>
+                  handleFilterChange({ sesRegistrationStatus: e.target.value || undefined })
+                }
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              >
+                <option value="">{t("reservations.sesStatus.all")}</option>
+                <option value="not_sent">{t("reservations.sesStatus.notSent")}</option>
+                <option value="sent">{t("reservations.sesStatus.sent")}</option>
+                <option value="completed">{t("reservations.sesStatus.completed")}</option>
+              </select>
+            </div>
+
             {/* Botón para limpiar filtros */}
             <Button
               type="button"
@@ -338,6 +404,14 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       key: 'endDate', 
                       label: `Check-out: ${filters.endDate}`,
                       onRemove: () => handleFilterChange({ endDate: undefined })
+                    }] 
+                  : []
+                ),
+                ...(filters.sesRegistrationStatus 
+                  ? [{ 
+                      key: 'sesStatus', 
+                      label: `SES: ${t(`reservations.sesStatus.${filters.sesRegistrationStatus === 'not_sent' ? 'notSent' : filters.sesRegistrationStatus}`)}`,
+                      onRemove: () => handleFilterChange({ sesRegistrationStatus: undefined })
                     }] 
                   : []
                 )
@@ -405,58 +479,54 @@ const ReservationList: React.FC<ReservationListProps> = ({
             <div className={`overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 ${
               filteredReservations.length > 8 ? 'max-h-96' : 'max-h-none'
             }`}>
-              <table className="w-full divide-y divide-gray-200" style={{ minWidth: '800px' }}>
+              <table className="w-full divide-y divide-gray-200" style={{ minWidth: '900px' }}>
                 <thead className="bg-gray-50 sticky top-0 z-10">
                   <tr className="divide-x divide-gray-200">
+                    {/* Columna Propiedad - 25% */}
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '200px', width: '20%' }}
-                    >
-                      <div className="flex items-center justify-start">
-                        {t("reservations.table.guest")}
-                      </div>
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '200px', width: '20%' }}
+                      style={{ minWidth: '200px', width: '25%' }}
                     >
                       <div className="flex items-center justify-start">
                         {t("reservations.table.property")}
                       </div>
                     </th>
+                    {/* Columna Huésped (incluye teléfono) - 20% */}
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '120px', width: '15%' }}
+                      style={{ minWidth: '180px', width: '20%' }}
                     >
                       <div className="flex items-center justify-start">
-                        {t("reservations.table.phone")}
+                        {t("reservations.table.guest")}
                       </div>
                     </th>
+                    {/* Columna Fechas (fusiona check-in y check-out) - 20% */}
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '150px', width: '15%' }}
+                      style={{ minWidth: '140px', width: '20%' }}
                     >
                       <div className="flex items-center justify-start">
-                        {t("reservations.table.checkIn")}
+                        {t("reservations.table.dates")}
                       </div>
                     </th>
+                    {/* Columna Registro SES - 20% */}
                     <th
                       scope="col"
                       className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '150px', width: '15%' }}
+                      style={{ minWidth: '150px', width: '20%' }}
                     >
                       <div className="flex items-center justify-start">
-                        {t("reservations.table.checkOut")}
+                        {t("reservations.table.sesRegistration")}
                       </div>
                     </th>
+                    {/* Columna Acciones - 15% */}
                     <th
                       scope="col"
                       className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      style={{ minWidth: '100px', width: '15%' }}
+                      style={{ minWidth: '200px', width: '15%' }}
                     >
                       {t("reservations.table.actions")}
                     </th>
@@ -474,14 +544,29 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       (p) => p.id === reservation.propertyId,
                     );
 
+                    // Obtener badge de estado SES
+                    const sesStatusBadge = getSesStatusBadge(reservation.sesRegistrationStatus);
+
                     return (
                       <tr 
                         key={reservation.id} 
                         className="hover:bg-gray-50 transition-colors group divide-x divide-gray-200"
                       >
+                        {/* Columna Propiedad - 25% */}
                         <td 
-                          className="px-4 py-4 text-sm font-medium text-gray-900 text-left"
-                          style={{ minWidth: '200px', width: '20%' }}
+                          className="px-4 py-4 text-sm text-gray-900 text-left align-top"
+                          style={{ minWidth: '200px', width: '25%' }}
+                        >
+                          <div className="flex flex-col">
+                            <span className="font-medium">{property?.name || t("common.notAvailable")}</span>
+                            <span className="text-xs text-gray-500 mt-0.5">{property?.address || ""}</span>
+                          </div>
+                        </td>
+
+                        {/* Columna Huésped (incluye teléfono) - 20% */}
+                        <td 
+                          className="px-4 py-4 text-sm font-medium text-gray-900 text-left align-top"
+                          style={{ minWidth: '180px', width: '20%' }}
                         >
                           <div className="flex flex-col">
                             <div className="text-sm font-medium text-gray-900">
@@ -489,57 +574,104 @@ const ReservationList: React.FC<ReservationListProps> = ({
                                 ? `${mainGuest.firstName} ${mainGuest.lastName}`
                                 : t("common.notAvailable")}
                             </div>
+                            {/* Teléfono debajo del nombre */}
+                            <div className="text-xs text-gray-500 mt-0.5">
+                              {mainGuest?.phone || t("common.notAvailable")}
+                            </div>
                           </div>
                         </td>
+
+                        {/* Columna Fechas (fusiona check-in y check-out) - 20% */}
                         <td 
-                          className="px-4 py-4 text-sm text-gray-900 text-left"
-                          style={{ minWidth: '200px', width: '20%' }}
+                          className="px-4 py-4 text-sm text-gray-900 text-left align-top"
+                          style={{ minWidth: '140px', width: '20%' }}
                         >
                           <div className="flex flex-col">
-                            <span className="font-medium">{property?.name || t("common.notAvailable")}</span>
-                            <span className="text-xs text-gray-500">{property?.address || ""}</span>
+                            {/* Check-in */}
+                            <div className="flex items-center text-sm">
+                              <span className="font-medium text-gray-500 mr-1.5">↓</span>
+                              <span className="font-mono">{formatDate(reservation.checkInDate)}</span>
+                            </div>
+                            {/* Check-out */}
+                            <div className="flex items-center text-sm mt-0.5">
+                              <span className="font-medium text-gray-500 mr-1.5">↑</span>
+                              <span className="font-mono">{formatDate(reservation.checkOutDate)}</span>
+                            </div>
                           </div>
                         </td>
+
+                        {/* Columna Registro SES - 20% */}
                         <td 
-                          className="px-4 py-4 text-sm text-gray-500 text-left"
-                          style={{ minWidth: '120px', width: '15%' }}
+                          className="px-4 py-4 text-sm text-gray-900 text-left align-top"
+                          style={{ minWidth: '150px', width: '20%' }}
                         >
-                          {mainGuest?.phone || t("common.notAvailable")}
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${sesStatusBadge.bgColor} ${sesStatusBadge.textColor} ${sesStatusBadge.borderClass || ''}`}>
+                            {sesStatusBadge.text}
+                          </span>
                         </td>
+
+                        {/* Columna Acciones - 15% */}
                         <td 
-                          className="px-4 py-4 text-sm text-gray-500 text-left"
-                          style={{ minWidth: '150px', width: '15%' }}
+                          className="px-4 py-4 text-sm align-top"
+                          style={{ minWidth: '220px', width: '15%' }}
                         >
-                          {formatDate(reservation.checkInDate)}
-                        </td>
-                        <td 
-                          className="px-4 py-4 text-sm text-gray-500 text-left"
-                          style={{ minWidth: '150px', width: '15%' }}
-                        >
-                          {formatDate(reservation.checkOutDate)}
-                        </td>
-                        <td 
-                          className="px-4 py-4 text-sm text-center"
-                          style={{ minWidth: '100px', width: '15%' }}
-                        >
-                          <div className="flex items-center justify-center space-x-2">
-                            {/* Botón de editar */}
-                            <button
-                              onClick={() => onEditReservation?.(reservation)}
-                              className="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded hover:bg-blue-50"
-                              title={t("reservations.edit.tooltip")}
-                            >
-                              <PencilIcon className="h-4 w-4" />
-                            </button>
-                            
-                            {/* Botón de eliminar */}
-                            <button
-                              onClick={() => handleDeleteClick(reservation)}
-                              className="text-red-600 hover:text-red-800 transition-colors p-2 rounded hover:bg-red-50"
-                              title={t("reservations.delete.tooltip")}
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
+                          {/* Grid 2x2: View/PDF arriba, Editar/Eliminar abajo */}
+                          <div className="flex flex-col gap-1.5">
+                            {/* Fila superior: View y PDF */}
+                            <div className="flex items-center justify-start gap-1.5">
+                              {/* Botón Ver Detalles SES */}
+                              <button
+                                onClick={() => onViewSesDetails?.(reservation.id)}
+                                disabled={reservation.sesRegistrationStatus === 'not_sent'}
+                                className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors min-w-[90px] ${
+                                  reservation.sesRegistrationStatus === 'not_sent'
+                                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                                    : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                                }`}
+                                title={t('travelerRegistry.table.viewDetails')}
+                              >
+                                <EyeIcon className="w-4 h-4" />
+                                <span>View</span>
+                              </button>
+
+                              {/* Botón Descargar PDF - Using brand primary color (same orange as Completed badge) */}
+                              <button
+                                onClick={() => onDownloadSesPdf?.(reservation.id)}
+                                disabled={reservation.sesRegistrationStatus !== 'completed'}
+                                className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors min-w-[90px] ${
+                                  reservation.sesRegistrationStatus !== 'completed'
+                                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                                    : 'text-white bg-primary hover:bg-primary-600'
+                                }`}
+                                title={t('travelerRegistry.table.downloadPdf')}
+                              >
+                                <DocumentTextIcon className="w-4 h-4" />
+                                <span>PDF</span>
+                              </button>
+                            </div>
+
+                            {/* Fila inferior: Editar y Eliminar */}
+                            <div className="flex items-center justify-start gap-1.5">
+                              {/* Botón de editar - Using primary brand color (orange #ECA408) */}
+                              <button
+                                onClick={() => onEditReservation?.(reservation)}
+                                className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-primary hover:text-primary-600 rounded-md transition-colors min-w-[90px]"
+                                title={t("reservations.edit.tooltip")}
+                              >
+                                <PencilIcon className="h-4 w-4" />
+                                <span>Editar</span>
+                              </button>
+                              
+                              {/* Botón de eliminar - Keeping red for danger actions */}
+                              <button
+                                onClick={() => handleDeleteClick(reservation)}
+                                className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 rounded-md transition-colors min-w-[90px]"
+                                title={t("reservations.delete.tooltip")}
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                                <span>Eliminar</span>
+                              </button>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -625,6 +757,25 @@ const ReservationList: React.FC<ReservationListProps> = ({
               }
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
+          </div>
+
+          {/* Filtro de estado SES */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t("reservations.filters.sesStatus")}
+            </label>
+            <select
+              value={filters.sesRegistrationStatus || ""}
+              onChange={(e) =>
+                handleFilterChange({ sesRegistrationStatus: e.target.value || undefined })
+              }
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="">{t("reservations.sesStatus.all")}</option>
+              <option value="not_sent">{t("reservations.sesStatus.notSent")}</option>
+              <option value="sent">{t("reservations.sesStatus.sent")}</option>
+              <option value="completed">{t("reservations.sesStatus.completed")}</option>
+            </select>
           </div>
         </div>
       </MobileFiltersSheet>

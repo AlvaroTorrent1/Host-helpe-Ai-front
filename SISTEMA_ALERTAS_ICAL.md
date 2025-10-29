@@ -173,3 +173,5 @@ WHERE key = 'alert_email';
 Creado: 27 octubre 2025  
 Última actualización: 27 octubre 2025
 
+
+

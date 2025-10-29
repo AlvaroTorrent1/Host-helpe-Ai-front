@@ -6,7 +6,8 @@ import {
   Reservation as FrontendReservation, 
   ReservationCreateData as FrontendReservationCreateData,
   Guest,
-  ReservationStatus 
+  ReservationStatus,
+  SesRegistrationStatus 
 } from '../types/reservation';
 // i18n instance to translate fallback strings outside React components
 import i18n from '../i18n';
@@ -42,6 +43,28 @@ export interface CreateReservationData {
 }
 
 class ReservationService {
+  /**
+   * Mapear estado de traveler_form_requests a SesRegistrationStatus (3 estados: not_sent, sent, completed)
+   */
+  private mapSesStatus(travelerFormRequest: any): SesRegistrationStatus {
+    if (!travelerFormRequest) {
+      return 'not_sent';
+    }
+
+    // Si está completado
+    if (travelerFormRequest.status === 'completed' && travelerFormRequest.completed_at) {
+      return 'completed';
+    }
+
+    // Si fue enviado pero no completado (incluye casos con error - se mantendrán como "enviado")
+    if (travelerFormRequest.sent_at) {
+      return 'sent';
+    }
+
+    // Si existe pero no fue enviado
+    return 'not_sent';
+  }
+
   /**
    * Mapear de la estructura de reservas sincronizadas a la estructura del frontend
    */
@@ -89,8 +112,10 @@ class ReservationService {
 
   /**
    * Mapear de la estructura de DB a la estructura del frontend
+   * @param dbReservation - Reserva de la base de datos
+   * @param travelerFormRequest - Request del formulario de viajeros (opcional)
    */
-  private mapDbToFrontend(dbReservation: DbReservation): FrontendReservation {
+  private mapDbToFrontend(dbReservation: any, travelerFormRequest?: any): FrontendReservation {
     // Mapear status de DB a frontend
     const statusMap: { [key: string]: ReservationStatus } = {
       'active': 'confirmed',
@@ -109,6 +134,9 @@ class ReservationService {
       nationality: dbReservation.nationality
     };
 
+    // Mapear estado SES
+    const sesStatus = this.mapSesStatus(travelerFormRequest);
+
     return {
       id: dbReservation.id.toString(),
       propertyId: dbReservation.property_id,
@@ -121,7 +149,12 @@ class ReservationService {
       bookingSource: 'direct',
       notes: dbReservation.notes || undefined,
       createdAt: dbReservation.created_at,
-      updatedAt: dbReservation.updated_at
+      updatedAt: dbReservation.updated_at,
+      // Campos SES
+      sesRegistrationStatus: sesStatus,
+      sesRegistrationSentAt: travelerFormRequest?.sent_at || undefined,
+      sesRegistrationCompletedAt: travelerFormRequest?.completed_at || undefined,
+      sesRegistrationToken: travelerFormRequest?.token || undefined,
     };
   }
 
@@ -156,10 +189,21 @@ class ReservationService {
    */
   async getReservations(): Promise<FrontendReservation[]> {
     try {
-      // 1. Obtener reservas manuales (tabla reservations)
+      // 1. Obtener reservas manuales con información de traveler form requests
       const { data: manualReservations, error: manualError } = await supabase
         .from('reservations')
-        .select('*')
+        .select(`
+          *,
+          traveler_form_requests (
+            id,
+            token,
+            status,
+            sent_at,
+            completed_at,
+            lynx_submitted_at,
+            lynx_response
+          )
+        `)
         .order('checkin_date', { ascending: false });
 
       if (manualError) {
@@ -183,8 +227,19 @@ class ReservationService {
         console.warn('Continuando sin reservas sincronizadas');
       }
 
-      // 3. Convertir reservas manuales al formato frontend
-      const manualMapped = (manualReservations || []).map(r => this.mapDbToFrontend(r));
+      // 3. Convertir reservas manuales al formato frontend (con información SES)
+      const manualMapped = (manualReservations || []).map(r => {
+        // traveler_form_requests puede ser un array, tomamos el primero (solo debería haber uno por reserva)
+        // Si es un array vacío, usar null en lugar del array vacío
+        let travelerFormRequest = null;
+        if (Array.isArray(r.traveler_form_requests)) {
+          travelerFormRequest = r.traveler_form_requests.length > 0 ? r.traveler_form_requests[0] : null;
+        } else {
+          travelerFormRequest = r.traveler_form_requests || null;
+        }
+        
+        return this.mapDbToFrontend(r, travelerFormRequest);
+      });
 
       // 4. Convertir reservas sincronizadas al formato frontend
       const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
@@ -205,10 +260,21 @@ class ReservationService {
    */
   async getPropertyReservations(propertyId: string): Promise<FrontendReservation[]> {
     try {
-      // 1. Obtener reservas manuales de la propiedad
+      // 1. Obtener reservas manuales de la propiedad con información SES
       const { data: manualReservations, error: manualError } = await supabase
         .from('reservations')
-        .select('*')
+        .select(`
+          *,
+          traveler_form_requests (
+            id,
+            token,
+            status,
+            sent_at,
+            completed_at,
+            lynx_submitted_at,
+            lynx_response
+          )
+        `)
         .eq('property_id', propertyId)
         .order('checkin_date', { ascending: false });
 
@@ -226,7 +292,7 @@ class ReservationService {
           ical_configs(ical_name)
         `)
         .eq('property_id', propertyId)
-        .order('check_in_date', { ascending: false });
+        .order('check_in_date', { ascending: false});
 
       if (syncedError) {
         console.error('Error fetching property synced bookings:', syncedError);
@@ -234,8 +300,18 @@ class ReservationService {
         console.warn('Continuando sin reservas sincronizadas para la propiedad');
       }
 
-      // 3. Convertir al formato frontend
-      const manualMapped = (manualReservations || []).map(r => this.mapDbToFrontend(r));
+      // 3. Convertir al formato frontend (con información SES)
+      const manualMapped = (manualReservations || []).map(r => {
+        // Manejar traveler_form_requests correctamente (puede ser array o null)
+        let travelerFormRequest = null;
+        if (Array.isArray(r.traveler_form_requests)) {
+          travelerFormRequest = r.traveler_form_requests.length > 0 ? r.traveler_form_requests[0] : null;
+        } else {
+          travelerFormRequest = r.traveler_form_requests || null;
+        }
+        
+        return this.mapDbToFrontend(r, travelerFormRequest);
+      });
       const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
 
       // 4. Combinar y ordenar por fecha

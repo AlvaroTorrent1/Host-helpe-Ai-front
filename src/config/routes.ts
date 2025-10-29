@@ -96,12 +96,6 @@ export const ROUTES: Record<string, AppRoute> = {
     componentName: "ReservationsPage",
     authRequired: true,
   },
-  // Página protegida para crear partes SES desde el dashboard
-  SES_REPORT: {
-    path: "/ses-report",
-    componentName: "SesReportPage",
-    authRequired: true,
-  },
   // Página pública para Registro de Viajeros SES (Check-in de turistas)
   // Los turistas acceden con enlace simple: /check-in/{propertyName}
   SES_REGISTRO: {

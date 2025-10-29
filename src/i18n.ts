@@ -1,6 +1,7 @@
 // src/i18n.ts
 // Configuración de react-i18next usando archivos JSON
-// Soporta múltiples idiomas para la interfaz pública de check-in
+// Soporta 8 idiomas para check-in de viajeros
+// NOTA: La plataforma principal (header/dashboard) solo usa inglés y español
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
@@ -15,22 +16,30 @@ import zhTranslations from "./translations/zh.json";
 import ruTranslations from "./translations/ru.json";
 import ptTranslations from "./translations/pt.json";
 
+// Idiomas soportados por la plataforma principal (header, dashboard)
+export const PLATFORM_LANGUAGES = ['en', 'es'];
+
 // Intentar obtener el idioma preferido del usuario desde localStorage
-// Si no existe, usar el idioma del navegador o español por defecto
+// Si no existe, usar el idioma del navegador o inglés por defecto
+// Para la plataforma principal, solo se permiten inglés y español
 const getInitialLanguage = (): string => {
   const savedLanguage = localStorage.getItem('preferredLanguage');
-  if (savedLanguage) {
+  
+  // Si hay idioma guardado Y es inglés o español, usarlo
+  // Si es otro idioma (de check-in), usar inglés por defecto
+  if (savedLanguage && PLATFORM_LANGUAGES.includes(savedLanguage)) {
     return savedLanguage;
   }
   
   // Detectar idioma del navegador
   const browserLang = navigator.language.split('-')[0];
-  const supportedLanguages = ['en', 'es', 'fr', 'de', 'nl', 'zh', 'ru', 'pt'];
   
-  return supportedLanguages.includes(browserLang) ? browserLang : 'es';
+  // Si el navegador es español, usar español
+  // Para cualquier otro idioma (incluyendo neerlandés), usar inglés por defecto
+  return browserLang === 'es' ? 'es' : 'en';
 };
 
-// Configurar i18next con todos los idiomas
+// Configurar i18next con todos los idiomas (necesarios para check-in)
 i18n.use(initReactI18next).init({
   lng: getInitialLanguage(),
   fallbackLng: "es",

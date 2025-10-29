@@ -22,6 +22,13 @@ import {
   filterReservationsByTab,
   getReservationCounts,
 } from "./utils/reservationFilters";
+import toast from "react-hot-toast";
+import { travelerFormsService } from "@/services/travelerFormsService";
+import TravelerReportDetailsModal, { TravelerReportDetails } from "@features/sesregistro/components/TravelerReportDetailsModal";
+import { downloadTravelerReportPDF } from "@features/sesregistro/utils/pdfGenerator";
+import { TravelerReportPDFData } from "@features/sesregistro/components/TravelerReportPDF";
+import { prepareSignatureForPDF } from "@features/sesregistro/utils/svgToPng";
+import { getCachedLogoBase64 } from "@features/sesregistro/utils/logoBase64";
 
 // Enum eliminado - se usa el tipo ReservationStatus del archivo types/reservation.ts
 
@@ -61,6 +68,10 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
   
   // Estado para las pestañas de reservas
   const [activeTab, setActiveTab] = useState<ReservationTabType>('current');
+
+  // Estados para el modal de detalles SES
+  const [selectedSesReportId, setSelectedSesReportId] = useState<string | null>(null);
+  const [selectedSesReportDetails, setSelectedSesReportDetails] = useState<TravelerReportDetails | null>(null);
 
   // Cargar datos reales desde Supabase
   const loadData = useCallback(async () => {
@@ -230,6 +241,192 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Handler para ver detalles del parte SES
+  const handleViewSesDetails = async (reservationId: string) => {
+    try {
+      // Encontrar la reserva
+      const reservation = reservations.find(r => r.id === reservationId);
+      if (!reservation || !reservation.sesRegistrationToken) {
+        toast.error(t('travelerRegistry.errors.reportNotFound'));
+        return;
+      }
+
+      setSelectedSesReportId(reservationId);
+      
+      // Cargar detalles completos del traveler form request
+      // includeCompleted: true permite acceder a formularios completados desde el dashboard
+      const request = await travelerFormsService.getRequestByToken(reservation.sesRegistrationToken, true);
+      if (!request) {
+        toast.error(t('travelerRegistry.errors.reportNotFound'));
+        return;
+      }
+
+      // Load ALL travelers data if completed (supports 1 to N travelers)
+      let allTravelersData = null;
+      let travelerData = null; // First traveler (for backwards compatibility)
+      
+      if (request.status === 'completed') {
+        const travelers = await travelerFormsService.getTravelerData(request.id);
+        allTravelersData = travelers; // Store ALL travelers
+        travelerData = travelers[0]; // First traveler for legacy fields
+      }
+
+      // Map to modal format (now includes ALL travelers)
+      const details: TravelerReportDetails = {
+        id: request.id,
+        propertyId: request.property_id,
+        propertyName: request.property_name,
+        touristEmail: travelerData?.email || request.guest_email,
+        checkInDate: request.check_in_date,
+        checkOutDate: request.check_out_date,
+        status: request.status,
+        sentAt: request.sent_at,
+        completedAt: request.completed_at,
+        numPersons: request.num_travelers_expected,
+        
+        // NEW: Array of ALL travelers (supports multiple travelers)
+        travelers: allTravelersData?.map(t => ({
+          firstName: t.first_name,
+          lastName: t.last_name,
+          document: t.document_number,
+          documentType: t.document_type,
+          nationality: t.nationality,
+          birthDate: t.birth_date,
+          phone: t.phone || undefined,
+          email: t.email,
+        })),
+        
+        // Legacy fields (for backwards compatibility - show first traveler)
+        touristName: travelerData ? `${travelerData.first_name} ${travelerData.last_name}` : null,
+        touristFirstName: travelerData?.first_name,
+        touristLastName: travelerData?.last_name,
+        touristDocument: travelerData?.document_number,
+        touristDocumentType: travelerData?.document_type,
+        touristNationality: travelerData?.nationality,
+        touristBirthDate: travelerData?.birth_date,
+        touristPhone: travelerData?.phone || undefined,
+        
+        // Payment (shared across all travelers)
+        paymentMethod: travelerData?.payment_method || undefined,
+        paymentHolder: travelerData?.payment_holder || undefined,
+        
+        // Signature (shared across all travelers)
+        signatureUrl: travelerData?.signature_data || undefined,
+      };
+
+      setSelectedSesReportDetails(details);
+    } catch (error) {
+      console.error('Error loading SES details:', error);
+      toast.error(t('travelerRegistry.errors.loadingDetails'));
+    }
+  };
+
+  // Handler para descargar PDF del parte SES
+  const handleDownloadSesPdf = async (reservationId: string) => {
+    try {
+      // Encontrar la reserva
+      const reservation = reservations.find(r => r.id === reservationId);
+      if (!reservation || !reservation.sesRegistrationToken) {
+        toast.error(t('travelerRegistry.errors.reportNotFound'));
+        return;
+      }
+
+      // Obtener los datos completos del reporte
+      // includeCompleted: true permite acceder a formularios completados desde el dashboard
+      const request = await travelerFormsService.getRequestByToken(reservation.sesRegistrationToken, true);
+      if (!request) {
+        toast.error(t('travelerRegistry.errors.reportNotFound'));
+        return;
+      }
+
+      // Si no está completado, no se puede descargar
+      if (request.status !== 'completed') {
+        toast.error(t('travelerRegistry.errors.mustBeCompleted'));
+        return;
+      }
+
+      // Get ALL travelers data (supports 1 to N travelers)
+      const travelers = await travelerFormsService.getTravelerData(request.id);
+
+      if (!travelers || travelers.length === 0) {
+        toast.error(t('travelerRegistry.errors.noTravelerData'));
+        return;
+      }
+
+      // Calcular número de noches
+      const checkInDate = new Date(request.check_in_date);
+      const checkOutDate = new Date(request.check_out_date);
+      const diffTime = checkOutDate.getTime() - checkInDate.getTime();
+      const numberOfNights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      // Show loading toast with traveler count
+      const loadingToast = toast.loading(
+        `Preparando PDF con ${travelers.length} viajero${travelers.length > 1 ? 's' : ''}...`
+      );
+
+      // Load Host Helper logo in base64 to include in PDF
+      const logoBase64 = await getCachedLogoBase64();
+
+      // Convert signature SVG to PNG base64 for PDF (shared across all travelers)
+      const firstTraveler = travelers[0];
+      const signatureForPdf = await prepareSignatureForPDF(firstTraveler.signature_data);
+
+      // Map ALL travelers to PDF structure (NEW: supports multiple travelers)
+      const pdfData: TravelerReportPDFData = {
+        // Reservation data (shared across all travelers)
+        propertyName: request.property_name,
+        checkInDate: request.check_in_date,
+        checkOutDate: request.check_out_date,
+        numberOfNights,
+        
+        // NEW: Array of ALL travelers (each gets their own page in PDF)
+        travelers: travelers.map(t => ({
+          firstName: t.first_name,
+          lastName: t.last_name,
+          documentType: t.document_type,
+          documentNumber: t.document_number,
+          nationality: t.nationality,
+          birthDate: t.birth_date,
+          gender: t.gender || undefined,
+          email: t.email,
+          phone: t.phone || undefined,
+          addressStreet: t.address_street || undefined,
+          addressCity: t.address_city || undefined,
+          addressPostalCode: t.address_postal_code || undefined,
+          addressCountry: t.address_country || undefined,
+        })),
+        
+        // Payment data (shared across all travelers)
+        paymentMethod: firstTraveler.payment_method || undefined,
+        paymentHolder: firstTraveler.payment_holder || undefined,
+        
+        // Signature (shared across all travelers)
+        signatureUrl: signatureForPdf || undefined,
+        
+        // Metadata
+        logoBase64: logoBase64 || undefined,
+        submittedAt: firstTraveler.submitted_at || firstTraveler.created_at,
+        formRequestId: request.id,
+      };
+
+      // Generar y descargar PDF
+      toast.loading(t('travelerRegistry.toast.generatingPdf'), { id: loadingToast });
+      await downloadTravelerReportPDF(pdfData);
+      toast.dismiss(loadingToast);
+      toast.success(t('travelerRegistry.toast.pdfDownloaded'));
+
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error(t('travelerRegistry.errors.downloadingPdf'));
+    }
+  };
+
+  // Handler para cerrar modal SES
+  const handleCloseSesModal = () => {
+    setSelectedSesReportId(null);
+    setSelectedSesReportDetails(null);
   };
 
   // Función para manejar el envío a SES
@@ -453,6 +650,8 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
                     onAddReservation={handleAddReservation}
                     onReservationDeleted={handleReservationDeleted}
                     onEditReservation={handleEditReservation}
+                    onViewSesDetails={handleViewSesDetails}
+                    onDownloadSesPdf={handleDownloadSesPdf}
                     activeTab={activeTab}
                     tabsComponent={
                       <ReservationTabs
@@ -544,6 +743,14 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
         properties={properties}
         onClose={handleCloseDayDetailsModal}
         onViewReservation={handleViewReservationFromModal}
+      />
+
+      {/* Modal de detalles del parte SES */}
+      <TravelerReportDetailsModal
+        isOpen={selectedSesReportId !== null}
+        onClose={handleCloseSesModal}
+        report={selectedSesReportDetails}
+        onDownloadPdf={() => selectedSesReportId && handleDownloadSesPdf(selectedSesReportId)}
       />
     </div>
   );

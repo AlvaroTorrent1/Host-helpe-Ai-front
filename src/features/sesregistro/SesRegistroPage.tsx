@@ -1,7 +1,8 @@
 // src/features/sesregistro/SesRegistroPage.tsx
 /**
  * Página pública de Check-in para turistas
- * Los turistas acceden mediante enlace único: /check-in/{propertyId}/{reservationId}/{token}
+ * Los turistas acceden mediante enlace único con token: /check-in/:token
+ * El token identifica la solicitud de parte de viajero
  * Basado en la interfaz del proveedor LynxCheckin con branding de Host Helper
  */
 
@@ -15,10 +16,12 @@ import ReservationForm from './components/ReservationForm';
 import SignaturePad from './components/SignaturePad';
 import LanguageSelector from './components/LanguageSelector';
 import toast from 'react-hot-toast';
+import { travelerFormsService } from '@/services/travelerFormsService';
 
 const SesRegistroPage: React.FC = () => {
-  const { propertyName } = useParams<{
-    propertyName: string;
+  // Get token from URL params
+  const { token } = useParams<{
+    token: string;
   }>();
   
   const { t } = useTranslation();
@@ -45,34 +48,64 @@ const SesRegistroPage: React.FC = () => {
   const [signature, setSignature] = useState<string | null>(null);
   const [signatureError, setSignatureError] = useState<string>('');
   
-  // Cargar datos iniciales de la reserva
+  // Cargar datos de la solicitud usando el token
   useEffect(() => {
     const loadReservationData = async () => {
+      if (!token) {
+        setError('Token no proporcionado');
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Decodificar nombre de la propiedad de la URL
-        const decodedPropertyName = decodeURIComponent(propertyName || '');
+        // Obtener la solicitud usando el token
+        const request = await travelerFormsService.getRequestByToken(token);
         
-        // Inicializar con datos básicos
-        // El usuario completará el resto (fechas, viajeros, etc.)
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        if (!request) {
+          setError('Enlace inválido o no encontrado');
+          setLoading(false);
+          return;
+        }
+
+        // Verificar que no haya expirado
+        const now = new Date();
+        const expiresAt = new Date(request.expires_at);
         
-        const initialReservation: Reservation = {
-          propertyId: decodedPropertyName.toLowerCase().replace(/\s+/g, '-'),
-          reservationId: `RES-${Date.now()}`,
-          token: '',
-          propertyName: decodedPropertyName,
-          checkIn: today.toISOString().split('T')[0],
-          checkOut: tomorrow.toISOString().split('T')[0],
-          numberOfNights: 1,
-          numberOfTravelers: 1,
-          paymentMethod: 'destination',
-          travelers: [],
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 horas
+        if (expiresAt < now) {
+          setError('expired');
+          setLoading(false);
+          return;
+        }
+
+        // Verificar que no esté ya completado
+        if (request.status === 'completed') {
+          setError('Este formulario ya ha sido completado');
+          setLoading(false);
+          return;
+        }
+
+        // Calcular número de noches
+        const checkInDate = new Date(request.check_in_date);
+        const checkOutDate = new Date(request.check_out_date);
+        const diffTime = checkOutDate.getTime() - checkInDate.getTime();
+        const numberOfNights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // Mapear a estructura de Reservation
+        const reservationData: Reservation = {
+          propertyId: request.property_id,
+          reservationId: request.reservation_id || 'N/A',
+          token: request.token,
+          propertyName: request.property_name,
+          checkIn: request.check_in_date,
+          checkOut: request.check_out_date,
+          numberOfNights,
+          numberOfTravelers: request.num_travelers_expected,
+          paymentMethod: 'destination', // Default, usuario puede cambiar
+          travelers: [], // Usuario los añadirá
+          expiresAt: request.expires_at,
         };
         
-        setReservation(initialReservation);
+        setReservation(reservationData);
         setLoading(false);
       } catch (err) {
         console.error('Error loading reservation:', err);
@@ -82,7 +115,7 @@ const SesRegistroPage: React.FC = () => {
     };
     
     loadReservationData();
-  }, [propertyName, t]);
+  }, [token, t]);
   
   // Timer countdown
   useEffect(() => {
@@ -183,6 +216,31 @@ const SesRegistroPage: React.FC = () => {
     toast.success('Datos de reserva actualizados');
   };
 
+  // Helper: Mapear gender del frontend ('male'/'female'/'other') al formato de la base de datos ('M'/'F'/'Other')
+  // La base de datos espera valores cortos por compatibilidad con el Real Decreto 933/2021
+  const mapGenderToDb = (gender: string | undefined): 'M' | 'F' | 'Other' | null => {
+    if (!gender) return null;
+    const mapping: Record<string, 'M' | 'F' | 'Other'> = {
+      male: 'M',
+      female: 'F',
+      other: 'Other',
+    };
+    return mapping[gender] || null;
+  };
+
+  // Helper: Mapear método de pago del frontend al formato de la base de datos
+  // Frontend usa valores descriptivos, DB usa códigos del Real Decreto 933/2021
+  const mapPaymentMethodToDb = (method: PaymentMethod | undefined): 'TRANS' | 'CASH' | 'CARD' | 'OTHER' | null => {
+    if (!method) return null;
+    const mapping: Record<PaymentMethod, 'TRANS' | 'CASH' | 'CARD' | 'OTHER'> = {
+      destination: 'CASH',      // Pago en destino = Efectivo
+      online: 'CARD',           // Pago online = Tarjeta
+      bank_transfer: 'TRANS',   // Transferencia bancaria
+      other: 'OTHER',           // Otro método
+    };
+    return mapping[method] || null;
+  };
+
   // Manejar envío del check-in
   const handleSubmitCheckin = async () => {
     // Validar que haya al menos un viajero
@@ -204,18 +262,79 @@ const SesRegistroPage: React.FC = () => {
       return;
     }
 
+    if (!token) {
+      toast.error('Token inválido');
+      return;
+    }
+
     try {
-      // TODO: Implementar envío al API del proveedor
-      console.log('Enviar check-in', {
-        reservation,
-        signature, // La firma se envía como base64
-      });
+      // Show loading toast
+      const loadingToast = toast.loading(
+        `Enviando datos de ${reservation.travelers.length} viajero${reservation.travelers.length > 1 ? 's' : ''}...`
+      );
+
+      // Send ALL travelers (each one creates a separate row in traveler_form_data)
+      // All travelers share the same form_request_id and signature
+      const submissionResults = [];
       
-      // Simular pequeño delay de envío
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Marcar como enviado para mostrar pantalla de confirmación
+      for (let i = 0; i < reservation.travelers.length; i++) {
+        const traveler = reservation.travelers[i];
+        
+        // Update progress toast
+        toast.loading(
+          `Enviando viajero ${i + 1} de ${reservation.travelers.length}: ${traveler.firstName} ${traveler.firstSurname}...`,
+          { id: loadingToast }
+        );
+
+        // Map traveler data to Edge Function expected structure
+        const travelerData = {
+          first_name: traveler.firstName,
+          last_name: `${traveler.firstSurname} ${traveler.secondSurname || ''}`.trim(),
+          document_type: traveler.documentType.toUpperCase(), // DB expects DNI/NIE/PASSPORT
+          document_number: traveler.documentNumber,
+          nationality: traveler.nationality,
+          birth_date: traveler.dateOfBirth,
+          gender: mapGenderToDb(traveler.gender), // Map 'male'/'female'/'other' to 'M'/'F'/'Other'
+          email: traveler.email,
+          phone: traveler.phone || null,
+          // Map address fields (address is a string, not an object)
+          address_street: traveler.address || null,                    // 'address' is the street
+          address_city: traveler.city || null,                         // Direct field
+          address_postal_code: traveler.postalCode || null,            // Direct field
+          address_country: traveler.residenceCountry,                  // Residence country (ISO alpha-2)
+          address_additional: traveler.additionalAddress || null,      // Additional info (apartment, floor, etc.)
+          payment_method: mapPaymentMethodToDb(reservation.paymentMethod), // Map to 'CASH'/'CARD'/'TRANS'
+          payment_holder: `${traveler.firstName} ${traveler.firstSurname}`,
+          signature_data: signature, // Base64 signature (same for all travelers)
+          consent_accepted: true,
+        };
+
+        // Send traveler data via Edge Function
+        const result = await travelerFormsService.submitTravelerData(token, travelerData);
+
+        submissionResults.push({
+          traveler: `${traveler.firstName} ${traveler.firstSurname}`,
+          success: result.success,
+          error: result.error,
+        });
+
+        // If any traveler fails, stop and show error
+        if (!result.success) {
+          toast.dismiss(loadingToast);
+          toast.error(
+            `Error al enviar datos de ${traveler.firstName} ${traveler.firstSurname}: ${result.error || 'Error desconocido'}`
+          );
+          return;
+        }
+      }
+
+      toast.dismiss(loadingToast);
+
+      // All travelers submitted successfully
       setIsSubmitted(true);
+      toast.success(
+        `✅ Formulario completado: ${submissionResults.length} viajero${submissionResults.length > 1 ? 's' : ''} enviado${submissionResults.length > 1 ? 's' : ''} correctamente`
+      );
       
     } catch (error) {
       console.error('Error al enviar check-in:', error);
