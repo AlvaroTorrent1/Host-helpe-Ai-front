@@ -13,6 +13,19 @@ const MediaAppearances: React.FC = () => {
   // Datos idénticos a Testimonios.tsx (incluye Premio Junior como primero)
   const mediaAppearances = [
     {
+      // Tourist Innovation Summit 2025 - Sevilla (YouTube Short)
+      // Participación en el evento de innovación turística más relevante
+      id: 4,
+      title: "Host Helper AI en Tourist Innovation Summit 2025",
+      media: "Tourist Innovation Summit",
+      date: "2025",
+      url: "https://www.youtube.com/shorts/5vWl60PaKJo",
+      excerpt: "Participación destacada de Host Helper AI en el Tourist Innovation Summit 2025 celebrado en Sevilla, presentando innovación en gestión de alojamientos turísticos.",
+      author: "Tourist Innovation Summit",
+      image: "/imagenes/tourist-innovation-summit-2025.jpg",
+      hasImage: true,
+    },
+    {
       // Nueva pestaña solicitada: Premio Junior 23º (YouTube)
       id: 3,
       title: "Entrevista en TV: Host Helper AI en Premio Junior 23º",
