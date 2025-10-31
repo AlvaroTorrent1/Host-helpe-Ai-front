@@ -22,7 +22,7 @@ const MediaAppearances: React.FC = () => {
       url: "https://www.youtube.com/shorts/5vWl60PaKJo",
       excerpt: "Participación destacada de Host Helper AI en el Tourist Innovation Summit 2025 celebrado en Sevilla, presentando innovación en gestión de alojamientos turísticos.",
       author: "Tourist Innovation Summit",
-      image: "/imagenes/tourist-innovation-summit-2025.jpg",
+      image: "/imagenes/TIS -Sevilla.jpg",
       hasImage: true,
     },
     {
