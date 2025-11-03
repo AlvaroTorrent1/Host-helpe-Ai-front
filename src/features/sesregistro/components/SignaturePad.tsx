@@ -70,6 +70,19 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
     return svgContent;
   };
 
+  /**
+   * Convierte un string SVG a base64 data URL
+   * Formato requerido por Lynx Check-in API: data:image/svg+xml;base64,XXX
+   */
+  const convertSvgToBase64 = (svgString: string): string => {
+    // Usar btoa con encodeURIComponent para manejar correctamente caracteres Unicode
+    // unescape es necesario para convertir el formato de encodeURIComponent a algo que btoa pueda procesar
+    const base64 = btoa(unescape(encodeURIComponent(svgString)));
+    
+    // Retornar como data URL estándar
+    return `data:image/svg+xml;base64,${base64}`;
+  };
+
   // Inicializar canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -94,13 +107,16 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
         setIsEmpty(false);
       };
       
-      // Convertir SVG string a data URL
-      // El SVG puede venir como string directo
-      if (signatureData.startsWith('<svg')) {
+      // Manejar diferentes formatos de firma (compatibilidad con datos antiguos)
+      if (signatureData.startsWith('data:image/svg+xml;base64,')) {
+        // ✅ Nuevo formato: base64 data URL (preferido)
+        img.src = signatureData;
+      } else if (signatureData.startsWith('<svg')) {
+        // 🔄 Formato antiguo: SVG string directo (compatibilidad)
         const svgBlob = new Blob([signatureData], { type: 'image/svg+xml' });
         img.src = URL.createObjectURL(svgBlob);
       } else {
-        // Mantener compatibilidad con imágenes base64 anteriores (PNG)
+        // 🔄 Otros formatos base64: PNG u otros (compatibilidad)
         img.src = signatureData;
       }
     }
@@ -196,10 +212,13 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
       if (canvas) {
         const svgString = convertPathsToSVG(newPaths, canvas.width, canvas.height);
         
-        // Log para verificar el formato SVG (desarrollo)
-        console.log('Firma guardada en formato SVG:', svgString.substring(0, 100) + '...');
+        // Convertir SVG a base64 data URL para Lynx Check-in API
+        const base64Signature = convertSvgToBase64(svgString);
         
-        onSignatureChange(svgString);
+        // Log para verificar el formato base64 (desarrollo)
+        console.log('Firma guardada en formato base64:', base64Signature.substring(0, 100) + '...');
+        
+        onSignatureChange(base64Signature);
       }
       
       // Limpiar trazo actual

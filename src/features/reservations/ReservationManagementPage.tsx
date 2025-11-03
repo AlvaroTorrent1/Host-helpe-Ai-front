@@ -292,6 +292,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           lastName: t.last_name,
           document: t.document_number,
           documentType: t.document_type,
+          documentSupportNumber: t.document_support_number || undefined, // Número de soporte del documento
           nationality: t.nationality,
           birthDate: t.birth_date,
           phone: t.phone || undefined,
@@ -387,6 +388,7 @@ const ReservationManagementPage: React.FC<ReservationManagementPageProps> = ({ o
           lastName: t.last_name,
           documentType: t.document_type,
           documentNumber: t.document_number,
+          documentSupportNumber: t.document_support_number || undefined, // Número de soporte del documento
           nationality: t.nationality,
           birthDate: t.birth_date,
           gender: t.gender || undefined,

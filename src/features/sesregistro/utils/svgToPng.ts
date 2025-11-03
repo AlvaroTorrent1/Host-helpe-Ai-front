@@ -88,20 +88,32 @@ export async function svgToPngBase64(
 
 /**
  * Verifica si un string es un SVG válido
+ * Soporta: SVG string directo ("<svg...") y SVG en base64 data URL
  * @param str - String a verificar
  * @returns true si es un SVG válido
  */
 export function isSVG(str: string): boolean {
   if (!str || typeof str !== 'string') return false;
-  return str.trim().startsWith('<svg') && str.includes('</svg>');
+  
+  // Caso 1: SVG string directo
+  if (str.trim().startsWith('<svg') && str.includes('</svg>')) {
+    return true;
+  }
+  
+  // Caso 2: SVG en base64 data URL (data:image/svg+xml;base64,...)
+  if (str.startsWith('data:image/svg+xml;base64,')) {
+    return true;
+  }
+  
+  return false;
 }
 
 /**
  * Convierte firma a formato compatible con PDF
- * Si es SVG, lo convierte a PNG base64
+ * Si es SVG (string o base64), lo convierte a PNG base64
  * Si ya es base64 PNG/JPG, lo devuelve sin modificar
  * 
- * @param signatureData - Datos de la firma (SVG string o base64 PNG/JPG)
+ * @param signatureData - Datos de la firma (SVG string, SVG base64, PNG base64, o JPG base64)
  * @returns Promise que resuelve con base64 PNG compatible con @react-pdf/renderer
  */
 export async function prepareSignatureForPDF(signatureData: string | null | undefined): Promise<string | null> {
@@ -109,22 +121,38 @@ export async function prepareSignatureForPDF(signatureData: string | null | unde
   if (!signatureData) return null;
 
   try {
-    // Si es SVG, convertir a PNG
-    if (isSVG(signatureData)) {
-      console.log('Convirtiendo firma SVG a PNG para PDF...');
+    // Caso 1: SVG en base64 data URL (data:image/svg+xml;base64,...)
+    if (signatureData.startsWith('data:image/svg+xml;base64,')) {
+      console.log('Decodificando firma SVG base64 y convirtiendo a PNG para PDF...');
+      
+      // Extraer el base64 (quitar el prefijo "data:image/svg+xml;base64,")
+      const base64Data = signatureData.split(',')[1];
+      
+      // Decodificar base64 a SVG string
+      const svgString = atob(base64Data);
+      
+      // Convertir SVG a PNG
+      const pngBase64 = await svgToPngBase64(svgString);
+      console.log('Firma SVG base64 convertida exitosamente a PNG');
+      return pngBase64;
+    }
+    
+    // Caso 2: SVG string directo ("<svg...")
+    if (signatureData.trim().startsWith('<svg')) {
+      console.log('Convirtiendo firma SVG string a PNG para PDF...');
       const pngBase64 = await svgToPngBase64(signatureData);
-      console.log('Firma convertida exitosamente a PNG');
+      console.log('Firma SVG string convertida exitosamente a PNG');
       return pngBase64;
     }
 
-    // Si ya es base64 (PNG/JPG), retornar tal cual
-    if (signatureData.startsWith('data:image/')) {
-      console.log('Firma ya está en formato base64, usando directamente');
+    // Caso 3: Ya es PNG/JPG base64, retornar tal cual
+    if (signatureData.startsWith('data:image/png') || signatureData.startsWith('data:image/jpeg')) {
+      console.log('Firma ya está en formato PNG/JPG base64, usando directamente');
       return signatureData;
     }
 
     // Formato no reconocido
-    console.warn('Formato de firma no reconocido, no se incluirá en el PDF');
+    console.warn('Formato de firma no reconocido:', signatureData.substring(0, 50));
     return null;
   } catch (error) {
     console.error('Error al preparar firma para PDF:', error);

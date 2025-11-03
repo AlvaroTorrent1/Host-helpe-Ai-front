@@ -1,0 +1,64 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ FIRMA AHORA SE VE EN MODAL Y PDF
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMAS RESUELTOS:
+
+❌ ANTES:
+  - Modal mostraba texto base64 en lugar de imagen
+  - PDF tenía sección "FIRMA DEL VIAJERO" vacía
+
+✅ AHORA:
+  - Modal renderiza la firma como imagen
+  - PDF incluye la firma convertida a PNG
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CAMBIOS TÉCNICOS:
+
+📝 Archivo 1: TravelerReportDetailsModal.tsx
+  - Cambió de dangerouslySetInnerHTML a <img src={...}/>
+  - Ahora soporta base64 data URLs
+  - Mantiene compatibilidad con SVG strings antiguos
+
+📝 Archivo 2: svgToPng.ts
+  - isSVG() ahora detecta "data:image/svg+xml;base64,..."
+  - prepareSignatureForPDF() decodifica base64 y convierte a PNG
+  - El PDF recibe PNG base64 en lugar de SVG base64
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 CÓMO PROBAR:
+
+1. Dashboard → Reserva con parte completado → "Ver Detalles"
+   ✅ Debe verse la firma como imagen
+
+2. En el modal → "Descargar PDF"
+   ✅ El PDF debe mostrar la firma en "FIRMA DEL VIAJERO"
+
+3. Completar nuevo formulario:
+   http://localhost:5173/check-in/2b8386e8-1379-44b3-bd16-1f27d7258169
+   ✅ Firmar, enviar, verificar en dashboard
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 FORMATOS SOPORTADOS (compatibilidad total):
+
+✅ SVG string:           "<svg width='600'..."
+✅ SVG base64 (nuevo):   "data:image/svg+xml;base64,PHN2..."
+✅ PNG base64:           "data:image/png;base64,iVBOR..."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 COMANDOS GIT:
+
+git add src/features/sesregistro/components/TravelerReportDetailsModal.tsx
+git add src/features/sesregistro/utils/svgToPng.ts
+git commit -m "fix: visualizar firma base64 en modal y PDF"
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ TODO LISTO PARA DESPLEGAR
+═══════════════════════════════════════════════════════════════════════════════
+

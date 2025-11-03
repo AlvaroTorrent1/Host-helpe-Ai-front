@@ -110,6 +110,7 @@ export interface TravelerData {
   lastName: string;
   documentType: string;
   documentNumber: string;
+  documentSupportNumber?: string; // Número de soporte del documento (opcional - DNI/NIE)
   nationality: string;
   birthDate: string;
   gender?: string;
@@ -235,6 +236,13 @@ const TravelerPage: React.FC<{
           <Text style={styles.label}>Número de Documento:</Text>
           <Text style={styles.value}>{traveler.documentNumber}</Text>
         </View>
+        {/* Número de soporte del documento - Solo mostrar si existe */}
+        {traveler.documentSupportNumber && (
+          <View style={styles.row}>
+            <Text style={styles.label}>Número de Soporte:</Text>
+            <Text style={styles.value}>{traveler.documentSupportNumber}</Text>
+          </View>
+        )}
         <View style={styles.row}>
           <Text style={styles.label}>Nacionalidad:</Text>
           <Text style={styles.value}>{traveler.nationality}</Text>

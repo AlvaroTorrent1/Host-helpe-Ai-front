@@ -14,6 +14,7 @@ export interface TravelerDisplayData {
   lastName: string;
   document: string;
   documentType: string;
+  documentSupportNumber?: string; // Número de soporte del documento (opcional - DNI/NIE)
   nationality: string;
   birthDate: string;
   phone?: string;
@@ -219,6 +220,16 @@ const TravelerReportDetailsModal: React.FC<TravelerReportDetailsModalProps> = ({
                           </p>
                         </div>
                         
+                        {/* Document Support Number - Solo mostrar si existe */}
+                        {traveler.documentSupportNumber && (
+                          <div>
+                            <p className="text-sm text-gray-500">Número de Soporte</p>
+                            <p className="text-sm font-medium text-gray-900 break-words">
+                              {traveler.documentSupportNumber}
+                            </p>
+                          </div>
+                        )}
+                        
                         {/* Nationality */}
                         <div>
                           <p className="text-sm text-gray-500">{t('travelerRegistry.modal.nationality')}</p>
@@ -323,14 +334,17 @@ const TravelerReportDetailsModal: React.FC<TravelerReportDetailsModalProps> = ({
                   {t('travelerRegistry.modal.signature')}
                 </h3>
                 <div className="border border-gray-200 rounded-md p-3 sm:p-4 bg-gray-50">
-                  {/* Renderizar SVG directamente desde el string guardado en la base de datos */}
-                  {/* Contenedor con altura fija y escala para que la firma encaje bien */}
+                  {/* Renderizar firma como imagen (soporta SVG string, base64, data URLs) */}
                   <div className="w-full h-32 sm:h-40 flex items-center justify-center overflow-hidden">
-                    <div 
-                      dangerouslySetInnerHTML={{ __html: report.signatureUrl }}
-                      className="max-w-full max-h-full"
+                    <img 
+                      src={report.signatureUrl.startsWith('<svg') 
+                        ? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(report.signatureUrl)}`
+                        : report.signatureUrl
+                      }
+                      alt="Firma digital"
+                      className="max-w-full max-h-full object-contain"
                       style={{ 
-                        transform: 'scale(0.6)',
+                        transform: 'scale(0.8)',
                         transformOrigin: 'center'
                       }}
                     />

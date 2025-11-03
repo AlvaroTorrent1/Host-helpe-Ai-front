@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ FIRMA EN BASE64 - TODO LISTO
+═══════════════════════════════════════════════════════════════════════════════
+
+CAMBIO IMPLEMENTADO:
+  ✅ SignaturePad.tsx modificado
+  ✅ Firma ahora se guarda en base64
+  ✅ Formato: data:image/svg+xml;base64,XXX
+  ✅ Compatible con datos anteriores
+  ✅ Sin errores de linter
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔗 LINK DEL FORMULARIO:
+
+LOCALHOST:
+  http://localhost:5173/check-in/2b8386e8-1379-44b3-bd16-1f27d7258169
+
+PRODUCCIÓN:
+  https://hosthelperai.com/check-in/2b8386e8-1379-44b3-bd16-1f27d7258169
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 DATOS DE LA RESERVA:
+
+Reserva ID:          85
+Form Request ID:     5d422947-0a89-402c-afd2-882595ec25af
+Token:               2b8386e8-1379-44b3-bd16-1f27d7258169
+Propiedad:           Cabaña Mirlo Blanco
+Huésped:             Pedro González Ruiz
+Check-in:            2025-11-04
+Check-out:           2025-11-07
+Expira:              2025-12-03
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 CÓMO PROBAR:
+
+1. Abre el link en tu navegador
+2. Completa el formulario y FIRMA
+3. Abre consola (F12) y verás:
+   "Firma guardada en formato base64: data:image/svg+xml;base64,PHN..."
+4. Envía el formulario
+5. Verifica en BD que signature_data empieza con "data:image/svg+xml;base64,"
+6. Envía a Lynx y confirma con proveedor
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 QUÉ CAMBIÓ:
+
+ANTES:
+  signature: "<svg width=\"600\" height=\"200\"..."
+  
+AHORA:
+  signature: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIi..."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 COMANDOS GIT (después de probar):
+
+git add src/features/sesregistro/components/SignaturePad.tsx
+git commit -m "feat: convertir firma a base64 para Lynx API"
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
