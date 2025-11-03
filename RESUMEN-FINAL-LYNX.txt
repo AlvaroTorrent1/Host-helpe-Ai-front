@@ -1,0 +1,78 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ PROBLEMA DEL CÓDIGO INE: RESUELTO
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA IDENTIFICADO:
+  El código INE estaba hardcodeado a '29067' (Málaga) porque:
+  ❌ La tabla no tenía columna ine_code
+  ❌ El frontend no enviaba el ine_code a la Edge Function
+  ❌ La Edge Function no guardaba el ine_code
+
+SOLUCIÓN IMPLEMENTADA:
+  ✅ Migración aplicada: columna ine_code agregada a traveler_form_data
+  ✅ Frontend actualizado: SesRegistroPage.tsx ahora envía ine_code
+  ✅ Edge Function actualizada: submit-traveler-form guarda ine_code
+  ✅ Edge Function desplegada a Supabase
+  
+RESULTADO:
+  Ahora el código INE capturado en el formulario se guarda correctamente
+  en la base de datos y se envía al servicio Lynx Check-in
+
+═══════════════════════════════════════════════════════════════════════════════
+  🔗 LINK DEL FORMULARIO PARA LA RESERVA
+═══════════════════════════════════════════════════════════════════════════════
+
+LOCALHOST (Desarrollo):
+  http://localhost:5173/check-in/test-lynx-d597d27e-df1c-471a-aaf3-7b7d787bcd07
+
+PRODUCCIÓN:
+  https://[TU-DOMINIO]/check-in/test-lynx-d597d27e-df1c-471a-aaf3-7b7d787bcd07
+
+═══════════════════════════════════════════════════════════════════════════════
+  📋 DATOS DE LA RESERVA
+═══════════════════════════════════════════════════════════════════════════════
+
+Reserva ID:          82
+Form Request ID:     f26194aa-929c-4ec4-8bac-8b8202a8b07e
+Token:               test-lynx-d597d27e-df1c-471a-aaf3-7b7d787bcd07
+Propiedad:           Cabaña Mirlo Blanco
+Check-in:            2025-11-04
+Check-out:           2025-11-06
+Estado:              pending (esperando que el turista complete el formulario)
+
+═══════════════════════════════════════════════════════════════════════════════
+  🧪 CÓMO PROBAR
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Iniciar el servidor de desarrollo:
+   cd c:\Users\Usuario\Desktop\nuevo-repo
+   npm run dev
+
+2. Abrir el link del formulario en tu navegador:
+   http://localhost:5173/check-in/test-lynx-d597d27e-df1c-471a-aaf3-7b7d787bcd07
+
+3. Completar el formulario (incluye el código INE si es España)
+
+4. Verificar que se guardó correctamente:
+   SELECT ine_code FROM traveler_form_data 
+   WHERE form_request_id = 'f26194aa-929c-4ec4-8bac-8b8202a8b07e';
+
+5. Enviar a Lynx:
+   http://localhost:4000/test-lynx-envio.html
+
+═══════════════════════════════════════════════════════════════════════════════
+  📁 ARCHIVOS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+LINK-FORMULARIO-VIAJEROS.md  →  Documentación completa del fix
+PRUEBA-LYNX-CHECKIN.md        →  Guía para probar envío a Lynx
+RESUMEN-PRUEBA-LYNX.txt       →  Resumen original de la prueba
+verificar-datos-prueba-lynx.sql → SQL para verificar datos
+
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ TODO LISTO
+═══════════════════════════════════════════════════════════════════════════════
+
+El código INE ahora se captura, guarda y envía correctamente a Lynx Check-in.
+El link del formulario está listo para compartir con el turista.
+

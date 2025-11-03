@@ -115,6 +115,11 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
           }
         }
         
+        // Validar número de soporte del documento (opcional pero recomendado)
+        // Solo requerido para documentos españoles (DNI/NIE)
+        // Pasaportes extranjeros o documentos antiguos pueden no tenerlo
+        // No bloqueamos el envío si está vacío
+        
         // Validar fecha de nacimiento
         if (!travelerData.dateOfBirth) {
           newErrors.dateOfBirth = t('sesRegistro.validation.dateOfBirthRequired');
@@ -232,7 +237,7 @@ const AddTravelerWizard: React.FC<AddTravelerWizardProps> = ({
         // Información del Documento
         documentType: travelerData.documentType!,
         documentNumber: travelerData.documentNumber!,
-        documentSupportNumber: travelerData.documentSupportNumber,
+        documentSupportNumber: travelerData.documentSupportNumber || '', // Enviar string vacío si no hay valor
         dateOfBirth: travelerData.dateOfBirth!,
         placeOfBirth: travelerData.placeOfBirth,
         // País de Residencia

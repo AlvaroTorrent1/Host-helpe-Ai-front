@@ -1,0 +1,96 @@
+═══════════════════════════════════════════════════════════════════════════════
+  🎯 CÓMO USAR EL NUEVO LINK DEL FORMULARIO
+═══════════════════════════════════════════════════════════════════════════════
+
+PASO 1: VERIFICAR EL SERVIDOR
+────────────────────────────────────────────────────────────────────────────
+
+  ✅ Se ha abierto una nueva ventana de PowerShell con el servidor
+  
+  En esa ventana verás algo como:
+    VITE v5.x.x  ready in XXX ms
+    ➜  Local:   http://localhost:5173/
+  
+  🔍 Si no ves la ventana, ejecuta manualmente:
+     npm run dev
+
+
+PASO 2: COPIAR EL LINK
+────────────────────────────────────────────────────────────────────────────
+
+  📋 Copia este link completo:
+  
+     http://localhost:5173/check-in/adac3467-8b28-4b8c-bb4e-8a94ec8fef6a
+
+
+PASO 3: PEGAR EN EL NAVEGADOR
+────────────────────────────────────────────────────────────────────────────
+
+  🌐 Abre Chrome/Edge/Firefox
+  📍 Pega el link en la barra de direcciones
+  ⏎  Presiona Enter
+
+
+PASO 4: VERÁS EL FORMULARIO
+────────────────────────────────────────────────────────────────────────────
+
+  Si todo funciona, deberías ver:
+  
+  ✅ Encabezado con el logo de Host Helper
+  ✅ Información de la reserva:
+      - Propiedad: Cabaña Mirlo Blanco
+      - Check-in: 05/11/2025
+      - Check-out: 08/11/2025
+  ✅ Botón "Añadir Viajero" o lista de viajeros
+  ✅ Selector de método de pago
+
+
+PASO 5: COMPLETAR EL FORMULARIO
+────────────────────────────────────────────────────────────────────────────
+
+  1. Haz clic en "Añadir Viajero"
+  2. Completa todos los datos (nombre, documento, dirección, etc.)
+  3. Si es España, completa el CÓDIGO INE (ej: 29067)
+  4. Firma digitalmente
+  5. Acepta los términos
+  6. Haz clic en "Enviar Check-in"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+❓ SI VES ERROR:
+
+  Error: "Enlace inválido o no encontrado"
+  ➜ El servidor no está corriendo
+  ➜ Ejecuta: npm run dev
+
+  Error: "Cannot connect"
+  ➜ Espera 10-15 segundos más
+  ➜ El servidor está arrancando
+
+  Error: Puerto ya en uso
+  ➜ Hay otro servidor corriendo
+  ➜ Cierra otras ventanas de Node/npm y vuelve a intentar
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 DATOS DE ESTA RESERVA:
+
+  Token del formulario:    adac3467-8b28-4b8c-bb4e-8a94ec8fef6a
+  Reserva ID:              83
+  Form Request ID:         7869a3a3-911a-4d49-82d0-00f76fb56d70
+  Propiedad:               Cabaña Mirlo Blanco
+  Lynx Lodging ID:         3dfc0644-612d-4449-9dd6-de7a9d15b012
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ DESPUÉS DE COMPLETAR EL FORMULARIO:
+
+  Puedes enviar el parte a Lynx usando:
+  
+  http://localhost:4000/test-lynx-envio.html
+  
+  (Necesitas que el servidor Python del puerto 4000 esté corriendo también)
+
+═══════════════════════════════════════════════════════════════════════════════
+

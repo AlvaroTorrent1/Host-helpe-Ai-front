@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Envío Lynx Check-in</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #2e7d32;
+        }
+        .info-box p {
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .result.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Test Envío a Lynx Check-in</h1>
+        
+        <div class="info-box">
+            <h3>📋 Datos de Prueba Generados</h3>
+            <p><strong>Reserva ID:</strong> 82</p>
+            <p><strong>Propiedad:</strong> Cabaña Mirlo Blanco</p>
+            <p><strong>Lynx Lodging ID:</strong> 3dfc0644-612d-4449-9dd6-de7a9d15b012</p>
+            <p><strong>Viajero:</strong> Carlos Ramírez Pérez</p>
+            <p><strong>Check-in:</strong> 2025-11-04</p>
+            <p><strong>Check-out:</strong> 2025-11-06</p>
+            <p><strong>Form Request ID:</strong> f26194aa-929c-4ec4-8bac-8b8202a8b07e</p>
+        </div>
+
+        <button id="sendBtn" onclick="enviarALynx()">
+            📤 Enviar Parte de Viajeros a Lynx
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Enviando a Lynx Check-in...</p>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // URL de tu Edge Function en Supabase
+        const EDGE_FUNCTION_URL = 'https://blxngmtmknkdmikaflen.supabase.co/functions/v1/test-lynx-submission';
+        const FORM_REQUEST_ID = 'f26194aa-929c-4ec4-8bac-8b8202a8b07e';
+
+        async function enviarALynx() {
+            const btn = document.getElementById('sendBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+
+            // Resetear estado
+            btn.disabled = true;
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            result.className = 'result';
+            result.innerHTML = '';
+
+            try {
+                console.log('🚀 Enviando solicitud a Edge Function...');
+                
+                const response = await fetch(EDGE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        formRequestId: FORM_REQUEST_ID
+                    })
+                });
+
+                const data = await response.json();
+                console.log('📥 Respuesta recibida:', data);
+
+                // Mostrar resultado
+                result.style.display = 'block';
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        <h3>✅ ${data.message}</h3>
+                        <p><strong>Submission ID:</strong> ${data.submissionId || 'N/A'}</p>
+                        <p><strong>Viajeros enviados:</strong> ${data.travelers}</p>
+                        <h4>Respuesta de Lynx:</h4>
+                        <pre>${JSON.stringify(data.lynxResponse, null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `
+                        <h3>❌ Error al enviar</h3>
+                        <p>${data.message || 'Error desconocido'}</p>
+                        <h4>Detalles:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                result.style.display = 'block';
+                result.className = 'result error';
+                result.innerHTML = `
+                    <h3>❌ Error de Conexión</h3>
+                    <p>${error.message}</p>
+                `;
+            } finally {
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        // Log inicial
+        console.log('🎯 Test Lynx Check-in iniciado');
+        console.log('📍 Edge Function URL:', EDGE_FUNCTION_URL);
+        console.log('🎫 Form Request ID:', FORM_REQUEST_ID);
+    </script>
+</body>
+</html>
+

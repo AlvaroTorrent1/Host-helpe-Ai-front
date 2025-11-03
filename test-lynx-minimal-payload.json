@@ -1,0 +1,35 @@
+{
+  "checkInDate": "2025-11-06T00:00:00Z",
+  "checkOutDate": "2025-11-09T00:00:00Z",
+  "numPeople": 1,
+  "payment": {
+    "paymentMethodCode": "EFECT",
+    "paymentDate": "2025-11-06"
+  },
+  "travelers": [
+    {
+      "name": "Pedro",
+      "surname1": "Gonzalez",
+      "surname2": "Ruiz",
+      "birthdate": "1999-12-12T00:00:00Z",
+      "idType": "NIF",
+      "idNum": "53571577T",
+      "email": "alvarotorrent1@gmail.com",
+      "phone": "+34654654654",
+      "sex": "H",
+      "nationality": "ESP",
+      "address": {
+        "address": "Avenida imperio argentina 7",
+        "municipalityCode": "29 067 0",
+        "municipalityName": "Madrid",
+        "postalCode": "28002",
+        "country": "ESP"
+      },
+      "signature": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMTAgTDkwIDQwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiLz4KPC9zdmc+"
+    }
+  ]
+}
+
+
+
+

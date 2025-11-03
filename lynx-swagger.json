@@ -1,0 +1,4365 @@
+﻿{
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the API documentation for the Lynx Check-in system.",
+        "title": "Lynx API",
+        "termsOfService": "https://lynxcheckin.com/terms",
+        "contact": {
+            "name": "API Support",
+            "url": "https://lynxcheckin.com/contact",
+            "email": "support@lynxcheckin.com"
+        },
+        "license": {
+            "name": "Proprietary License (Lynx Checkin)",
+            "url": "https://lynxcheckin.com/license"
+        },
+        "version": "0.1"
+    },
+    "host": "nvpd0ci5k0.execute-api.eu-south-2.amazonaws.com",
+    "basePath": "/api/v1",
+    "paths": {
+        "/accounts": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to create a new account. An account is the entity that owns every resource in the system for a given client.\nAn account may have multiple users, but only one account can be created per client.",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Create account",
+                "parameters": [
+                    {
+                        "description": "Account object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to get account details",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Get account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account details",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to delete an account and all its related data",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Delete account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to update the details of an account.",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Update account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Account object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/authority-connections": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to list the authority connections for the account. An authority connection are the credentials used to connect to an authority (e.g. SES.hospedajes, Mossos d'esquadra, Ertzaintza, etc.)",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "List Authority Connections.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authority Type",
+                        "name": "authorityType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lessor Code",
+                        "name": "lessorCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authority Connection Username",
+                        "name": "user",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Limit of items to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Next token to retrieve the next page",
+                        "name": "next",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListAuthConnsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to create a new authority connection for an account. An authority connection are the credentials used to connect to an authority (e.g. SES.hospedajes, Mossos d'esquadra, Ertzaintza, etc.)",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "Create authority connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Authority Connection object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAuthConnRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AuthConnResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/authority-connections/validate": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to validate the credentials of an authority connection. This checks if the provided credentials are valid for the specified authority.",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "Validate Authority Connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Authority Connection object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ValidateAuthConnRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error - Invalid credentials",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/authority-connections/{authConnId}": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to get a specific authority connection from an account. An authority connection are the credentials used to connect to an authority (e.g. SES.hospedajes, Mossos d'esquadra, Ertzaintza, etc.)",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "Get Authority Connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authority Connection ID",
+                        "name": "authConnId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AuthConnResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to delete an authority connection from an account. An authority connection are the credentials used to connect to an authority (e.g. SES.hospedajes, Mossos d'esquadra, Ertzaintza, etc.)",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "Delete Authority Connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authority Connection ID",
+                        "name": "authConnId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to update the details of an authority connection from an account. An authority connection are the credentials used to connect to an authority (e.g. SES.hospedajes, Mossos d'esquadra, Ertzaintza, etc.)",
+                "tags": [
+                    "AuthConns"
+                ],
+                "summary": "Update Authority Connection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authority Connection ID",
+                        "name": "authConnId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Authority Connection object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAuthConnRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AuthConnResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to list the lodgings of an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "tags": [
+                    "Lodgings"
+                ],
+                "summary": "List lodgings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Limit of items to return",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Next token for pagination",
+                        "name": "next",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter lodgings by name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter lodgings by establishment code",
+                        "name": "establishmentCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter lodgings by internet availability",
+                        "name": "internet",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter lodgings by number of rooms",
+                        "name": "numRooms",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter lodgings by authority connection ID",
+                        "name": "authConnID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter lodgings created from this date",
+                        "name": "createdFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter lodgings created to this date",
+                        "name": "createdTo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListLodgingsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to create a new lodging unit for an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "tags": [
+                    "Lodgings"
+                ],
+                "summary": "Create lodging",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Lodging object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateLodgingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LodgingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to get a specific lodging unit from an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "tags": [
+                    "Lodgings"
+                ],
+                "summary": "Get lodging",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "authConn"
+                        ],
+                        "type": "string",
+                        "description": "Include related entities (e.g., authConn)",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LodgingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to delete a specific lodging unit from an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "tags": [
+                    "Lodgings"
+                ],
+                "summary": "Delete lodging",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to update the details of a lodging unit from an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Lodgings"
+                ],
+                "summary": "Update lodging",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Lodging Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateLodgingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LodgingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to list reports for an account, or a specific lodging if provided.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "List reports",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "nextToken",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkInFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkInTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkOutFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkOutTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "contractDateFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "contractDateTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdTo",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "lodging"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "ReportIncludeLodging"
+                        ],
+                        "name": "include",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "lodgingID",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "OrderAscending",
+                            "OrderDescending"
+                        ],
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "DESTI",
+                            "EFECT",
+                            "MOVIL",
+                            "OTRO",
+                            "PLATF",
+                            "TARJT",
+                            "TRANS",
+                            "TREG"
+                        ],
+                        "type": "string",
+                        "x-enum-comments": {
+                            "PaymentMethodCard": "Payment by credit or debit card",
+                            "PaymentMethodCash": "Payment in cash upon arrival",
+                            "PaymentMethodDestination": "Payment upon arrival at the lodging",
+                            "PaymentMethodGiftCard": "Payment by gift card",
+                            "PaymentMethodMobile": "Payment through mobile app",
+                            "PaymentMethodOther": "Other payment methods",
+                            "PaymentMethodPlatform": "Payment through online platform",
+                            "PaymentMethodTransfer": "Payment by bank transfer"
+                        },
+                        "x-enum-varnames": [
+                            "PaymentMethodDestination",
+                            "PaymentMethodCash",
+                            "PaymentMethodMobile",
+                            "PaymentMethodOther",
+                            "PaymentMethodPlatform",
+                            "PaymentMethodCard",
+                            "PaymentMethodTransfer",
+                            "PaymentMethodGiftCard"
+                        ],
+                        "name": "paymentMethodCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "paymentMethodHolder",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "refNum",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "createdAt",
+                            "checkIn",
+                            "contractDate",
+                            "submittedAt"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "ReportSortFieldCreatedAt",
+                            "ReportSortFieldCheckIn",
+                            "ReportSortFieldContractDate",
+                            "ReportSortFieldSubmittedAt"
+                        ],
+                        "name": "sortField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "enum": [
+                                "PENDING_HOST",
+                                "PENDING_TRAVELERS",
+                                "COMPLETED",
+                                "SENT",
+                                "SEND_FAILED",
+                                "ACCEPTED",
+                                "REJECTED"
+                            ],
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "statusCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "submittedFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "submittedTo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListReportsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to create a complete traveler report with contract and traveler sections.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Create report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports/check": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to check a report for potential issues, typos, and conflicts before creating it.\nIf reportId is provided, it will avoid conflicts with itself.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Check report potential issues, typos, and conflicts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportConflictsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports/contract": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to create the contract for a report. This also creates the base report itself.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Create report contract section",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportContractResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports/{reportId}": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to get a report with travelers by ID.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get report with travelers by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "lodging"
+                        ],
+                        "type": "string",
+                        "description": "Include additional data in the response (e.g., lodging details)",
+                        "name": "include",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to update the contract section of a report.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Update report contract",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportContractResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports/{reportId}/check": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to check a report for potential issues, typos, and conflicts before creating it.\nIf reportId is provided, it will avoid conflicts with itself.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Check report potential issues, typos, and conflicts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportConflictsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/reports/{reportId}/contract": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to get a report by ID.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get report contract section only.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportContractResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/tokens": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "List all lodging tokens for the given lodging",
+                "tags": [
+                    "Lodging Tokens"
+                ],
+                "summary": "List lodging tokens",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Lodging Tokens",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.LodgingToken"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Create a new lodging token for public report creation for the given lodging",
+                "tags": [
+                    "Lodging Tokens"
+                ],
+                "summary": "Create a new lodging token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Revoke old tokens",
+                        "name": "revokeOld",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created Lodging Token",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateLodgingTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/lodgings/{lodgingId}/tokens/{tokenId}": {
+            "delete": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Revoke a lodging token for the given lodging. This will invalidate the token and prevent further use.",
+                "tags": [
+                    "Lodging Tokens"
+                ],
+                "summary": "Revoke a lodging token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token ID",
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/onboard": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to onboard an account. This will set the account's onboarded flag to true.",
+                "tags": [
+                    "Accounts"
+                ],
+                "summary": "Onboard account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/reports": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Endpoint to list reports for an account, or a specific lodging if provided.",
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "List reports",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "nextToken",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkInFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkInTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkOutFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "checkOutTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "contractDateFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "contractDateTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "createdTo",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "lodging"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "ReportIncludeLodging"
+                        ],
+                        "name": "include",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "lodgingID",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "OrderAscending",
+                            "OrderDescending"
+                        ],
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "DESTI",
+                            "EFECT",
+                            "MOVIL",
+                            "OTRO",
+                            "PLATF",
+                            "TARJT",
+                            "TRANS",
+                            "TREG"
+                        ],
+                        "type": "string",
+                        "x-enum-comments": {
+                            "PaymentMethodCard": "Payment by credit or debit card",
+                            "PaymentMethodCash": "Payment in cash upon arrival",
+                            "PaymentMethodDestination": "Payment upon arrival at the lodging",
+                            "PaymentMethodGiftCard": "Payment by gift card",
+                            "PaymentMethodMobile": "Payment through mobile app",
+                            "PaymentMethodOther": "Other payment methods",
+                            "PaymentMethodPlatform": "Payment through online platform",
+                            "PaymentMethodTransfer": "Payment by bank transfer"
+                        },
+                        "x-enum-varnames": [
+                            "PaymentMethodDestination",
+                            "PaymentMethodCash",
+                            "PaymentMethodMobile",
+                            "PaymentMethodOther",
+                            "PaymentMethodPlatform",
+                            "PaymentMethodCard",
+                            "PaymentMethodTransfer",
+                            "PaymentMethodGiftCard"
+                        ],
+                        "name": "paymentMethodCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "paymentMethodHolder",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "refNum",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "createdAt",
+                            "checkIn",
+                            "contractDate",
+                            "submittedAt"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "ReportSortFieldCreatedAt",
+                            "ReportSortFieldCheckIn",
+                            "ReportSortFieldContractDate",
+                            "ReportSortFieldSubmittedAt"
+                        ],
+                        "name": "sortField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "enum": [
+                                "PENDING_HOST",
+                                "PENDING_TRAVELERS",
+                                "COMPLETED",
+                                "SENT",
+                                "SEND_FAILED",
+                                "ACCEPTED",
+                                "REJECTED"
+                            ],
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "name": "statusCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "submittedFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "submittedTo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListReportsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/subscriptions": {
+            "get": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Retrieves the current subscription status and details for the account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Get subscription",
+                "responses": {
+                    "200": {
+                        "description": "Subscription details",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SubscriptionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Cancels the user's subscription at the end of the current billing period",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Cancel subscription",
+                "responses": {
+                    "200": {
+                        "description": "Subscription cancelled successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "No subscription found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{accountId}/subscriptions/checkout": {
+            "post": {
+                "security": [
+                    {
+                        "OAuth2AccessCode": [
+                            "openid"
+                        ]
+                    }
+                ],
+                "description": "Creates a Stripe checkout session for the user to purchase a subscription",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Create checkout session",
+                "parameters": [
+                    {
+                        "description": "Checkout request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Checkout URL created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckoutResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}": {
+            "get": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Endpoint to get the public data of a specific lodging unit from an account. A lodging unit is any accommodation facility, such as a hotel, rental apartment, etc.",
+                "tags": [
+                    "Lodgings",
+                    "Public"
+                ],
+                "summary": "Get lodging public data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LodgingPublicDataResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}/reports": {
+            "post": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Endpoint to create a complete traveler report with contract and traveler sections as a guest (traveler typically).",
+                "tags": [
+                    "Reports",
+                    "Public"
+                ],
+                "summary": "Create report as a guest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}/reports/check": {
+            "post": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Endpoint to check a report for potential issues, typos, and conflicts before creating it as a guest (traveler typically). If reportId is provided, it will avoid conflicts with itself.",
+                "tags": [
+                    "Reports",
+                    "Public"
+                ],
+                "summary": "Check report potential issues, typos, and conflicts as a guest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportConflictsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}/reports/{reportId}/check": {
+            "post": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Endpoint to check a report for potential issues, typos, and conflicts before creating it as a guest (traveler typically). If reportId is provided, it will avoid conflicts with itself.",
+                "tags": [
+                    "Reports",
+                    "Public"
+                ],
+                "summary": "Check report potential issues, typos, and conflicts as a guest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Report ID (UUID)",
+                        "name": "reportId",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReportContractRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ReportConflictsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}/stats": {
+            "get": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Endpoint to get global statistics for total travelers and reports.",
+                "tags": [
+                    "Stats",
+                    "Public"
+                ],
+                "summary": "Get global statistics",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID (cognito sub - UUID)",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID (UUID)",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StatsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/public/accounts/{accountId}/lodgings/{lodgingId}/tokens/validate": {
+            "post": {
+                "security": [
+                    {
+                        "LodgingToken": []
+                    }
+                ],
+                "description": "Validate a lodging token for the given lodging. This will check if the token is valid and active.",
+                "tags": [
+                    "Lodging Tokens",
+                    "Public"
+                ],
+                "summary": "Validate a lodging token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Account ID",
+                        "name": "accountId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Lodging ID",
+                        "name": "lodgingId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "X-Lodging-Token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/webhooks/stripe": {
+            "post": {
+                "description": "Processes Stripe webhook events for subscription management",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Handle Stripe webhook",
+                "responses": {
+                    "200": {
+                        "description": "Webhook processed successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid signature or malformed request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.AppError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.AccountResponse": {
+            "type": "object",
+            "required": [
+                "email",
+                "id",
+                "userId"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@email.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "onboarded": {
+                    "type": "boolean",
+                    "default": false,
+                    "example": true
+                },
+                "onboardingStep": {
+                    "type": "integer",
+                    "default": 0,
+                    "example": 1
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+1234567890"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                }
+            }
+        },
+        "dto.AddressDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "country",
+                "postalCode"
+            ],
+            "properties": {
+                "additionalAddress": {
+                    "type": "string",
+                    "example": "Room 3"
+                },
+                "address": {
+                    "type": "string",
+                    "example": "Avenida Jenofonte, 1, BL. 3, 6, 1"
+                },
+                "country": {
+                    "type": "string",
+                    "example": "ESP"
+                },
+                "municipalityCode": {
+                    "description": "(mandatory for Spain)",
+                    "type": "string",
+                    "example": "29 051 6"
+                },
+                "municipalityName": {
+                    "description": "(mandatory for non-Spain)",
+                    "type": "string",
+                    "example": "Madrid"
+                },
+                "postalCode": {
+                    "description": "TODO: validate:\"postcode_iso3166_alpha3\" alpha3 not supported in go-playground validator",
+                    "type": "string",
+                    "example": "28001"
+                }
+            }
+        },
+        "dto.AuthConnResponse": {
+            "type": "object",
+            "required": [
+                "accountId",
+                "authorityType",
+                "id"
+            ],
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "authorityType": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.AuthorityType"
+                        }
+                    ],
+                    "example": "SES"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "01JJRF5YTJHKP09TAEC3NTCRHB"
+                },
+                "lessorCode": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "username"
+                }
+            }
+        },
+        "dto.CheckoutRequest": {
+            "type": "object",
+            "required": [
+                "priceId",
+                "quantity"
+            ],
+            "properties": {
+                "priceId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "dto.CheckoutResponse": {
+            "type": "object",
+            "properties": {
+                "checkout_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "userId"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@email.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+34123456789"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                }
+            }
+        },
+        "dto.CreateAuthConnRequest": {
+            "type": "object",
+            "required": [
+                "authorityType",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "authorityType": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.AuthorityType"
+                        }
+                    ],
+                    "example": "SES"
+                },
+                "lessorCode": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "user"
+                }
+            }
+        },
+        "dto.CreateLodgingRequest": {
+            "type": "object",
+            "required": [
+                "authConnId",
+                "establishmentCode",
+                "name"
+            ],
+            "properties": {
+                "authConnId": {
+                    "type": "string",
+                    "maxLength": 36
+                },
+                "city": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "country": {
+                    "type": "string"
+                },
+                "establishmentCode": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "internet": {
+                    "type": "boolean"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "numRooms": {
+                    "type": "integer"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "maxItems": 5,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "postalCode": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "streetAddress": {
+                    "type": "string",
+                    "maxLength": 255
+                }
+            }
+        },
+        "dto.CreateLodgingTokenResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-123456789012"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6"
+                },
+                "lodgingId": {
+                    "type": "string",
+                    "example": "87654321-4321-4321-4321-210987654321"
+                },
+                "token": {
+                    "type": "string",
+                    "example": "42069xid0Rzai4Cj8k42069h0Rc4fDa4M7qi1u42069"
+                }
+            }
+        },
+        "dto.CreateReportContractRequest": {
+            "type": "object",
+            "required": [
+                "checkInDate",
+                "checkOutDate",
+                "numPeople",
+                "payment"
+            ],
+            "properties": {
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "numPeople": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 2
+                },
+                "numRooms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1
+                },
+                "payment": {
+                    "$ref": "#/definitions/dto.PaymentDTO"
+                }
+            }
+        },
+        "dto.CreateReportRequest": {
+            "type": "object",
+            "required": [
+                "checkInDate",
+                "checkOutDate",
+                "numPeople",
+                "payment",
+                "travelers"
+            ],
+            "properties": {
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "numPeople": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "example": 2
+                },
+                "numRooms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1
+                },
+                "payment": {
+                    "$ref": "#/definitions/dto.PaymentDTO"
+                },
+                "travelers": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/definitions/dto.CreateReportTravelerRequest"
+                    }
+                }
+            }
+        },
+        "dto.CreateReportTravelerRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "birthdate",
+                "name",
+                "surname1"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/dto.AddressDTO"
+                },
+                "birthdate": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "example@example.com"
+                },
+                "idNum": {
+                    "description": "(mandatory for adults)",
+                    "type": "string",
+                    "example": "12345678A"
+                },
+                "idSupport": {
+                    "description": "(mandatory for adults)",
+                    "type": "string",
+                    "example": "CHC123456"
+                },
+                "idType": {
+                    "description": "(mandatory for adults)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.IDType"
+                        }
+                    ],
+                    "example": "NIF"
+                },
+                "kinship": {
+                    "description": "(temporarily optional due to SES.hospedajes' technical issues)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Kinship"
+                        }
+                    ],
+                    "example": "AB"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "nationality": {
+                    "description": "(optional)",
+                    "type": "string",
+                    "example": "ESP"
+                },
+                "phone": {
+                    "description": "(mandatory one of: Phone, Phone2, Email)",
+                    "type": "string",
+                    "example": "+34 123 456 789"
+                },
+                "phone2": {
+                    "type": "string",
+                    "example": "+34 987 654 321"
+                },
+                "sex": {
+                    "description": "(optional)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Sex"
+                        }
+                    ],
+                    "example": "H"
+                },
+                "signature": {
+                    "description": "(mandatory for adults)",
+                    "type": "string",
+                    "example": "account/1234/lodging/56789/report/0123/signature-x"
+                },
+                "surname1": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "surname2": {
+                    "description": "(mandatory if IDType == NIF)",
+                    "type": "string",
+                    "example": "Smith"
+                }
+            }
+        },
+        "dto.ListAuthConnsResponse": {
+            "type": "object",
+            "required": [
+                "authConns"
+            ],
+            "properties": {
+                "authConns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AuthConnResponse"
+                    }
+                },
+                "nextToken": {
+                    "type": "string",
+                    "example": "N2RjMGU3YTQtMjAxMS03MDM1LWRjMzMtZTIyNzBhOWU4MjRlOkFVVEhDT05OIzAxSks2N1ZCM0NRRVBIQU1SRDQyWDdIRTZN"
+                }
+            }
+        },
+        "dto.ListLodgingsResponse": {
+            "type": "object",
+            "properties": {
+                "lodgings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.LodgingResponse"
+                    }
+                },
+                "nextToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ListReportsResponse": {
+            "type": "object",
+            "properties": {
+                "nextToken": {
+                    "type": "string"
+                },
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReportContractResponse"
+                    }
+                }
+            }
+        },
+        "dto.LodgingPublicDataResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "internet": {
+                    "type": "boolean"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "numRooms": {
+                    "type": "integer"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "streetAddress": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LodgingResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string"
+                },
+                "authConn": {
+                    "description": "Optional, can be nil if not included",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.AuthConnResponse"
+                        }
+                    ]
+                },
+                "authConnId": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "establishmentCode": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "internet": {
+                    "type": "boolean"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "numRooms": {
+                    "type": "integer"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "streetAddress": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LodgingToken": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "12345678-1234-1234-1234-123456789012"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6"
+                },
+                "lodgingId": {
+                    "type": "string",
+                    "example": "87654321-4321-4321-4321-210987654321"
+                }
+            }
+        },
+        "dto.PaymentDTO": {
+            "type": "object",
+            "required": [
+                "paymentMethodCode"
+            ],
+            "properties": {
+                "cardExpiration": {
+                    "type": "string",
+                    "example": "2025-10-01"
+                },
+                "paymentDate": {
+                    "type": "string",
+                    "example": "2023-10-01"
+                },
+                "paymentMethodCode": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.PaymentMethod"
+                        }
+                    ],
+                    "example": "TRANS"
+                },
+                "paymentMethodHolder": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "paymentMethodId": {
+                    "type": "string",
+                    "example": "1234567890123456"
+                }
+            }
+        },
+        "dto.ReportConflictCodes": {
+            "type": "string",
+            "enum": [
+                "WARN_STAY_TOO_SHORT",
+                "WARN_STAY_TOO_LONG",
+                "WARN_CHECKIN_IN_PAST",
+                "WARN_CHECKIN_TOO_OLD",
+                "WARN_ROOMS_EXCEED_PEOPLE",
+                "WARN_OVERCROWDED_ROOMS",
+                "WARN_NUM_PEOPLE_EXCEEDS_LIMIT",
+                "WARN_NUM_ROOMS_EXCEEDS_LIMIT",
+                "WARN_CARD_EXPIRING_SOON"
+            ],
+            "x-enum-varnames": [
+                "ReportConflictStayTooShort",
+                "ReportConflictStayTooLong",
+                "ReportConflictCheckinInPast",
+                "ReportConflictCheckinTooOld",
+                "ReportConflictRoomsExceedPeople",
+                "ReportConflictOvercrowdedRooms",
+                "ReportConflictNumPeopleExceedsLimit",
+                "ReportConflictNumRoomsExceedsLimit",
+                "ReportConflictCardExpiringSoon"
+            ]
+        },
+        "dto.ReportConflictsResponse": {
+            "type": "object",
+            "properties": {
+                "dateConflictingReports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.SimpleReportResponse"
+                    }
+                },
+                "otherConflicts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReportConflictCodes"
+                    }
+                }
+            }
+        },
+        "dto.ReportContractResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "contractDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "internet": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "lodging": {
+                    "description": "Lodging information, optional",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.LodgingPublicDataResponse"
+                        }
+                    ]
+                },
+                "lodgingId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "numPeople": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "numRooms": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "payment": {
+                    "$ref": "#/definitions/dto.PaymentDTO"
+                },
+                "refNum": {
+                    "type": "integer",
+                    "example": 123456789
+                },
+                "statusCode": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.ReportStatus"
+                        }
+                    ],
+                    "example": "PENDING_TRAVELER"
+                },
+                "submissionResponse": {
+                    "type": "string",
+                    "example": "Success"
+                },
+                "submittedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                }
+            }
+        },
+        "dto.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "contractDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "internet": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "lodging": {
+                    "$ref": "#/definitions/dto.LodgingResponse"
+                },
+                "lodgingId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "numPeople": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "numRooms": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "payment": {
+                    "$ref": "#/definitions/dto.PaymentDTO"
+                },
+                "refNum": {
+                    "type": "integer",
+                    "example": 123456789
+                },
+                "statusCode": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.ReportStatus"
+                        }
+                    ],
+                    "example": "PENDING_TRAVELER"
+                },
+                "submissionResponse": {
+                    "type": "string",
+                    "example": "Success"
+                },
+                "submittedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "travelers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ReportTravelerResponse"
+                    }
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                }
+            }
+        },
+        "dto.ReportTravelerResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/dto.AddressDTO"
+                },
+                "birthdate": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                },
+                "email": {
+                    "description": "(optional)",
+                    "type": "string",
+                    "example": "example@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "b2a0c1f4-3d5e-4c8b-9f7e-6a2d3f5b8c1e"
+                },
+                "idNum": {
+                    "type": "string",
+                    "example": "12345678A"
+                },
+                "idSupport": {
+                    "type": "string",
+                    "example": "CHC123456"
+                },
+                "idType": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.IDType"
+                        }
+                    ],
+                    "example": "NIF"
+                },
+                "kinship": {
+                    "description": "(optional)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Kinship"
+                        }
+                    ],
+                    "example": "AB"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Juan"
+                },
+                "nationality": {
+                    "type": "string",
+                    "example": "ESP"
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+34 123 456 789"
+                },
+                "phone2": {
+                    "description": "(optional)",
+                    "type": "string",
+                    "example": "+34 987 654 321"
+                },
+                "sex": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Sex"
+                        }
+                    ],
+                    "example": "H"
+                },
+                "signature": {
+                    "description": "S3 URL to handwritten signature SVG",
+                    "type": "string",
+                    "example": "account/1234/lodging/56789/report/0123/signature-x"
+                },
+                "surname1": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "surname2": {
+                    "description": "(optional)",
+                    "type": "string",
+                    "example": "Smith"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2023-01-01T00:00:00Z"
+                }
+            }
+        },
+        "dto.SimpleReportResponse": {
+            "type": "object",
+            "properties": {
+                "accountId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "lodgingId": {
+                    "type": "string",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                },
+                "refNum": {
+                    "type": "integer",
+                    "example": 123456789
+                },
+                "statusCode": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.ReportStatus"
+                        }
+                    ],
+                    "example": "PENDING_TRAVELER"
+                }
+            }
+        },
+        "dto.StatsResponse": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "integer"
+                },
+                "travelers": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.SubscriptionPaymentMethodResponse": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "last4": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SubscriptionResponse": {
+            "type": "object",
+            "properties": {
+                "cancelAtPeriodEnd": {
+                    "type": "boolean"
+                },
+                "currentPeriodEnd": {
+                    "type": "integer"
+                },
+                "currentPeriodStart": {
+                    "type": "integer"
+                },
+                "customerId": {
+                    "type": "string"
+                },
+                "paymentMethod": {
+                    "$ref": "#/definitions/dto.SubscriptionPaymentMethodResponse"
+                },
+                "priceId": {
+                    "type": "string"
+                },
+                "productId": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "subscriptionId": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateAccountRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "user@email.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "onboardingStep": {
+                    "type": "integer",
+                    "default": 0,
+                    "maximum": 3,
+                    "minimum": 0,
+                    "example": 1
+                },
+                "phone": {
+                    "type": "string",
+                    "example": "+34123456789"
+                }
+            }
+        },
+        "dto.UpdateAuthConnRequest": {
+            "type": "object",
+            "properties": {
+                "authorityType": {
+                    "$ref": "#/definitions/model.AuthorityType"
+                },
+                "lessorCode": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateLodgingRequest": {
+            "type": "object",
+            "properties": {
+                "authConnId": {
+                    "type": "string",
+                    "maxLength": 36
+                },
+                "city": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "country": {
+                    "type": "string"
+                },
+                "establishmentCode": {
+                    "type": "string",
+                    "maxLength": 50
+                },
+                "internet": {
+                    "type": "boolean"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "numRooms": {
+                    "type": "integer"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "maxItems": 5,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "postalCode": {
+                    "type": "string",
+                    "maxLength": 20
+                },
+                "streetAddress": {
+                    "type": "string",
+                    "maxLength": 255
+                }
+            }
+        },
+        "dto.UpdateReportContractRequest": {
+            "type": "object",
+            "properties": {
+                "checkInDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "checkOutDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "contractDate": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "internet": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "numRooms": {
+                    "description": "NumPeople    int                `json:\"numPeople\" example:\"2\"`",
+                    "type": "integer",
+                    "example": 1
+                },
+                "payment": {
+                    "$ref": "#/definitions/model.Payment"
+                },
+                "statusCode": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.ReportStatus"
+                        }
+                    ],
+                    "example": "PENDING_TRAVELER"
+                }
+            }
+        },
+        "dto.ValidateAuthConnRequest": {
+            "type": "object",
+            "required": [
+                "authorityType",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "authorityType": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.AuthorityType"
+                        }
+                    ],
+                    "example": "SES"
+                },
+                "lessorCode": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "user"
+                }
+            }
+        },
+        "errors.AppError": {
+            "type": "object",
+            "properties": {
+                "cause": {
+                    "type": "string"
+                },
+                "code": {
+                    "$ref": "#/definitions/errors.appErrorCode"
+                },
+                "errors": {
+                    "description": "Client-facing validation errors",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "errors.appErrorCode": {
+            "type": "string",
+            "enum": [
+                "bad_request",
+                "cancelled",
+                "conflict",
+                "connection_refused",
+                "connection_reset",
+                "dns",
+                "duplicate",
+                "failed_validation",
+                "forbidden",
+                "internal",
+                "not_found",
+                "timeout",
+                "too_many_requests",
+                "unauthorized",
+                "unknown"
+            ],
+            "x-enum-varnames": [
+                "ErrCodeBadRequest",
+                "ErrCodeCancelled",
+                "ErrCodeConflict",
+                "ErrCodeConnectionRefused",
+                "ErrCodeConnectionReset",
+                "ErrCodeDNS",
+                "ErrCodeDuplicate",
+                "ErrCodeValidation",
+                "ErrCodeForbidden",
+                "ErrCodeInternal",
+                "ErrCodeNotFound",
+                "ErrCodeTimeout",
+                "ErrCodeTooManyRequests",
+                "ErrCodeUnauthorized",
+                "ErrCodeUnknown"
+            ]
+        },
+        "model.AuthorityType": {
+            "type": "string",
+            "enum": [
+                "SES",
+                "Mossos",
+                "Ertzaintza"
+            ],
+            "x-enum-varnames": [
+                "AuthorityTypeSES",
+                "AuthorityTypeMossos",
+                "AuthorityTypeErtzaintza"
+            ]
+        },
+        "model.IDType": {
+            "type": "string",
+            "enum": [
+                "CIF",
+                "NIF",
+                "NIE",
+                "PAS",
+                "OTRO"
+            ],
+            "x-enum-varnames": [
+                "IDTypeCIF",
+                "IDTypeNIF",
+                "IDTypeNIE",
+                "IDTypePassport",
+                "IDTypeOther"
+            ]
+        },
+        "model.Kinship": {
+            "type": "string",
+            "enum": [
+                "AB",
+                "BA",
+                "BN",
+                "CD",
+                "CY",
+                "HJ",
+                "HR",
+                "NI",
+                "OT",
+                "PM",
+                "SB",
+                "TI",
+                "TU",
+                "YN"
+            ],
+            "x-enum-varnames": [
+                "KinshipGrandparent",
+                "KinshipGreatGrandparent",
+                "KinshipGreatGrandchild",
+                "KinshipBrotherInLaw",
+                "KinshipSpouse",
+                "KinshipSon",
+                "KinshipBrother",
+                "KinshipGrandchild",
+                "KinshipOther",
+                "KinshipParent",
+                "KinshipNephew",
+                "KinshipUncle",
+                "KinshipGuardian",
+                "KinshipSonInLaw"
+            ]
+        },
+        "model.Order": {
+            "type": "string",
+            "enum": [
+                "asc",
+                "desc"
+            ],
+            "x-enum-varnames": [
+                "OrderAscending",
+                "OrderDescending"
+            ]
+        },
+        "model.Payment": {
+            "type": "object",
+            "properties": {
+                "cardExpirationDate": {
+                    "description": "(optional) Card Expiration Date, if card used [caducidadTarjeta] (MM/AAAA)",
+                    "type": "string"
+                },
+                "paymentDate": {
+                    "description": "(optional) [fechaPago] (AAAA-MM-DD)",
+                    "type": "string"
+                },
+                "paymentMethodCode": {
+                    "description": "[tipoPago] (review format)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.PaymentMethod"
+                        }
+                    ]
+                },
+                "paymentMethodHolder": {
+                    "description": "(optional) [titular]",
+                    "type": "string"
+                },
+                "paymentMethodID": {
+                    "description": "(optional) [medioPago] (string, except for card)",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaymentMethod": {
+            "type": "string",
+            "enum": [
+                "DESTI",
+                "EFECT",
+                "MOVIL",
+                "OTRO",
+                "PLATF",
+                "TARJT",
+                "TRANS",
+                "TREG"
+            ],
+            "x-enum-comments": {
+                "PaymentMethodCard": "Payment by credit or debit card",
+                "PaymentMethodCash": "Payment in cash upon arrival",
+                "PaymentMethodDestination": "Payment upon arrival at the lodging",
+                "PaymentMethodGiftCard": "Payment by gift card",
+                "PaymentMethodMobile": "Payment through mobile app",
+                "PaymentMethodOther": "Other payment methods",
+                "PaymentMethodPlatform": "Payment through online platform",
+                "PaymentMethodTransfer": "Payment by bank transfer"
+            },
+            "x-enum-varnames": [
+                "PaymentMethodDestination",
+                "PaymentMethodCash",
+                "PaymentMethodMobile",
+                "PaymentMethodOther",
+                "PaymentMethodPlatform",
+                "PaymentMethodCard",
+                "PaymentMethodTransfer",
+                "PaymentMethodGiftCard"
+            ]
+        },
+        "model.ReportInclude": {
+            "type": "string",
+            "enum": [
+                "lodging"
+            ],
+            "x-enum-varnames": [
+                "ReportIncludeLodging"
+            ]
+        },
+        "model.ReportSortField": {
+            "type": "string",
+            "enum": [
+                "createdAt",
+                "checkIn",
+                "contractDate",
+                "submittedAt"
+            ],
+            "x-enum-varnames": [
+                "ReportSortFieldCreatedAt",
+                "ReportSortFieldCheckIn",
+                "ReportSortFieldContractDate",
+                "ReportSortFieldSubmittedAt"
+            ]
+        },
+        "model.ReportStatus": {
+            "type": "string",
+            "enum": [
+                "PENDING_HOST",
+                "PENDING_TRAVELERS",
+                "COMPLETED",
+                "SENT",
+                "SEND_FAILED",
+                "ACCEPTED",
+                "REJECTED"
+            ],
+            "x-enum-comments": {
+                "ReportStatusAccepted": "Report accepted by authorities",
+                "ReportStatusCompleted": "All information collected but not yet sent",
+                "ReportStatusPendingHosting": "Report created but not yet filled by lodging manager",
+                "ReportStatusPendingTraveler": "Report created but not yet filled by travelers",
+                "ReportStatusRejected": "Report rejected by authorities",
+                "ReportStatusSendFailed": "Failed to submit to authorities",
+                "ReportStatusSent": "Report submitted to authorities"
+            },
+            "x-enum-varnames": [
+                "ReportStatusPendingHosting",
+                "ReportStatusPendingTraveler",
+                "ReportStatusCompleted",
+                "ReportStatusSent",
+                "ReportStatusSendFailed",
+                "ReportStatusAccepted",
+                "ReportStatusRejected"
+            ]
+        },
+        "model.Sex": {
+            "type": "string",
+            "enum": [
+                "H",
+                "M",
+                "O"
+            ],
+            "x-enum-varnames": [
+                "SexMale",
+                "SexFemale",
+                "SexOther"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "LodgingToken": {
+            "description": "Lodging token for authentication\nUse this token to authenticate requests to public endpoints related to a specific lodging. This token is required for report creation and basic lodging information retrieval as a traveler.",
+            "type": "apiKey",
+            "name": "X-Lodging-Token",
+            "in": "header"
+        },
+        "OAuth2AccessCode": {
+            "description": "OAuth2 authentication handled by Amazon Cognito for the Lynx Check-in signed-up users. This is mainly used for manager-related endpoints.",
+            "type": "oauth2",
+            "flow": "accessCode",
+            "authorizationUrl": "https://lynxcheckin-api-n4xo.auth.eu-south-2.amazoncognito.com/oauth2/authorize",
+            "tokenUrl": "https://lynxcheckin-api-n4xo.auth.eu-south-2.amazoncognito.com/oauth2/token",
+            "scopes": {
+                "openid": "Grants access to the base endpoints (least privileged scope)"
+            }
+        }
+    }
+}

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rápido - Formulario Parte de Viajeros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .info-box {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .warning-box {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .url-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .url-box a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .url-box a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Rápido - Parte de Viajeros → Lynx</h1>
+        
+        <div class="info-box">
+            <strong>✅ Reserva Creada</strong><br>
+            ID: <code>75</code> | Huésped: <strong>Carlos Martínez Ruiz</strong><br>
+            Check-in: <strong>2025-11-04</strong> | Check-out: <strong>2025-11-06</strong>
+        </div>
+
+        <div class="section">
+            <h2>🔗 URL del Formulario</h2>
+            <div class="url-box">
+                <strong>Producción:</strong><br>
+                <a href="https://hosthelperai.com/check-in/62e5dfaa-7317-4cf6-951a-6b6866134e0b" target="_blank" id="prod-url">
+                    https://hosthelperai.com/check-in/62e5dfaa-7317-4cf6-951a-6b6866134e0b
+                </a>
+                <button class="copy-btn" onclick="copyUrl('prod')">📋 Copiar</button>
+            </div>
+            <div class="url-box">
+                <strong>Desarrollo:</strong><br>
+                <a href="http://localhost:5173/check-in/62e5dfaa-7317-4cf6-951a-6b6866134e0b" target="_blank" id="dev-url">
+                    http://localhost:5173/check-in/62e5dfaa-7317-4cf6-951a-6b6866134e0b
+                </a>
+                <button class="copy-btn" onclick="copyUrl('dev')">📋 Copiar</button>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Importante:</strong><br>
+            Abre el enlace en una <strong>ventana de incógnito</strong> para simular ser el turista (sin sesión de gestor).
+        </div>
+
+        <div class="section">
+            <h2>📝 Datos de Prueba para el Formulario</h2>
+            <p>Copia estos datos para rellenar el formulario rápidamente:</p>
+            
+            <h3>Información Personal</h3>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+                    <td>Nombre</td>
+                    <td><code>Carlos</code></td>
+                </tr>
+                <tr>
+                    <td>Primer Apellido</td>
+                    <td><code>Martínez</code></td>
+                </tr>
+                <tr>
+                    <td>Segundo Apellido</td>
+                    <td><code>Ruiz</code></td>
+                </tr>
+                <tr>
+                    <td>Tipo de Documento</td>
+                    <td><code>DNI</code></td>
+                </tr>
+                <tr>
+                    <td>Número de Documento</td>
+                    <td><code>12345678Z</code></td>
+                </tr>
+                <tr>
+                    <td>Fecha de Nacimiento</td>
+                    <td><code>1990-05-15</code></td>
+                </tr>
+                <tr>
+                    <td>Género</td>
+                    <td><code>Masculino</code></td>
+                </tr>
+                <tr>
+                    <td>Nacionalidad</td>
+                    <td><code>España</code></td>
+                </tr>
+            </table>
+
+            <h3>Residencia</h3>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+                    <td>País de Residencia</td>
+                    <td><code>España</code></td>
+                </tr>
+            </table>
+
+            <h3>Dirección</h3>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+                    <td>Ciudad</td>
+                    <td><code>Málaga</code></td>
+                </tr>
+                <tr>
+                    <td>Código Postal</td>
+                    <td><code>29001</code></td>
+                </tr>
+                <tr>
+                    <td>Dirección</td>
+                    <td><code>Calle Larios 15</code></td>
+                </tr>
+                <tr>
+                    <td>Información Adicional</td>
+                    <td><code>Piso 2B</code> (opcional)</td>
+                </tr>
+                <tr>
+                    <td>Código INE</td>
+                    <td><code>29067</code> (Málaga)</td>
+                </tr>
+            </table>
+
+            <h3>Contacto</h3>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><code>carlos.martinez@example.com</code></td>
+                </tr>
+                <tr>
+                    <td>País del Teléfono</td>
+                    <td><code>España (+34)</code></td>
+                </tr>
+                <tr>
+                    <td>Teléfono</td>
+                    <td><code>666777888</code></td>
+                </tr>
+            </table>
+
+            <h3>Método de Pago y Firma</h3>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Acción</th>
+                </tr>
+                <tr>
+                    <td>Método de Pago</td>
+                    <td><code>En destino</code> (o cualquier otro)</td>
+                </tr>
+                <tr>
+                    <td>Firma</td>
+                    <td>Dibuja cualquier trazo en el panel de firma</td>
+                </tr>
+                <tr>
+                    <td>Consentimiento</td>
+                    <td>Marca la casilla de aceptación</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>✅ Checklist de Verificación</h2>
+            <ol>
+                <li>✅ Abrir la URL del formulario en incógnito</li>
+                <li>✅ Verificar que aparece "Cabaña Mirlo Blanco" y las fechas correctas</li>
+                <li>✅ Completar todos los pasos del wizard con los datos de arriba</li>
+                <li>✅ Dibujar la firma y aceptar el consentimiento</li>
+                <li>✅ Hacer clic en "Enviar Check-in"</li>
+                <li>✅ Ver el toast de "Enviando datos de 1 viajero..."</li>
+                <li>✅ Ver el toast de éxito "Parte de viajero enviado exitosamente"</li>
+                <li>✅ Ejecutar las queries SQL de verificación (ver abajo)</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Queries SQL de Verificación</h2>
+            <p>Ejecuta estas queries en Supabase para verificar el resultado:</p>
+            
+            <div class="url-box">
+                <strong>1. Estado del Parte:</strong><br>
+                <code style="display:block; margin-top:10px;">
+                    SELECT status, num_travelers_completed, lynx_submission_id, lynx_submitted_at<br>
+                    FROM traveler_form_requests<br>
+                    WHERE id = '1308514b-1852-4653-9c9d-195b2f5003be';
+                </code>
+                <button class="copy-btn" onclick="copyQuery(0)">📋 Copiar</button>
+            </div>
+
+            <div class="url-box">
+                <strong>2. Datos del Viajero:</strong><br>
+                <code style="display:block; margin-top:10px;">
+                    SELECT first_name, last_name, document_number, email, submitted_at<br>
+                    FROM traveler_form_data<br>
+                    WHERE form_request_id = '1308514b-1852-4653-9c9d-195b2f5003be';
+                </code>
+                <button class="copy-btn" onclick="copyQuery(1)">📋 Copiar</button>
+            </div>
+
+            <div class="url-box">
+                <strong>3. Respuesta de Lynx:</strong><br>
+                <code style="display:block; margin-top:10px;">
+                    SELECT lynx_response<br>
+                    FROM traveler_form_requests<br>
+                    WHERE id = '1308514b-1852-4653-9c9d-195b2f5003be';
+                </code>
+                <button class="copy-btn" onclick="copyQuery(2)">📋 Copiar</button>
+            </div>
+
+            <p><strong>O usa el script completo:</strong> <code>monitor-test-lynx.sql</code></p>
+        </div>
+
+        <div class="info-box">
+            <strong>📚 Documentación Adicional:</strong><br>
+            • <code>TEST_ENVIO_LYNX_PREPARADO.md</code> - Guía completa del test<br>
+            • <code>monitor-test-lynx.sql</code> - Queries de monitoreo<br>
+            • <code>LYNX_TEST_GUIDE.md</code> - Guía original de testing de Lynx
+        </div>
+    </div>
+
+    <script>
+        // Copiar URLs
+        function copyUrl(type) {
+            const urlId = type === 'prod' ? 'prod-url' : 'dev-url';
+            const url = document.getElementById(urlId).textContent.trim();
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ URL copiada al portapapeles');
+            });
+        }
+
+        // Copiar queries SQL
+        const queries = [
+            "SELECT status, num_travelers_completed, lynx_submission_id, lynx_submitted_at\nFROM traveler_form_requests\nWHERE id = '1308514b-1852-4653-9c9d-195b2f5003be';",
+            "SELECT first_name, last_name, document_number, email, submitted_at\nFROM traveler_form_data\nWHERE form_request_id = '1308514b-1852-4653-9c9d-195b2f5003be';",
+            "SELECT lynx_response\nFROM traveler_form_requests\nWHERE id = '1308514b-1852-4653-9c9d-195b2f5003be';"
+        ];
+
+        function copyQuery(index) {
+            navigator.clipboard.writeText(queries[index]).then(() => {
+                alert('✅ Query copiada al portapapeles');
+            });
+        }
+    </script>
+</body>
+</html>
+

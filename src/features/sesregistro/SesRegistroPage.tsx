@@ -249,6 +249,40 @@ const SesRegistroPage: React.FC = () => {
       return;
     }
 
+    // ✅ VALIDACIÓN: Número de viajeros debe coincidir con el esperado
+    const numTravelersAdded = reservation.travelers.length;
+    const numTravelersExpected = reservation.numberOfTravelers;
+    
+    if (numTravelersAdded !== numTravelersExpected) {
+      const missing = numTravelersExpected - numTravelersAdded;
+      const extra = numTravelersAdded - numTravelersExpected;
+      
+      if (missing > 0) {
+        // Faltan viajeros
+        toast.error(
+          `Faltan ${missing} viajero${missing > 1 ? 's' : ''} por registrar. ` +
+          `Se esperan ${numTravelersExpected} viajero${numTravelersExpected > 1 ? 's' : ''}, ` +
+          `pero solo has añadido ${numTravelersAdded}.`,
+          { duration: 6000 }
+        );
+      } else {
+        // Hay viajeros de más
+        toast.error(
+          `Has añadido ${extra} viajero${extra > 1 ? 's' : ''} de más. ` +
+          `La reserva es para ${numTravelersExpected} viajero${numTravelersExpected > 1 ? 's' : ''}, ` +
+          `pero has registrado ${numTravelersAdded}. Por favor elimina los viajeros extras.`,
+          { duration: 6000 }
+        );
+      }
+      
+      // Scroll a la sección de viajeros
+      const travelersSection = document.getElementById('travelers-section');
+      if (travelersSection) {
+        travelersSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
     // Validar que exista la firma
     if (!signature) {
       setSignatureError('La firma es obligatoria para completar el check-in');
@@ -292,6 +326,7 @@ const SesRegistroPage: React.FC = () => {
           last_name: `${traveler.firstSurname} ${traveler.secondSurname || ''}`.trim(),
           document_type: traveler.documentType.toUpperCase(), // DB expects DNI/NIE/PASSPORT
           document_number: traveler.documentNumber,
+          document_support_number: traveler.documentSupportNumber || null, // ✅ Número de soporte (null si vacío)
           nationality: traveler.nationality,
           birth_date: traveler.dateOfBirth,
           gender: mapGenderToDb(traveler.gender), // Map 'male'/'female'/'other' to 'M'/'F'/'Other'
@@ -303,6 +338,7 @@ const SesRegistroPage: React.FC = () => {
           address_postal_code: traveler.postalCode || null,            // Direct field
           address_country: traveler.residenceCountry,                  // Residence country (ISO alpha-2)
           address_additional: traveler.additionalAddress || null,      // Additional info (apartment, floor, etc.)
+          ine_code: traveler.ineCode || null,                          // ✅ Código INE del municipio (solo España)
           payment_method: mapPaymentMethodToDb(reservation.paymentMethod), // Map to 'CASH'/'CARD'/'TRANS'
           payment_holder: `${traveler.firstName} ${traveler.firstSurname}`,
           signature_data: signature, // Base64 signature (same for all travelers)
@@ -661,12 +697,81 @@ const SesRegistroPage: React.FC = () => {
         </div>
         
         {/* Viajeros */}
-        <TravelersList
-          travelers={reservation.travelers}
-          onAdd={handleAddTraveler}
-          onEdit={handleEditTraveler}
-          onDelete={handleDeleteTraveler}
-        />
+        <div id="travelers-section">
+          {/* Indicador de progreso de viajeros */}
+          <div className={`mb-4 p-4 rounded-lg border-2 ${
+            reservation.travelers.length === reservation.numberOfTravelers
+              ? 'bg-green-50 border-green-500'
+              : reservation.travelers.length < reservation.numberOfTravelers
+              ? 'bg-yellow-50 border-yellow-500'
+              : 'bg-red-50 border-red-500'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {reservation.travelers.length === reservation.numberOfTravelers ? (
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : reservation.travelers.length < reservation.numberOfTravelers ? (
+                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
+                <div>
+                  <p className={`font-semibold ${
+                    reservation.travelers.length === reservation.numberOfTravelers
+                      ? 'text-green-900'
+                      : reservation.travelers.length < reservation.numberOfTravelers
+                      ? 'text-yellow-900'
+                      : 'text-red-900'
+                  }`}>
+                    {reservation.travelers.length === reservation.numberOfTravelers
+                      ? '¡Todos los viajeros registrados!'
+                      : reservation.travelers.length < reservation.numberOfTravelers
+                      ? `Faltan ${reservation.numberOfTravelers - reservation.travelers.length} viajero${reservation.numberOfTravelers - reservation.travelers.length > 1 ? 's' : ''} por registrar`
+                      : `Has añadido ${reservation.travelers.length - reservation.numberOfTravelers} viajero${reservation.travelers.length - reservation.numberOfTravelers > 1 ? 's' : ''} de más`
+                    }
+                  </p>
+                  <p className={`text-sm ${
+                    reservation.travelers.length === reservation.numberOfTravelers
+                      ? 'text-green-700'
+                      : reservation.travelers.length < reservation.numberOfTravelers
+                      ? 'text-yellow-700'
+                      : 'text-red-700'
+                  }`}>
+                    {reservation.travelers.length} de {reservation.numberOfTravelers} viajero{reservation.numberOfTravelers > 1 ? 's' : ''} registrado{reservation.travelers.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+              {/* Barra de progreso */}
+              <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-300 ${
+                    reservation.travelers.length === reservation.numberOfTravelers
+                      ? 'bg-green-600'
+                      : reservation.travelers.length < reservation.numberOfTravelers
+                      ? 'bg-yellow-500'
+                      : 'bg-red-500'
+                  }`}
+                  style={{ 
+                    width: `${Math.min((reservation.travelers.length / reservation.numberOfTravelers) * 100, 100)}%` 
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <TravelersList
+            travelers={reservation.travelers}
+            onAdd={handleAddTraveler}
+            onEdit={handleEditTraveler}
+            onDelete={handleDeleteTraveler}
+          />
+        </div>
         
         {/* Campo de Firma Digital */}
         <div id="signature-section" className="bg-white shadow rounded-lg p-6">
@@ -678,13 +783,34 @@ const SesRegistroPage: React.FC = () => {
         </div>
         
         {/* Botón Enviar Check-in */}
-        <button
-          onClick={handleSubmitCheckin}
-          disabled={reservation.travelers.length === 0}
-          className="w-full bg-primary hover:bg-primary-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition shadow-lg"
-        >
-          {t('sesRegistro.submit.button')}
-        </button>
+        <div>
+          {reservation.travelers.length !== reservation.numberOfTravelers && (
+            <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800 text-center">
+                {reservation.travelers.length < reservation.numberOfTravelers
+                  ? `⚠️ Debes registrar ${reservation.numberOfTravelers - reservation.travelers.length} viajero${reservation.numberOfTravelers - reservation.travelers.length > 1 ? 's' : ''} más antes de enviar`
+                  : `⚠️ Debes eliminar ${reservation.travelers.length - reservation.numberOfTravelers} viajero${reservation.travelers.length - reservation.numberOfTravelers > 1 ? 's' : ''} antes de enviar`
+                }
+              </p>
+            </div>
+          )}
+          
+          <button
+            onClick={handleSubmitCheckin}
+            disabled={
+              reservation.travelers.length === 0 || 
+              reservation.travelers.length !== reservation.numberOfTravelers
+            }
+            className="w-full bg-primary hover:bg-primary-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition shadow-lg"
+          >
+            {reservation.travelers.length === reservation.numberOfTravelers
+              ? t('sesRegistro.submit.button')
+              : reservation.travelers.length < reservation.numberOfTravelers
+              ? `Falta${reservation.numberOfTravelers - reservation.travelers.length > 1 ? 'n' : ''} ${reservation.numberOfTravelers - reservation.travelers.length} viajero${reservation.numberOfTravelers - reservation.travelers.length > 1 ? 's' : ''}`
+              : `Elimina ${reservation.travelers.length - reservation.numberOfTravelers} viajero${reservation.travelers.length - reservation.numberOfTravelers > 1 ? 's' : ''}`
+            }
+          </button>
+        </div>
       </div>
 
       {/* Wizard para añadir/editar viajero */}

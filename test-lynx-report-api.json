@@ -1,0 +1,9 @@
+{
+  "checkInDate": "2025-11-10T12:00:00Z",
+  "checkOutDate": "2025-11-13T12:00:00Z",
+  "numPeople": 1,
+  "payment": {
+    "paymentMethodCode": "EFECT"
+  }
+}
+

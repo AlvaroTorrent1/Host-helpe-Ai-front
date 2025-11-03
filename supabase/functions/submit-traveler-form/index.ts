@@ -3,10 +3,16 @@
  * Edge Function para enviar datos del formulario de viajeros
  * Permite a turistas (sin autenticación) completar el parte del viajero
  * Usa service_role para bypassear RLS y escribir en la BD
+ * 
+ * FLUJO:
+ * 1. Guardar datos en nuestra BD (traveler_form_data)
+ * 2. Si todos los viajeros están completos, enviar a Lynx Check-in
+ * 3. Lynx transmite al Ministerio del Interior (SES.hospedajes)
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { submitTravelerData, mapHostHelperToLynx, LYNX_ACCOUNT_ID } from '../_shared/lynxCheckinService.ts';
 
 // CORS headers para permitir requests desde el frontend
 const corsHeaders = {
@@ -90,6 +96,7 @@ serve(async (req) => {
         last_name: travelerData.last_name,
         document_type: travelerData.document_type,
         document_number: travelerData.document_number,
+        document_support_number: travelerData.document_support_number || null, // ✅ Número de soporte del documento
         nationality: travelerData.nationality,
         birth_date: travelerData.birth_date,
         gender: travelerData.gender || null,
@@ -100,6 +107,7 @@ serve(async (req) => {
         address_postal_code: travelerData.address_postal_code,
         address_country: travelerData.address_country,
         address_additional: travelerData.address_additional || null,
+        ine_code: travelerData.ine_code || null, // ✅ Código INE del municipio (solo España)
         payment_method: travelerData.payment_method || null,
         payment_holder: travelerData.payment_holder || null,
         payment_identifier: travelerData.payment_identifier || null,
@@ -127,7 +135,144 @@ serve(async (req) => {
 
     console.log(`✅ Traveler data submitted for request ${request.id}`);
 
-    // 7. Return success response
+    // 7. Check if all travelers are completed, then send to Lynx
+    // Get updated request to check num_travelers_completed
+    const { data: updatedRequest } = await supabase
+      .from('traveler_form_requests')
+      .select('*')
+      .eq('id', request.id)
+      .single();
+
+    // Only submit to Lynx if all travelers are completed AND not already sent
+    const shouldSendToLynx = updatedRequest && 
+      updatedRequest.num_travelers_completed >= updatedRequest.num_travelers_expected &&
+      !updatedRequest.lynx_submission_id;
+
+    if (shouldSendToLynx) {
+      console.log(`🚀 All travelers completed. Sending to Lynx Check-in...`);
+
+      // Get property to find lynx_lodging_id
+      const { data: property } = await supabase
+        .from('properties')
+        .select('lynx_lodging_id, name')
+        .eq('id', request.property_id)
+        .single();
+
+      if (!property?.lynx_lodging_id) {
+        console.warn(`⚠️ Property ${request.property_id} (${property?.name}) no tiene lynx_lodging_id configurado`);
+        console.warn('El parte NO se enviará a Lynx. Gestor debe configurar la propiedad primero.');
+        // Don't fail the request - data is saved in our DB
+        // Gestor can retry manually from dashboard
+      } else {
+        // Get all travelers for this form
+        const { data: allTravelers } = await supabase
+          .from('traveler_form_data')
+          .select('*')
+          .eq('form_request_id', request.id);
+
+        if (allTravelers && allTravelers.length > 0) {
+          // Lynx API es ABIERTA - no requiere API Key
+          console.log('🌐 Lynx API abierta - enviando sin autenticación');
+          
+          try {
+            // ✅ PASO 1: Subir firma a Supabase Storage (si existe)
+            const signatureSvg = allTravelers[0].signature_data;
+            const requestSlug = request.id.slice(0, 8);
+            const baseSignaturePath = `account/${LYNX_ACCOUNT_ID}/lodging/${property.lynx_lodging_id}/report/${requestSlug}/signature`;
+            const storagePath = `${baseSignaturePath}.svg`;
+
+            // ✅ PASO 2: Preparar firma simplificada como SVG para Lynx
+            let signatureForLynx = '';
+            
+            if (signatureSvg) {
+              console.log(`📝 Procesando firma SVG para Lynx...`);
+
+              // Simplificar SVG drásticamente para reducir tamaño
+              const simplifiedSvg = signatureSvg
+                .replace(/(\d+\.\d{2,})/g, (match) => parseFloat(match).toFixed(1))
+                .replace(/\s+/g, ' ')
+                .replace(/\s*=\s*/g, '=')
+                .trim();
+
+              console.log(`📏 Firma simplificada: ${simplifiedSvg.length} caracteres`);
+              
+              // Guardar también en Storage para nuestros registros
+              const signatureBytes = new TextEncoder().encode(simplifiedSvg);
+              await supabase.storage
+                .from('traveler-signatures')
+                .upload(storagePath, signatureBytes, {
+                  contentType: 'image/svg+xml',
+                  upsert: true,
+                });
+
+              // Enviar el SVG directamente a Lynx (no la URL)
+              signatureForLynx = simplifiedSvg;
+              console.log(`✅ Enviando firma como SVG (${simplifiedSvg.length} chars)`);
+            } else {
+              // Si no hay firma, usar un placeholder simple
+              console.warn('⚠️ No se capturó la firma digital. Usando placeholder.');
+              const placeholderSvg = '<svg width="120" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M5 20 L115 20" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/></svg>';
+              signatureForLynx = placeholderSvg;
+              
+              // Guardar placeholder en Storage
+              const placeholderBytes = new TextEncoder().encode(placeholderSvg);
+              const placeholderPath = `${storagePath.replace('.svg', '')}-missing.svg`;
+              await supabase.storage
+                .from('traveler-signatures')
+                .upload(placeholderPath, placeholderBytes, {
+                  contentType: 'image/svg+xml',
+                  upsert: true,
+                });
+            }
+
+            const lynxPayload = mapHostHelperToLynx(
+              allTravelers,
+              request.check_in_date,
+              request.check_out_date,
+              signatureForLynx, // ✅ Enviar SVG directamente
+              allTravelers[0].payment_method || 'CASH'
+            );
+
+            console.log(`📦 Payload preparado para ${allTravelers.length} viajero(s)`);
+
+            // ✅ PASO 3: Enviar a Lynx (sin API key - API abierta)
+            const lynxResponse = await submitTravelerData(
+              property.lynx_lodging_id,
+              lynxPayload
+            );
+
+            // Validar que lynxResponse no sea undefined
+            if (!lynxResponse) {
+              console.error('❌ submitTravelerData retornó undefined. Posible error en la importación o ejecución.');
+              throw new Error('submitTravelerData retornó undefined');
+            }
+
+            if (lynxResponse.success) {
+              console.log(`✅ Enviado a Lynx exitosamente: ${lynxResponse.submissionId}`);
+              
+              // Update request with Lynx response
+              await supabase
+                .from('traveler_form_requests')
+                .update({
+                  lynx_submission_id: lynxResponse.submissionId,
+                  lynx_submitted_at: lynxResponse.submittedAt,
+                  lynx_payload: lynxPayload,
+                  lynx_response: lynxResponse,
+                })
+                .eq('id', request.id);
+            } else {
+              console.error(`❌ Error en respuesta de Lynx: ${lynxResponse.error}`);
+              console.error(`📄 Respuesta completa:`, lynxResponse);
+            }
+          } catch (lynxError) {
+            console.error('❌ Error sending to Lynx:', lynxError);
+            // Don't fail the request - data is saved in our DB
+          }
+        }
+      }
+    }
+
+    // 8. Return success response
     return new Response(
       JSON.stringify({
         success: true,

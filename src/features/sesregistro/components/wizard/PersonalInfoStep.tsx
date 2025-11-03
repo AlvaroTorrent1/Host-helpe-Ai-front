@@ -194,6 +194,37 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         )}
       </div>
 
+      {/* Número de Soporte del Documento */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {t('sesRegistro.wizard.personal.documentSupportNumber')} <span className="text-gray-400 text-xs">(opcional)</span>
+        </label>
+        <input
+          type="text"
+          value={travelerData.documentSupportNumber || ''}
+          onChange={(e) => {
+            // Filtrar entrada: solo alfanuméricos
+            const filtered = filterDocumentInput(e.target.value);
+            onUpdate({ documentSupportNumber: filtered });
+          }}
+          placeholder={t('sesRegistro.wizard.personal.documentSupportNumberPlaceholder')}
+          className={`
+            w-full px-4 py-3 border rounded-lg font-mono
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+            ${errors.documentSupportNumber ? 'border-red-500' : 'border-gray-300'}
+          `}
+        />
+        {errors.documentSupportNumber && (
+          <p className="mt-1 text-sm text-red-600">{errors.documentSupportNumber}</p>
+        )}
+        {!errors.documentSupportNumber && (
+          <p className="mt-1 text-xs text-gray-500">
+            {t('sesRegistro.wizard.personal.documentSupportNumberHelp')}
+          </p>
+        )}
+      </div>
+
       {/* Fecha de Nacimiento */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">

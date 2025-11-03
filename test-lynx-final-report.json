@@ -1,0 +1,29 @@
+{
+  "checkInDate": "2025-11-10T12:00:00Z",
+  "checkOutDate": "2025-11-13T12:00:00Z",
+  "numPeople": 1,
+  "payment": {
+    "paymentMethodCode": "EFECT"
+  },
+  "travelers": [
+    {
+      "name": "Juan",
+      "surname1": "Garcia",
+      "surname2": "Lopez",
+      "birthdate": "1999-12-12T00:00:00Z",
+      "idType": "NIF",
+      "idNum": "53571577T",
+      "sex": "H",
+      "email": "alvarotorrent1@gmail.com",
+      "phone": "+34654654654",
+      "address": {
+        "address": "Calle Mayor 1",
+        "municipalityCode": "29 067 0",
+        "postalCode": "29001",
+        "country": "ESP"
+      },
+      "signature": "PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIj48cGF0aCBkPSJNMTAgMTAgTDkwIDQwIiBzdHJva2U9IiMwMDAiIGZpbGw9Im5vbmUiLz48L3N2Zz4="
+    }
+  ]
+}
+

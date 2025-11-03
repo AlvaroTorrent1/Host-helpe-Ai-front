@@ -1,0 +1,41 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ NUEVO LINK GENERADO - LISTO PARA USAR
+═══════════════════════════════════════════════════════════════════════════════
+
+🔗 COPIA ESTE LINK Y ÁBRELO EN TU NAVEGADOR:
+
+   http://localhost:5173/check-in/adac3467-8b28-4b8c-bb4e-8a94ec8fef6a
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 DATOS DE LA RESERVA:
+
+   Reserva ID:    83
+   Propiedad:     Cabaña Mirlo Blanco
+   Huésped:       Ana Martínez García
+   Check-in:      2025-11-05
+   Check-out:     2025-11-08
+   Email:         ana.martinez.test@example.com
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  IMPORTANTE: 
+
+   El error anterior era porque estabas usando el puerto 4000 (servidor HTTP)
+   en lugar del puerto 5173 (servidor de desarrollo React/Vite)
+
+   Puerto 4000 = Página de prueba HTML (test-lynx-envio.html)
+   Puerto 5173 = Aplicación React (formulario de check-in)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 SERVIDOR DE DESARROLLO:
+
+   ✅ Servidor iniciado en segundo plano
+   📍 URL: http://localhost:5173
+
+   Si no carga, ejecuta:
+   npm run dev
+
+═══════════════════════════════════════════════════════════════════════════════
+

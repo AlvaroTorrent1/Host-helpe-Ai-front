@@ -5,6 +5,7 @@ import PropertyDetail from "./PropertyDetail";
 import Modal from "@shared/components/Modal";
 import { useTranslation } from "react-i18next";
 import Button from "@/components/ui/Button";
+import { SESRegistrationPanel } from "./components/SESRegistrationPanel";
 
 interface PropertyListProps {
   properties: Property[];
@@ -394,13 +395,24 @@ const PropertyList: React.FC<PropertyListProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProperties.map((property) => (
-            <PropertyCard
-              key={property.id}
-              property={property}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onView={() => handleViewProperty(property)}
-            />
+            <div key={property.id} className="flex flex-col space-y-3">
+              {/* Tarjeta de propiedad */}
+              <PropertyCard
+                property={property}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onView={() => handleViewProperty(property)}
+              />
+              
+              {/* Panel de registro SES debajo de cada tarjeta */}
+              <SESRegistrationPanel 
+                property={property}
+                onSync={async () => {
+                  // TODO: Implementar sincronización cuando tengamos los endpoints
+                  console.log('Sincronizando propiedad con SES:', property.name);
+                }}
+              />
+            </div>
           ))}
         </div>
       )}

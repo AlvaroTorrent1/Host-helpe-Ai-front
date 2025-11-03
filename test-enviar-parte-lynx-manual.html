@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Manual - Envío Parte a Lynx</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            border-radius: 5px;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #logs {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .error { color: #ff4444; }
+        .success { color: #00ff00; }
+        .warning { color: #ffaa00; }
+        .info { color: #4444ff; }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .data-display {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Test Manual - Envío Parte a Lynx API</h1>
+        
+        <div class="section">
+            <h2>📋 Datos del Parte</h2>
+            <div class="data-display">
+                <p><span class="label">Form Request ID:</span> 7b592be9-17b7-4e67-9d17-6dd49a954e8f</p>
+                <p><span class="label">Property:</span> Cabaña Mirlo Blanco</p>
+                <p><span class="label">Lynx Lodging ID:</span> 3dfc0644-612d-4449-9dd6-de7a9d15b012</p>
+                <p><span class="label">Check-in:</span> 2025-11-02</p>
+                <p><span class="label">Check-out:</span> 2025-11-05</p>
+                <p><span class="label">Viajero:</span> juan perez garcia (ARG)</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Acciones</h2>
+            <button class="button" onclick="sendToLynx()">📤 Enviar a Lynx API</button>
+            <button class="button" onclick="clearLogs()">🗑️ Limpiar Logs</button>
+        </div>
+
+        <div class="section">
+            <h2>📊 Logs de Ejecución</h2>
+            <div id="logs">Esperando acción...</div>
+        </div>
+
+        <div class="section">
+            <h2>📦 Payload que se enviará</h2>
+            <pre id="payload-display"></pre>
+        </div>
+
+        <div class="section">
+            <h2>📨 Respuesta de Lynx</h2>
+            <pre id="response-display">Esperando respuesta...</pre>
+        </div>
+    </div>
+
+    <script>
+        const LYNX_API_URL = 'https://vlmfxh4pka.execute-api.eu-south-2.amazonaws.com/partners-api/v1';
+        const LYNX_ACCOUNT_ID = 'a190fff8-c5d0-49a2-80a8-79b38ce0f284';
+        const LYNX_LODGING_ID = '3dfc0644-612d-4449-9dd6-de7a9d15b012';
+
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            logsDiv.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = 'Logs limpiados. Esperando acción...\n';
+            document.getElementById('response-display').innerHTML = 'Esperando respuesta...';
+        }
+
+        // Mapear ISO-2 a ISO-3
+        function mapISO2toISO3(iso2) {
+            const map = {
+                'ES': 'ESP', 'AR': 'ARG', 'US': 'USA', 'GB': 'GBR', 'FR': 'FRA',
+                'DE': 'DEU', 'IT': 'ITA', 'PT': 'PRT', 'BR': 'BRA', 'MX': 'MEX',
+                'CO': 'COL', 'CL': 'CHL', 'PE': 'PER', 'VE': 'VEN', 'UY': 'URY',
+                'CN': 'CHN', 'JP': 'JPN', 'IN': 'IND', 'RU': 'RUS', 'CA': 'CAN',
+            };
+            return map[iso2.toUpperCase()] || iso2;
+        }
+
+        async function sendToLynx() {
+            log('🚀 Iniciando envío a Lynx API...', 'info');
+            
+            // Construir el payload con los datos CORREGIDOS
+            const payload = {
+                checkInDate: new Date('2025-11-02').toISOString(),
+                checkOutDate: new Date('2025-11-05').toISOString(),
+                numPeople: 1,
+                payment: {
+                    paymentMethodCode: 'EFECT', // CASH → EFECT
+                    paymentDate: '2025-11-02'
+                },
+                travelers: [
+                    {
+                        name: 'juan',
+                        surname1: 'perez',
+                        surname2: 'garcia',
+                        birthdate: new Date('1999-12-12').toISOString(),
+                        email: 'alvarotorrent1@gmail.com',
+                        phone: '654654654',
+                        idType: 'NIF', // DNI → NIF
+                        idNum: '53571577T',
+                        nationality: 'ARG', // ✅ AR → ARG (ISO-3)
+                        sex: 'H', // Hombre
+                        address: {
+                            address: 'Avenida imperio argentina 7, portal 4, 4A',
+                            municipalityCode: '29 067 0',
+                            municipalityName: 'Málaga',
+                            postalCode: 'b1043',
+                            country: 'ARG' // ✅ AR → ARG (ISO-3)
+                        },
+                        signature: 'account/a190fff8-c5d0-49a2-80a8-79b38ce0f284/lodging/3dfc0644-612d-4449-9dd6-de7a9d15b012/report/7b592be9-17b7-4e67-9d17-6dd49a954e8f/signature-1761996020672.svg'
+                    }
+                ]
+            };
+
+            // Mostrar el payload
+            document.getElementById('payload-display').textContent = JSON.stringify(payload, null, 2);
+            log('📦 Payload preparado', 'success');
+            log('🔍 Nacionalidad convertida: AR → ARG (ISO-3)', 'success');
+            log('🔍 Documento convertido: DNI → NIF', 'success');
+            log('🔍 Método de pago: CASH → EFECT', 'success');
+
+            try {
+                const url = `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings/${LYNX_LODGING_ID}/reports`;
+                log(`📍 URL: ${url}`, 'info');
+                
+                log('📤 Enviando POST request...', 'info');
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                log(`📨 Respuesta recibida: HTTP ${response.status}`, response.ok ? 'success' : 'error');
+
+                const data = await response.json();
+                document.getElementById('response-display').textContent = JSON.stringify(data, null, 2);
+
+                if (response.ok) {
+                    log('✅ ¡ÉXITO! Parte enviado a Lynx correctamente', 'success');
+                    log(`📝 Submission ID: ${data.submissionId || data.id || 'N/A'}`, 'success');
+                    log(`📊 Status: ${data.status || 'submitted'}`, 'success');
+                    
+                    if (data.sesResponse) {
+                        log('🏛️ Respuesta del Ministerio (SES):', 'success');
+                        log(`   Part ID: ${data.sesResponse.partId || 'N/A'}`, 'success');
+                        log(`   Aceptado: ${data.sesResponse.accepted ? 'Sí' : 'No'}`, 'success');
+                    }
+                } else {
+                    log('❌ ERROR en la respuesta de Lynx', 'error');
+                    log(`📄 Error: ${data.message || data.error || JSON.stringify(data)}`, 'error');
+                }
+
+            } catch (error) {
+                log(`❌ ERROR: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`, 'error');
+                document.getElementById('response-display').textContent = `ERROR: ${error.message}\n\n${error.stack}`;
+            }
+        }
+
+        // Mostrar el payload inicial al cargar
+        window.onload = () => {
+            log('✅ Script cargado y listo', 'success');
+            log('👉 Haz clic en "Enviar a Lynx API" para iniciar el test', 'info');
+        };
+    </script>
+</body>
+</html>
+
+
+
+

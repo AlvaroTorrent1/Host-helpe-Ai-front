@@ -1,0 +1,22 @@
+{
+  "checkInDate": "2025-11-10T12:00:00Z",
+  "checkOutDate": "2025-11-13T12:00:00Z",
+  "numPeople": 1,
+  "payment": {
+    "paymentMethodCode": "EFECT"
+  },
+  "travelers": [
+    {
+      "name": "Juan",
+      "surname1": "Garcia",
+      "birthdate": "1999-12-12T00:00:00Z",
+      "address": {
+        "address": "Avenida imperio argentina 7",
+        "municipalityName": "Málaga",
+        "postalCode": "29001",
+        "country": "ESP"
+      }
+    }
+  ]
+}
+

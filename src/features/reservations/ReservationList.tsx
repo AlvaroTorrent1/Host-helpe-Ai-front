@@ -615,63 +615,61 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           className="px-4 py-4 text-sm align-top"
                           style={{ minWidth: '220px', width: '15%' }}
                         >
-                          {/* Grid 2x2: View/PDF arriba, Editar/Eliminar abajo */}
+                          {/* Stack vertical: View, Editar, PDF */}
                           <div className="flex flex-col gap-1.5">
-                            {/* Fila superior: View y PDF */}
-                            <div className="flex items-center justify-start gap-1.5">
-                              {/* Botón Ver Detalles SES */}
-                              <button
-                                onClick={() => onViewSesDetails?.(reservation.id)}
-                                disabled={reservation.sesRegistrationStatus === 'not_sent'}
-                                className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors min-w-[90px] ${
-                                  reservation.sesRegistrationStatus === 'not_sent'
-                                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
-                                    : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
-                                }`}
-                                title={t('travelerRegistry.table.viewDetails')}
-                              >
-                                <EyeIcon className="w-4 h-4" />
-                                <span>View</span>
-                              </button>
+                            {/* Botón Ver Detalles SES */}
+                            <button
+                              onClick={() => onViewSesDetails?.(reservation.id)}
+                              disabled={reservation.sesRegistrationStatus === 'not_sent'}
+                              className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors w-full ${
+                                reservation.sesRegistrationStatus === 'not_sent'
+                                  ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                                  : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                              }`}
+                              title={t('travelerRegistry.table.viewDetails')}
+                            >
+                              <EyeIcon className="w-4 h-4" />
+                              <span>View</span>
+                            </button>
 
-                              {/* Botón Descargar PDF - Using brand primary color (same orange as Completed badge) */}
-                              <button
-                                onClick={() => onDownloadSesPdf?.(reservation.id)}
-                                disabled={reservation.sesRegistrationStatus !== 'completed'}
-                                className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors min-w-[90px] ${
-                                  reservation.sesRegistrationStatus !== 'completed'
-                                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed'
-                                    : 'text-white bg-primary hover:bg-primary-600'
-                                }`}
-                                title={t('travelerRegistry.table.downloadPdf')}
-                              >
-                                <DocumentTextIcon className="w-4 h-4" />
-                                <span>PDF</span>
-                              </button>
-                            </div>
+                            {/* Botón de editar - Using primary brand color (orange #ECA408) */}
+                            <button
+                              onClick={() => onEditReservation?.(reservation)}
+                              className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-primary hover:text-primary-600 rounded-md transition-colors w-full"
+                              title={t("reservations.edit.tooltip")}
+                            >
+                              <PencilIcon className="h-4 w-4" />
+                              <span>Editar</span>
+                            </button>
 
-                            {/* Fila inferior: Editar y Eliminar */}
-                            <div className="flex items-center justify-start gap-1.5">
-                              {/* Botón de editar - Using primary brand color (orange #ECA408) */}
-                              <button
-                                onClick={() => onEditReservation?.(reservation)}
-                                className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-primary hover:text-primary-600 rounded-md transition-colors min-w-[90px]"
-                                title={t("reservations.edit.tooltip")}
-                              >
-                                <PencilIcon className="h-4 w-4" />
-                                <span>Editar</span>
-                              </button>
-                              
-                              {/* Botón de eliminar - Keeping red for danger actions */}
+                            {/* Botón Descargar PDF - Using brand primary color (same orange as Completed badge) */}
+                            {/* Texto más visible incluso cuando está deshabilitado (text-gray-600 para mejor legibilidad) */}
+                            <button
+                              onClick={() => onDownloadSesPdf?.(reservation.id)}
+                              disabled={reservation.sesRegistrationStatus !== 'completed'}
+                              className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md transition-colors w-full ${
+                                reservation.sesRegistrationStatus !== 'completed'
+                                  ? 'text-gray-600 bg-gray-100 cursor-not-allowed'
+                                  : 'text-white bg-primary hover:bg-primary-600'
+                              }`}
+                              title={t('travelerRegistry.table.downloadPdf')}
+                            >
+                              <DocumentTextIcon className="w-4 h-4" />
+                              <span>PDF</span>
+                            </button>
+
+                            {/* Botón de eliminar - Solo visible para reservas manuales (no sincronizadas) */}
+                            {/* Las reservas de PMS/iCal no se pueden eliminar desde aquí ya que son la fuente de verdad */}
+                            {!reservation.isSynced && (
                               <button
                                 onClick={() => handleDeleteClick(reservation)}
-                                className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 rounded-md transition-colors min-w-[90px]"
+                                className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 rounded-md transition-colors w-full"
                                 title={t("reservations.delete.tooltip")}
                               >
                                 <TrashIcon className="h-4 w-4" />
                                 <span>Eliminar</span>
                               </button>
-                            </div>
+                            )}
                           </div>
                         </td>
                       </tr>

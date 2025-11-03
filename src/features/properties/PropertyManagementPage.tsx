@@ -235,6 +235,7 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
       // Basado en el esquema actual: id, name, address, image, description, amenities, rules, 
       // created_at, updated_at, user_id, google_business_url, featured_image_id, 
       // gallery_setup_completed, shareable_links_generated, google_business_profile_url
+      // + campos SES/Lynx: city, postal_code, province, country, tourism_license, etc.
       const propertyDataToSend = {
         name: otherData.name?.toString().trim() || '',
         address: otherData.address?.toString().trim() || '',
@@ -245,6 +246,40 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
         // Validar y limpiar URL de Google Business
         google_business_profile_url: validateGoogleBusinessUrl(otherData.google_business_profile_url),
         user_id: user.id, // REQUERIDO para política RLS
+        
+        // ✅ CAMPOS SES/LYNX - Dirección completa
+        city: otherData.city?.toString().trim() || undefined,
+        postal_code: otherData.postal_code?.toString().trim() || undefined,
+        province: otherData.province?.toString().trim() || undefined,
+        country: otherData.country?.toString().trim() || undefined,
+        
+        // ✅ CAMPOS SES/LYNX - Información de la vivienda turística
+        tourism_license: otherData.tourism_license?.toString().trim() || undefined,
+        license_type: otherData.license_type || undefined,
+        property_type: otherData.property_type || undefined,
+        max_guests: otherData.max_guests ? Number(otherData.max_guests) : undefined,
+        num_bedrooms: otherData.num_bedrooms ? Number(otherData.num_bedrooms) : undefined,
+        num_bathrooms: otherData.num_bathrooms ? Number(otherData.num_bathrooms) : undefined,
+        
+        // ✅ CAMPOS SES/LYNX - Información del propietario
+        owner_name: otherData.owner_name?.toString().trim() || undefined,
+        owner_email: otherData.owner_email?.toString().trim() || undefined,
+        owner_phone: otherData.owner_phone?.toString().trim() || undefined,
+        owner_id_type: otherData.owner_id_type || undefined,
+        owner_id_number: otherData.owner_id_number?.toString().trim() || undefined,
+        
+        // ✅ CAMPOS SES/LYNX - Credenciales SES
+        ses_landlord_code: otherData.ses_landlord_code?.toString().trim() || undefined,
+        ses_username: otherData.ses_username?.toString().trim() || undefined,
+        ses_api_password: otherData.ses_api_password?.toString().trim() || undefined,
+        ses_establishment_code: otherData.ses_establishment_code?.toString().trim() || undefined,
+        
+        // ✅ CAMPOS SES/LYNX - IDs de integración con Lynx
+        lynx_account_id: otherData.lynx_account_id?.toString().trim() || undefined,
+        lynx_authority_connection_id: otherData.lynx_authority_connection_id?.toString().trim() || undefined,
+        lynx_lodging_id: otherData.lynx_lodging_id?.toString().trim() || undefined,
+        lynx_lodging_status: otherData.lynx_lodging_status || undefined,
+        
         // No incluir campos automáticos: id, created_at, updated_at se manejan por la DB
         // No incluir campos opcionales: featured_image_id, gallery_setup_completed, shareable_links_generated, google_business_url
       };

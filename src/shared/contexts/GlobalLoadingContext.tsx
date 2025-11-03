@@ -32,7 +32,9 @@ interface GlobalLoadingProviderProps {
 export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ children }) => {
   const [loadingStates, setLoadingStates] = useState<Map<string, LoadingState>>(new Map());
   const [isVisible, setIsVisible] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+  // Usar useRef en lugar de useState para el timer - evita loop infinito
+  // useRef no causa re-renders cuando cambia, ideal para timers
+  const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const { t } = useTranslation();
 
   // Determinar si hay algún loading activo (prioridad más alta gana)
@@ -40,8 +42,9 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
 
   // Debounce para evitar parpadeos en operaciones rápidas
   React.useEffect(() => {
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
+    // Limpiar timer previo si existe
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
 
     if (isLoading && !isVisible) {
@@ -49,18 +52,19 @@ export const GlobalLoadingProvider: React.FC<GlobalLoadingProviderProps> = ({ ch
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, 100);
-      setDebounceTimer(timer);
+      debounceTimerRef.current = timer;
     } else if (!isLoading && isVisible) {
       // Ocultar loading inmediatamente cuando se complete
       setIsVisible(false);
     }
 
+    // Cleanup: limpiar timer cuando el componente se desmonte o las dependencias cambien
     return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [isLoading, isVisible, debounceTimer]);
+  }, [isLoading, isVisible]);
 
   // Memorizar funciones para evitar loops infinitos en componentes que las usan como dependencias
   const setLoading = React.useCallback((loading: boolean, source: string, priority: number = 1) => {

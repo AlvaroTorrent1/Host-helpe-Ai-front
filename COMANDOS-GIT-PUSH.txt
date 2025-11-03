@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════════════════════════════
+  🚀 COMANDOS PARA PUSH A GITHUB
+═══════════════════════════════════════════════════════════════════════════════
+
+# 1. Ver el estado actual (archivos modificados)
+git status
+
+# 2. Agregar todos los archivos modificados
+git add .
+
+# O si prefieres agregar archivos específicos:
+git add src/features/sesregistro/types.ts
+git add src/features/sesregistro/components/AddTravelerWizard.tsx
+git add src/features/sesregistro/components/wizard/PersonalInfoStep.tsx
+git add src/features/sesregistro/SesRegistroPage.tsx
+
+# 3. Hacer commit con mensaje descriptivo
+git commit -m "fix: hacer document_support_number opcional y agregar campo ine_code
+
+- Migración aplicada: document_support_number ahora nullable
+- Campo document_support_number ahora opcional en frontend
+- Campo ine_code agregado a traveler_form_data
+- Frontend actualizado para capturar y enviar ine_code
+- Edge Function actualizada para guardar ine_code
+- Fixes #issue (si tienes número de issue)"
+
+# 4. Push a GitHub (rama principal)
+git push origin main
+
+# O si tu rama principal se llama 'master':
+git push origin master
+
+# O si estás en una rama diferente (reemplaza 'nombre-rama'):
+git push origin nombre-rama
+
+═══════════════════════════════════════════════════════════════════════════════
+
+💡 ALTERNATIVA: COMANDO ÚNICO
+
+Si prefieres hacerlo todo de una vez:
+
+git add . && git commit -m "fix: hacer document_support_number opcional y agregar ine_code" && git push
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  SI HAY CONFLICTOS:
+
+# Primero hacer pull para obtener cambios remotos
+git pull origin main
+
+# Resolver conflictos si los hay, luego:
+git add .
+git commit -m "fix: resolver conflictos y aplicar cambios"
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ DESPUÉS DEL PUSH:
+
+1. Ve a tu repositorio en GitHub
+2. Verifica que el commit aparece
+3. Si tienes CI/CD configurado, espera a que el deploy termine
+4. Prueba en producción: https://hosthelperai.com/check-in/adac3467-8b28-4b8c-bb4e-8a94ec8fef6a
+
+═══════════════════════════════════════════════════════════════════════════════
+

@@ -1,0 +1,53 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ✅ PROBLEMA RESUELTO: document_support_number
+═══════════════════════════════════════════════════════════════════════════════
+
+ERROR:
+  "null value in column document_support_number violates not-null constraint"
+
+CAUSA:
+  - La columna tenía restricción NOT NULL
+  - El campo era obligatorio en el frontend
+  - Pasaportes extranjeros no tienen número de soporte
+  - Al enviar vacío → null → ERROR
+
+SOLUCIÓN:
+  ✅ Migración aplicada: columna ahora es NULLABLE
+  ✅ Frontend actualizado: campo ahora es OPCIONAL
+  ✅ UI actualizada: cambió "*" por "(opcional)"
+  ✅ TypeScript actualizado: documentSupportNumber?
+  ✅ Validación eliminada: no bloquea envío
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 PRÓXIMO PASO: DESPLEGAR A PRODUCCIÓN
+
+  El frontend tiene cambios locales que necesitas desplegar:
+  
+  1. Hacer commit de los cambios
+  2. Push a tu repositorio
+  3. Deploy automático o manual según tu setup
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 PRUEBA AHORA EN LOCALHOST:
+
+  1. Asegúrate que npm run dev esté corriendo
+  2. Abre: http://localhost:5173/check-in/adac3467-8b28-4b8c-bb4e-8a94ec8fef6a
+  3. Completa el formulario SIN número de soporte
+  4. Envía → ✅ Debería funcionar
+
+  Una vez funcione en localhost, despliega a producción.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📁 ARCHIVOS MODIFICADOS:
+
+  ✅ BD: traveler_form_data.document_support_number (nullable)
+  ✅ src/features/sesregistro/types.ts
+  ✅ src/features/sesregistro/components/AddTravelerWizard.tsx
+  ✅ src/features/sesregistro/components/wizard/PersonalInfoStep.tsx
+  ✅ src/features/sesregistro/SesRegistroPage.tsx
+
+═══════════════════════════════════════════════════════════════════════════════
+

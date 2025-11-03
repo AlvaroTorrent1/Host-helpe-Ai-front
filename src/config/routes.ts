@@ -113,6 +113,12 @@ export const ROUTES: Record<string, AppRoute> = {
     componentName: "ProfilePage",
     authRequired: true,
   },
+  // Panel de administración SES Hospedajes
+  ADMIN_SES: {
+    path: "/admin/ses",
+    componentName: "SESAdminPanel",
+    authRequired: true,
+  },
 
   NOT_FOUND: {
     path: "*",

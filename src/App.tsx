@@ -34,6 +34,7 @@ const PaymentSuccessPage = lazy(() => import("./features/payment/PaymentSuccess"
 const DashboardPage = lazy(() => import("./features/dashboard/DashboardPage"));
 const NotFoundPage = lazy(() => import("./shared/components/NotFoundPage"));
 const PropertyManagement = lazy(() => import("./features/properties/PropertyManagement"));
+const SESAdminPanel = lazy(() => import("./features/admin/SESAdminPanel"));
 
 // Componente para rastrear navegación
 const RouteTracker = () => {
@@ -110,9 +111,19 @@ function App() {
                         }
                       />
 
+                      {/* Panel de administración SES Hospedajes */}
+                      <Route
+                        path="/admin/ses"
+                        element={
+                          <ProtectedRoute>
+                            <SESAdminPanel />
+                          </ProtectedRoute>
+                        }
+                      />
+
                       {/* Definir el resto de rutas protegidas de forma dinámica */}
                       {protectedRoutes
-                        .filter((route) => route.path !== "/dashboard")
+                        .filter((route) => route.path !== "/dashboard" && route.path !== "/admin/ses")
                         .map((route) => {
                           const Component = lazy(() => {
                             const componentName = route.componentName;

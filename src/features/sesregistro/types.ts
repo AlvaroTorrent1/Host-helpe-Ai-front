@@ -37,7 +37,7 @@ export interface Traveler {
   // Información del Documento (NUEVO - Real Decreto 933/2021)
   documentType: DocumentType; // Tipo de documento
   documentNumber: string; // Número de documento/pasaporte
-  documentSupportNumber?: string; // Número de soporte (opcional)
+  documentSupportNumber?: string; // Número de soporte (opcional - requerido solo para DNI/NIE españoles)
   dateOfBirth: string; // Fecha de nacimiento (formato ISO YYYY-MM-DD)
   placeOfBirth?: string; // Lugar de nacimiento (opcional)
   
