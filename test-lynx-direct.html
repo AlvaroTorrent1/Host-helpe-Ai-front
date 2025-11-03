@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listar Propiedades Lynx - Directo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .loading {
+      color: #f59e0b;
+      font-weight: 500;
+    }
+    .success {
+      color: #10b981;
+      font-weight: 500;
+    }
+    .error {
+      color: #ef4444;
+      font-weight: 500;
+    }
+    .property-card {
+      background: #f0fdf4;
+      padding: 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      border-left: 4px solid #10b981;
+    }
+    .property-card h3 {
+      margin-top: 0;
+      color: #047857;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .info-value {
+      color: #6b7280;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    .lodging-item {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-left: 3px solid #e5e7eb;
+      border-radius: 4px;
+    }
+    .lodging-item strong {
+      color: #1f2937;
+      font-size: 16px;
+    }
+    .lodging-item code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .lodging-id {
+      color: #dc2626;
+      font-weight: bold;
+    }
+    pre {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Listar TODAS las Propiedades en Lynx</h1>
+    <p>Llamada directa a la API de Lynx Check-in (sin Edge Functions)</p>
+    
+    <button id="searchBtn" onclick="listAllLodgings()">
+      🚀 Listar Todas las Propiedades
+    </button>
+
+    <div id="status" style="margin-top: 20px;"></div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // API de Lynx Check-in (según tu configuración)
+    const LYNX_API_URL = 'https://vlmfxh4pka.execute-api.eu-south-2.amazonaws.com/partners-api/v1';
+    const LYNX_ACCOUNT_ID = 'a190fff8-c5d0-49a2-80a8-79b38ce0f284';
+
+    async function listAllLodgings() {
+      const btn = document.getElementById('searchBtn');
+      const statusDiv = document.getElementById('status');
+      const resultsDiv = document.getElementById('results');
+      
+      // Reset
+      resultsDiv.innerHTML = '';
+      btn.disabled = true;
+      statusDiv.innerHTML = '<p class="loading">⏳ Consultando API de Lynx...</p>';
+
+      try {
+        console.log('📡 Llamando a:', `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings`);
+
+        // Llamar directamente a la API de Lynx
+        // Según tu código, esta API NO requiere autenticación
+        const response = await fetch(
+          `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('📊 Status:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`API Error ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Datos recibidos:', data);
+
+        const lodgings = data.lodgings || [];
+        const sesProperties = lodgings.filter(l => 
+          l.name.toLowerCase().startsWith('ses')
+        );
+
+        statusDiv.innerHTML = `
+          <p class="success">✅ Listado completo: ${lodgings.length} propiedades encontradas</p>
+          <p>🎯 Propiedades que empiezan con "ses": ${sesProperties.length}</p>
+        `;
+
+        let html = '';
+
+        // Mostrar propiedades que empiezan con "ses" destacadas
+        if (sesProperties.length > 0) {
+          html += '<h2 style="color: #10b981; margin-top: 30px;">🎯 Propiedades que empiezan con "SES"</h2>';
+          
+          sesProperties.forEach((prop, index) => {
+            html += `
+              <div class="property-card">
+                <h3>#${index + 1}: ${prop.name}</h3>
+                <div class="info-grid">
+                  <div class="info-label">ID (lodgingId):</div>
+                  <div class="info-value lodging-id">${prop.id}</div>
+                  
+                  <div class="info-label">Account ID:</div>
+                  <div class="info-value">${prop.accountId}</div>
+                  
+                  <div class="info-label">Auth Connection ID:</div>
+                  <div class="info-value">${prop.authConnId}</div>
+                  
+                  <div class="info-label">Nombre Establecimiento:</div>
+                  <div class="info-value">${prop.establishment?.name || 'N/A'}</div>
+                  
+                  <div class="info-label">Tipo:</div>
+                  <div class="info-value">${prop.establishment?.type || 'N/A'}</div>
+                  
+                  <div class="info-label">Dirección:</div>
+                  <div class="info-value">${prop.establishment?.address || 'N/A'}</div>
+                  
+                  <div class="info-label">Ciudad:</div>
+                  <div class="info-value">${prop.establishment?.city || 'N/A'}</div>
+                  
+                  <div class="info-label">Provincia:</div>
+                  <div class="info-value">${prop.establishment?.province || 'N/A'}</div>
+                  
+                  <div class="info-label">País:</div>
+                  <div class="info-value">${prop.establishment?.country || 'N/A'}</div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          html += '<p style="color: #f59e0b; margin-top: 20px;">⚠️ No se encontraron propiedades que empiecen con "ses"</p>';
+        }
+
+        // Listar TODAS las propiedades
+        html += `
+          <h2 style="color: #6b7280; margin-top: 40px;">📋 TODAS las Propiedades (${lodgings.length})</h2>
+          <p style="color: #6b7280;">Busca manualmente la que te indicó el proveedor:</p>
+        `;
+
+        lodgings.forEach((prop, index) => {
+          html += `
+            <div class="lodging-item">
+              <strong>#${index + 1}: ${prop.name}</strong><br>
+              <small style="color: #6b7280;">
+                <strong>ID:</strong> <code class="lodging-id">${prop.id}</code><br>
+                <strong>AuthConnId:</strong> <code>${prop.authConnId}</code><br>
+                <strong>Tipo:</strong> ${prop.establishment?.type || 'N/A'} | 
+                <strong>Ciudad:</strong> ${prop.establishment?.city || 'N/A'}
+              </small>
+            </div>
+          `;
+        });
+
+        html += `
+          <h3 style="margin-top: 30px;">📝 Próximos Pasos:</h3>
+          <ol>
+            <li>Identifica la propiedad que te indicó el proveedor</li>
+            <li>Copia su <strong>ID (lodgingId)</strong> - lo necesitarás para mapear</li>
+            <li>Copia su <strong>authConnId</strong> también</li>
+            <li>Comparte esos datos conmigo para continuar</li>
+          </ol>
+
+          <h3 style="margin-top: 30px;">📄 Respuesta JSON Completa:</h3>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+
+        resultsDiv.innerHTML = html;
+
+      } catch (error) {
+        console.error('❌ Error:', error);
+        statusDiv.innerHTML = '<p class="error">❌ Error al consultar la API</p>';
+        resultsDiv.innerHTML = `
+          <div style="background: #fef2f2; padding: 20px; border-radius: 6px; border-left: 4px solid #ef4444;">
+            <h3 style="color: #dc2626; margin-top: 0;">Error</h3>
+            <p><strong>Mensaje:</strong> ${error.message}</p>
+            <pre style="background: white;">${error.stack || ''}</pre>
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
+

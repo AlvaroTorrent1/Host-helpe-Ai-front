@@ -1,0 +1,48 @@
+{
+  "lodgings": [
+    {
+      "id": "35b0f745-fc47-4b45-9807-6612860e35d0",
+      "accountId": "a190fff8-c5d0-49a2-80a8-79b38ce0f284",
+      "authConnId": "18b8c296-5ffb-4015-a5e9-8e0fb5050dc4",
+      "name": "Cabaña Mirlo Blanco",
+      "establishmentCode": "0000003001",
+      "internet": true,
+      "numRooms": 1,
+      "createdAt": "2025-10-31T09:44:37.723108Z",
+      "updatedAt": "2025-10-31T09:44:37.723108Z"
+    },
+    {
+      "id": "3dfc0644-612d-4449-9dd6-de7a9d15b012",
+      "accountId": "a190fff8-c5d0-49a2-80a8-79b38ce0f284",
+      "authConnId": "18b8c296-5ffb-4015-a5e9-8e0fb5050dc4",
+      "name": "Cabaña Mirlo Blanco",
+      "establishmentCode": "0000001234",
+      "internet": true,
+      "numRooms": 1,
+      "createdAt": "2025-07-07T17:24:24.957917Z",
+      "updatedAt": "2025-07-07T17:24:24.957917Z"
+    },
+    {
+      "id": "23bc3de7-0a9b-4d7f-85a3-e2e21fc942c6",
+      "accountId": "a190fff8-c5d0-49a2-80a8-79b38ce0f284",
+      "authConnId": "18b8c296-5ffb-4015-a5e9-8e0fb5050dc4",
+      "name": "PRE SES Lodging",
+      "establishmentCode": "0000002870",
+      "internet": true,
+      "numRooms": 1,
+      "createdAt": "2025-05-16T19:43:13.566241Z",
+      "updatedAt": "2025-05-16T19:43:13.566241Z"
+    },
+    {
+      "id": "d2e63a58-dafe-4bd3-be42-183e103d8d36",
+      "accountId": "a190fff8-c5d0-49a2-80a8-79b38ce0f284",
+      "authConnId": "3d40da20-de41-4ed8-96e0-2d97e0655fdf",
+      "name": "Pruba con mala conexion",
+      "establishmentCode": "000000000000",
+      "internet": true,
+      "numRooms": 1,
+      "createdAt": "2025-06-07T11:58:50.67342Z",
+      "updatedAt": "2025-06-07T11:59:17.819246Z"
+    }
+  ]
+}

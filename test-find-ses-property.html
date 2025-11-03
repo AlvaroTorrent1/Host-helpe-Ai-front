@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscar Propiedad SES en Lynx</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .loading {
+      color: #f59e0b;
+      font-weight: 500;
+    }
+    .success {
+      color: #10b981;
+      font-weight: 500;
+    }
+    .error {
+      color: #ef4444;
+      font-weight: 500;
+    }
+    pre {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      border: 1px solid #e5e7eb;
+    }
+    .property-card {
+      background: #f0f9ff;
+      padding: 20px;
+      border-radius: 6px;
+      margin-top: 20px;
+      border-left: 4px solid #2563eb;
+    }
+    .property-card h3 {
+      margin-top: 0;
+      color: #1e40af;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .info-value {
+      color: #6b7280;
+      font-family: monospace;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Buscar Propiedad SES en Lynx Check-in</h1>
+    <p>Esta herramienta busca la propiedad "ses" que está realmente conectada a la plataforma SES Hospedajes del Ministerio.</p>
+    
+    <button id="searchBtn" onclick="searchSesProperty()">
+      🚀 Buscar Propiedad SES
+    </button>
+
+    <div id="status" style="margin-top: 20px;"></div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://blxngmtmknkdmikaflen.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJseG5nbXRta25rZG1pa2FmbGVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY0MjM5NTUsImV4cCI6MjA1MTk5OTk1NX0.PVQLwMqOHiFfW5LpBZs3rIPJh5M7nDO_nGlqjTm7L00';
+    const FUNCTION_NAME = 'find-ses-property';
+
+    async function searchSesProperty() {
+      const btn = document.getElementById('searchBtn');
+      const statusDiv = document.getElementById('status');
+      const resultsDiv = document.getElementById('results');
+      
+      // Reset
+      resultsDiv.innerHTML = '';
+      btn.disabled = true;
+      statusDiv.innerHTML = '<p class="loading">⏳ Buscando en Lynx Check-in...</p>';
+
+      try {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/${FUNCTION_NAME}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          statusDiv.innerHTML = `<p class="success">✅ ${data.message}</p>`;
+          
+          let html = `
+            <h2 style="color: #2563eb; margin-top: 30px;">📊 Resumen</h2>
+            <div class="property-card">
+              <div class="info-grid">
+                <div class="info-label">Total propiedades:</div>
+                <div class="info-value">${data.totalCount}</div>
+                
+                <div class="info-label">Propiedades que empiezan con "ses":</div>
+                <div class="info-value">${data.sesPropertiesCount}</div>
+              </div>
+            </div>
+          `;
+
+          // Si hay propiedades que empiezan con "ses", mostrarlas destacadas
+          if (data.sesPropertiesCount > 0) {
+            html += `
+              <h2 style="color: #10b981; margin-top: 30px;">🎯 Propiedades que empiezan con "SES"</h2>
+            `;
+            
+            data.sesProperties.forEach((prop, index) => {
+              html += `
+                <div class="property-card" style="background: #f0fdf4; border-left-color: #10b981;">
+                  <h3 style="color: #047857;">#${index + 1}: ${prop.name}</h3>
+                  <div class="info-grid">
+                    <div class="info-label">ID (lodgingId):</div>
+                    <div class="info-value" style="color: #dc2626; font-weight: bold;">${prop.id}</div>
+                    
+                    <div class="info-label">Auth Connection ID:</div>
+                    <div class="info-value">${prop.authConnId}</div>
+                    
+                    <div class="info-label">Tipo:</div>
+                    <div class="info-value">${prop.establishment.type}</div>
+                    
+                    <div class="info-label">Dirección:</div>
+                    <div class="info-value">${prop.establishment.address}</div>
+                    
+                    <div class="info-label">Ciudad:</div>
+                    <div class="info-value">${prop.establishment.city}</div>
+                    
+                    <div class="info-label">Provincia:</div>
+                    <div class="info-value">${prop.establishment.province}</div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+
+          html += `
+            <h2 style="color: #6b7280; margin-top: 30px;">📋 TODAS las Propiedades Disponibles</h2>
+            <p style="color: #6b7280;">Busca manualmente la propiedad que te indicó el proveedor:</p>
+          `;
+
+          // Listado simple de todas las propiedades
+          data.allLodgings.forEach((prop, index) => {
+            html += `
+              <div style="background: white; padding: 15px; margin: 10px 0; border-left: 3px solid #e5e7eb; border-radius: 4px;">
+                <strong style="color: #1f2937;">#${index + 1}: ${prop.name}</strong><br>
+                <small style="color: #6b7280;">
+                  ID: <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px; color: #dc2626;">${prop.id}</code><br>
+                  AuthConnId: <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">${prop.authConnId}</code><br>
+                  Tipo: ${prop.establishment.type} | ${prop.establishment.city}
+                </small>
+              </div>
+            `;
+          });
+
+          html += `
+            <h3 style="margin-top: 30px;">📝 Instrucciones:</h3>
+            <ol>
+              ${data.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+            </ol>
+
+            <h3 style="margin-top: 20px;">📄 Datos Completos (JSON):</h3>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+
+          resultsDiv.innerHTML = html;
+        } else {
+          statusDiv.innerHTML = '<p class="error">❌ Error al listar propiedades</p>';
+          resultsDiv.innerHTML = `
+            <p>${data.message || data.error}</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        }
+
+      } catch (error) {
+        statusDiv.innerHTML = '<p class="error">❌ Error al buscar propiedad</p>';
+        resultsDiv.innerHTML = `<pre>${error.message}\n\n${error.stack}</pre>`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
+
