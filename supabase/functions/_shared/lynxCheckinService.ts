@@ -13,6 +13,18 @@ export const LYNX_ACCOUNT_ID = 'a190fff8-c5d0-49a2-80a8-79b38ce0f284';
 // Usar el authConnId que funciona con los lodgings exitosos
 const LYNX_AUTH_CONN_ID = '18b8c296-5ffb-4015-a5e9-8e0fb5050dc4';
 
+// ✅ API Token para autenticación con Lynx Partners API
+// Se obtiene desde Supabase Secrets: LYNX_PARTNERS_API_TOKEN
+// Configurar con: supabase secrets set LYNX_PARTNERS_API_TOKEN="<token>"
+const LYNX_API_TOKEN = Deno.env.get('LYNX_PARTNERS_API_TOKEN') || '';
+
+// Log para debugging (solo mostrar si existe y primeros caracteres)
+if (LYNX_API_TOKEN) {
+  console.log(`✅ Token API encontrado: ${LYNX_API_TOKEN.substring(0, 8)}...`);
+} else {
+  console.error('❌ LYNX_PARTNERS_API_TOKEN no está configurado en Supabase Secrets');
+}
+
 /**
  * Interface para un alojamiento (lodging) en Lynx Check-in
  */
@@ -91,7 +103,7 @@ export interface LynxSubmissionResponse {
 
 /**
  * Lista todos los alojamientos registrados en Lynx para esta cuenta
- * API ABIERTA - No requiere autenticación (sin API Key)
+ * ✅ REQUIERE AUTENTICACIÓN - Header X-PARTNERS-API-TOKEN
  */
 export async function listLodgings(): Promise<LynxLodging[]> {
   try {
@@ -101,6 +113,7 @@ export async function listLodgings(): Promise<LynxLodging[]> {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'X-PARTNERS-API-TOKEN': LYNX_API_TOKEN,
         },
       }
     );
@@ -121,7 +134,7 @@ export async function listLodgings(): Promise<LynxLodging[]> {
 
 /**
  * Envía un parte de viajero a Lynx Check-in
- * API ABIERTA - No requiere autenticación (sin API Key)
+ * ✅ REQUIERE AUTENTICACIÓN - Header X-PARTNERS-API-TOKEN
  * Endpoint correcto: /reports (no /travelers)
  */
 export async function submitTravelerData(
@@ -143,7 +156,8 @@ export async function submitTravelerData(
     console.log(`📤 Enviando parte a Lynx para lodging ${lodgingId}...`);
     console.log(`📍 URL: ${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings/${lodgingId}/reports`);
 
-    // Llamar a la API de Lynx (sin autenticación - API abierta)
+    // Llamar a la API de Lynx con autenticación
+    // ✅ Header requerido: X-PARTNERS-API-TOKEN
     // ✅ Endpoint correcto: /reports (no /travelers)
     const response = await fetch(
       `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings/${lodgingId}/reports`,
@@ -151,6 +165,7 @@ export async function submitTravelerData(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-PARTNERS-API-TOKEN': LYNX_API_TOKEN,
         },
         body: JSON.stringify(travelerData),
       }
@@ -402,14 +417,27 @@ export async function registerLodging(
 
     console.log('📋 Payload transformado para Lynx:', lynxPayload);
 
-    // Llamar al endpoint POST de Lynx
-    // ✅ CONFIRMADO: La API de Partners NO requiere autenticación
+    // Verificar que tenemos el token antes de hacer la llamada
+    if (!LYNX_API_TOKEN) {
+      console.error('❌ No se puede llamar a Lynx API sin token');
+      return {
+        success: false,
+        error: 'Token API no configurado. Configura LYNX_PARTNERS_API_TOKEN en Supabase Secrets',
+        statusCode: 500,
+      };
+    }
+
+    console.log('🔑 Enviando request con token API...');
+
+    // Llamar al endpoint POST de Lynx con autenticación
+    // ✅ Header requerido: X-PARTNERS-API-TOKEN
     const response = await fetch(
       `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-PARTNERS-API-TOKEN': LYNX_API_TOKEN,
         },
         body: JSON.stringify(lynxPayload),
       }

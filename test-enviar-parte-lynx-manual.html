@@ -131,6 +131,8 @@
         const LYNX_API_URL = 'https://vlmfxh4pka.execute-api.eu-south-2.amazonaws.com/partners-api/v1';
         const LYNX_ACCOUNT_ID = 'a190fff8-c5d0-49a2-80a8-79b38ce0f284';
         const LYNX_LODGING_ID = '3dfc0644-612d-4449-9dd6-de7a9d15b012';
+        // ✅ Nuevo token API requerido por Lynx (Noviembre 2025)
+        const LYNX_API_TOKEN = '3AI7-9c2.c\\pW!NFR&m7]N2:"DZ=\\HI<P}F';
 
         function log(message, type = 'info') {
             const logsDiv = document.getElementById('logs');
@@ -203,11 +205,12 @@
                 const url = `${LYNX_API_URL}/accounts/${LYNX_ACCOUNT_ID}/lodgings/${LYNX_LODGING_ID}/reports`;
                 log(`📍 URL: ${url}`, 'info');
                 
-                log('📤 Enviando POST request...', 'info');
+                log('📤 Enviando POST request con autenticación...', 'info');
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-PARTNERS-API-TOKEN': LYNX_API_TOKEN,
                     },
                     body: JSON.stringify(payload)
                 });
@@ -247,6 +250,9 @@
     </script>
 </body>
 </html>
+
+
+
 
 
 
