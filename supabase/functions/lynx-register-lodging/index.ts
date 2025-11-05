@@ -172,15 +172,8 @@ serve(async (req) => {
     }
 
     // ========================================
-    // 6. OBTENER API KEY DE LYNX (OPCIONAL)
     // ========================================
-    
-    // La API de Lynx Partners NO requiere autenticación
-    // Pasamos string vacío como placeholder ya que no se usa
-    const lynxApiKey = Deno.env.get('LYNX_API_KEY') || '';
-
-    // ========================================
-    // 7. PREPARAR PAYLOAD PARA LYNX API
+    // 6. PREPARAR PAYLOAD PARA LYNX API
     // (Mapeo de campos de Host Helper → Lynx)
     // ========================================
     
@@ -221,10 +214,12 @@ serve(async (req) => {
     console.log(`📤 Enviando registro a Lynx para propiedad: ${property.name}`);
 
     // ========================================
-    // 8. LLAMAR A LA API DE LYNX
+    // 7. LLAMAR A LA API DE LYNX
+    // ⚠️ NOTA: El token de autenticación se obtiene automáticamente
+    // desde lynxCheckinService.ts usando LYNX_PARTNERS_API_TOKEN
     // ========================================
     
-    const result = await registerLodging(lynxApiKey, lynxPayload);
+    const result = await registerLodging(lynxPayload);
 
     if (!result.success) {
       console.error('❌ Error registrando en Lynx:', result.error);
@@ -239,7 +234,7 @@ serve(async (req) => {
     }
 
     // ========================================
-    // 9. ACTUALIZAR PROPIEDAD EN SUPABASE
+    // 8. ACTUALIZAR PROPIEDAD EN SUPABASE
     // ========================================
     
     const { error: updateError } = await supabase

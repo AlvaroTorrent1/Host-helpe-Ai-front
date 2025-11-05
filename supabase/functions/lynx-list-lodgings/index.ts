@@ -58,21 +58,12 @@ serve(async (req) => {
 
     console.log(`📋 Listando lodgings de Lynx para usuario ${user.id}`);
 
-    // Obtener API Key de Lynx desde secrets
-    const lynxApiKey = Deno.env.get('LYNX_API_KEY');
-    if (!lynxApiKey) {
-      console.error('❌ LYNX_API_KEY no está configurado en secrets');
-      return new Response(
-        JSON.stringify({ 
-          error: 'Configuración incompleta',
-          details: 'Lynx API Key no está configurado' 
-        }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
+    // ⚠️ NOTA: listLodgings() ya no necesita API key como parámetro
+    // El token se obtiene automáticamente desde lynxCheckinService.ts
+    // usando Deno.env.get('LYNX_PARTNERS_API_TOKEN')
+    
     // Llamar al servicio de Lynx para obtener lodgings
-    const lodgings = await listLodgings(lynxApiKey);
+    const lodgings = await listLodgings();
 
     console.log(`✅ Se encontraron ${lodgings.length} lodgings en Lynx`);
 
@@ -102,6 +93,9 @@ serve(async (req) => {
     );
   }
 });
+
+
+
 
 
 

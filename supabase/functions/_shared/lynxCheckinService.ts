@@ -394,12 +394,13 @@ export interface LynxRegisterLodgingResponse {
  * Permite registrar una propiedad de Host Helper en el sistema SES Hospedajes
  * a través de Lynx Check-in. Crea la conexión de autoridad con el Ministerio.
  * 
- * @param apiKey - API Key de Lynx Check-in
+ * ✅ REQUIERE AUTENTICACIÓN - Header X-PARTNERS-API-TOKEN
+ * El token se obtiene automáticamente desde Deno.env.get('LYNX_PARTNERS_API_TOKEN')
+ * 
  * @param payload - Datos completos de la propiedad, propietario y credenciales SES
  * @returns Respuesta con ID del lodging creado y estado de registro
  */
 export async function registerLodging(
-  apiKey: string,
   payload: LynxRegisterLodgingPayload
 ): Promise<LynxRegisterLodgingResponse> {
   try {
