@@ -67,8 +67,10 @@ class ReservationService {
 
   /**
    * Mapear de la estructura de reservas sincronizadas a la estructura del frontend
+   * @param syncedBooking - Reserva sincronizada del iCal
+   * @param travelerFormRequest - Request del formulario de viajeros (opcional)
    */
-  private mapSyncedToFrontend(syncedBooking: any): FrontendReservation {
+  private mapSyncedToFrontend(syncedBooking: any, travelerFormRequest?: any): FrontendReservation {
     // Crear un huésped con datos limitados disponibles
     const mainGuest: Guest = {
       id: `synced-guest-${syncedBooking.id}`,
@@ -91,6 +93,9 @@ class ReservationService {
       'unknown': 'pending'
     };
 
+    // Mapear estado SES (igual que en reservas manuales)
+    const sesStatus = this.mapSesStatus(travelerFormRequest);
+
     return {
       id: `synced-${syncedBooking.id}`,
       propertyId: syncedBooking.property_id,
@@ -106,7 +111,12 @@ class ReservationService {
       updatedAt: syncedBooking.updated_at,
       // Marcar como sincronizada para distinguirla en el frontend
       isSynced: true,
-      syncSource: syncedBooking.ical_configs?.ical_name || 'iCal'
+      syncSource: syncedBooking.ical_configs?.ical_name || 'iCal',
+      // Campos SES (igual que reservas manuales)
+      sesRegistrationStatus: sesStatus,
+      sesRegistrationSentAt: travelerFormRequest?.sent_at || undefined,
+      sesRegistrationCompletedAt: travelerFormRequest?.completed_at || undefined,
+      sesRegistrationToken: travelerFormRequest?.token || undefined,
     };
   }
 
@@ -211,13 +221,22 @@ class ReservationService {
         throw new Error(`Error al obtener las reservas manuales: ${manualError.message}`);
       }
 
-      // 2. Obtener reservas sincronizadas (tabla synced_bookings)
+      // 2. Obtener reservas sincronizadas (tabla synced_bookings) con información SES
       const { data: syncedBookings, error: syncedError } = await supabase
         .from('synced_bookings')
         .select(`
           *,
           user_properties(property_name),
-          ical_configs(ical_name)
+          ical_configs(ical_name),
+          traveler_form_requests!traveler_form_requests_synced_booking_id_fkey (
+            id,
+            token,
+            status,
+            sent_at,
+            completed_at,
+            lynx_submitted_at,
+            lynx_response
+          )
         `)
         .order('check_in_date', { ascending: false });
 
@@ -241,8 +260,18 @@ class ReservationService {
         return this.mapDbToFrontend(r, travelerFormRequest);
       });
 
-      // 4. Convertir reservas sincronizadas al formato frontend
-      const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
+      // 4. Convertir reservas sincronizadas al formato frontend (con información SES)
+      const syncedMapped = (syncedBookings || []).map(booking => {
+        // Manejar traveler_form_requests correctamente (puede ser array o null)
+        let travelerFormRequest = null;
+        if (Array.isArray(booking.traveler_form_requests)) {
+          travelerFormRequest = booking.traveler_form_requests.length > 0 ? booking.traveler_form_requests[0] : null;
+        } else {
+          travelerFormRequest = booking.traveler_form_requests || null;
+        }
+        
+        return this.mapSyncedToFrontend(booking, travelerFormRequest);
+      });
 
       // 5. Combinar y ordenar por fecha
       const allReservations = [...manualMapped, ...syncedMapped];
@@ -283,13 +312,22 @@ class ReservationService {
         throw new Error(`Error al obtener las reservas manuales de la propiedad: ${manualError.message}`);
       }
 
-      // 2. Obtener reservas sincronizadas de la propiedad
+      // 2. Obtener reservas sincronizadas de la propiedad con información SES
       const { data: syncedBookings, error: syncedError } = await supabase
         .from('synced_bookings')
         .select(`
           *,
           user_properties(property_name),
-          ical_configs(ical_name)
+          ical_configs(ical_name),
+          traveler_form_requests!traveler_form_requests_synced_booking_id_fkey (
+            id,
+            token,
+            status,
+            sent_at,
+            completed_at,
+            lynx_submitted_at,
+            lynx_response
+          )
         `)
         .eq('property_id', propertyId)
         .order('check_in_date', { ascending: false});
@@ -312,7 +350,17 @@ class ReservationService {
         
         return this.mapDbToFrontend(r, travelerFormRequest);
       });
-      const syncedMapped = (syncedBookings || []).map(booking => this.mapSyncedToFrontend(booking));
+      const syncedMapped = (syncedBookings || []).map(booking => {
+        // Manejar traveler_form_requests correctamente (puede ser array o null)
+        let travelerFormRequest = null;
+        if (Array.isArray(booking.traveler_form_requests)) {
+          travelerFormRequest = booking.traveler_form_requests.length > 0 ? booking.traveler_form_requests[0] : null;
+        } else {
+          travelerFormRequest = booking.traveler_form_requests || null;
+        }
+        
+        return this.mapSyncedToFrontend(booking, travelerFormRequest);
+      });
 
       // 4. Combinar y ordenar por fecha
       const allReservations = [...manualMapped, ...syncedMapped];
