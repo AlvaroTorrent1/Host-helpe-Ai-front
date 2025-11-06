@@ -1,13 +1,18 @@
 // src/features/sesregistro/components/CityInput.tsx
 /**
- * Input de ciudad con sugerencias de municipios españoles
+ * Input de ciudad con comportamiento adaptativo según país de residencia
  * 
  * Características:
- * - Búsqueda inteligente con normalización de texto (sin tildes)
+ * - Para España: búsqueda inteligente con municipios INE y normalización de texto
+ * - Para otros países: input de texto libre sin restricciones
  * - Protección contra autocompletado del navegador
- * - Asociación automática de códigos INE
+ * - Asociación automática de códigos INE (solo España)
  * - Navegación con teclado (↑↓ Enter Escape)
  * - Accesibilidad completa (ARIA)
+ * 
+ * Comportamiento:
+ * - Si residenceCountry = 'ES': muestra dropdown con municipios españoles
+ * - Si residenceCountry ≠ 'ES': acepta cualquier texto (ciudades internacionales)
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -19,6 +24,7 @@ interface CityInputProps {
   error?: string;
   placeholder?: string;
   disabled?: boolean;
+  residenceCountry?: string; // Código de país (ISO 3166-1 alpha-2) para adaptar comportamiento
 }
 
 const CityInput: React.FC<CityInputProps> = ({
@@ -27,7 +33,12 @@ const CityInput: React.FC<CityInputProps> = ({
   error,
   placeholder = 'Ingrese nombre de la ciudad',
   disabled = false,
+  residenceCountry, // País de residencia para adaptar el comportamiento del input
 }) => {
+  // Determinar si el país de residencia es España
+  // Si es España: mostrar dropdown con municipios INE
+  // Si NO es España: mostrar input simple de texto libre
+  const isSpain = residenceCountry === 'ES';
   // Estado del componente
   const [inputValue, setInputValue] = useState(value || '');
   const [isOpen, setIsOpen] = useState(false);
@@ -101,8 +112,8 @@ const CityInput: React.FC<CityInputProps> = ({
   const handleExternalChange = (newValue: string) => {
     setInputValue(newValue);
     
-    // Buscar sugerencias
-    if (newValue.length >= 2) {
+    // Buscar sugerencias solo si el país es España
+    if (isSpain && newValue.length >= 2) {
       const results = searchMunicipalities(newValue);
       setSuggestions(results);
       setIsOpen(results.length > 0);
@@ -124,6 +135,7 @@ const CityInput: React.FC<CityInputProps> = ({
         onChange(newValue, undefined);
       }
     } else {
+      // Para otros países: aceptar texto libre sin sugerencias
       setSuggestions([]);
       setIsOpen(false);
       setSelectedMunicipality(null);
@@ -136,7 +148,8 @@ const CityInput: React.FC<CityInputProps> = ({
     const newValue = e.target.value;
     setInputValue(newValue);
     
-    if (newValue.length >= 2) {
+    // Solo buscar municipios españoles si el país es España
+    if (isSpain && newValue.length >= 2) {
       const results = searchMunicipalities(newValue);
       setSuggestions(results);
       setIsOpen(results.length > 0);
@@ -335,15 +348,15 @@ const CityInput: React.FC<CityInputProps> = ({
         </div>
       )}
 
-      {/* Mensaje: sin resultados */}
-      {isOpen && inputValue.length >= 2 && suggestions.length === 0 && !disabled && (
+      {/* Mensaje: sin resultados (solo para España) */}
+      {isSpain && isOpen && inputValue.length >= 2 && suggestions.length === 0 && !disabled && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-center text-gray-500">
           No se encontraron municipios españoles
         </div>
       )}
 
-      {/* Indicador: código INE asignado */}
-      {selectedMunicipality && !error && (
+      {/* Indicador: código INE asignado (solo para España) */}
+      {isSpain && selectedMunicipality && !error && (
         <div className="mt-1 text-sm text-gray-600 flex items-center">
           <svg className="w-4 h-4 mr-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -351,6 +364,16 @@ const CityInput: React.FC<CityInputProps> = ({
           <span>
             Código INE: <span className="font-semibold">{selectedMunicipality.ineCode}</span>
           </span>
+        </div>
+      )}
+
+      {/* Mensaje de ayuda para países extranjeros */}
+      {!isSpain && inputValue && !error && (
+        <div className="mt-1 text-xs text-gray-500 flex items-center">
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Puede ingresar cualquier ciudad de su país
         </div>
       )}
 
@@ -364,8 +387,8 @@ const CityInput: React.FC<CityInputProps> = ({
         </div>
       )}
 
-      {/* Ayuda: escribir más caracteres */}
-      {!isOpen && inputValue.length > 0 && inputValue.length < 2 && !error && (
+      {/* Ayuda: escribir más caracteres (solo para España) */}
+      {isSpain && !isOpen && inputValue.length > 0 && inputValue.length < 2 && !error && (
         <div className="mt-1 text-xs text-gray-500">
           Escriba al menos 2 caracteres para buscar municipios españoles
         </div>

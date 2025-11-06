@@ -48,11 +48,17 @@ const AddressInfoStep: React.FC<AddressInfoStepProps> = ({
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           {t('sesRegistro.wizard.address.city')} <span className="text-red-500">*</span>
         </label>
+        {/* 
+          CityInput adapta su comportamiento según el país de residencia:
+          - Si es España: muestra dropdown con municipios INE y códigos
+          - Si es otro país: acepta texto libre sin restricciones
+        */}
         <CityInput
           value={travelerData.city || ''}
           onChange={handleCityChange}
           error={errors.city}
           placeholder={t('sesRegistro.wizard.address.cityPlaceholder')}
+          residenceCountry={travelerData.residenceCountry}
         />
       </div>
 
