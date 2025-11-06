@@ -23,6 +23,7 @@ export const COUNTRIES: Country[] = [
   { code: 'CN', name: 'China', nameEs: 'China', nameEn: 'China', phoneCode: '+86', flag: '🇨🇳' },
   { code: 'CO', name: 'Colombia', nameEs: 'Colombia', nameEn: 'Colombia', phoneCode: '+57', flag: '🇨🇴' },
   { code: 'CR', name: 'Costa Rica', nameEs: 'Costa Rica', nameEn: 'Costa Rica', phoneCode: '+506', flag: '🇨🇷' },
+  { code: 'HR', name: 'Croacia', nameEs: 'Croacia', nameEn: 'Croatia', phoneCode: '+385', flag: '🇭🇷' },
   { code: 'CU', name: 'Cuba', nameEs: 'Cuba', nameEn: 'Cuba', phoneCode: '+53', flag: '🇨🇺' },
   { code: 'DK', name: 'Dinamarca', nameEs: 'Dinamarca', nameEn: 'Denmark', phoneCode: '+45', flag: '🇩🇰' },
   { code: 'EC', name: 'Ecuador', nameEs: 'Ecuador', nameEn: 'Ecuador', phoneCode: '+593', flag: '🇪🇨' },

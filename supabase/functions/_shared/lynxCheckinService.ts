@@ -233,8 +233,10 @@ export function mapHostHelperToLynx(
   const lynxPaymentMethod = paymentMethodMap[paymentMethod] || 'EFECT';
   
   // Mapear tipo de documento: DNI → NIF para Lynx
+  // 'OTHER' → 'PASSPORT' (el más genérico para documentos no estándar)
   const mapDocumentType = (type: string) => {
     if (type === 'DNI') return 'NIF';
+    if (type === 'OTHER') return 'PASSPORT'; // Mapear 'OTHER' a PASSPORT para Lynx/SES
     return type; // NIE, PASSPORT, etc. se mantienen
   };
 
@@ -246,6 +248,11 @@ export function mapHostHelperToLynx(
       'DE': 'DEU', 'IT': 'ITA', 'PT': 'PRT', 'BR': 'BRA', 'MX': 'MEX',
       'CO': 'COL', 'CL': 'CHL', 'PE': 'PER', 'VE': 'VEN', 'UY': 'URY',
       'CN': 'CHN', 'JP': 'JPN', 'IN': 'IND', 'RU': 'RUS', 'CA': 'CAN',
+      'HR': 'HRV', 'AT': 'AUT', 'BE': 'BEL', 'DK': 'DNK', 'FI': 'FIN',
+      'GR': 'GRC', 'IE': 'IRL', 'NL': 'NLD', 'NO': 'NOR', 'PL': 'POL',
+      'SE': 'SWE', 'CH': 'CHE', 'AU': 'AUS', 'BO': 'BOL', 'CR': 'CRI',
+      'CU': 'CUB', 'DO': 'DOM', 'EC': 'ECU', 'SV': 'SLV', 'GT': 'GTM',
+      'HN': 'HND', 'NI': 'NIC', 'PA': 'PAN', 'PY': 'PRY',
       // Agregar más según necesidad
     };
     
