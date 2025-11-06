@@ -336,7 +336,7 @@ const SesRegistroPage: React.FC = () => {
           address_street: traveler.address || null,                    // 'address' is the street
           address_city: traveler.city || null,                         // Direct field
           address_postal_code: traveler.postalCode || null,            // Direct field
-          address_country: traveler.residenceCountry,                  // Residence country (ISO alpha-2)
+          address_country: traveler.residenceCountry || null,          // Residence country (ISO alpha-2) - protección adicional
           address_additional: traveler.additionalAddress || null,      // Additional info (apartment, floor, etc.)
           ine_code: traveler.ineCode || null,                          // ✅ Código INE del municipio (solo España)
           payment_method: mapPaymentMethodToDb(reservation.paymentMethod), // Map to 'CASH'/'CARD'/'TRANS'
