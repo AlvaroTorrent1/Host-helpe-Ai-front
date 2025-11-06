@@ -100,7 +100,7 @@ const SesRegistroPage: React.FC = () => {
           checkOut: request.check_out_date,
           numberOfNights,
           numberOfTravelers: request.num_travelers_expected,
-          paymentMethod: 'destination', // Default, usuario puede cambiar
+          paymentMethod: 'online', // Default: Pago por Tarjeta (usuario puede cambiar)
           travelers: [], // Usuario los añadirá
           expiresAt: request.expires_at,
         };
@@ -834,7 +834,7 @@ const SesRegistroPage: React.FC = () => {
           checkIn: reservation?.checkIn || '',
           checkOut: reservation?.checkOut || '',
           numberOfTravelers: reservation?.numberOfTravelers || 1,
-          paymentMethod: reservation?.paymentMethod || 'destination',
+          paymentMethod: reservation?.paymentMethod || 'online',
         }}
       />
     </div>
