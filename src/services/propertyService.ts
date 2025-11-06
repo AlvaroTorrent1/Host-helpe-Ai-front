@@ -296,16 +296,6 @@ export const createProperty = async (
 
     // 🔍 LOG DETALLADO: Verificar datos SES antes de guardar
     console.log('📋 CREANDO PROPIEDAD - Datos SES recibidos:', {
-      tourism_license: propertyData.tourism_license,
-      license_type: propertyData.license_type,
-      city: propertyData.city,
-      province: propertyData.province,
-      postal_code: propertyData.postal_code,
-      owner_name: propertyData.owner_name,
-      owner_email: propertyData.owner_email,
-      owner_phone: propertyData.owner_phone,
-      owner_id_type: propertyData.owner_id_type,
-      owner_id_number: propertyData.owner_id_number,
       ses_landlord_code: propertyData.ses_landlord_code,
       ses_username: propertyData.ses_username,
       ses_api_password: propertyData.ses_api_password ? '***' : undefined,
@@ -330,10 +320,6 @@ export const createProperty = async (
     // ✅ LOG: Confirmar datos guardados en Supabase
     console.log('✅ PROPIEDAD CREADA - Datos SES guardados en BD:', {
       id: data.id,
-      tourism_license: data.tourism_license,
-      city: data.city,
-      province: data.province,
-      owner_name: data.owner_name,
       ses_landlord_code: data.ses_landlord_code,
     });
 
@@ -362,16 +348,6 @@ export const updateProperty = async (property: Property): Promise<Property> => {
     // 🔍 LOG DETALLADO: Verificar datos SES antes de actualizar
     console.log('📝 ACTUALIZANDO PROPIEDAD - Datos SES recibidos:', {
       id,
-      tourism_license: propertyData.tourism_license,
-      license_type: propertyData.license_type,
-      city: propertyData.city,
-      province: propertyData.province,
-      postal_code: propertyData.postal_code,
-      owner_name: propertyData.owner_name,
-      owner_email: propertyData.owner_email,
-      owner_phone: propertyData.owner_phone,
-      owner_id_type: propertyData.owner_id_type,
-      owner_id_number: propertyData.owner_id_number,
       ses_landlord_code: propertyData.ses_landlord_code,
       ses_username: propertyData.ses_username,
       ses_api_password: propertyData.ses_api_password ? '***' : undefined,
@@ -394,10 +370,6 @@ export const updateProperty = async (property: Property): Promise<Property> => {
     // ✅ LOG: Confirmar datos actualizados en Supabase
     console.log('✅ PROPIEDAD ACTUALIZADA - Datos SES guardados en BD:', {
       id: data.id,
-      tourism_license: data.tourism_license,
-      city: data.city,
-      province: data.province,
-      owner_name: data.owner_name,
       ses_landlord_code: data.ses_landlord_code,
     });
 

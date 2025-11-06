@@ -21,25 +21,13 @@ export interface Property {
   business_links_description?: string;
   
   // Campos adicionales para dirección completa (requeridos por SES/Lynx)
-  city?: string;
-  postal_code?: string;
-  province?: string;
   country?: string;
   
-  // Campos de la vivienda turística (requeridos por SES/Lynx)
-  tourism_license?: string; // Número de licencia turística (VFT/MA/12345)
-  license_type?: 'VFT' | 'VUT' | 'VTAR' | 'Other'; // Tipo de licencia
+  // Campos de la vivienda turística (simplificado)
   property_type?: 'apartment' | 'house' | 'villa' | 'room'; // Tipo de propiedad
   max_guests?: number; // Capacidad máxima
   num_bedrooms?: number; // Número de habitaciones
-  num_bathrooms?: number; // Número de baños
-  
-  // Campos del propietario (requeridos por SES/Lynx)
-  owner_name?: string;
-  owner_email?: string;
-  owner_phone?: string;
-  owner_id_type?: 'DNI' | 'NIE' | 'PASSPORT'; // Tipo de documento del propietario
-  owner_id_number?: string; // Número de documento del propietario
+  has_wifi?: boolean; // ¿Tiene WiFi?
   
   // Credenciales SES para Authority Connections (capturadas pero no enviadas a Lynx directamente)
   ses_landlord_code?: string; // Código de arrendador en SES

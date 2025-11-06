@@ -158,3 +158,6 @@ Si tienes problemas con la integración o el token:
 - Revisa `LYNX_API_TOKEN_SETUP.md` para más detalles
 - Contacta con el soporte de Lynx para verificar el token
 
+
+
+

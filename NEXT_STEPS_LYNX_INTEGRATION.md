@@ -207,3 +207,9 @@ curl https://vlmfxh4pka.execute-api.eu-south-2.amazonaws.com/partners-api/v1/acc
 
 
 
+
+
+
+
+
+

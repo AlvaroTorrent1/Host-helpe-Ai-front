@@ -124,3 +124,6 @@ Si tienes problemas con el token o necesitas regenerarlo:
 **Implementado por:** Assistant  
 **Razón:** Actualización de seguridad de la API de Lynx Partners
 
+
+
+

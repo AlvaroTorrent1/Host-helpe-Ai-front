@@ -15,14 +15,14 @@ const LYNX_AUTH_CONN_ID = '18b8c296-5ffb-4015-a5e9-8e0fb5050dc4';
 
 // ✅ API Token para autenticación con Lynx Partners API
 // Se obtiene desde Supabase Secrets: LYNX_PARTNERS_API_TOKEN
-// Configurar con: supabase secrets set LYNX_PARTNERS_API_TOKEN="<token>"
+// Token original (no Base64): 3AI7-9c2.c\pW!NFR&m7]N2:"DZ=\HI<P}F
 const LYNX_API_TOKEN = Deno.env.get('LYNX_PARTNERS_API_TOKEN') || '';
 
-// Log para debugging (solo mostrar si existe y primeros caracteres)
+// Log para debugging
 if (LYNX_API_TOKEN) {
-  console.log(`✅ Token API encontrado: ${LYNX_API_TOKEN.substring(0, 8)}...`);
+  console.log(`✅ Token configurado: ${LYNX_API_TOKEN.length} chars`);
 } else {
-  console.error('❌ LYNX_PARTNERS_API_TOKEN no está configurado en Supabase Secrets');
+  console.error('❌ LYNX_PARTNERS_API_TOKEN no está configurado');
 }
 
 /**

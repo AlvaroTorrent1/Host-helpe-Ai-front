@@ -16,7 +16,6 @@ import { useBodyScrollLock } from "@/hooks";
 import { LoadingScreen } from "@shared/components/loading";
 import Modal from "@shared/components/Modal";
 import Button from "@/components/ui/Button";
-import { Property as FullProperty } from "@/types/property";
 import { INCIDENT_CATEGORIES } from '@/types/incident';
 import { interpolateColor } from "@/utils/animationUtils";
 import MobileFiltersButton from "@shared/components/filters/MobileFiltersButton";
@@ -26,7 +25,6 @@ import FilterChips from "@shared/components/filters/FilterChips";
 // ✅ OPTIMIZACIÓN: Lazy load de componentes grandes (solo se cargan cuando se necesitan)
 const AgentUsageAreaChart = lazy(() => import("./components/AgentUsageBarChart"));
 const MinimalIncidentMetrics = lazy(() => import("./components/MinimalIncidentMetrics"));
-const PropertyDetail = lazy(() => import("@features/properties/PropertyDetail"));
 
 type Property = {
   id: string;
@@ -145,10 +143,6 @@ const DashboardPage: React.FC = () => {
     body: string;
   } | null>(null);
   const [isConversationModalOpen, setIsConversationModalOpen] = useState(false);
-  
-  // Estados para modal de propiedades (visor de detalle)
-  const [selectedPropertyForView, setSelectedPropertyForView] = useState<FullProperty | null>(null);
-  const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
   
   // Estado UI móvil (no afecta lógica): sheet de filtros
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
@@ -597,27 +591,8 @@ const DashboardPage: React.FC = () => {
     setSelectedConversation(null);
   };
 
-  // Funciones para manejar modal de propiedades
-  const handlePropertyClick = async (property: Property) => {
-    try {
-      const { getPropertyById } = await import("@services/propertyService");
-      const full = await getPropertyById(property.id);
-      setSelectedPropertyForView(full);
-      setIsPropertyModalOpen(true);
-    } catch (error) {
-      console.error("Error al cargar detalles de la propiedad:", error);
-      setSelectedPropertyForView(property as unknown as FullProperty);
-      setIsPropertyModalOpen(true);
-    }
-  };
-
-  const closePropertyModal = () => {
-    setIsPropertyModalOpen(false);
-    setSelectedPropertyForView(null);
-  };
-
   // Hook para manejar el bloqueo del scroll cuando hay modales abiertos
-  const isAnyModalOpen = isConversationModalOpen || isPropertyModalOpen;
+  const isAnyModalOpen = isConversationModalOpen;
   useBodyScrollLock(isAnyModalOpen);
 
   // Efecto para cerrar modales con tecla Escape
@@ -626,9 +601,6 @@ const DashboardPage: React.FC = () => {
       if (e.key === 'Escape') {
         if (isConversationModalOpen) {
           closeConversationModal();
-        }
-        if (isPropertyModalOpen) {
-          closePropertyModal();
         }
       }
     };
@@ -640,7 +612,7 @@ const DashboardPage: React.FC = () => {
         document.removeEventListener('keydown', handleEscape);
       };
     }
-  }, [isConversationModalOpen, isPropertyModalOpen, isAnyModalOpen]);
+  }, [isConversationModalOpen, isAnyModalOpen]);
 
   // Tipos para mensajes de chat
   interface ChatMessage {
@@ -841,18 +813,6 @@ const DashboardPage: React.FC = () => {
     );
   };
 
-  // Componente Modal para mostrar detalles de propiedad (visor reutilizado)
-  // ✅ OPTIMIZACIÓN: Modal con lazy loading de PropertyDetail
-  const PropertyDetailsModal = () => {
-    if (!isPropertyModalOpen || !selectedPropertyForView) return null;
-          return (
-      <Modal isOpen={isPropertyModalOpen} onClose={closePropertyModal} title="" size="xl" noPadding>
-        <Suspense fallback={<div className="flex items-center justify-center h-96"><LoadingScreen /></div>}>
-          <PropertyDetail property={selectedPropertyForView} onClose={closePropertyModal} />
-        </Suspense>
-      </Modal>
-    );
-  };
 
   if (isLoading) {
   
@@ -896,130 +856,6 @@ const DashboardPage: React.FC = () => {
           <Suspense fallback={<div className="h-64 flex items-center justify-center text-gray-500">Cargando gráfico...</div>}>
             <AgentUsageAreaChart />
           </Suspense>
-        </div>
-
-        {/* Propiedades */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex justify-between items-center mb-3 sm:mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">
-              {t("dashboard.properties.title")}
-            </h2>
-            {/* Botones de navegación para móviles */}
-            {properties.length > 1 && (
-              <div className="flex gap-2 sm:hidden">
-                <Button
-                  onClick={() => {
-                    const container = document.getElementById('properties-container');
-                    if (container) {
-                      container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
-                    }
-                  }}
-                  variant="secondary"
-                  size="icon"
-                  className="bg-white border border-gray-200 shadow-sm hover:bg-gray-50 rounded-lg"
-                  aria-label="Ver propiedades anteriores"
-                >
-                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </Button>
-                <Button
-                  onClick={() => {
-                    const container = document.getElementById('properties-container');
-                    if (container) {
-                      container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
-                    }
-                  }}
-                  variant="secondary"
-                  size="icon"
-                  className="bg-white border border-gray-200 shadow-sm hover:bg-gray-50 rounded-lg"
-                  aria-label="Ver propiedades siguientes"
-                >
-                  <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Button>
-              </div>
-            )}
-          </div>
-          
-          {/* Contenedor con scroll horizontal en móviles, grid en desktop */}
-          <div 
-            id="properties-container"
-            className="flex gap-3 overflow-x-auto scrollbar-hide sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible"
-            style={{
-              scrollSnapType: 'x mandatory',
-              WebkitOverflowScrolling: 'touch'
-            }}
-          >
-            {properties.length > 0 ? (
-              properties.map((property) => (
-                <div
-                  key={property.id}
-                  className="bg-white shadow-sm rounded-lg overflow-hidden flex flex-col h-full w-full flex-shrink-0 sm:min-w-0 sm:w-auto"
-                  style={{ scrollSnapAlign: 'start' }}
-                >
-                  <div className="w-full h-56 sm:h-64 md:h-72 lg:h-80 relative">
-                    {property.image ? (
-                      <img
-                        src={property.image}
-                        alt={property.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <svg
-                          className="h-12 w-12 text-gray-400"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M9 22V12h6v10"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3 sm:p-4 flex flex-col gap-2">
-                    <div>
-                      <button
-                        onClick={() => handlePropertyClick(property)}
-                        className="block w-full text-left text-base font-semibold text-gray-800 hover:text-primary-500 mb-1 transition-colors"
-                      >
-                        {property.name}
-                      </button>
-                      <p className="text-xs sm:text-sm text-gray-500">
-                        {property.address}
-                      </p>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-700`}
-                      >
-                        {t('dashboard.propertyDetails.active')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="bg-white shadow-sm rounded-lg p-4 text-center w-full flex-shrink-0 sm:min-w-0 sm:col-span-full sm:w-auto">
-                <p className="text-gray-500 text-sm sm:text-base mb-3">
-                  {getText("dashboard.properties.empty.title", "No properties available")}
-                </p>
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Incidencias */}
@@ -1415,9 +1251,6 @@ const DashboardPage: React.FC = () => {
 
       {/* Modal de conversación */}
       <ConversationModal />
-      
-      {/* Modal de detalles de propiedad */}
-      <PropertyDetailsModal />
     </div>
   );
 };

@@ -49,23 +49,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     google_business_profile_url: undefined, // Campo legacy, se mantiene por compatibilidad
     business_links_description: "",
     // Campos de dirección completa para SES/Lynx
-    city: "",
-    postal_code: "",
-    province: "",
     country: "ES", // España por defecto
-    // Campos de la vivienda turística
-    tourism_license: "",
-    license_type: undefined,
+    // Campos de la vivienda turística (simplificado)
     property_type: undefined,
     max_guests: undefined,
     num_bedrooms: undefined,
-    num_bathrooms: undefined,
-    // Campos del propietario
-    owner_name: "",
-    owner_email: "",
-    owner_phone: "",
-    owner_id_type: undefined,
-    owner_id_number: "",
+    has_wifi: undefined,
     // Credenciales SES
     ses_landlord_code: "",
     ses_username: "",
@@ -147,23 +136,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         google_business_profile_url: property.google_business_profile_url || undefined,
         business_links_description: property.business_links_description || "",
         // Campos de dirección completa para SES/Lynx
-        city: property.city || "",
-        postal_code: property.postal_code || "",
-        province: property.province || "",
         country: property.country || "ES",
-        // Campos de la vivienda turística
-        tourism_license: property.tourism_license || "",
-        license_type: property.license_type,
+        // Campos de la vivienda turística (simplificado)
         property_type: property.property_type,
         max_guests: property.max_guests,
         num_bedrooms: property.num_bedrooms,
-        num_bathrooms: property.num_bathrooms,
-        // Campos del propietario
-        owner_name: property.owner_name || "",
-        owner_email: property.owner_email || "",
-        owner_phone: property.owner_phone || "",
-        owner_id_type: property.owner_id_type,
-        owner_id_number: property.owner_id_number || "",
+        has_wifi: property.has_wifi,
         // Credenciales SES
         ses_landlord_code: property.ses_landlord_code || "",
         ses_username: property.ses_username || "",
@@ -291,34 +269,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
       // Validar según el campo
       switch (name) {
-        case 'owner_email':
-          validationResult = validateEmail(value);
-          break;
-        case 'owner_phone':
-          validationResult = validatePhoneNumber(value);
-          break;
-        case 'owner_id_number':
-          // Validar documento solo si ya se seleccionó el tipo
-          const idType = (e.target.form?.owner_id_type as any)?.value || formData.owner_id_type;
-          if (idType && value) {
-            validationResult = validateDocumentByType(idType, value);
-          }
-          break;
-        case 'postal_code':
-          if (value) {
-            validationResult = validateSpanishPostalCode(value);
-          }
-          break;
-        case 'city':
-        case 'province':
-        case 'owner_name':
-          if (value) {
-            validationResult = validateRequiredText(value, name);
-          }
-          break;
         case 'max_guests':
         case 'num_bedrooms':
-        case 'num_bathrooms':
           const numValue = parseInt(value);
           if (!isNaN(numValue)) {
             validationResult = validatePositiveNumber(numValue, name);
@@ -341,7 +293,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
       return newErrors;
     });
-  }, [formData.owner_id_type]);
+  }, []);
 
   // Validar licencia turística con debounce
   const validateLicense = async (license: string, province: string) => {
@@ -491,20 +443,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         
         // 🔍 LOG DETALLADO: Verificar datos SES desde el formulario
         console.log('📋 FORMULARIO - Datos SES a enviar:', {
-          tourism_license: formData.tourism_license,
-          license_type: formData.license_type,
-          city: formData.city,
-          province: formData.province,
-          postal_code: formData.postal_code,
           property_type: formData.property_type,
           max_guests: formData.max_guests,
           num_bedrooms: formData.num_bedrooms,
-          num_bathrooms: formData.num_bathrooms,
-          owner_name: formData.owner_name,
-          owner_email: formData.owner_email,
-          owner_phone: formData.owner_phone,
-          owner_id_type: formData.owner_id_type,
-          owner_id_number: formData.owner_id_number,
+          has_wifi: formData.has_wifi,
           ses_landlord_code: formData.ses_landlord_code,
           ses_username: formData.ses_username,
           ses_api_password: formData.ses_api_password ? '***' : undefined,
@@ -766,61 +708,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   <p className="mt-2 text-sm text-red-600">{validationErrors.address}</p>
               )}
             </div>
-
-              {/* Ciudad, Código Postal, Provincia */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.city")} *
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Ej: Marbella"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.postalCode")} *
-                  </label>
-                  <input
-                    type="text"
-                    name="postal_code"
-                    id="postal_code"
-                    value={formData.postal_code}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="29600"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      validationErrors.postal_code ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  <FieldError error={validationErrors.postal_code} />
-                </div>
-                <div>
-                  <label htmlFor="province" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.province")} *
-                  </label>
-                  <input
-                    type="text"
-                    name="province"
-                    id="province"
-                    value={formData.province}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Málaga"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-              </div>
             </div>
 
             {/* Datos de la Vivienda Turística */}
@@ -831,122 +718,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               <p className="text-sm text-gray-600">
                 {t("properties.form.sections.touristLicenseDescription")}
               </p>
-
-              {/* Licencia turística y tipo */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="tourism_license" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.tourismLicense")} *
-                    <InfoTooltip content={t("properties.form.tooltips.tourismLicense")} />
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="tourism_license"
-                      id="tourism_license"
-                      value={formData.tourism_license}
-                      onChange={handleChange}
-                      onKeyDown={handleKeyDown}
-                      placeholder="VFT/MA/12345"
-                      className={`mt-1 block w-full px-3 py-2 pr-10 border ${
-                        licenseValidationState.isValid
-                          ? 'border-green-500 focus:ring-green-500 focus:border-green-500'
-                          : licenseValidationState.error
-                          ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                          : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
-                      } rounded-md shadow-sm focus:outline-none sm:text-sm`}
-                      required
-                    />
-                    {/* Indicador de estado */}
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      {licenseValidationState.isValidating && (
-                        <svg
-                          className="animate-spin h-5 w-5 text-gray-400"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          />
-                        </svg>
-                      )}
-                      {!licenseValidationState.isValidating && licenseValidationState.isValid && (
-                        <svg
-                          className="h-5 w-5 text-green-500"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                      {!licenseValidationState.isValidating && licenseValidationState.error && (
-                        <svg
-                          className="h-5 w-5 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                  {/* Mensaje de validación */}
-                  {licenseValidationState.isValidating && (
-                    <p className="mt-1 text-sm text-gray-500">
-                      {t("properties.form.licenseValidation.validating")}
-                    </p>
-                  )}
-                  {!licenseValidationState.isValidating && licenseValidationState.isValid && (
-                    <p className="mt-1 text-sm text-green-600">
-                      {t("properties.form.licenseValidation.valid")}
-                    </p>
-                  )}
-                  {!licenseValidationState.isValidating && licenseValidationState.error && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {licenseValidationState.error}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="license_type" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.licenseType")} *
-                    <InfoTooltip content={t("properties.form.tooltips.licenseType")} />
-                  </label>
-                  <select
-                    name="license_type"
-                    id="license_type"
-                    value={formData.license_type || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  >
-                    <option value="">{t("properties.form.selectLicenseType")}</option>
-                    <option value="VFT">VFT - Vivienda con Fines Turísticos</option>
-                    <option value="VUT">VUT - Vivienda de Uso Turístico</option>
-                    <option value="VTAR">VTAR - Apartamento Turístico</option>
-                    <option value="Other">Otro</option>
-                  </select>
-                </div>
-              </div>
 
               {/* Tipo de propiedad y capacidades */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -989,7 +760,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 </div>
               </div>
 
-              {/* Habitaciones y baños */}
+              {/* Habitaciones y WiFi */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="num_bedrooms" className="block text-sm font-medium text-gray-700">
@@ -1009,135 +780,24 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="num_bathrooms" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.numBathrooms")} *
+                  <label className="flex items-center space-x-3 mt-1">
+                    <input
+                      type="checkbox"
+                      name="has_wifi"
+                      id="has_wifi"
+                      checked={formData.has_wifi || false}
+                      onChange={(e) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          has_wifi: e.target.checked
+                        }));
+                      }}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      ¿Tiene WiFi?
+                    </span>
                   </label>
-                  <input
-                    type="number"
-                    name="num_bathrooms"
-                    id="num_bathrooms"
-                    min="0"
-                    value={formData.num_bathrooms || ""}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="3"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Datos del Propietario */}
-            <div className="bg-green-50 p-4 rounded-lg space-y-4">
-              <h3 className="text-md font-semibold text-gray-900">
-                {t("properties.form.sections.ownerInfo")}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {t("properties.form.sections.ownerInfoDescription")}
-              </p>
-
-              {/* Nombre completo del propietario */}
-              <div>
-                <label htmlFor="owner_name" className="block text-sm font-medium text-gray-700">
-                  {t("properties.form.ownerName")} *
-                </label>
-                <input
-                  type="text"
-                  name="owner_name"
-                  id="owner_name"
-                  value={formData.owner_name}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Juan García López"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    validationErrors.owner_name ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                  }`}
-                  required
-                />
-                <FieldError error={validationErrors.owner_name} />
-              </div>
-
-              {/* Email y teléfono del propietario */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="owner_email" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.ownerEmail")} *
-                  </label>
-                  <input
-                    type="email"
-                    name="owner_email"
-                    id="owner_email"
-                    value={formData.owner_email}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="juan@example.com"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      validationErrors.owner_email ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  <FieldError error={validationErrors.owner_email} />
-                </div>
-                <div>
-                  <label htmlFor="owner_phone" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.ownerPhone")} *
-                  </label>
-                  <input
-                    type="tel"
-                    name="owner_phone"
-                    id="owner_phone"
-                    value={formData.owner_phone}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="+34600123456"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      validationErrors.owner_phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  <FieldError error={validationErrors.owner_phone} />
-                </div>
-              </div>
-
-              {/* Tipo y número de documento */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="owner_id_type" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.ownerIdType")} *
-                  </label>
-                  <select
-                    name="owner_id_type"
-                    id="owner_id_type"
-                    value={formData.owner_id_type || ""}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    required
-                  >
-                    <option value="">{t("properties.form.selectIdType")}</option>
-                    <option value="DNI">DNI - Documento Nacional de Identidad</option>
-                    <option value="NIE">NIE - Número de Identidad de Extranjero</option>
-                    <option value="PASSPORT">Pasaporte</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="owner_id_number" className="block text-sm font-medium text-gray-700">
-                    {t("properties.form.ownerIdNumber")} *
-                  </label>
-                  <input
-                    type="text"
-                    name="owner_id_number"
-                    id="owner_id_number"
-                    value={formData.owner_id_number}
-                    onChange={handleChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="12345678A"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      validationErrors.owner_id_number ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  <FieldError error={validationErrors.owner_id_number} />
                 </div>
               </div>
             </div>
