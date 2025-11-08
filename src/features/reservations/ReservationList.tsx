@@ -563,12 +563,13 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           </div>
                         </td>
 
-                        {/* Columna Huésped (incluye teléfono) - 20% */}
+                        {/* Columna Huésped (incluye teléfono y número de viajeros) - 20% */}
                         <td 
                           className="px-4 py-4 text-sm font-medium text-gray-900 text-left align-top"
                           style={{ minWidth: '180px', width: '20%' }}
                         >
                           <div className="flex flex-col">
+                            {/* Nombre del huésped principal */}
                             <div className="text-sm font-medium text-gray-900">
                               {mainGuest
                                 ? `${mainGuest.firstName} ${mainGuest.lastName}`
@@ -578,6 +579,12 @@ const ReservationList: React.FC<ReservationListProps> = ({
                             <div className="text-xs text-gray-500 mt-0.5">
                               {mainGuest?.phone || t("common.notAvailable")}
                             </div>
+                            {/* Indicador de múltiples viajeros (si hay más de 1) */}
+                            {reservation.totalGuests > 1 && (
+                              <div className="text-xs text-blue-600 mt-1 font-medium">
+                                +{reservation.totalGuests - 1} {reservation.totalGuests === 2 ? 'acompañante' : 'acompañantes'}
+                              </div>
+                            )}
                           </div>
                         </td>
 

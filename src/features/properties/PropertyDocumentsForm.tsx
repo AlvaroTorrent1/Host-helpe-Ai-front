@@ -40,16 +40,24 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
   // Verificar salud del webhook al montar el componente
   useEffect(() => {
     const checkWebhook = async () => {
-      // Solo verificar webhook si tenemos un propertyId válido (no temporal)
-      if (propertyId && propertyId !== "temp") {
+      // ⚠️ DESHABILITADO en desarrollo local para evitar errores CORS molestos
+      // En localhost, el navegador bloquea peticiones cross-origin a n8n.cloud
+      // El webhook funciona perfectamente cuando se usa desde el backend
+      const isLocalhost = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1';
+      
+      // Solo verificar webhook en producción y si tenemos un propertyId válido
+      if (!isLocalhost && propertyId && propertyId !== "temp") {
         try {
           const isHealthy = await webhookDocumentService.checkWebhookHealth();
           if (!isHealthy) {
             console.warn("⚠️ El webhook de documentos podría no estar disponible");
           }
-      } catch (error) {
+        } catch (error) {
           console.error("Error verificando webhook:", error);
         }
+      } else if (isLocalhost) {
+        console.log("🔧 Modo desarrollo: verificación de webhook deshabilitada (se evitan errores CORS)");
       }
     };
     
@@ -321,8 +329,8 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
         <p className="mt-1 text-sm text-gray-500">
           {t("properties.form.documents.description")}
         </p>
-        <p className="mt-1 text-sm text-gray-500">
-          {t("properties.form.documents.recommendedTypes")}
+        <div className="mt-1 text-sm text-gray-500">
+          <p className="mb-1">{t("properties.form.documents.recommendedTypes")}</p>
           <ul className="list-disc pl-5 mt-1">
             <li>
               <strong>{t("properties.form.documents.types.faq")}:</strong> {t("properties.form.documents.types.faqDescription")}
@@ -337,7 +345,7 @@ const PropertyDocumentsForm: React.FC<PropertyDocumentsFormProps> = ({
               <strong>{t("properties.form.documents.types.inventory")}:</strong> {t("properties.form.documents.types.inventoryDescription")}
             </li>
           </ul>
-        </p>
+        </div>
       </div>
 
       {/* Mostrar aviso si estamos en modo creación */}

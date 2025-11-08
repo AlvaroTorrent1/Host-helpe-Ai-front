@@ -72,6 +72,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   // Estados para enlaces iCal
   const [bookingIcalUrl, setBookingIcalUrl] = useState<string>("");
   const [airbnbIcalUrl, setAirbnbIcalUrl] = useState<string>("");
+  const [originalBookingIcalUrl, setOriginalBookingIcalUrl] = useState<string>(""); // Snapshot inicial
+  const [originalAirbnbIcalUrl, setOriginalAirbnbIcalUrl] = useState<string>(""); // Snapshot inicial
   const [showBookingInstructions, setShowBookingInstructions] = useState<boolean>(false);
   const [showAirbnbInstructions, setShowAirbnbInstructions] = useState<boolean>(false);
   const [icalValidationStates, setIcalValidationStates] = useState({
@@ -103,23 +105,43 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     console.log(`📍 PropertyForm - Paso actual: ${currentStep}, Submit intencional: ${isIntentionalSubmit}`);
   }, [currentStep, isIntentionalSubmit]);
 
-  // Función para detectar cambios en los enlaces
+  // Función para detectar cambios en los enlaces (Google Business + iCal)
   const hasLinksChanged = (): boolean => {
+    // Verificar cambios en Google Business URLs
     const currentUrls = googleBusinessUrls.filter(url => url && url.trim() !== '');
     const originalUrls = originalGoogleBusinessUrls;
     
     // Si las longitudes son diferentes, hay cambios
     if (currentUrls.length !== originalUrls.length) {
+      console.log('🔍 Cambios detectados: diferente cantidad de Google Business URLs');
       return true;
     }
     
     // Comparar cada URL normalizada
     for (let i = 0; i < currentUrls.length; i++) {
       if (!areUrlsEquivalent(currentUrls[i], originalUrls[i] || '')) {
+        console.log('🔍 Cambios detectados: URL de Google Business modificada');
         return true;
       }
     }
     
+    // Verificar cambios en enlaces iCal de Booking
+    const currentBooking = bookingIcalUrl.trim();
+    const originalBooking = originalBookingIcalUrl.trim();
+    if (currentBooking !== originalBooking) {
+      console.log('🔍 Cambios detectados: enlace iCal de Booking modificado');
+      return true;
+    }
+    
+    // Verificar cambios en enlaces iCal de Airbnb
+    const currentAirbnb = airbnbIcalUrl.trim();
+    const originalAirbnb = originalAirbnbIcalUrl.trim();
+    if (currentAirbnb !== originalAirbnb) {
+      console.log('🔍 Cambios detectados: enlace iCal de Airbnb modificado');
+      return true;
+    }
+    
+    console.log('🔍 Sin cambios detectados en enlaces');
     return false;
   };
 
@@ -199,6 +221,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           
           if (icalConfigs.bookingUrl) {
             setBookingIcalUrl(icalConfigs.bookingUrl);
+            setOriginalBookingIcalUrl(icalConfigs.bookingUrl); // Guardar snapshot original
             // Actualizar estado de validación como válido si ya existe
             setIcalValidationStates(prev => ({
               ...prev,
@@ -212,6 +235,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
           if (icalConfigs.airbnbUrl) {
             setAirbnbIcalUrl(icalConfigs.airbnbUrl);
+            setOriginalAirbnbIcalUrl(icalConfigs.airbnbUrl); // Guardar snapshot original
             // Actualizar estado de validación como válido si ya existe
             setIcalValidationStates(prev => ({
               ...prev,
@@ -472,6 +496,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           _icalValidationStates: icalValidationStates,
         };
         
+        // Log detallado de enlaces iCal antes de enviar
+        console.log('📋 Enlaces iCal a guardar:', {
+          booking: bookingIcalUrl.trim() || '(vacío)',
+          airbnb: airbnbIcalUrl.trim() || '(vacío)',
+          bookingValidation: icalValidationStates.booking,
+          airbnbValidation: icalValidationStates.airbnb
+        });
+        
         onSubmit(submitData as any);
         
         // Resetear el flag después de enviar
@@ -525,19 +557,40 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }
 
     // Validación básica de formato
+    // Para Booking: debe contener "booking.com" e "ical"
     const isBookingUrl = platform === 'booking' && 
       (url.includes('booking.com') && url.includes('ical'));
+    
+    // Para Airbnb: debe contener "airbnb" y puede contener "ical" o "calendar"
+    // Acepta formatos como: airbnb.com/calendar/ical/... o airbnb.es/calendar/ical/...
     const isAirbnbUrl = platform === 'airbnb' && 
-      (url.includes('airbnb.com') && url.includes('ical'));
+      (url.includes('airbnb') && (url.includes('ical') || url.includes('calendar')));
 
-    if (!isBookingUrl && !isAirbnbUrl) {
+    // Mensajes de error específicos para ayudar al usuario
+    if (platform === 'booking' && !isBookingUrl) {
+      let errorMsg = 'URL no válida para Booking.com';
+      if (!url.includes('booking.com')) {
+        errorMsg = 'La URL debe contener "booking.com"';
+      } else if (!url.includes('ical')) {
+        errorMsg = 'La URL debe contener "ical". Asegúrate de exportar el calendario iCal';
+      }
       setIcalValidationStates(prev => ({
         ...prev,
-        [platform]: { 
-          isValidating: false, 
-          isValid: false, 
-          error: `URL no válida para ${platform === 'booking' ? 'Booking.com' : 'Airbnb'}` 
-        }
+        [platform]: { isValidating: false, isValid: false, error: errorMsg }
+      }));
+      return;
+    }
+
+    if (platform === 'airbnb' && !isAirbnbUrl) {
+      let errorMsg = 'URL no válida para Airbnb';
+      if (!url.includes('airbnb')) {
+        errorMsg = 'La URL debe contener "airbnb"';
+      } else if (!url.includes('ical') && !url.includes('calendar')) {
+        errorMsg = 'La URL debe ser del calendario de Airbnb. Verifica que sea la URL de exportación';
+      }
+      setIcalValidationStates(prev => ({
+        ...prev,
+        [platform]: { isValidating: false, isValid: false, error: errorMsg }
       }));
       return;
     }

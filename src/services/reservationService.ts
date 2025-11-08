@@ -96,6 +96,11 @@ class ReservationService {
     // Mapear estado SES (igual que en reservas manuales)
     const sesStatus = this.mapSesStatus(travelerFormRequest);
 
+    // Calcular el número total de viajeros basándose en traveler_form_data
+    // Si el parte está completado, usar num_travelers_completed
+    // Si no, usar 1 por defecto (solo el huésped principal)
+    const totalGuests = travelerFormRequest?.num_travelers_completed || 1;
+
     return {
       id: `synced-${syncedBooking.id}`,
       propertyId: syncedBooking.property_id,
@@ -104,7 +109,7 @@ class ReservationService {
       checkInDate: syncedBooking.check_in_date,
       checkOutDate: syncedBooking.check_out_date,
       status: statusMap[syncedBooking.booking_status] || 'pending',
-      totalGuests: 1,
+      totalGuests: totalGuests, // ✅ Usar número real de viajeros del parte
       bookingSource: syncedBooking.booking_source || 'booking.com',
       notes: `Sincronizado desde ${syncedBooking.ical_configs?.ical_name || 'iCal'} - ${syncedBooking.booking_status}`,
       createdAt: syncedBooking.created_at,
@@ -147,6 +152,11 @@ class ReservationService {
     // Mapear estado SES
     const sesStatus = this.mapSesStatus(travelerFormRequest);
 
+    // Calcular el número total de viajeros basándose en traveler_form_data
+    // Si el parte está completado, usar num_travelers_completed
+    // Si no, usar 1 por defecto (solo el huésped principal)
+    const totalGuests = travelerFormRequest?.num_travelers_completed || 1;
+
     return {
       id: dbReservation.id.toString(),
       propertyId: dbReservation.property_id,
@@ -155,7 +165,7 @@ class ReservationService {
       checkInDate: dbReservation.checkin_date,
       checkOutDate: dbReservation.checkout_date,
       status: statusMap[dbReservation.status] || 'pending',
-      totalGuests: 1, // Por ahora solo soportamos un huésped
+      totalGuests: totalGuests, // ✅ Usar número real de viajeros del parte
       bookingSource: 'direct',
       notes: dbReservation.notes || undefined,
       createdAt: dbReservation.created_at,
@@ -564,6 +574,7 @@ class ReservationService {
 
   /**
    * Buscar disponibilidad de una propiedad en un rango de fechas
+   * Ahora verifica TANTO reservas manuales COMO sincronizadas
    */
   async checkAvailability(
     propertyId: string, 
@@ -572,12 +583,11 @@ class ReservationService {
     excludeReservationId?: string
   ): Promise<boolean> {
     try {
-      // ✅ LÓGICA CORREGIDA: Detectar solapamientos reales
-      // Dos rangos se solapan si: inicio1 < fin2 AND fin1 > inicio2
-      // Para detectar conflictos: checkin_existente < checkout_nuevo AND checkout_existente > checkin_nuevo
-      let query = supabase
+      // ✅ VERIFICAR RESERVAS MANUALES
+      // Detectar solapamientos: inicio1 < fin2 AND fin1 > inicio2
+      let manualQuery = supabase
         .from('reservations')
-        .select('id')
+        .select('id, guest_name, guest_surname')
         .eq('property_id', propertyId)
         .neq('status', 'cancelled')
         .lt('checkin_date', checkoutDate)  // checkin_existente < checkout_nuevo
@@ -587,19 +597,53 @@ class ReservationService {
       if (excludeReservationId) {
         const numericId = parseInt(excludeReservationId);
         if (!isNaN(numericId)) {
-          query = query.neq('id', numericId);
+          manualQuery = manualQuery.neq('id', numericId);
         }
       }
 
-      const { data: conflicts, error } = await query;
+      const { data: manualConflicts, error: manualError } = await manualQuery;
 
-      if (error) {
-        console.error('Error checking availability:', error);
-        throw new Error(`Error al verificar disponibilidad: ${error.message}`);
+      if (manualError) {
+        console.error('Error checking manual reservations availability:', manualError);
+        throw new Error(`Error al verificar disponibilidad (reservas manuales): ${manualError.message}`);
       }
 
-      // Si no hay conflictos, la propiedad está disponible
-      return !conflicts || conflicts.length === 0;
+      // ✅ VERIFICAR RESERVAS SINCRONIZADAS (iCal)
+      // Usar la misma lógica de solapamiento
+      const { data: syncedConflicts, error: syncedError } = await supabase
+        .from('synced_bookings')
+        .select('id, guest_name')
+        .eq('property_id', propertyId)
+        .in('booking_status', ['blocked', 'reserved']) // Solo bloqueadas o reservadas, no "unknown"
+        .lt('check_in_date', checkoutDate)
+        .gt('check_out_date', checkinDate);
+
+      if (syncedError) {
+        console.error('Error checking synced bookings availability:', syncedError);
+        // No lanzar error, solo advertir - las sincronizadas son menos críticas
+        console.warn('No se pudieron verificar las reservas sincronizadas');
+      }
+
+      // Combinar conflictos de ambas fuentes
+      const totalConflicts = [
+        ...(manualConflicts || []),
+        ...(syncedConflicts || [])
+      ];
+
+      // Si hay conflictos, loguear para debugging
+      if (totalConflicts.length > 0) {
+        console.warn('⚠️ Conflictos detectados:', {
+          propertyId,
+          checkinDate,
+          checkoutDate,
+          manuales: manualConflicts?.length || 0,
+          sincronizadas: syncedConflicts?.length || 0,
+          detalles: totalConflicts
+        });
+      }
+
+      // La propiedad está disponible solo si NO hay conflictos
+      return totalConflicts.length === 0;
     } catch (error) {
       console.error('Error in checkAvailability:', error);
       throw error;
@@ -664,5 +708,6 @@ class ReservationService {
   }
 }
 
+// Export singleton instance
 export const reservationService = new ReservationService();
 export default reservationService; 

@@ -162,8 +162,11 @@ class PropertyIcalService {
 
       // Procesar Airbnb
       if (data.airbnbIcalUrl) {
+        console.log('📍 Procesando URL de Airbnb:', data.airbnbIcalUrl);
+        
         if (existingAirbnb) {
           // Actualizar existente
+          console.log('🔄 Actualizando configuración existente de Airbnb, ID:', existingAirbnb.id);
           const { error } = await supabase
             .from('ical_configs')
             .update({
@@ -175,11 +178,13 @@ class PropertyIcalService {
             .eq('id', existingAirbnb.id);
 
           if (error) {
-            console.error('Error updating Airbnb iCal config:', error);
+            console.error('❌ Error updating Airbnb iCal config:', error);
             throw new Error(`Error al actualizar configuración de Airbnb: ${error.message}`);
           }
+          console.log('✅ Configuración de Airbnb actualizada correctamente');
         } else {
           // Crear nuevo
+          console.log('➕ Creando nueva configuración de Airbnb');
           const { error } = await supabase
             .from('ical_configs')
             .insert({
@@ -193,19 +198,21 @@ class PropertyIcalService {
             });
 
           if (error) {
-            console.error('Error creating Airbnb iCal config:', error);
+            console.error('❌ Error creating Airbnb iCal config:', error);
             throw new Error(`Error al crear configuración de Airbnb: ${error.message}`);
           }
+          console.log('✅ Nueva configuración de Airbnb creada correctamente');
         }
       } else if (existingAirbnb) {
         // Desactivar si se eliminó la URL
+        console.log('⏸️ Desactivando configuración de Airbnb (URL vacía)');
         const { error } = await supabase
           .from('ical_configs')
           .update({ is_active: false })
           .eq('id', existingAirbnb.id);
 
         if (error) {
-          console.error('Error deactivating Airbnb iCal config:', error);
+          console.error('❌ Error deactivating Airbnb iCal config:', error);
         }
       }
 
@@ -273,17 +280,23 @@ class PropertyIcalService {
         return { isValid: false, error: "URL vacía" };
       }
 
+      // Validación para Booking: debe contener "booking.com" e "ical"
       const isBookingUrl = url.includes('booking.com') && url.includes('ical');
-      const isAirbnbUrl = url.includes('airbnb.com') && url.includes('ical');
+      
+      // Validación para Airbnb: debe contener "airbnb" y ("ical" O "calendar")
+      // Acepta URLs de cualquier dominio de Airbnb (.com, .es, etc.)
+      const isAirbnbUrl = url.includes('airbnb') && (url.includes('ical') || url.includes('calendar'));
 
       if (!isBookingUrl && !isAirbnbUrl) {
+        console.log('⚠️ URL rechazada en validación:', url);
         return { isValid: false, error: "URL no es de Booking.com o Airbnb" };
       }
 
       // Simulación de validación exitosa
+      console.log('✅ URL validada correctamente:', url);
       return { isValid: true };
     } catch (error) {
-      console.error('Error validating iCal URL:', error);
+      console.error('❌ Error validating iCal URL:', error);
       return { isValid: false, error: "Error al validar el enlace" };
     }
   }

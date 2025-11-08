@@ -20,6 +20,7 @@ import { webhookDocumentService } from "../../services/webhookDocumentService";
 import { shareableLinkService } from "../../services/shareableLinkService";
 import { shareableLinkSyncService } from "../../services/shareableLinkSyncService";
 import { dualImageProcessingService } from "../../services/dualImageProcessingService";
+import { propertyIcalService } from "../../services/propertyIcalService";
 
 // Función utilitaria para validar y limpiar URL de Google Business
 const validateGoogleBusinessUrl = (url: string | undefined): string | undefined => {
@@ -407,9 +408,9 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
         // Procesar Google Business URLs solo si hay cambios
         if (_linksChanged && _googleBusinessUrls !== undefined) {
           setProgressPhase('Sincronizando enlaces de Google Business...');
-          setProgressPercent(90);
+          setProgressPercent(70);
           
-          console.log('🔄 Sincronizando enlaces con cambios detectados...');
+          console.log('🔄 Sincronizando enlaces de Google Business con cambios detectados...');
           
           const linkInputs = _googleBusinessUrls.map((url: string, index: number) => ({
             url,
@@ -421,20 +422,58 @@ const PropertyManagementPage: React.FC<PropertyManagementPageProps> = ({ onSignO
             linkInputs
           );
         } else {
-          console.log('⏭️ Sin cambios en enlaces, omitiendo sincronización');
+          console.log('⏭️ Sin cambios en enlaces de Google Business, omitiendo sincronización');
+        }
+
+        // Procesar enlaces iCal si se proporcionaron o hubo cambios
+        if (_linksChanged && (propertyData._bookingIcalUrl !== undefined || propertyData._airbnbIcalUrl !== undefined)) {
+          setProgressPhase('Configurando sincronización de calendarios...');
+          setProgressPercent(85);
+          
+          try {
+            // Obtener usuario autenticado
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('Usuario no autenticado');
+
+            // Crear o actualizar user_property
+            const userProperty = await propertyIcalService.createOrUpdateUserProperty({
+              id: currentProperty.id,
+              name: currentProperty.name,
+              user_id: user.id
+            });
+
+            // Guardar configuraciones iCal
+            await propertyIcalService.saveIcalConfigs({
+              propertyId: currentProperty.id,
+              userId: user.id,
+              userPropertyId: userProperty.id!,
+              bookingIcalUrl: propertyData._bookingIcalUrl,
+              airbnbIcalUrl: propertyData._airbnbIcalUrl
+            });
+
+            console.log('✅ Enlaces iCal actualizados exitosamente en modo edición');
+            toast.success('Calendarios sincronizados configurados');
+          } catch (icalError) {
+            console.error('❌ Error configurando enlaces iCal:', icalError);
+            toast.error('Error configurando sincronización de calendarios');
+            // No detener el flujo por error en iCal
+          }
         }
 
         setProgressPhase('¡Actualización completada!');
         setProgressPercent(100);
         
-        // Actualizar la lista local
+        // Actualizar la lista local preservando todos los campos existentes
         setProperties((prev) =>
           prev.map((p) =>
             p.id === currentProperty.id
-              ? { ...p, ...propertyDataToSend }
+              ? { ...p, ...propertyDataToSend, ...updatedProperty }
               : p
           )
         );
+
+        // Actualizar currentProperty para reflejar los cambios sin perder datos
+        setCurrentProperty({ ...currentProperty, ...updatedProperty });
 
         toast.success("Propiedad actualizada exitosamente");
       } else {
