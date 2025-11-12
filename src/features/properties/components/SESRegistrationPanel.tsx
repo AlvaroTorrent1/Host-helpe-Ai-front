@@ -67,15 +67,10 @@ export const SESRegistrationPanel: React.FC<SESRegistrationPanelProps> = ({
   const status = getRegistrationStatus();
 
   // Verificar si tiene todos los datos necesarios para registrar
+  // Solo validamos lo MÍNIMO requerido por Lynx API: name + 4 credenciales SES
   const hasRequiredData = () => {
     return !!(
-      property.tourism_license &&
-      property.license_type &&
-      property.property_type &&
-      property.city &&
-      property.province &&
-      property.owner_name &&
-      property.owner_email &&
+      property.name &&
       property.ses_landlord_code &&
       property.ses_username &&
       property.ses_api_password &&
@@ -213,81 +208,38 @@ export const SESRegistrationPanel: React.FC<SESRegistrationPanelProps> = ({
       {/* Contenido expandible */}
       {isExpanded && (
         <div className="p-4 bg-white border-t border-gray-200 space-y-4">
-          {/* Descripción */}
-          <p className="text-sm text-gray-600">
-            {status.description}
-          </p>
+          {/* NOTA: Los IDs de Lynx (lynx_lodging_id, lynx_account_id) se mantienen en la BD
+              para uso interno del sistema, pero NO se muestran al usuario porque son
+              datos técnicos que no aportan valor desde su perspectiva. */}
 
-          {/* Información de registro si está registrada */}
-          {property.lynx_lodging_id && (
-            <div className="bg-blue-50 rounded-md p-3 space-y-2">
-              <div className="flex items-center space-x-2 text-sm">
-                <span className="font-medium text-blue-900">ID de Registro:</span>
-                <code className="text-xs bg-blue-100 px-2 py-1 rounded text-blue-800">
-                  {property.lynx_lodging_id}
-                </code>
-              </div>
-              
-              {property.lynx_account_id && (
-                <div className="flex items-center space-x-2 text-sm">
-                  <span className="font-medium text-blue-900">ID de Cuenta SES:</span>
-                  <code className="text-xs bg-blue-100 px-2 py-1 rounded text-blue-800">
-                    {property.lynx_account_id}
-                  </code>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Datos de la propiedad */}
+          {/* Credenciales SES - OBLIGATORIAS */}
           <div className="space-y-2">
-            <h4 className="text-xs font-semibold text-gray-700 uppercase">
-              Datos de Registro
-            </h4>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="text-gray-500">Licencia:</span>
-                <span className={`ml-2 ${property.tourism_license ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.tourism_license || 'No completado'}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Tipo:</span>
-                <span className={`ml-2 ${property.license_type ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.license_type || 'No completado'}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Provincia:</span>
-                <span className={`ml-2 ${property.province ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.province || 'No completado'}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Propietario:</span>
-                <span className={`ml-2 ${property.owner_name ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.owner_name || 'No completado'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Credenciales SES */}
-          <div className="space-y-2">
-            <h4 className="text-xs font-semibold text-gray-700 uppercase">
-              Credenciales SES
+            <h4 className="text-xs font-semibold text-gray-700 uppercase flex items-center">
+              <span className="text-red-600 mr-1">*</span> Credenciales SES
             </h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
                 <span className="text-gray-500">Código Arrendador:</span>
-                <span className={`ml-2 ${property.ses_landlord_code ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.ses_landlord_code ? '✓ Configurado' : 'No completado'}
+                <span className={`ml-2 ${property.ses_landlord_code ? 'text-green-600 font-medium' : 'text-red-500'}`}>
+                  {property.ses_landlord_code ? '✓ Configurado' : '✗ Requerido'}
                 </span>
               </div>
               <div>
                 <span className="text-gray-500">Usuario SES:</span>
-                <span className={`ml-2 ${property.ses_username ? 'text-gray-900' : 'text-red-500'}`}>
-                  {property.ses_username ? '✓ Configurado' : 'No completado'}
+                <span className={`ml-2 ${property.ses_username ? 'text-green-600 font-medium' : 'text-red-500'}`}>
+                  {property.ses_username ? '✓ Configurado' : '✗ Requerido'}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500">Contraseña API:</span>
+                <span className={`ml-2 ${property.ses_api_password ? 'text-green-600 font-medium' : 'text-red-500'}`}>
+                  {property.ses_api_password ? '✓ Configurado' : '✗ Requerido'}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500">Código Establecimiento:</span>
+                <span className={`ml-2 ${property.ses_establishment_code ? 'text-green-600 font-medium' : 'text-red-500'}`}>
+                  {property.ses_establishment_code ? '✓ Configurado' : '✗ Requerido'}
                 </span>
               </div>
             </div>
@@ -334,19 +286,72 @@ export const SESRegistrationPanel: React.FC<SESRegistrationPanelProps> = ({
             )}
 
             {status.status === 'registered' && (
-              <div className="flex space-x-2">
+              <div className="space-y-2">
+                {/* Botón Sincronizar */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onSync?.();
                   }}
-                  className="flex-1 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                   <span>Sincronizar</span>
                 </button>
+
+                {/* Botón Re-registrar con Nuevas Credenciales */}
+                <button
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    
+                    // Confirmar con el usuario
+                    if (!window.confirm(
+                      '¿Re-registrar esta propiedad con las credenciales SES actuales?\n\n' +
+                      'Esto creará una nueva authority connection y lodging en Lynx/SES.\n\n' +
+                      'Útil si:\n' +
+                      '• Cambiaron las credenciales SES\n' +
+                      '• El registro anterior tiene errores\n' +
+                      '• Quieres usar el nuevo flujo de registro'
+                    )) {
+                      return;
+                    }
+
+                    setIsRegistering(true);
+                    
+                    try {
+                      console.log('🔄 Re-registrando propiedad con forceReregister=true');
+                      
+                      const result = await registerLodging(property.id, true);
+                      
+                      if (result.success) {
+                        toast.success('✅ Propiedad re-registrada exitosamente con nuevas credenciales');
+                        onSync?.(); // Refrescar datos
+                      } else {
+                        toast.error(result.error || 'Error al re-registrar');
+                      }
+                    } catch (error) {
+                      console.error('Error re-registrando:', error);
+                      toast.error('Error al re-registrar propiedad');
+                    } finally {
+                      setIsRegistering(false);
+                    }
+                  }}
+                  disabled={isRegistering}
+                  className="w-full bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Re-registrar con credenciales SES actuales (crea nueva authority connection)"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{isRegistering ? 'Re-registrando...' : 'Re-registrar con Nuevas Credenciales'}</span>
+                </button>
+
+                {/* Nota explicativa */}
+                <p className="text-xs text-gray-500 text-center">
+                  💡 Use "Re-registrar" si cambió credenciales SES o el registro anterior tiene problemas
+                </p>
               </div>
             )}
 
@@ -364,13 +369,6 @@ export const SESRegistrationPanel: React.FC<SESRegistrationPanelProps> = ({
                 <span>Actualizar Estado</span>
               </button>
             )}
-          </div>
-
-          {/* Nota legal */}
-          <div className="text-xs text-gray-500 border-t border-gray-200 pt-3">
-            <p>
-              <strong>SES Hospedajes</strong> es el sistema oficial del <strong>Ministerio del Interior de España</strong> para el registro de viajeros según el <em>Real Decreto 933/2021</em>.
-            </p>
           </div>
         </div>
       )}
